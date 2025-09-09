@@ -19,22 +19,16 @@ qianxun:addEffect(fk.BeforeCardsMove, {
   audio_index = 1,
   can_trigger = function (self, event, target, player, data)
     if not player:hasSkill(qianxun.name) then return false end
-    local id = 0
-    local source = player
-    local c
+    local id, c
     for _, move in ipairs(data) do
-      if move.to == player.id and move.toArea == Card.PlayerJudge then
+      if move.to == player and move.toArea == Card.PlayerJudge then
         for _, info in ipairs(move.moveInfo) do
           id = info.cardId
-          if info.fromArea == Card.PlayerJudge then
-            source = move.from or player
-          else
-            source = player
+          c = Fk:getCardById(id)
+          if move.virtualEquip and move.virtualEquip:getEffectiveId() == id then
+            c = move.virtualEquip
           end
-          c = source:getVirualEquip(id)
-          --FIXME：巨大隐患，延时锦囊的virtual_equips在置入判定区的事件被篡改，或者判定阶段自然流程以外的方式离开判定区时不会清理
-          if not c then c = Fk:getCardById(id) end
-          if c.trueName == "indulgence" then
+          if c and c.trueName == "indulgence" then
             return true
           end
         end
@@ -42,39 +36,24 @@ qianxun:addEffect(fk.BeforeCardsMove, {
     end
   end,
   on_use = function (self, event, target, player, data)
-    local source = player
     local mirror_moves = {}
-    local ids = {}
-    for _, move in ipairs(data) do
-      if move.to == player and move.toArea == Card.PlayerJudge then
-        local move_info = {}
-        local mirror_info = {}
-        for _, info in ipairs(move.moveInfo) do
-          local id = info.cardId
-          if info.fromArea == Card.PlayerJudge then
-            source = move.from or player
-          else
-            source = player
-          end
-          local c = source:getVirualEquip(id)
-          if not c then c = Fk:getCardById(id) end
-          if c.trueName == "indulgence" then
-            table.insert(mirror_info, info)
-            table.insert(ids, id)
-          else
-            table.insert(move_info, info)
-          end
-        end
-        if #mirror_info > 0 then
-          move.moveInfo = move_info
-          local mirror_move = move:copy()
-          mirror_move.to = nil
-          mirror_move.toArea = Card.DiscardPile
-          mirror_move.moveInfo = mirror_info
-          table.insert(mirror_moves, mirror_move)
-        end
+    player.room:cancelMove(data, nil, function (move, info)
+      local c = Fk:getCardById(info.cardId)
+      if move.virtualEquip and move.virtualEquip:getEffectiveId() == info.cardId then
+        c = move.virtualEquip
       end
-    end
+      if c and c.trueName == "indulgence" then
+        local mirror_move = move:copy()
+        mirror_move.to = nil
+        mirror_move.toArea = Card.DiscardPile
+        mirror_move.moveInfo = {info}
+        mirror_move.moveReason = fk.ReasonJustMove
+        mirror_move.skillName = self.skeleton.name
+        table.insert(mirror_moves, mirror_move)
+        return true
+      end
+      return false
+    end)
     table.insertTable(data, mirror_moves)
   end
 })

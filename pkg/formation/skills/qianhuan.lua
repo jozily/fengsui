@@ -39,7 +39,7 @@ qianhuan:addEffect(fk.TargetConfirming, {
   anim_type = "defensive",
   can_trigger = function (self, event, target, player, data)
     return player:hasSkill(qianhuan.name) and H.compareKingdomWith(target, player) and #player:getPile("yuji_sorcery") > 0 and
-      (data.card.type == Card.TypeBasic or data.card.type == Card.TypeTrick) and data:isOnlyTarget(target)
+      (data.card.type == Card.TypeBasic or data.card.sub_type == Card.SubtypeDelayedTrick) and data:isOnlyTarget(target)
   end,
   on_cost = function (self, event, target, player, data)
     local room = player.room
@@ -79,20 +79,21 @@ qianhuan:addEffect(fk.BeforeCardsMove, {
     local room = player.room
     local delayed_trick = nil
     local friend = nil
+    local id, c
     for _, move in ipairs(data) do
-      if move.to ~= nil and move.toArea == Card.PlayerJudge then
-        friend = move.to
+      if move.to and move.toArea == Card.PlayerJudge and H.compareKingdomWith(move.to, player) then
         for _, info in ipairs(move.moveInfo) do
-          local id = info.cardId
-          local source = player
-          if info.fromArea == Card.PlayerJudge then
-            source = move.from or player
+          id = info.cardId
+          c = Fk:getCardById(id)
+          if move.virtualEquip and move.virtualEquip:getEffectiveId() == id then
+            c = move.virtualEquip
           end
-          delayed_trick = source:getVirualEquip(id)
-          if delayed_trick == nil then delayed_trick = Fk:getCardById(id) end
-          break
+          if c and c.sub_type == Card.SubtypeDelayedTrick then
+            delayed_trick = c
+            friend = move.to
+            break
+          end
         end
-        if delayed_trick then break end
       end
     end
     if friend == nil or delayed_trick == nil then return end
@@ -109,33 +110,27 @@ qianhuan:addEffect(fk.BeforeCardsMove, {
       })
     end
     if #card > 0 then
-      event:setCostData(self, {cards = card})
+      event:setCostData(self, { cards = card, cid = delayed_trick:getEffectiveId() })
       return true
     end
   end,
   on_use = function(self, event, target, player, data)
     player.room:moveCardTo(event:getCostData(self).cards, Card.DiscardPile, nil, fk.ReasonPutIntoDiscardPile, qianhuan.name, "yuji_sorcery")
+    local cid = event:getCostData(self).cid
     local mirror_moves = {}
-    local ids = {}
-    for _, move in ipairs(data) do
-      if move.toArea == Card.PlayerJudge then
-        local move_info = {}
-        local mirror_info = {}
-        for _, info in ipairs(move.moveInfo) do
-          local id = info.cardId
-          table.insert(mirror_info, info)
-          table.insert(ids, id)
-        end
-        if #mirror_info > 0 then
-          move.moveInfo = move_info
-          local mirror_move = move:copy()
-          mirror_move.to = nil
-          mirror_move.toArea = Card.DiscardPile
-          mirror_move.moveInfo = mirror_info
-          table.insert(mirror_moves, mirror_move)
-        end
+    player.room:cancelMove(data, nil, function (move, info)
+      if info.cardId == cid then
+        local mirror_move = move:copy()
+        mirror_move.to = nil
+        mirror_move.toArea = Card.DiscardPile
+        mirror_move.moveInfo = {info}
+        mirror_move.moveReason = fk.ReasonJustMove
+        mirror_move.skillName = self.skeleton.name
+        table.insert(mirror_moves, mirror_move)
+        return true
       end
-    end
+      return false
+    end)
     table.insertTable(data, mirror_moves)
   end,
 })
