@@ -2,8 +2,10 @@
 
 import QtQuick
 import QtQuick.Layouts
-import Fk.Pages
-import Fk.RoomElement
+import Fk
+import Fk.Components.LunarLTK
+import Fk.Pages.LunarLTK
+import Fk.Components.Common
 
 GraphicsBox {
   property string mainGeneral: "anjiang"
@@ -15,7 +17,7 @@ GraphicsBox {
     //id: generalList
   //}
 
-  title.text: luatr("#KnownBothGeneral").arg(luatr("seat#" + seat))
+  title.text: Lua.tr("#KnownBothGeneral").arg(Lua.tr("seat#" + seat))
   width: generalArea.width + body.anchors.leftMargin + body.anchors.rightMargin
   height: body.implicitHeight + body.anchors.topMargin + body.anchors.bottomMargin
 
@@ -60,7 +62,7 @@ GraphicsBox {
 
         MetroButton {
           id: fightButton
-          text: luatr("OK")
+          text: Lua.tr("OK")
           width: 120
           height: 35
           enabled: true
@@ -74,7 +76,7 @@ GraphicsBox {
 
         MetroButton {
           id: detailBtn
-          text: luatr("Show General Detail")
+          text: Lua.tr("Show General Detail")
           onClicked: roomScene.startCheat(
             "GeneralDetail",
             { generals: [mainGeneral, deputyGeneral] }
@@ -87,7 +89,7 @@ GraphicsBox {
   function loadData(data) {
     [mainGeneral, deputyGeneral, seat] = data;
 
-    if (lcall("IsCompanionWith", mainGeneral, deputyGeneral)) {
+    if (Lua.call("IsCompanionWith", mainGeneral, deputyGeneral)) {
       mainGeneralCard.hasCompanions = true;
       deputyGeneralCard.hasCompanions = true;
     }

@@ -4,8 +4,8 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import Fk
-import Fk.Pages
-import Fk.RoomElement
+import Fk.Components.LunarLTK
+import Fk.Pages.LunarLTK
 
 GraphicsBox {
   id: root

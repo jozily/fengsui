@@ -2,7 +2,7 @@
 
 import QtQuick
 import Fk
-import Fk.Pages
+import Fk.Components.Common
 
 MetroButton {
   id: root
@@ -17,8 +17,8 @@ MetroButton {
 
   onAnswerChanged: {
     if (!answer) return;
-    lcall("UpdateRequestUI", "Interaction", "1", "update", answer);
-    // lcall("SetInteractionDataOfSkill", skill, JSON.stringify(answer));
+    Lua.call("UpdateRequestUI", "Interaction", "1", "update", answer);
+    // Lua.call("SetInteractionDataOfSkill", skill, JSON.stringify(answer));
     // roomScene.dashboard.startPending(skill);
     if (answer == default_choice) return;
     roomScene.startCheat("../RoomElement/ChooseHandcard");
