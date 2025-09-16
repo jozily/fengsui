@@ -37,7 +37,7 @@ chengshang:addEffect(fk.CardUseFinished, {
     if #cards > 0 then
       room:moveCardTo(cards, Card.PlayerHand, player, fk.ReasonJustMove, chengshang.name, nil, false, player)
     else
-      player:setSkillUseHistory(chengshang.name, 0, Player.HistoryPhase)
+      player:clearSkillHistory(chengshang.name, Player.HistoryPhase)
     end
   end,
 })
