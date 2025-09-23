@@ -4,7 +4,7 @@ local qiance = fk.CreateSkill {
 
 Fk:loadTranslationTable {
   ["ld__qiance"] = "谦策",
-  [":ld__qiance"] = "当与你势力相同的角色使用锦囊牌指定目标后，其可令所有大势力角色不能响应此牌。",
+  [":ld__qiance"] = "与你势力相同的角色使用锦囊牌指定目标后，其可令其中的大势力角色不能响应此牌。",
 
   ["#ld__qiance-ask"] = "谦策：是否令所有大势力角色不能响应此牌",
 
@@ -23,8 +23,7 @@ qiance:addEffect(fk.CardUsing, {
     return player.room:askToSkillInvoke(target, { skill_name = qiance.name, prompt = "#ld__qiance-ask" })
   end,
   on_use = function(self, event, target, player, data)
-    local room = player.room
-    local targets = table.filter(room.alive_players, function(p) return H.isBigKingdomPlayer(p) end)
+    local targets = table.filter(data.tos, function(p) return H.isBigKingdomPlayer(p) end)
     if #targets > 0 then
       data.disresponsiveList = data.disresponsiveList or {}
       for _, p in ipairs(targets) do

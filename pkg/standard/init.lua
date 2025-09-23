@@ -424,7 +424,7 @@ Fk:loadTranslationTable{
 }
 
 local lvbu = General:new(extension, "hs__lvbu", "qun", 5)
-lvbu:addSkill("wushuang")
+lvbu:addSkill("hs__wushuang")
 lvbu:addCompanions("hs__diaochan")
 
 Fk:loadTranslationTable{

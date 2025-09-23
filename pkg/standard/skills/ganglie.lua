@@ -68,8 +68,8 @@ Fk:loadTranslationTable{
   ["hs__ganglie"] = "刚烈",
   [":hs__ganglie"] = "当你受到伤害后，你可判定，若结果为：红色，你对来源造成1点伤害；黑色，你弃置来源的一张牌。",
 
-  ["$hs__ganglie1"] = "",
-  ["$hs__ganglie2"] = "",
+  ["$hs__ganglie1"] = "鼠辈，竟敢伤我！",
+  ["$hs__ganglie2"] = "以彼之道，还施彼身！",
 }
 
 return ganglie

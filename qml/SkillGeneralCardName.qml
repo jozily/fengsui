@@ -21,7 +21,7 @@ MetroButton {
     // Lua.call("SetInteractionDataOfSkill", skill, JSON.stringify(answer));
     // roomScene.dashboard.startPending(skill);
     if (answer == default_choice) return;
-    roomScene.startCheat("../RoomElement/ChooseHandcard");
+    roomScene.startCheat("ChooseHandcard");
   }
 
   onClicked: {

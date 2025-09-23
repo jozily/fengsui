@@ -39,16 +39,22 @@ tongling:addEffect(fk.Damage, {
       if #to > 0 then
         local user = to[1]
         local cardNames = {}
-        local selfCards = { "peach", "analeptic", "ex_nihilo", "lightning" }   -- FIXME: how to tell ex_niholo from AOE and AG?
-        for _, id in ipairs(user:getCardIds("h")) do
-          local card = Fk:getCardById(id)
-          if card.skill:modTargetFilter(user, data.to, {}, card, {}) and not table.contains(selfCards, card.name) and card.type ~= Card.TypeEquip then     -- FIXME
-            table.insert(cardNames, card.name)
+        --local selfCards = { "peach", "analeptic", "ex_nihilo", "lightning" }   -- FIXME: how to tell ex_niholo from AOE and AG?
+        for _, name in ipairs(Fk:getAllCardNames("btd", false, true)) do
+              local card = Fk:cloneCard(name)
+              local min_target = card.skill:getMinTargetNum(user)
+              if min_target > 0 then
+                table.insertIfNeed(cardNames, card.trueName)
+              else
+                if card.multiple_targets then
+                  if card.skill:modTargetFilter(user, data.to, {}, card) then
+                    table.insertIfNeed(cardNames, card.trueName)
+                  end
+                else
+                --FIXME:不需要选目标的单目标牌，目前没有能指别人的
+              end
+            end
           end
-          if card.trueName == "slash" then
-            table.insert(cardNames, card.name)
-          end
-        end
         local prompt = data.card and
         "#ld__tongling_card-use:" .. player.id .. ":" .. victim .. ":" .. data.card:toLogString() or
         "#ld__tongling_nocard-use:" .. player.id .. ":" .. data.to.id
@@ -58,7 +64,7 @@ tongling:addEffect(fk.Damage, {
           prompt = prompt,
           skill_name = tongling.name,
           extra_data = {
-            exclusive_targets = { victim },
+            must_targets = { victim },
             bypass_times = true,
             bypass_distances = true,
           },

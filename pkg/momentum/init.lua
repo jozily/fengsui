@@ -43,7 +43,8 @@ Fk:loadTranslationTable{
 }
 
 local mifuren = General:new(extension, "ld__mifuren", "shu", 3, 3, General.Female)
-mifuren:addSkills{"guixiu", "cunsi", "yongjue"}
+mifuren:addSkills{"guixiu", "cunsi"}
+mifuren:addRelatedSkill("yongjue")
 Fk:loadTranslationTable{
   ['ld__mifuren'] = '糜夫人',
   ["#ld__mifuren"] = "乱世沉香",

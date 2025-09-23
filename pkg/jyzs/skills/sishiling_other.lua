@@ -14,7 +14,7 @@ local H = require "packages/hegemony/util"
 skill:addEffect("active",{
   anim_type = "special",
   can_use = function (self, player)
-    local targets = Fk:currentRoom().alive_players
+    local targets = Fk:currentRoom().players
     return table.every(targets, function (p) return p:usedSkillTimes(skill.name, Player.HistoryRound) == 0 and p:usedSkillTimes(skill.name, Player.HistoryGame) < 6 end)
     and H.hasHegLordSkill(Fk:currentRoom(), player, "jy_heg__jiaping") and player:getMark("GeneralRevealed-round") > 0
     and player.deputyGeneral ~= "blank_shibing" and player.deputyGeneral ~= "blank_nvshibing"

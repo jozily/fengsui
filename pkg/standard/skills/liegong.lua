@@ -22,6 +22,10 @@ liegong:addEffect(fk.TargetSpecified, {
   end,
   on_use = function(self, event, target, player, data)
     data.disresponsive = true
+    local num = #data.to:getCardIds("h")
+    if num <= player:getAttackRange() and num >= player.hp then
+      data.additionalDamage = (data.additionalDamage or 0) + 1
+    end
   end,
 })
 liegong:addEffect("atkrange", {
@@ -35,8 +39,10 @@ liegong:addEffect("atkrange", {
 
 Fk:loadTranslationTable{
   ["hs__liegong"] = "烈弓",
-  [":hs__liegong"] = "当你于出牌阶段内使用【杀】指定目标后，若其手牌数不小于你的体力值或不大于你的攻击范围，你可令其不能使用【闪】响应此【杀】。",
-  [":hs__liegong_shouyue"] = "当你于出牌阶段内使用【杀】指定目标后，若其手牌数不小于你的体力值或不大于你的攻击范围，你可令其不能使用【闪】响应此【杀】。你的攻击范围+1。",
+  [":hs__liegong"] = "当你于出牌阶段内使用【杀】指定目标后，若其手牌数不小于你的体力值或不大于你的攻击范围，你可令其不能使用【闪】响应此【杀】。"..
+  "若两项均满足，此【杀】伤害+1。",
+ [":hs__liegong_shouyue"] = "当你于出牌阶段内使用【杀】指定目标后，若其手牌数不小于你的体力值或不大于你的攻击范围，你可令其不能使用【闪】响应此【杀】。你的攻击范围+1。"..
+  "若两项均满足，此【杀】伤害+1。",
 
   ["$hs__liegong1"] = "百步穿杨！",
   ["$hs__liegong2"] = "中！",

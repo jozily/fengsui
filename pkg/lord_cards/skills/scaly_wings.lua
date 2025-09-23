@@ -51,12 +51,7 @@ skill:addEffect(fk.CardUseFinished, {
 
 skill:addEffect("prohibit", {
   prohibit_use = function(self, player, card)
-    if player:getMark(skill.name .. "-turn") > 0 then
-      local subcards = card:isVirtual() and card.subcards or { card.id }
-      return #subcards > 0 and table.every(subcards, function(id)
-        return table.contains(player:getCardIds("h"), id)
-      end)
-    end
+    return player:getMark(skill.name.."-turn") > 0
   end,
 })
 

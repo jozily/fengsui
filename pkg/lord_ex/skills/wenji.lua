@@ -43,7 +43,7 @@ wenji:addEffect(fk.EventPhaseStart, {
       min_num = 1,
       max_num = 1,
       include_equip = true,
-      prompt = "#wenji-give::" .. player.id,
+      prompt = "#wenji-give:" .. player.id,
       skill_name = wenji.name,
       cancelable = false,
     })
@@ -55,7 +55,7 @@ wenji:addEffect(fk.EventPhaseStart, {
           max_num = 1,
           include_equip = true,
           skill_name = wenji.name,
-          prompt = "#wenji-give::" .. to.id,
+          prompt = "#wenji-give:" .. to.id,
           pattern = ".|.|.|.|.|.|^" .. card[1],
           cancelable = false,
         })

@@ -6,8 +6,8 @@ Fk:loadTranslationTable {
     ["ld__jihun"] = "汲魂",
     [":ld__jihun"] = "当你受到伤害后或与你势力不同的角色进入濒死状态被救回后，你可以将一张未加入游戏的武将牌扣置加入到“魂”牌中。",
 
-    ["ld__jihun1"] = "魂聚则生，魂散则弃。",
-    ["ld__jihun2"] = "魂羽化游，以辅四方。",
+    ["$ld__jihun1"] = "魂聚则生，魂散则弃。",
+    ["$ld__jihun2"] = "魂羽化游，以辅四方。",
 }
 
 local U = require "packages/utility/utility"
