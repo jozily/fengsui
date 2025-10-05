@@ -1,19 +1,21 @@
+local zhiwei = fk.CreateSkill{
+  name = "ty_heg__zhiwei",
+}
+
+local H = require "packages/hegemony/util"
 
 ---@param room Room
 ---@param player ServerPlayer
 ---@param target ServerPlayer
 local function zhiweiUpdate(room, player, target)
+  room:setPlayerMark(player, zhiwei.name, target.id)
   room:setPlayerMark(player, "@zhiwei", target.general == "anjiang" and "seat#" .. tostring(target.seat) or target.general)
 end
 
-local zhiwei = fk.CreateSkill{
-  name = "ty_heg__zhiwei",
-}
-local H = require "packages/hegemony/util"
 zhiwei:addEffect(fk.GeneralRevealed, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
-    if player:hasSkill(zhiwei.name) and target == player then
+    if player:hasSkill(zhiwei.name) and target == player and player:getMark("@zhiwei") == 0 then
       for _, v in pairs(data) do
         if v == "ty_heg__luyusheng" then return true end
       end
@@ -25,6 +27,7 @@ zhiwei:addEffect(fk.GeneralRevealed, {
     local to = player.room:askToChoosePlayers(player, {targets = targets, min_num = 1, max_num = 1, prompt = "#ty_heg__zhiwei-choose", skill_name = zhiwei.name})
     if #to > 0 then
       event:setCostData(self, {tos = to})
+      return true
     end
   end,
   on_use = function(self, event, target, player, data)
@@ -74,7 +77,7 @@ zhiwei:addEffect(fk.AfterCardsMove, {
         to = zhiwei_id,
         toArea = Card.PlayerHand,
         moveReason = fk.ReasonPrey,
-        proposer = player.id,
+        proposer = player,
         skillName = zhiwei.name,
       })
     end
@@ -98,14 +101,14 @@ zhiwei:addEffect(fk.Damaged, {
   anim_type = "negative",
   can_trigger = function(self, event, target, player, data)
     if player:hasSkill(zhiwei.name) then
-      return target and player:getMark(zhiwei.name) == target.id and not target.dead and player:isKongcheng()
+      return target and player:getMark(zhiwei.name) == target.id and not target.dead and not player:isKongcheng()
     end
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
     local room = player.room
     zhiweiUpdate(room, player, target)
-    if player:isKongcheng() then
+    if not player:isKongcheng() then
       room:throwCard(table.random(player:getCardIds("h"), 1), zhiwei.name, player, player)
     end
   end,

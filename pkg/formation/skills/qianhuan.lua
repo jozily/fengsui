@@ -39,7 +39,7 @@ qianhuan:addEffect(fk.TargetConfirming, {
   anim_type = "defensive",
   can_trigger = function (self, event, target, player, data)
     return player:hasSkill(qianhuan.name) and H.compareKingdomWith(target, player) and #player:getPile("yuji_sorcery") > 0 and
-      (data.card.type == Card.TypeBasic or data.card.sub_type == Card.SubtypeDelayedTrick) and data:isOnlyTarget(target)
+      (data.card.type == Card.TypeBasic or data.card.type == Card.TypeTrick) and data:isOnlyTarget(target)
   end,
   on_cost = function (self, event, target, player, data)
     local room = player.room
@@ -51,6 +51,7 @@ qianhuan:addEffect(fk.TargetConfirming, {
       pattern = ".|.|.|yuji_sorcery",
       prompt = "#qianhuan-def::" .. target.id .. ":" .. data.card:toLogString(),
       cancelable = true,
+      expand_pile = "yuji_sorcery",
     })
     if #card > 0 then
       event:setCostData(self, {cards = card})

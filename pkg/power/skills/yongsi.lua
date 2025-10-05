@@ -20,7 +20,7 @@ yongsi:addEffect(fk.EventPhaseStart, {
     if target ~= player or not player:hasSkill(self.name) or
       not canYongsi(player) or player.phase ~= Player.Play then return false end
     local card = Fk:cloneCard("known_both")
-    return player:canUse(card)
+    return player:canUse(card) and player:hasShownSkill(self.name)
   end,
   on_cost = function(self, event, target, player, data)
     local room = player.room

@@ -7,6 +7,8 @@ Fk:loadTranslationTable {
   ["jy_heg__jiaping"] = "嘉平",
   [":jy_heg__jiaping"] = "<b><font color='goldenrod'>君主技</font></b>，你拥有“八荒死士令”。<br>" ..
   "#<b>八荒死士令</b>：每轮限一次，所有本轮明置过武将牌的晋势力角色可以移除其副将的武将牌并发动以下一个未以此法发动过的技能：“瞬覆”，“奉迎”，“将略”，“勇进”和“乱武”。",
+
+  ["$jy_heg__jiaping"] = "藏锋四十载，终昭吾亮剑之时！",
 }
 
 jiaping:addEffect(fk.GeneralRevealed, {

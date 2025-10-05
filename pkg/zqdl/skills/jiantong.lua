@@ -8,6 +8,9 @@ Fk:loadTranslationTable{
 
   ["#zq_heg__jiantong-choose"] = "监统：观看一名角色的手牌，你可以用一张装备交换其中至多两张牌",
   ["#zq_heg__jiantong-exchange"] = "监统：你可以用一张装备交换其中至多两张牌",
+
+  ["$zq_heg__jiantong1"] = "秉公行事，无所亲疏。",
+  ["$zq_heg__jiantong2"] = "明晰法理，通晓人情。",
 }
 
 Fk:addPoxiMethod{

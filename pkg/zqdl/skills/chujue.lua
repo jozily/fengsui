@@ -6,6 +6,9 @@ local chujue = fk.CreateSkill {
 Fk:loadTranslationTable{
   ["zq_heg__chujue"] = "除绝",
   [":zq_heg__chujue"] = "锁定技，你对有角色死亡的势力的角色使用牌无次数限制且不能被这些角色响应。",
+
+  ["$zq_heg__chujue1"] = "一箭之仇，十年不忘！",
+  ["$zq_heg__chujue2"] = "此仇不报，怨恨难消！",
 }
 
 local H = require "packages/hegemony/util"

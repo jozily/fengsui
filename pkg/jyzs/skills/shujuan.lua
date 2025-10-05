@@ -6,6 +6,9 @@ local shujuan = fk.CreateSkill {
 Fk:loadTranslationTable {
   ["jy_heg__shujuan"] = "舒卷",
   [":jy_heg__shujuan"] = "锁定技，当每回合【戢鳞潜翼】首次置入弃牌堆或其他角色装备区后，你获得并使用之。",
+
+  ["$jy_heg__shujuan1"] = "戢鳞潜翼，蓄志待时。",
+  ["$jy_heg__shujuan2"] = "坐观潮起潮落，笑谈云卷云舒。",
 }
 
 shujuan:addEffect(fk.AfterCardsMove, {

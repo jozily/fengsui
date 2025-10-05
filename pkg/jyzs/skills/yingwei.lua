@@ -8,6 +8,9 @@ Fk:loadTranslationTable{
   [":jy_heg__yingwei"] = "副将技，结束阶段，若你本回合造成伤害数等于摸牌数，你可以重铸至多两张牌。",
 
   ["#jy_heg__yingwei-invoke"] = "盈威：你可以重铸至多两张牌",
+
+  ["$jy_heg__yingwei1"] = "动如霹雳，威震宵小！",
+  ["$jy_heg__yingwei2"] = "行略如风，摧枯拉朽！",
 }
 
 yingwei:addEffect(fk.EventPhaseStart, {

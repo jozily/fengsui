@@ -12,6 +12,9 @@ Fk:loadTranslationTable{
   ["zq_heg__pojing_prey"] = "%src获得你区域内一张牌",
   ["zq_heg__pojing_damage"] = "与%src势力相同的角色可以明置武将牌，对你造成伤害",
   ["#zq_heg__pojing-ask"] = "迫境：你可以明置任意张武将牌，对 %dest 造成等量伤害",
+
+  ["$zq_heg__pojing1"] = "奉命伐吴，得胜纳降。",
+  ["$zq_heg__pojing2"] = "进军逼江，震慑吴贼。",
 }
 
 local H = require "packages/hegemony/util"

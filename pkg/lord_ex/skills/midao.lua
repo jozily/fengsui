@@ -24,7 +24,6 @@ midao:addEffect(fk.GeneralRevealed, {
       end
     end
   end,
-  on_cost = Util.FalseFunc,
   on_use = function(self, event, target, player, data)
     player:drawCards(2, midao.name)
     if player:isNude() then return end

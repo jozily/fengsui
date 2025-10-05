@@ -90,6 +90,8 @@ Fk:loadTranslationTable{
   ["jy_heg__lordsimayi"] = "君司马懿",
   ["#jy_heg__lordsimayi"] = "狼顾九州",
   ["illustrator:jy_heg__lordsimayi"] = "凡果",
+
+  ["~jy_heg__lordsimayi"] = "洛水滔滔，难诉吾一生坎坷......",
 }
 
 return extension

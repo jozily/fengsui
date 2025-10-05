@@ -10,6 +10,9 @@ Fk:loadTranslationTable{
   "此【以逸待劳】的使用者对目标各造成1点伤害。",
 
   ["#zq_heg__chengxi-choose"] = "乘隙：令一名角色视为使用【以逸待劳】，若因此弃置非基本牌，则所有目标受到伤害",
+
+  ["$zq_heg__chengxi1"] = "考其遗法，肃若神明。",
+  ["$zq_heg__chengxi2"] = "气韵生动，出于天成。",
 }
 
 local H = require "packages/hegemony/util"

@@ -8,8 +8,8 @@ Fk:loadTranslationTable {
 
   ["#ld__qiance-ask"] = "谦策：是否令所有大势力角色不能响应此牌",
 
-  ["$ld__qiance1"] = "既遇明主，天下可图！",
-  ["$ld__qiance2"] = "弃武从文，安邦卫国！",
+  ["$ld__qiance1"] = "开言纳谏，社稷之福。",
+  ["$ld__qiance2"] = "如此如此，敌军自破！",
 }
 
 local H = require "packages/hegemony/util"

@@ -5,7 +5,7 @@ local yigui = fk.CreateSkill {
 Fk:loadTranslationTable {
   ["ld__yigui"] = "役鬼",
   [":ld__yigui"] = "当你首次明置此武将牌后，你将两张未加入游戏的武将牌扣置于武将牌上，称为“魂”；" ..
-      "每回合每种牌名限一次，你可以移去一张“魂”，视为使用一张基本牌或普通锦囊牌，此牌只能指定与此“魂”势力相同或未确定势力的角色为目标。",
+  "每回合每种牌名限一次，你可以移去一张“魂”，视为使用一张基本牌或普通锦囊牌，此牌只能指定与此“魂”势力相同或未确定势力的角色为目标。",
   ["@[private]&ld__hun"] = "魂",
   ["#ld__yigui-use"] = "%from 移去“魂”  %arg ，视为使用 %arg2",
   ["#ld__yigui-show"] = "役鬼",
@@ -19,6 +19,7 @@ Fk:loadTranslationTable {
 local U = require "packages/utility/utility"
 local H = require "packages/hegemony/util"
 
+--从牌堆获取魂
 local function GetHuashen(player, n)
   local room = player.room
   local generals = room:findGenerals(function() return true end, n)
@@ -80,7 +81,7 @@ local function getAvailableYiguiCard(player, skill_name, card_names, souls)
   card_names = card_names or
   table.map(player:getTableMark("ld__yigui_cards"), function(id) return Fk:getCardById(id).name end)
   if #card_names == 0 then return {} end
-  local ban_cards = player:getTableMark("@$ld__yigui_useds-turn")
+  local ban_cards = player:getTableMark("ld__yigui_useds-turn")
   table.insertTableIfNeed(ban_cards, { "jink", "nullification", "heg__nullification" })
   local extra_data = player:getTableMark("ld__yigui_extra_data")
   local names = {}
@@ -131,6 +132,12 @@ yigui:addEffect("viewas", {
     local name = Fk:getCardById(to_select).name
     local cardnames = getAvailableYiguiCard(player, yigui.name, { name }, { self.interaction.data })
     return table.contains(cardnames, name)
+  end,
+  before_use = function(self, player, use)
+    local room = player.room
+    local marke = {}
+    table.insert(marke, use.card.trueName)
+    room:addTableMark(player, "@$ld__yigui-turn", marke)
   end,
   view_as = function(self, player, cards)
     if #cards == 0 or not self.interaction.data or self.interaction.data == "ld__yigui-chooce" then return end
@@ -189,7 +196,7 @@ yigui:addEffect(fk.PreCardUse, {
     local room = player.room
     room:notifySkillInvoked(player, yigui.name)
     player:broadcastSkillInvoke(yigui.name)
-    room:addTableMark(player, "@$ld__yigui-turn", data.card.trueName)
+    room:addTableMark(player, "ld__yigui_useds-turn", data.card.trueName)
     local mark = U.getPrivateMark(player, "&ld__hun")
     table.removeOne(mark, data.card:getMark("ld__yigui"))
     room:returnToGeneralPile({ data.card:getMark("ld__yigui") })

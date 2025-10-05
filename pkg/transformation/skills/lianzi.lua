@@ -39,7 +39,7 @@ lianzi:addEffect("active", {
     local show_num = #player:getPile("lord_fenghuo")
     for _, p in ipairs(room.alive_players) do
       if H.compareKingdomWith(p, player) then
-        show_num = show_num + p:getHandcardNum()
+        show_num = show_num + #p:getCardIds("e")
       end
     end
     if show_num == 0 then return end
@@ -49,7 +49,7 @@ lianzi:addEffect("active", {
       return Fk:getCardById(id, true).type == cardType
     end)
     if #to_get > 0 then
-      room:obtainCard(player.id, to_get, true, fk.ReasonJustMove)
+      room:obtainCard(player, to_get, true, fk.ReasonJustMove)
       if #to_get > 3 then
         room:handleAddLoseSkills(player, "ld__lordsunquan_zhiheng|-lianzi", nil)
       end

@@ -9,8 +9,8 @@ Fk:loadTranslationTable {
 
   ["@@ld__jujian_change_before"] = "举荐 已变更",
 
-  ["$ld__jujian1"] = "开言纳谏，社稷之福。",
-  ["$ld__jujian2"] = "如此如此，敌军自破！",
+  ["$ld__jujian1"] = "千金易得，贤才难求。",
+  ["$ld__jujian2"] = "愿与将军共图王之霸业！",
 }
 
 local H = require "packages/hegemony/util"

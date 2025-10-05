@@ -7,6 +7,9 @@ Fk:loadTranslationTable {
   [":jy_heg__guikuang"] = "出牌阶段限一次，你可以选择两名势力各不相同的角色，令这两名角色拼点，然后拼点牌为红色的角色依次对拼点没赢的角色造成1点伤害。",
 
   ["#jy_heg__guikuang"] = "诡诳：选择两名势力各不相同的角色，令这两名角色拼点，然后拼点牌为红色的角色依次对拼点没赢的角色造成1点伤害",
+
+  ["$jy_heg__guikuang1"] = "数载春去秋来，静看大江东流。",
+  ["$jy_heg__guikuang2"] = "吞吴克蜀，老臣毕生之志也。",
 }
 
 local H = require "packages/hegemony/util"

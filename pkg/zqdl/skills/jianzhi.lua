@@ -7,6 +7,9 @@ Fk:loadTranslationTable{
   [":zq_heg__jianzhi"] = "当你造成致命伤害时，你可以弃置所有手牌（至少一张），然后本回合下次击杀奖励改为三倍。",
 
   ["#zq_heg__jianzhi-invoke"] = "奸志：是否弃置所有手牌，令本回合下次击杀奖励改为三倍？",
+
+  ["$zq_heg__jianzhi1"] = "怀志拥权，谁敢不服？",
+  ["$zq_heg__jianzhi2"] = "天下凶凶，由我一人。",
 }
 
 jianzhi:addEffect(fk.DamageCaused, {

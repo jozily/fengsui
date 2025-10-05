@@ -8,6 +8,9 @@ Fk:loadTranslationTable {
   [":jy_heg__lvxian"] = "主将技，当你每回合首次受到伤害后，若执行上回合的角色不为你，你可以摸X张牌（X为你上回合失去的牌数）。",
 
   ["@jy_heg__lvxian_record"] = "履险",
+
+  ["$jy_heg__lvxian1"]= "大丈夫生于世，当沙场效忠！",
+  ["$jy_heg__lvxian2"]= "骁勇善战，刚毅果断！",
 }
 
 lvxian:addEffect(fk.Damaged, {

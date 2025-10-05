@@ -3,6 +3,9 @@ local hengjiang = fk.CreateSkill{
 }
 hengjiang:addEffect(fk.Damaged, {
   anim_type = "masochism",
+  trigger_times = function(self, event, target, player, data)
+    return data.damage
+  end,
   can_trigger = function(self, _, target, player, _)
     if target ~= player or not player:hasSkill(hengjiang.name) then return false end
     local current = player.room.current
@@ -129,7 +132,7 @@ end)
 
 Fk:loadTranslationTable{
   ['hengjiang'] = '横江',
-  [':hengjiang'] = '当你受到伤害后，你可以令当前回合角色本回合手牌上限-X（X为其装备区内牌数且至少为1）。' ..
+  [':hengjiang'] = '当你受到1点伤害后，你可以令当前回合角色本回合手牌上限-X（X为其装备区内牌数且至少为1）。' ..
     '然后若其本回合弃牌阶段内没有弃牌，你将手牌摸至体力上限。',
   ['@hengjiang-turn'] = '横江',
   ['#hengjiang_delay'] = '横江',

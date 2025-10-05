@@ -43,6 +43,7 @@ wanwei:addEffect(fk.BeforeCardsMove, {
           local from = room:getCardArea(id)
           local info = {}
           info.cardId = id
+          info.beforeCard = Fk:getCardById(id)
           info.fromArea = from
           table.insertIfNeed(moveInfo, info)
         end
@@ -60,8 +61,8 @@ Fk:loadTranslationTable{
 
   ["#ld__wanwei-choose"] = "挽危：请选择等量即将被其他角色弃置或获得的牌",
 
-  ["$ld__wanwei1"] = "吉凶未可知，何故自乱？",
-  ["$ld__wanwei2"] = "虽为水火之势，亦当虑而后动。",
+  ["$ld__wanwei1"] = "梁、沛之间，非子廉无有今日。",
+  ["$ld__wanwei2"] = "正使祸至，共死何苦！",
 }
 
 return wanwei

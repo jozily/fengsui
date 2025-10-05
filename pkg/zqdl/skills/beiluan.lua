@@ -8,6 +8,9 @@ Fk:loadTranslationTable{
 
   ["#zq_heg__beiluan-invoke"] = "备乱：是否令 %dest 本回合非装备手牌视为【杀】？",
   ["@@zq_heg__beiluan-turn"] = "备乱",
+
+  ["$zq_heg__beiluan1"] = "秣马厉兵，筹伐不臣！",
+  ["$zq_heg__beiluan2"] = "枕戈待旦，秣马征平。",
 }
 
 beiluan:addEffect(fk.Damaged, {

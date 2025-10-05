@@ -10,6 +10,9 @@ Fk:loadTranslationTable{
 
   ["#zq_heg__shunfu"] = "瞬覆：令至多三名未确定势力的角色各摸两张牌且可以使用一张【杀】",
   ["#zq_heg__shunfu-slash"] = "瞬覆：你可以使用一张无距离限制且不可被响应的【杀】",
+
+  ["$zq_heg__shunfu1"] = "烈士雄心，志存高远。",
+  ["$zq_heg__shunfu2"] = "乱世之中，唯我司马！",
 }
 
 shunfu:addEffect("active", {
