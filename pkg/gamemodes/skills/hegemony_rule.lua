@@ -145,7 +145,7 @@ hegRule:addEffect(fk.GameOverJudge, {
     if player.kingdom == "wild" then
       wildChooseKingdom(room, player, player.general)
     end
-    local winner = Fk.game_modes[room.settings.gameMode]:getWinner(player)
+    local winner = Fk.game_modes[room:getSettings('gameMode')]:getWinner(player)
     if winner ~= "" then
       for _, ps in ipairs(room.alive_players) do
         -- 先检测并询问主将是不是野人
@@ -278,7 +278,7 @@ hegRule:addEffect(fk.GeneralShown, {
 
     for _, v in pairs(H.getKingdomPlayersNum(room)) do
       if v == #room.alive_players then
-        local winner = Fk.game_modes[room.settings.gameMode]:getWinner(player)
+        local winner = Fk.game_modes[room:getSettings('gameMode')]:getWinner(player)
         for _, p in ipairs(room.alive_players) do
           -- 先检测并询问主将是不是野人
           if p.general == "anjiang" then 
@@ -328,7 +328,7 @@ hegRule:addEffect(fk.GameStart, {
       p:setMark("@seat", 0)
       p:doNotify("SetPlayerMark", { p.id, "@seat", 0})
     end
-    if room.settings.gameMode == "nos_heg_mode" then -- 耦一下算了
+    if room:getSettings('gameMode') == "nos_heg_mode" then -- 耦一下算了
       for _, p in ipairs(room.alive_players) do
         if p:isAlive() then p:revealGeneral(false) end
       end

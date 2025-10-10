@@ -23,7 +23,7 @@ end
 
 function HegLogic:chooseGenerals()
   local room = self.room
-  local generalNum = math.max(room.settings.generalNum, 5)
+  local generalNum = math.max(room:getSettings('generalNum'), 5)
   room:doBroadcastNotify("ShowToast", Fk:translate("#HegInitialNotice"))
 
   local lord = room:getLord() --[[@as ServerPlayer]]
@@ -62,7 +62,7 @@ function HegLogic:chooseGenerals()
   local generals = room:getNGenerals(#players * generalNum) -- Fk:getGeneralsRandomly
   table.shuffle(generals)
   local req = Request:new(players, "AskForGeneral")
-  req.timeout = self.room.settings.generalTimeout
+  req.timeout = self.room:getSettings('generalTimeout')
   for k, p in ipairs(players) do
     -- local arg = { map = table.map }
     local arg = table.slice(generals, (k - 1) * generalNum + 1, k * generalNum + 1)
