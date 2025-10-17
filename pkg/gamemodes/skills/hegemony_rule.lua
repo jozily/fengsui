@@ -94,6 +94,19 @@ local can_trigger = function(self, event, target, player, data)
   return target == player
 end
 
+---@param room Room
+local enterBattleRoyalMode = function (room)
+  room:doBroadcastNotify("ShowToast", Fk:translate("#EnterBattleRoyalMode"))
+  room:sendLog{
+    type = "#EnterBattleRoyalModeLog",
+  }
+  room:setTag("BattleRoyalMode", true)
+  room:setBanner("@[:]BattleRoyalDummy", "BattleRoyalMode")
+  for _, p in ipairs(room.alive_players) do
+    room:handleAddLoseSkills(p, "battle_royal&", nil, false, true)
+  end
+end
+
 hegRule:addEffect(fk.BeforeTurnStart, {
   priority = 0,
   can_trigger = can_trigger,
@@ -109,22 +122,20 @@ hegRule:addEffect(fk.BeforeTurnStart, {
         end
       end
       if ret then
-        room:doBroadcastNotify("ShowToast", Fk:translate("#EnterBattleRoyalMode"))
-        room:sendLog{
-          type = "#EnterBattleRoyalModeLog",
-        }
-        room:setTag("BattleRoyalMode", true)
-        room:setBanner("@[:]BattleRoyalDummy", "BattleRoyalMode")
-        for _, p in ipairs(room.alive_players) do
-          -- p:addFakeSkill("battle_royal&")
-          -- p:addFakeSkill("battle_royal_prohibit&")
-          room:handleAddLoseSkills(p, "battle_royal&", nil, false, true)
-        end
+        enterBattleRoyalMode(room)
       end
     end
   end,
 })
-
+hegRule:addEffect(fk.AfterDrawPileShuffle, {
+  priority = 0,
+  can_trigger = function(self, event, target, player, data)
+    return not player.room:getTag("BattleRoyalMode") and player.room:getSettings("enterBattleRoyalOnFirstShuffle")
+  end,
+  on_trigger = function(self, event, target, player, data)
+    enterBattleRoyalMode(player.room)
+  end,
+})
 hegRule:addEffect(fk.TurnStart, {
   priority = 100,
   can_trigger = can_trigger,

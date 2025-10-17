@@ -229,6 +229,7 @@ local heg_description = [==[
 -- local hegRule = require("packages.hegemony.pkg.hegemony_standard.skills.hegemony_rule")
 
 local H = require "packages/hegemony/util"
+local W = require "ui_emu.preferences"
 
 local heg
 
@@ -261,7 +262,7 @@ function HegLogic:chooseGenerals()
     table.insertIfNeed(allKingdoms, Fk.generals[name].kingdom) -- 假设不会有只出现在副势力的势力
   end)
   table.removeOne(allKingdoms, "wild") -- 野心家势力不包括
-  if #allKingdoms > 4 then
+  if #allKingdoms > 4 and not room:getSettings("notBanToFourKingdoms") then
     local kingdoms = table.random(allKingdoms, 4)
     local unused = table.filter(allKingdoms, function(k)
       return not table.contains(kingdoms, k)
@@ -354,7 +355,6 @@ function HegLogic:chooseGenerals()
     local kingdomChosen = req:getResult(p)
     room:setPlayerMark(p, "__heg_kingdom", kingdomChosen) -- 变野后变为wild
     room:setPlayerMark(p, "__heg_init_kingdom", kingdomChosen) -- 保存初始势力
-    p.default_reply = ""
     -- p.kingdom = kingdomChosen
     --room:notifyProperty(p, p, "kingdom")
   end
@@ -432,7 +432,8 @@ end
 
 function HegLogic:attachSkillToPlayers()
   local room = self.room
-  for _, p in ipairs(room.alive_players) do
+  local players = room.alive_players
+  for _, p in ipairs(players) do
     -- UI
     p:setMark("@seat", "seat#" .. tostring(p.seat))
     p:doNotify("SetPlayerMark", { p.id, "@seat", "seat#" .. tostring(p.seat)})
@@ -469,6 +470,32 @@ function HegLogic:attachSkillToPlayers()
     end
   end
 
+  -- 观看下家副将
+  if room:getSettings("watchNextDeputy") then
+    room:sendLog{
+      type = "#WatchNextPlayerDeputyLog",
+    }
+    local req = Request:new(players, "CustomDialog")
+    req.focus_text = "Watch next player deputy"
+    local path = "packages/hegemony/qml/KnownBothBox.qml"
+    for _, p in ipairs(players) do
+      local next = p:getNextAlive()
+      local dat = {next.general, next:getMark("__heg_deputy"), tostring(next.seat)}
+      req:setData(p, {
+        path = path,
+        data = dat,
+      })
+      p:doNotify("GameLog", {
+        type = "#WatchGeneral",
+        from = p.id,
+        to = {next.id},
+        arg = "deputyGeneral",
+        arg2 = next:getMark("__heg_deputy"),
+      })
+    end
+    req:ask()
+  end
+
   room:doBroadcastNotify("ShowToast", Fk:translate("#HegInitialNotice"))
 end
 
@@ -479,6 +506,28 @@ local heg_getLogic = function()
   end
   return h
 end
+
+local settings = {
+  W.PreferenceGroup {
+    title = "Hegemony Additional Rule",
+
+    W.SwitchRow {
+      _settingsKey = "watchNextDeputy",
+      title = "Watch next player deputy",
+    },
+
+    W.SwitchRow {
+      _settingsKey = "notBanToFourKingdoms",
+      title = "Not ban to four kingdoms",
+      --subTitle = 
+    },
+
+    W.SwitchRow {
+      _settingsKey = "enterBattleRoyalOnFirstShuffle",
+      title = "Enter battle royal on first shuffle",
+    },
+  },
+}
 
 heg = fk.CreateGameMode{
   name = "new_heg_mode",
@@ -662,6 +711,7 @@ heg = fk.CreateGameMode{
   friend_enemy_judge = function (self, targetOne, targetTwo)
     return H.compareExpectedKingdomWith(targetOne, targetTwo)
   end,
+  ui_settings = settings,
 }
 
 Fk:loadTranslationTable{
@@ -701,11 +751,20 @@ Fk:loadTranslationTable{
   ["@seat"] = "",
   ["stack"] = "叠置",
 
+  ["Hegemony Additional Rule"] = "国战附加规则",
+  ["Watch next player deputy"] = "观看下家副将",
+  ["help: Watch next player deputy"] = "游戏开始时观看下家的副将",
+  ["Enter battle royal on first shuffle"] = "第一次洗牌进入鏖战",
+  ["Not ban to four kingdoms"] = "不禁用至四个势力",
+  ["help: Not ban to four kingdoms"] = "保留所有势力。请确认选将数量和将池以保证至少有一对武将可选",
+
   ["#SuccessBuildCountry"] = "%from 成功建立国家，国号 %arg ，队友是 %arg2",
   ["heg_rule_join_country"] = "加入 <b><font color='purple'>%src</font></b> 的阵营 <b><font color='purple'>%arg</font></b>，回复1点体力，将手牌摸至4张",
   ["heg_build_country"] = "拉拢人心，询问其他角色加入 <b><font color='purple'>%arg</font></b>",
 
-  ["#HegInitialNotice"] = "提示：<b><font color='purple'>暴露野心，拉拢人心</font></b><b>已上线</b><br><b><font color='red'>君刘备</font></b>、<b><font color='#8c92ac'>君张角</font></b>、<b><font color='forestgreen'>君孙权</font></b>、<b><font color='royalblue'>君曹操</font></b>均已登场！<br><b><font color='goldenrod'>君主</font></b>必须选择对应普通武将为<b>主将</b>，并在<b>首个回合亮将</b>才能变身",
+  ["#WatchNextPlayerDeputyLog"] = "每名角色观看下家的副将",
+
+  ["#HegInitialNotice"] = "提示：<b><font color='purple'>模式规则</font></b><b>已上线</b>，请在创建房间页面中查看",
 }
 
 return heg

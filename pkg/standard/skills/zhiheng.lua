@@ -4,14 +4,14 @@ local zhiheng = fk.CreateSkill{
 zhiheng:addEffect('active', {
   anim_type = "drawcard",
   can_use = function(self, player)
-    return player:usedSkillTimes(self.name, Player.HistoryPhase) == 0
+    return player:usedSkillTimes(zhiheng.name, Player.HistoryPhase) == 0
   end,
   target_num = 0,
   min_card_num = 1,
-  max_card_num = function()
-    return table.find(Self:getEquipments(Card.SubtypeTreasure), function(cid)
+  max_card_num = function(self, player)
+    return table.find(player:getEquipments(Card.SubtypeTreasure), function(cid)
       return Fk:getCardById(cid).name == "luminous_pearl"
-    end) and 998 or Self.maxHp
+    end) and 998 or player.maxHp
   end,
   card_filter = function(self, player, to_select, selected)
     if #selected >= player.maxHp then
@@ -23,9 +23,9 @@ zhiheng:addEffect('active', {
   end,
   on_use = function(self, room, effect)
     local from = effect.from
-    room:throwCard(effect.cards, self.name, from, from)
+    room:throwCard(effect.cards, zhiheng.name, from, from)
     if not from.dead then
-      from:drawCards(#effect.cards, self.name)
+      from:drawCards(#effect.cards, zhiheng.name)
     end
   end
 })

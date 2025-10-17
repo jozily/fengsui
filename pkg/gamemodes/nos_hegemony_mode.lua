@@ -3,6 +3,7 @@ local heg_description = [==[
 ]==]
 
 local H = require "packages/hegemony/util"
+local W = require "ui_emu.preferences"
 
 local heg
 
@@ -35,7 +36,7 @@ function HegLogic:chooseGenerals()
     table.insertIfNeed(allKingdoms, Fk.generals[name].kingdom) -- 假设不会有只出现在副势力的势力
   end)
   table.removeOne(allKingdoms, "wild") -- 野心家势力不包括
-  if #allKingdoms > 4 then
+  if #allKingdoms > 4 and not room:getSettings("notBanToFourKingdoms") then
     local kingdoms = table.random(allKingdoms, 4)
     local unused = table.filter(allKingdoms, function(k)
       return not table.contains(kingdoms, k)
@@ -128,7 +129,6 @@ function HegLogic:chooseGenerals()
     local kingdomChosen = req:getResult(p)
     room:setPlayerMark(p, "__heg_kingdom", kingdomChosen) -- 变野后变为wild
     room:setPlayerMark(p, "__heg_init_kingdom", kingdomChosen) -- 保存初始势力
-    p.default_reply = ""
     -- p.kingdom = kingdomChosen
     --room:notifyProperty(p, p, "kingdom")
   end
@@ -251,6 +251,29 @@ local heg_getLogic = function()
   end
   return h
 end
+
+local settings = {
+  W.PreferenceGroup {
+    title = "Hegemony Additional Rule",
+
+    --[[
+    W.SwitchRow {
+      _settingsKey = "viewNextDeputy",
+      title = "View next player deputy",
+    },
+    --]]
+
+    W.SwitchRow {
+      _settingsKey = "notBanToFourKingdoms",
+      title = "Not ban to four kingdoms",
+    },
+
+    W.SwitchRow {
+      _settingsKey = "enterBattleRoyalOnFirstShuffle",
+      title = "Enter battle royal on first shuffle",
+    },
+  },
+}
 
 heg = fk.CreateGameMode{
   name = "nos_heg_mode",
