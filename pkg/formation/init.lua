@@ -1,6 +1,6 @@
 local extension = Package:new("formation")
 extension.extensionName = "hegemony"
-extension.game_modes_whitelist = { 'nos_heg_mode', 'new_heg_mode' }
+extension.game_modes_whitelist = { 'new_heg_mode' }
 
 local H = require "packages/hegemony/util"
 

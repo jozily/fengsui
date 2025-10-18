@@ -1,6 +1,6 @@
 local extension = Package:new("jyzs")
 extension.extensionName = "hegemony"
-extension.game_modes_whitelist = { "nos_heg_mode", "new_heg_mode" }
+extension.game_modes_whitelist = { "new_heg_mode" }
 
 extension:loadSkillSkelsByPath("./packages/hegemony/pkg/jyzs/skills")
 
@@ -27,8 +27,8 @@ Fk:loadTranslationTable{
   ["illustrator:jy_heg__wenyang"] = "小罗没想好",
 }
 
- General:new(extension, "jy_heg__yanghu", "jin", 4):addSkills { "jy_heg__huaiyuan", "jy_heg__fushou" }
- Fk:loadTranslationTable{
+General:new(extension, "jy_heg__yanghu", "jin", 4):addSkills { "jy_heg__huaiyuan", "jy_heg__fushou" }
+Fk:loadTranslationTable{
   ["jy_heg__yanghu"] = "羊祜",
   ["#jy_heg__yanghu"] = "静水沧笙",
   ["illustrator:jy_heg__yanghu"] = "白",

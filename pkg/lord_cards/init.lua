@@ -6,7 +6,7 @@ Fk:loadTranslationTable{
   ["lord_cards"] = "君临天下卡牌",
 }
 
-extension.game_modes_whitelist = { 'new_heg_mode', 'nos_heg_mode' }
+extension.game_modes_whitelist = { 'new_heg_mode' }
 
 local H = require "packages/hegemony/util"
 

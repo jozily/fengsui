@@ -471,7 +471,7 @@ function HegLogic:attachSkillToPlayers()
   end
 
   -- 观看下家副将
-  if room:getSettings("watchNextDeputy") then
+  if room:getSettings("watchNextDeputy") and not room:getSettings("revealAllOnStart")then
     room:sendLog{
       type = "#WatchNextPlayerDeputyLog",
     }
@@ -519,7 +519,6 @@ local settings = {
     W.SwitchRow {
       _settingsKey = "notBanToFourKingdoms",
       title = "Not ban to four kingdoms",
-      --subTitle = 
     },
 
     W.SwitchRow {
@@ -527,6 +526,15 @@ local settings = {
       title = "Enter battle royal on first shuffle",
     },
   },
+
+  W.PreferenceGroup {
+    title = "Special Rule",
+
+    W.SwitchRow {
+      _settingsKey = "revealAllOnStart",
+      title = "Reveal all on start",
+    }
+  }
 }
 
 heg = fk.CreateGameMode{
@@ -753,10 +761,14 @@ Fk:loadTranslationTable{
 
   ["Hegemony Additional Rule"] = "国战附加规则",
   ["Watch next player deputy"] = "观看下家副将",
-  ["help: Watch next player deputy"] = "游戏开始时观看下家的副将",
+  ["help: Watch next player deputy"] = "游戏开始前观看下家的副将",
   ["Enter battle royal on first shuffle"] = "第一次洗牌进入鏖战",
   ["Not ban to four kingdoms"] = "不禁用至四个势力",
   ["help: Not ban to four kingdoms"] = "保留所有势力。请确认选将数量和将池以保证至少有一对武将可选",
+
+  ["Special Rule"] = "特殊规则",
+  ["Reveal all on start"] = "全亮国战",
+  ["help: Reveal all on start"] = "游戏开始时所有角色依次亮出所有武将",
 
   ["#SuccessBuildCountry"] = "%from 成功建立国家，国号 %arg ，队友是 %arg2",
   ["heg_rule_join_country"] = "加入 <b><font color='purple'>%src</font></b> 的阵营 <b><font color='purple'>%arg</font></b>，回复1点体力，将手牌摸至4张",

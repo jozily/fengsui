@@ -3,7 +3,7 @@ extension:loadSkillSkelsByPath("./packages/hegemony/pkg/gamemodes/skills")
 
 local heg_mode = require "packages.hegemony.pkg.gamemodes.new_hegemony_mode"
 extension:addGameMode(heg_mode)
-local nos_heg = require "packages.hegemony.pkg.gamemodes.nos_hegemony_mode"
-extension:addGameMode(nos_heg)
+-- local nos_heg = require "packages.hegemony.pkg.gamemodes.nos_hegemony_mode"
+-- extension:addGameMode(nos_heg)
 
 return extension

@@ -1,6 +1,6 @@
 local extension = Package:new("transformation")
 extension.extensionName = "hegemony"
-extension.game_modes_whitelist = { 'nos_heg_mode', 'new_heg_mode' }
+extension.game_modes_whitelist = { 'new_heg_mode' }
 
 extension:loadSkillSkelsByPath("./packages/hegemony/pkg/transformation/skills")
 
