@@ -979,7 +979,7 @@ function H.transformGeneral(room, player, isMain, isHidden, num)
     isHidden = isHidden,
     num = num,
   }
-  if room.logic:trigger("fk.GeneralTransforming", player, data) then return false end
+  --if room.logic:trigger("fk.GeneralTransforming", player, data) then return false end
   isMain = data.isMain
   isHidden = data.isHidden
   num = data.num

@@ -16,14 +16,13 @@ liulongcanjiaSkill:addEffect("distance", {
   end,
 })
 liulongcanjiaSkill:addEffect("prohibit", {
-  name = "#liulongcanjia_prohibit",
-  attached_equip = "liulongcanjia",
   prohibit_use = function(self, player, card)
     return player:hasSkill(liulongcanjiaSkill.name) and table.contains({Card.SubtypeDefensiveRide, Card.SubtypeOffensiveRide}, card.sub_type)
   end,
 })
 
 Fk:loadTranslationTable{
+  ["#liulongcanjia_skill"] = "六龙骖驾",
   ["@@liulongcanjia"] = "六龙骖驾",
 }
 

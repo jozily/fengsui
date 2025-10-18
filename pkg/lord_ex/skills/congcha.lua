@@ -94,25 +94,26 @@ congcha:addEffect(fk.TurnStart, {
     target = room:getPlayerById(player:getMark("_ld__congcha"))
     local record = target:getTableMark("@@ld__congcha_delay")
     table.removeOne(record, player.id)
-    if #record == 0 then record = {} end
     room:setPlayerMark(target, "@@ld__congcha_delay", record)
     room:setPlayerMark(player, "_ld__congcha", 0)
   end,
 })
 
-congcha:addEffect(fk.BuryVictim, {
-  can_refresh = function(self, event, target, player, data)
-    return target == player and player:getMark("_ld__congcha") ~= 0
-  end,
-  on_refresh = function(self, event, target, player, data)
-    local room = player.room
-    target = room:getPlayerById(player:getMark("_ld__congcha"))
-    local record = target:getTableMark("@@ld__congcha_delay")
-    table.removeOne(record, player.id)
-    if #record == 0 then record = {} end
-    room:setPlayerMark(target, "@@ld__congcha_delay", record)
-    room:setPlayerMark(player, "_ld__congcha", 0)
-  end,
+congcha:addEffect(fk.Deathed,{
+    can_refresh = function(self, event, target, player, data)
+        return target == player
+      end,
+    on_refresh = function(self, event, target, player, data)
+        local room = player.room
+        local to = table.filter(room.alive_players, function(p) return p:getMark("@@ld__congcha_dealy") end)[1]
+        room:setPlayerMark(to, "@@ld__congcha_delay", 0)
+    end,
 })
+
+congcha:addLoseEffect(function (self, player, is_death)
+    local room = player.room
+    local to = table.filter(room.alive_players, function(p) return p:getMark("@@ld__congcha_dealy") end)[1]
+    room:setPlayerMark(to, "@@ld__congcha_delay", 0)
+  end)
 
 return congcha

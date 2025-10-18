@@ -85,7 +85,7 @@ xishe:addEffect(fk.TurnEnd, {
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    if room:askToChoice(player, { choices = { "transform_deputy", "Cancel" }, skill_name = xishe.name }) ~= "Cancel" then
+    if room:askToChoice(player, { choices = {"transformDeputy", "Cancel" }, skill_name = xishe.name }) ~= "Cancel" then
       room:notifySkillInvoked(player, xishe.name, "special")
       player:broadcastSkillInvoke(xishe.name)
       room:setPlayerMark(player, "@@ld__xishe_change_before", 1)

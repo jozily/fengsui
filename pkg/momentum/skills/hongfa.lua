@@ -43,6 +43,14 @@ local hongfa_attach = function(_, player, _)
 end
 hongfa:addAcquireEffect(hongfa_attach)
 hongfa:addLoseEffect(hongfa_attach)
+hongfa:addEffect(fk.GeneralRevealed, {
+  can_refresh = function(self, event, target, player, data)
+    return target == player
+  end,
+  on_refresh = function(self, event, target, player, data)
+    hongfa_attach(_, player, _)
+  end,
+})
 
 Fk:loadTranslationTable{
   ["hongfa"] = "弘法",
