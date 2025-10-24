@@ -20,7 +20,7 @@ suzhi:addEffect(fk.CardUsing, {
   can_trigger = function(self, event, target, player, data)
     if player:hasSkill(suzhi.name) and player:getMark("@ld__suzhi-turn") < 3 and player.room.current == player then
       return target == player and data.card.type == Card.TypeTrick and
-      (not data.card:isVirtual() or #data.card.subcards == 0)
+      (not data.card:isConverted() or #data.card.subcards == 0)
     end
   end,
   on_use = function(self, event, target, player, data)
@@ -108,7 +108,7 @@ suzhi:addEffect("targetmod", {
   bypass_distances = function(self, player, skill, card)
     return card and player:hasSkill(suzhi.name) and player.phase ~= Player.NotActive and
         player:getMark("@ld__suzhi-turn") < 3 and
-        card.type == Card.TypeTrick and (not card:isVirtual() or #card.subcards == 0) and
+        card.type == Card.TypeTrick and (not card:isConverted() or #card.subcards == 0) and
         player:hasShownSkill(suzhi.name)
   end,
 })

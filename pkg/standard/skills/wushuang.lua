@@ -32,7 +32,7 @@ wushuang:addEffect(fk.AfterCardTargetDeclared, {
         if not player:hasSkill(wushuang.name) then
             return false
         end
-        if data.card.trueName == "duel" and target == player and (not data.card:isVirtual() or #data.card.subcards == 0) then
+        if data.card.trueName == "duel" and target == player and not data.card:isConverted() then
             local current_targets = data:getAllTargets()
             for _, p in ipairs(player.room.alive_players) do
                 if not table.contains(current_targets, p) and not player:isProhibited(p, data.card) and
@@ -73,7 +73,7 @@ wushuang:addEffect(fk.AfterCardTargetDeclared, {
 Fk:loadTranslationTable {
     ["hs__wushuang"] = "无双",
     [":hs__wushuang"] = "锁定技，①当你使用【杀】指定目标后，其使用【闪】抵消此【杀】的方式改为需连续使用两张【闪】；当你使用【决斗】指定目标后，或当你成为【决斗】的目标后，你令其打出【杀】响应此【决斗】的方式改为需连续打出两张【杀】；" ..
-    "②你使用的非转化【决斗】能选择至多三名角色为目标。",
+        "②你使用的非转化【决斗】能选择至多三名角色为目标。",
     ["#hs__wushuang-choose"] = "无双：你可以为 %arg 增加至多两个目标",
 
     ["$hs__wushuang1"] = "谁能挡我！",
