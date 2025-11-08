@@ -49,6 +49,7 @@ knownBothSkill:addEffect("cardskill", {
           type = "#know_general",
           from = player.id,
           to = {target.id},
+          arg = choice == "known_both_main" and "mainGeneral" or "deputyGeneral",
           toast = true,
         })
       end
@@ -95,7 +96,7 @@ Fk:loadTranslationTable{
   ["#known_both-hand"] = "知己知彼：观看%dest的手牌",
   ["#known_both_skill"] = "选择一名其他角色，观看其一张暗置的武将牌或其手牌",
   ["#know_hand"] = "%from 观看了 %to 的手牌",
-  ["#know_general"] = "%from 观看了 %to 的 %arg %arg2",
+  ["#know_general"] = "%from 观看了 %to 的 %arg",
   ["#WatchGeneral"] = "%from 观看了 %to 的 %arg %arg2",
 }
 
