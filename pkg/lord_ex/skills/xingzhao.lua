@@ -12,7 +12,7 @@ Fk:loadTranslationTable {
 }
 
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 --获取场上有受伤角色的势力数
 ---@param room AbstractRoom

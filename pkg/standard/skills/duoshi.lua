@@ -3,7 +3,7 @@
 local duoshi = fk.CreateSkill{
   name = "duoshi",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 duoshi:addEffect(fk.EventPhaseStart, {
   anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)

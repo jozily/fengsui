@@ -12,7 +12,7 @@ Fk:loadTranslationTable {
   ["$jy_heg__guikuang2"] = "吞吴克蜀，老臣毕生之志也。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 guikuang:addEffect("active", {
   anim_type = "offensive",

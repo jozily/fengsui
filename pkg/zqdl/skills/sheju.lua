@@ -8,7 +8,7 @@ Fk:loadTranslationTable{
   [":zq_heg__shejus"] = "锁定技，当其他角色明置武将牌后，若其势力与你相同，你回复1点体力，然后弃置所有手牌。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 sheju:addEffect(fk.GeneralRevealed, {
   anim_type = "defensive",

@@ -18,7 +18,7 @@ Fk:loadTranslationTable {
     ["$jy_heg__huaiyuan2"] = "举有成资，谋有全策。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 huaiyuan:addEffect(fk.EventPhaseStart, {
   can_trigger = function(self, event, target, player, data)

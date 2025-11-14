@@ -1,7 +1,7 @@
 local qiao = fk.CreateSkill{
   name = "ty_heg__qiao",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 qiao:addEffect(fk.TargetConfirmed, {
   anim_type = "control",
   can_trigger = function(self, event, target, player, data)

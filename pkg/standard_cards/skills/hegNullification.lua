@@ -2,7 +2,7 @@ local hegNullificationSkill = fk.CreateSkill{
   name = "heg__nullification_skill",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 hegNullificationSkill:addEffect("cardskill", {
   can_use = Util.FalseFunc,

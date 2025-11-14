@@ -3,7 +3,7 @@ local huoshui = fk.CreateSkill{
   tags = {Skill.Compulsory},
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 local addHuoshui = function(player)
   local room = player.room

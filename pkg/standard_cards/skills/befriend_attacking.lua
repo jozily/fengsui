@@ -2,7 +2,7 @@ local befriendAttackingSkill = fk.CreateSkill{
   name = "befriend_attacking_skill",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 befriendAttackingSkill:addEffect("cardskill", {
   prompt = "#befriend_attacking_skill",

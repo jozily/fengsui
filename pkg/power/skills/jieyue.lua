@@ -1,7 +1,7 @@
 local jieyue = fk.CreateSkill{
   name = "ld__jieyue",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 jieyue:addEffect(fk.EventPhaseStart, {
   anim_type = "control",
   can_trigger = function(self, event, target, player, data)

@@ -14,7 +14,7 @@ Fk:loadTranslationTable {
   ["$ld__tongling2"] = "孟起，莫非甘心为他人座下之客。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 tongling:addEffect(fk.Damage, {
   anim_type = "offensive",

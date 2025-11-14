@@ -11,7 +11,7 @@ Fk:loadTranslationTable{
   ["$zq_heg__chujue2"] = "此仇不报，怨恨难消！",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 chujue:addEffect(fk.PreCardUse, {
   anim_type = "offensive",

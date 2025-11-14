@@ -1,4 +1,4 @@
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 local paoxiao = fk.CreateSkill{
   name = "hs__paoxiao",

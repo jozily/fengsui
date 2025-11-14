@@ -13,7 +13,7 @@ Fk:loadTranslationTable{
   ["$m_heg__wuku2"] = "胸藏万卷，充盈如库。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 wuku:addEffect(fk.CardUsing, {
   can_trigger = function(self, event, target, player, data)

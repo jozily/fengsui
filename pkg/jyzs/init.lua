@@ -9,7 +9,7 @@ Fk:loadTranslationTable{
   ["jy_heg"] = "金印",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 General:new(extension, "jy_heg__zhanghuyuechen", "jin", 4):addSkills { "jy_heg__xijue", "jy_heg__lvxian", "jy_heg__yingwei" }
 Fk:loadTranslationTable{

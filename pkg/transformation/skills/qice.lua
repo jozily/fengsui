@@ -1,7 +1,7 @@
 local qice = fk.CreateSkill{
   name = "ld__qice",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 qice:addEffect("active", {
   prompt = "#ld__qice-active",
   interaction = function(self, player)

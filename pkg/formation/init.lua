@@ -2,7 +2,7 @@ local extension = Package:new("formation")
 extension.extensionName = "hegemony"
 extension.game_modes_whitelist = { 'new_heg_mode' }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 extension:loadSkillSkelsByPath("./packages/hegemony/pkg/formation/skills")
 

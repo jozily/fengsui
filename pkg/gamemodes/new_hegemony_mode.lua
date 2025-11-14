@@ -228,7 +228,7 @@ local heg_description = [==[
 
 -- local hegRule = require("packages.hegemony.pkg.hegemony_standard.skills.hegemony_rule")
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 local W = require "ui_emu.preferences"
 
 local heg

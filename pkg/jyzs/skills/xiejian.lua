@@ -9,7 +9,7 @@ Fk:loadTranslationTable {
     ["#jy_heg__xiejian"] = "挟奸：选择一名其他角色发起“军令”",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 xiejian:addEffect("active", {
   anim_type = "offensive",

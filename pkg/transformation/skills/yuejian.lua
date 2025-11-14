@@ -3,7 +3,7 @@ local yuejian = fk.CreateSkill{
   name = "ld__yuejian",
   tags = {Skill.Compulsory}
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 yuejian:addEffect(fk.EventPhaseStart, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)

@@ -1,7 +1,7 @@
 local yusui = fk.CreateSkill{
   name = "ty_heg__yusui",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 yusui:addEffect(fk.TargetConfirmed, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)

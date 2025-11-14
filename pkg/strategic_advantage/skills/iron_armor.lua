@@ -1,4 +1,4 @@
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 local ironArmorSkill = fk.CreateSkill{
   name = "#iron_armor_skill",
   attached_equip = "iron_armor",

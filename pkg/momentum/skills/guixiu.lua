@@ -1,7 +1,7 @@
 local guixiu = fk.CreateSkill{
   name = "guixiu",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 guixiu:addEffect(fk.GeneralRevealed, {
   anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)

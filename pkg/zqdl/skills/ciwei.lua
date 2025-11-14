@@ -13,7 +13,7 @@ Fk:loadTranslationTable{
   ["$zq_heg__ciwei2"] = "其慈有威，不舒不暴。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 ciwei:addEffect(fk.CardUsing, {
   anim_type = "control",

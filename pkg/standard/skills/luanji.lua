@@ -2,7 +2,7 @@
 local luanji = fk.CreateSkill{
   name = "hs__luanji",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 luanji:addEffect("viewas", {
   anim_type = "offensive",
   pattern = "archery_attack",

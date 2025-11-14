@@ -1,7 +1,7 @@
 local dujin = fk.CreateSkill{
   name = "of_heg__dujin",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 dujin:addEffect(fk.DrawNCards, {
   anim_type = "drawcard",
   can_trigger = function (self, event, target, player, data)

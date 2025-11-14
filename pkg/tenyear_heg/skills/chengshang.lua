@@ -13,7 +13,7 @@ Fk:loadTranslationTable{
   ["$ty_heg__chengshang2"] = "为国鞠躬，必受封赏。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 chengshang:addEffect(fk.CardUseFinished, {
   anim_type = "drawcard",

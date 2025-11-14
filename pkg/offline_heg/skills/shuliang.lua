@@ -13,7 +13,7 @@ Fk:loadTranslationTable{
   ["$of_heg__shuliang2"] = "将军，牌来了。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 shuliang:addEffect(fk.EventPhaseStart, {
   anim_type = "support",

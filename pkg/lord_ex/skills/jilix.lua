@@ -11,7 +11,7 @@ Fk:loadTranslationTable {
   ["$ld__jilix2"] = "寄居人下，终是气短！",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 jilix:addEffect(fk.TargetConfirmed, {
   can_trigger = function(self, event, target, player, data)

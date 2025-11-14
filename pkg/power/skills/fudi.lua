@@ -1,7 +1,7 @@
 local fudi = fk.CreateSkill{
   name = "ld__fudi",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 fudi:addEffect(fk.Damaged, {
   anim_type = "masochism",
   can_trigger = function(self, event, target, player, data)

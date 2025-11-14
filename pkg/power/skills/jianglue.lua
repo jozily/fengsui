@@ -2,7 +2,7 @@ local jianglue = fk.CreateSkill{
   name = "jianglue",
   tags = {Skill.Limited},
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 jianglue:addEffect("active", {
   anim_type = "support",
   can_use = function(self, player)

@@ -10,7 +10,7 @@ Fk:loadTranslationTable {
   ["$ld__jinxian2"] = "公既如此，恕在下诚难留之。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 jinxian:addEffect(fk.GeneralRevealed, {
   anim_type = "offensive",

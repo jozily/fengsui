@@ -2,7 +2,7 @@ local qianhuan = fk.CreateSkill{
   name = "qianhuan",
   derived_piles = "yuji_sorcery",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 qianhuan:addEffect(fk.Damaged, {
   anim_type = "masochism",
   can_trigger = function(self, event, target, player, data)

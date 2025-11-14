@@ -7,7 +7,7 @@ Fk:loadTranslationTable {
   [":zq_heg__yimie_viewAs&"] = "与处于濒死状态角色势力不同的角色可将一张<font color='red'>♥</font>手牌当【桃】对处于濒死状态的角色使用。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 yimie_viewas:addEffect("viewas", {
   pattern = "peach",

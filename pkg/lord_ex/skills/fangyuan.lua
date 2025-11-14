@@ -12,7 +12,7 @@ Fk:loadTranslationTable {
   ["$ld__fangyuan2"] = "乘敌阵未猛，待我斩将易旗，先奋士气。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 fangyuan:addEffect("arraysummon", {
   array_type = "siege",

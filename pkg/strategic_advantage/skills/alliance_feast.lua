@@ -2,7 +2,7 @@ local allianceFeastSkill = fk.CreateSkill{
   name = "alliance_feast_skill",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 allianceFeastSkill:addEffect('cardskill', {
   prompt = "#alliance_feast_skill",

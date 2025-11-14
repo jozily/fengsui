@@ -8,7 +8,7 @@ Fk:loadTranslationTable{
 
 extension.game_modes_whitelist = { 'new_heg_mode' }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 local dragonPhoenix = fk.CreateCard{
   name = "dragon_phoenix",

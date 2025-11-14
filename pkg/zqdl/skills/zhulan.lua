@@ -10,7 +10,7 @@ Fk:loadTranslationTable{
   ["#zq_heg__zhulan-invoke"] = "助澜：你可以弃置一张牌，令 %dest 受到的伤害+1",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 zhulan:addEffect(fk.DamageInflicted, {
   anim_type = "offensive",

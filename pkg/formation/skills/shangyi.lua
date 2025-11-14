@@ -1,7 +1,7 @@
 local shangyi = fk.CreateSkill{
   name = "shangyi",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 shangyi:addEffect("active", {
   anim_type = "control",
   card_num = 0,

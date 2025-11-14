@@ -1,7 +1,7 @@
 local yicheng = fk.CreateSkill{
   name = "yicheng",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 local yicheng_spec = {
   on_cost = function(self, event, target, player, data)

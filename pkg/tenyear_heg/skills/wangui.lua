@@ -1,7 +1,7 @@
 local wanggui = fk.CreateSkill{
   name = "ty_heg__wanggui",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 ---@type TrigSkelSpec<DamageTrigFunc>
 local wanggui_spec = {
   mute = true,

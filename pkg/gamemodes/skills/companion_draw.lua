@@ -1,7 +1,7 @@
 local companionDraw = fk.CreateSkill{
   name = "companion_draw&",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 companionDraw:addEffect("active", {
   prompt = "#companion_draw&",
   anim_type = "drawcard",

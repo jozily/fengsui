@@ -2,7 +2,7 @@ local burningCampsSkill = fk.CreateSkill{
   name = "burning_camps_skill",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 burningCampsSkill:addEffect("cardskill", {
   prompt = "#burning_camps_skill",

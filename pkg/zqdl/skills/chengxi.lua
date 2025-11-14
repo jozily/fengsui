@@ -15,7 +15,7 @@ Fk:loadTranslationTable{
   ["$zq_heg__chengxi2"] = "气韵生动，出于天成。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 chengxi:addEffect(fk.EventPhaseStart, {
   anim_type = "offensive",

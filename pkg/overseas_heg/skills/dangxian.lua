@@ -2,7 +2,7 @@ local dangxian = fk.CreateSkill{
   name = "os_heg__dangxian",
   tags = {Skill.Compulsory},
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 dangxian:addEffect(fk.TurnStart, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)

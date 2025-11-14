@@ -13,7 +13,7 @@ Fk:loadTranslationTable {
   ["$ld__jujian2"] = "愿与将军共图王之霸业！",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 jujian:addEffect(fk.EnterDying, {
   anim_type = "defensive",

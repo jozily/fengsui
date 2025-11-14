@@ -15,8 +15,8 @@ Fk:loadTranslationTable{
   ["$zq_heg__yanxi2"] = "宴中趣玩，得遇知己。",
 }
 
-local U = require "packages/utility/utility"
-local H = require "packages/hegemony/util"
+local U = require "packages.utility.utility"
+local H = require "packages.hegemony.util"
 
 yanxi:addEffect(fk.EventPhaseStart, {
   anim_type = "control",

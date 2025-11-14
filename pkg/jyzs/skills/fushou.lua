@@ -8,7 +8,7 @@ Fk:loadTranslationTable {
   [":jy_heg__fushou"] = "锁定技，与你势力相同的角色无视主副将条件拥有其武将牌上的所有主将技和副将技（计算阴阳鱼的效果除外）。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 local fushou_getspec = {
   on_refresh = function(self, event, target, player, data)

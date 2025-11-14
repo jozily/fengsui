@@ -3,7 +3,7 @@
 local extension = Package:new("strategic_advantage", Package.CardPack)
 extension.extensionName = "hegemony"
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 Fk:loadTranslationTable{
   ["strategic_advantage"] = "君临天下·势备篇",

@@ -2,7 +2,7 @@ local xiongsuan = fk.CreateSkill{
   name = "xiongsuan",
   tags = {Skill.Limited},
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 xiongsuan:addEffect("active", {
   anim_type = "offensive",
   can_use = function(self, player)

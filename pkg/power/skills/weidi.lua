@@ -1,7 +1,7 @@
 local weidi = fk.CreateSkill{
   name = "ld__weidi",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 weidi:addEffect("active", {
   anim_type = "control",
   can_use = function(self, player)

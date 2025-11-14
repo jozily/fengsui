@@ -16,8 +16,8 @@ Fk:loadTranslationTable {
   ["$ld__yigui2"] = "来去无踪，众谓诡异。",
 }
 
-local U = require "packages/utility/utility"
-local H = require "packages/hegemony/util"
+local U = require "packages.utility.utility"
+local H = require "packages.hegemony.util"
 
 --从牌堆获取魂
 local function GetHuashen(player, n)

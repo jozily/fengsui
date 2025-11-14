@@ -11,7 +11,7 @@ Fk:loadTranslationTable {
   ["$jianan__ld__jieyue2"] = "泰山之高，群山不可及，文则之重，泰山不可及！",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 jieyue:addEffect(fk.EventPhaseStart, {
   anim_type = "control",

@@ -14,7 +14,7 @@ Fk:loadTranslationTable {
   ["$ld__chenglue2"] = "策略已有，按部就班即可得胜。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 chenglue:addEffect(fk.CardUseFinished, {
   anim_type = "drawcard",

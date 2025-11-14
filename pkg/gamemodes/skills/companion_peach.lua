@@ -1,7 +1,7 @@
 local companionSkill = fk.CreateSkill{
   name = "companion_peach&",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 companionSkill:addEffect("viewas", {
   name = "companion_peach&",
   anim_type = "support",

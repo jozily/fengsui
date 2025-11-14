@@ -15,7 +15,7 @@ Fk:loadTranslationTable {
   ["$ld__lixia2"] = "英雄可安身立命于交州之地。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 lixia:addEffect(fk.EventPhaseStart, {
   anim_type = "offensive",

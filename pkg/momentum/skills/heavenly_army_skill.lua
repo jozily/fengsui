@@ -1,7 +1,7 @@
 local heavenly_army_skill = fk.CreateSkill{
   name = "heavenly_army_skill&",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 Fk:loadTranslationTable{
   ["heavenly_army"] = "天兵",

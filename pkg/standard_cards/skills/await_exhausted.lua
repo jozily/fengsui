@@ -2,7 +2,7 @@ local awaitExhaustedSkill = fk.CreateSkill{
   name = "await_exhausted_skill",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 awaitExhaustedSkill:addEffect("cardskill", {
   prompt = "#await_exhausted_skill",

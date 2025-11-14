@@ -2,7 +2,7 @@ local xuanhuo_other = fk.CreateSkill {
   name = "ld__xuanhuo_other&",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 xuanhuo_other:addEffect("active", {
   prompt = "#xuanhuo-other",

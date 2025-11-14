@@ -2,7 +2,7 @@
 local diancai = fk.CreateSkill{
   name = "diancai",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 diancai:addEffect(fk.EventPhaseEnd, {
   anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)

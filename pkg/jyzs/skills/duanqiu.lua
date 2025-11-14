@@ -9,7 +9,7 @@ Fk:loadTranslationTable{
   ["@jy_heg__duanqiu_count-turn"] = "断虬 限制",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 duanqiu:addEffect(fk.EventPhaseStart, {
   anim_type = "offensive",

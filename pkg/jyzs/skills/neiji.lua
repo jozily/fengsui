@@ -11,7 +11,7 @@ Fk:loadTranslationTable {
   ["#jy_heg__neiji_showcards"] = "内忌：展示两张手牌",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 neiji:addEffect(fk.EventPhaseStart, {
   anim_type = "special",

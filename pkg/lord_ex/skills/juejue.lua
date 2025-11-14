@@ -11,7 +11,7 @@ Fk:loadTranslationTable {
   ["ld__juejue_putcard"] = "将牌置入弃牌堆",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 juejue:addEffect(fk.EventPhaseStart, {
   anim_type = "offensive",

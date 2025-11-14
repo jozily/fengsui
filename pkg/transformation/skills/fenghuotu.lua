@@ -13,7 +13,7 @@ Fk:loadTranslationTable{
 
   ["#fenghuotu-choose"] = "缘江烽火图：可选择%arg个技能",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 fenghuotu:addEffect(fk.EventPhaseStart, {
   anim_type = "support",
   can_trigger = function (self, event, target, player, data)

@@ -11,7 +11,7 @@ Fk:loadTranslationTable{
   ["@@jy_heg__xiace_transform"] = "黠策 已变更",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 xiace:addEffect("viewas", {
   anim_type = "control",

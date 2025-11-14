@@ -14,7 +14,7 @@ Fk:loadTranslationTable {
   ["$zaoyun2"] = "兵精粮足，胜局已定！",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 zaoyun:addEffect("active", {
   anim_type = "offensive",

@@ -2,7 +2,7 @@ local suishi = fk.CreateSkill{
   name = "suishi",
   tags = {Skill.Compulsory},
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 suishi:addEffect(fk.EnterDying, {
   mute = true,
   anim_type = "drawcard",

@@ -11,7 +11,7 @@ Fk:loadTranslationTable{
   ["$zq_heg__caiyuan2"] = "秀媛才德，知书达理。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 caiyuan:addEffect(fk.TurnStart, {
   anim_type = "drawcard",

@@ -1,7 +1,7 @@
 local huanshi = fk.CreateSkill{
   name = "os_heg__huanshi",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 huanshi:addEffect(fk.AskForRetrial, {
   anim_type = "control",
   can_trigger = function(self, event, target, player, data)

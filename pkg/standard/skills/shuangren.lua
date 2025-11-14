@@ -2,7 +2,7 @@
 local shuangren = fk.CreateSkill{
   name = "shuangren",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 shuangren:addEffect(fk.EventPhaseStart, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)

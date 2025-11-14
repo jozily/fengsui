@@ -10,8 +10,8 @@ Fk:loadTranslationTable {
     ["$ld__jihun2"] = "魂羽化游，以辅四方。",
 }
 
-local U = require "packages/utility/utility"
-local H = require "packages/hegemony/util"
+local U = require "packages.utility.utility"
+local H = require "packages.hegemony.util"
 
 local function GetHuashen(player, n)
     local room = player.room

@@ -2,7 +2,7 @@ local fightTogetherSkill = fk.CreateSkill{
   name = "fight_together_skill",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 fightTogetherSkill:addEffect("cardskill", {
   prompt = "#fight_together_skill",

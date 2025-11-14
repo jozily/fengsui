@@ -1,7 +1,7 @@
 local lianzi = fk.CreateSkill{
   name = "lianzi",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 Fk:loadTranslationTable{
   ["lianzi"] = "敛资",
   [":lianzi"] = "出牌阶段限一次，你可以弃置一张手牌并展示牌堆顶X张牌（X为吴势力角色装备区内牌数与“烽火”数之和），" ..

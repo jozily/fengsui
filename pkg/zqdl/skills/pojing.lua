@@ -17,7 +17,7 @@ Fk:loadTranslationTable{
   ["$zq_heg__pojing2"] = "进军逼江，震慑吴贼。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 pojing:addEffect("active", {
   anim_type = "offensive",

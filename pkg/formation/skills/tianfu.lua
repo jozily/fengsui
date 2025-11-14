@@ -2,7 +2,7 @@ local tianfu = fk.CreateSkill{
   name = "tianfu",
   tags = {Skill.Compulsory, Skill.MainPlace},
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 tianfu:addEffect("arraysummon", {
   array_type = "formation",

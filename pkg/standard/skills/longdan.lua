@@ -1,5 +1,5 @@
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 local longdan = fk.CreateSkill{
   name = "hs__longdan",

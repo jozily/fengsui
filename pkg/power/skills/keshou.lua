@@ -1,7 +1,7 @@
 local keshou = fk.CreateSkill{
   name = "ld__keshou",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 keshou:addEffect(fk.DamageInflicted, {
   anim_type = "defensive",
   can_trigger = function (self, event, target, player, data)

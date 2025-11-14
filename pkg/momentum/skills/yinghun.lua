@@ -1,7 +1,7 @@
 local yinghun = fk.CreateSkill{
   name = "heg_sunce__yinghun",
 }
-local U = require "packages/utility/utility"
+local U = require "packages.utility.utility"
 yinghun:addEffect(fk.EventPhaseStart, {
   anim_type = "drawcard",
   mute = true,

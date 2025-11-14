@@ -3,7 +3,7 @@ local hongfa = fk.CreateSkill{
   derived_piles = "heavenly_army",
   tags = {Skill.Compulsory},
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 hongfa:addEffect(fk.GeneralRevealed, {
   anim_type = "support",
   mute = true,

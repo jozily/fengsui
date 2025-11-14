@@ -11,7 +11,7 @@ Fk:loadTranslationTable {
   ["$ld__qingyin2"] = "天下既定，我亦当遁迹匿踪，颐养天年矣。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 qingyin:addEffect("active", {
   anim_type = "drawcard",

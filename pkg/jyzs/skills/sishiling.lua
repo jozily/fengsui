@@ -6,7 +6,7 @@ Fk:loadTranslationTable{
     ["#sishiling"] = "死士令",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 local skill_attach = function (player)
     local room = player.room

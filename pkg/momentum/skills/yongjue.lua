@@ -1,7 +1,7 @@
 local yongjue = fk.CreateSkill {
   name = "yongjue",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 yongjue:addEffect(fk.CardUseFinished, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)

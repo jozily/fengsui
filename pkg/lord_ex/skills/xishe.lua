@@ -13,7 +13,7 @@ Fk:loadTranslationTable {
   ["$ld__xishe2"] = "什么江东猛虎？还不是我箭下之鬼！",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 xishe:addEffect(fk.EventPhaseStart, {
   anim_type = "offensive",

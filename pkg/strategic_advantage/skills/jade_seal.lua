@@ -1,4 +1,4 @@
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 local jadeSealSkill = fk.CreateSkill{
   name = "#jade_seal_skill",
   attached_equip = "jade_seal",

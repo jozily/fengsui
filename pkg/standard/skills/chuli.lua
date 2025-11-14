@@ -2,7 +2,7 @@
 local chuli = fk.CreateSkill{
   name = "hs__chuli",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 chuli:addEffect("active", {
   prompt = "#hs__chuli",
   anim_type = "control",

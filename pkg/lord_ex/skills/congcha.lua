@@ -14,7 +14,7 @@ Fk:loadTranslationTable {
   ["$ld__congcha2"] = "问一事则明其心。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 congcha:addEffect(fk.EventPhaseStart, {
   anim_type = "drawcard",

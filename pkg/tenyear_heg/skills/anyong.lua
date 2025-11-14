@@ -1,7 +1,7 @@
 local anyong = fk.CreateSkill{
   name = "ty_heg__anyong",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 anyong:addEffect(fk.DamageCaused, {
   anim_type = "offensive",
   can_trigger = function (self, event, target, player, data)

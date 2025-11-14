@@ -2,7 +2,7 @@ local yaowu = fk.CreateSkill{
   name = "os_heg__yaowu",
   tags = {Skill.Limited},
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 yaowu:addEffect(fk.Damage, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)

@@ -1,7 +1,7 @@
 local xibing = fk.CreateSkill{
   name = "ty_heg__xibing",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 xibing:addEffect(fk.TargetSpecified, {
   anim_type = "control",
   can_trigger = function(self, event, target, player, data)

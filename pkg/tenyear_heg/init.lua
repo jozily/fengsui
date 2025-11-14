@@ -4,8 +4,8 @@ extension.game_modes_whitelist = { 'new_heg_mode' }
 
 extension:loadSkillSkelsByPath("./packages/hegemony/pkg/tenyear_heg/skills")
 
-local H = require "packages/hegemony/util"
-local U = require "packages/utility/utility"
+local H = require "packages.hegemony.util"
+local U = require "packages.utility.utility"
 
 Fk:loadTranslationTable{
   ["tenyear_heg"] = "国战-十周年专属",

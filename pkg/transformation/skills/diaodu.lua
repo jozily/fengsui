@@ -1,7 +1,7 @@
 local diaodu = fk.CreateSkill{
   name = "diaodu",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 diaodu:addEffect(fk.CardUsing, {
   anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)

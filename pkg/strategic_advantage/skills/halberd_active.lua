@@ -1,4 +1,4 @@
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 local halberdActive = fk.CreateSkill{
   name = "sa__halberd_active",
 }

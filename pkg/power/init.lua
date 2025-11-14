@@ -8,7 +8,7 @@ Fk:loadTranslationTable{
   ["power"] = "君临天下·权",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 local cuiyanmaojie = General:new(extension, "ld__cuiyanmaojie", "wei", 3)
 cuiyanmaojie:addSkills{"ld__zhengbi", "ld__fengying"}

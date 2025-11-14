@@ -94,7 +94,7 @@ Fk:loadTranslationTable{
   ["~ld__lijueguosi"] = "异心相争，兵败战损……",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 local lordsunquan = General:new(extension, "ld__lordsunquan", "wu", 4)
 lordsunquan.hidden = true
 H.lordGenerals["hs__sunquan"] = "ld__lordsunquan"

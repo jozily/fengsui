@@ -5,7 +5,7 @@ local niaoxiang = fk.CreateSkill{
 niaoxiang:addEffect("arraysummon", {
   array_type = "siege",
 })
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 niaoxiang:addEffect(fk.TargetSpecified, {
   can_trigger = function(self, event, target, player, data)
     return player:hasSkill(niaoxiang.name) and data.card.trueName == "slash"

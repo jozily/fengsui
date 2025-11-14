@@ -12,7 +12,7 @@ Fk:loadTranslationTable{
   ["$zq_heg__zhaoran2"] = "吾之心思，路人皆知。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 zhaoran:addEffect(fk.EventPhaseChanging, {
   anim_type = "drawcard",

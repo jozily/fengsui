@@ -3,7 +3,7 @@ local peaceSpellSkill = fk.CreateSkill{
   tags = {Skill.Compulsory},
   attached_equip = "peace_spell",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 peaceSpellSkill:addEffect(fk.DamageInflicted, {
   can_trigger = function(self, event, target, player, data)
     return target == player and player:hasSkill(peaceSpellSkill.name) and data.damageType ~= fk.NormalDamage

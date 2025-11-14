@@ -1,7 +1,7 @@
 local zhiman = fk.CreateSkill{
   name = "ld__zhiman",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 zhiman:addEffect(fk.DamageCaused, {
   can_trigger = function(self, event, target, player, data)
     return target == player and player:hasSkill(zhiman.name) and data.to ~= player

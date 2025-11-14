@@ -1,4 +1,4 @@
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 local heyi = fk.CreateSkill{
   name = "heyi",
   tags = {Skill.Compulsory},

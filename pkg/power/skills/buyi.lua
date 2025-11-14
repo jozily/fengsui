@@ -1,7 +1,7 @@
 local buyi = fk.CreateSkill{
   name = "ld__buyi",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 buyi:addEffect(fk.AfterDying, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)

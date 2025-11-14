@@ -12,7 +12,7 @@ Fk:loadTranslationTable {
   ["$ld__tongdu2"] = "铸直百之钱，可平物价，定军民之心。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 tongdu:addEffect(fk.EventPhaseStart, {
   anim_type = "control",

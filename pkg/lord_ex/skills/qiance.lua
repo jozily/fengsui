@@ -12,7 +12,7 @@ Fk:loadTranslationTable {
   ["$ld__qiance2"] = "如此如此，敌军自破！",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 qiance:addEffect(fk.CardUsing, {
   can_trigger = function(self, event, target, player, data)

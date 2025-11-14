@@ -1,7 +1,7 @@
 local chuanxin = fk.CreateSkill{
   name = "chuanxin",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 chuanxin:addEffect(fk.DamageCaused, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)

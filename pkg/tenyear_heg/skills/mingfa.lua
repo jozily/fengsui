@@ -2,7 +2,7 @@
 local mingfa = fk.CreateSkill{
   name = "ty_heg__mingfa",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 mingfa:addEffect("active", {
   anim_type = "offensive",
   card_num = 0,

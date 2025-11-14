@@ -2,7 +2,7 @@ local fengying = fk.CreateSkill{
   name = "ld__fengying",
   tags = {Skill.Limited},
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 fengying:addEffect("active", {
   anim_type = "support",
   card_num = 0,

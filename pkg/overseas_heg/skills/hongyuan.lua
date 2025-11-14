@@ -18,7 +18,7 @@ hongyuan:addEffect("active", {
     room:setCardMark(Fk:getCardById(card), "@@alliance-inhand-turn", 1)
   end,
 })
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 hongyuan:addEffect(fk.BeforeDrawCard, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)

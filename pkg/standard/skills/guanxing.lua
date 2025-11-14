@@ -1,7 +1,7 @@
 local guanxing = fk.CreateSkill{
   name = "hs__guanxing",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 guanxing:addEffect(fk.EventPhaseStart, {
   anim_type = "control",
   can_trigger = function(self, event, target, player, data)

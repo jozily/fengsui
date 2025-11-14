@@ -1,7 +1,7 @@
 local wildDraw = fk.CreateSkill{
   name = "wild_draw&",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 wildDraw:addEffect("active", {
   prompt = "#wild_draw&",
   anim_type = "drawcard",

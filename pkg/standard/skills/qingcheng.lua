@@ -2,7 +2,7 @@
 local qingcheng = fk.CreateSkill{
   name = "qingcheng",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 qingcheng:addEffect("active", {
   anim_type = "control",
   card_num = 1,

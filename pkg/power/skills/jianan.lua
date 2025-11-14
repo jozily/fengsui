@@ -20,7 +20,7 @@ Fk:loadTranslationTable {
   ["$jianan3"] = "国之良将，五子为先！",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 jianan:addEffect(fk.EventPhaseStart, {
   anim_type = "support",

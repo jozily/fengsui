@@ -2,7 +2,7 @@ local ziliang = fk.CreateSkill{
   name = "ziliang",
   tags = {Skill.DeputyPlace, Skill.Compulsory},
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 ziliang:addEffect(fk.Damaged, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)

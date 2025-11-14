@@ -1,7 +1,7 @@
 local vanguardSkill = fk.CreateSkill{
   name = "vanguard_skill&",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 vanguardSkill:addEffect("active", {
   prompt = "#vanguard_skill&",
   anim_type = "drawcard",

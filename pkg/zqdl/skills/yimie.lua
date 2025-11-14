@@ -14,7 +14,7 @@ Fk:loadTranslationTable {
 
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 local yimie_spec = {
   can_refresh = function(self, event, target, player, data)

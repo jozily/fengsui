@@ -2,7 +2,7 @@ local zhiwei = fk.CreateSkill{
   name = "ty_heg__zhiwei",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 ---@param room Room
 ---@param player ServerPlayer

@@ -13,7 +13,7 @@ Fk:loadTranslationTable {
   ["$ld__wenji2"] = "还望先生救我！。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 wenji:addEffect(fk.EventPhaseStart, {
   anim_type = "control",

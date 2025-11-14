@@ -12,7 +12,7 @@ Fk:loadTranslationTable{
   ["lord_fenghuo"] = "烽火",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 jiaheOther:addEffect("active", {
   prompt = function(self, player)
     local to = H.getHegLord(Fk:currentRoom(), player)

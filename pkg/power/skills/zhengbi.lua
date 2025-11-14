@@ -1,7 +1,7 @@
 local zhengbi = fk.CreateSkill{
   name = "ld__zhengbi",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 zhengbi:addEffect(fk.EventPhaseStart, {
   anim_type = "control",
   can_trigger = function(self, event, target, player, data)

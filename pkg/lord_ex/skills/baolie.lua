@@ -12,7 +12,7 @@ Fk:loadTranslationTable {
   ["$ld__baolie2"] = "当今曹营之将，一个能打的都没有！",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 baolie:addEffect(fk.EventPhaseStart, {
   anim_type = "offensive",

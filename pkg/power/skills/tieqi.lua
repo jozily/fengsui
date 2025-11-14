@@ -1,4 +1,4 @@
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 local tieqi = fk.CreateSkill {
   name = "xuanhuo__hs__tieqi",
   dynamic_desc = function(self, player)

@@ -10,7 +10,7 @@ Fk:loadTranslationTable {
   ["$ld__tunjiang2"] = "江夏冲要之地，孩儿愿往守之。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 tunjiang:addEffect(fk.EventPhaseStart, {
   anim_type = "drawcard",

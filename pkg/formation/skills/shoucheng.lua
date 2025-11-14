@@ -3,7 +3,7 @@ local shoucheng = fk.CreateSkill{
   name = "shoucheng",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 shoucheng:addEffect(fk.AfterCardsMove, {
   anim_type = "support",

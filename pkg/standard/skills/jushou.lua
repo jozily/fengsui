@@ -1,7 +1,7 @@
 local jushou = fk.CreateSkill{
   name = "hs__jushou",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 jushou:addEffect(fk.EventPhaseStart, {
   anim_type = "defensive",
   can_trigger = function(self, event, target, player, data)

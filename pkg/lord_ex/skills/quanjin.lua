@@ -12,7 +12,7 @@ Fk:loadTranslationTable {
   ["$quanjin2"] = "明公受封，正合天心人意！",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 quanjin:addEffect("active", {
   prompt = "#quanjin-active",

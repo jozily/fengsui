@@ -3,7 +3,7 @@ local xiongyi = fk.CreateSkill{
   name = "xiongyi",
   tags = {Skill.Limited},
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 xiongyi:addEffect("active", {
   anim_type = "drawcard",
   card_num = 0,

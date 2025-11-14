@@ -1,7 +1,7 @@
 local yinyangfishSkill = fk.CreateSkill{
   name = "yinyangfish_skill&",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 yinyangfishSkill:addEffect("active", {
   prompt = "#yinyangfish_skill&",
   anim_type = "drawcard",

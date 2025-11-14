@@ -11,7 +11,7 @@ Fk:loadTranslationTable {
   ["$ld__fengyang2"] = "如此咽喉要地，吾当倾力守之。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 fengyang:addEffect("arraysummon", {
   array_type = "formation",

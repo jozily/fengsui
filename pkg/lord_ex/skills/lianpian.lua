@@ -18,7 +18,7 @@ Fk:loadTranslationTable {
   ["$ld__lianpian2"] = "心无旁骛，断而敢行。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 lianpian:addEffect(fk.EventPhaseStart, {
   anim_type = "defensive",

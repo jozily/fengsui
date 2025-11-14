@@ -9,7 +9,7 @@ Fk:loadTranslationTable{
     ["#sishiling-choose"] = "死士令：移除你的副将并发动一个未以此法发动的技能",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 skill:addEffect("active",{
   anim_type = "special",

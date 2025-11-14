@@ -2,7 +2,7 @@ local baoling = fk.CreateSkill{
   name = "baoling",
   tags = {Skill.MainPlace, Skill.Compulsory},
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 baoling:addEffect(fk.EventPhaseEnd, {
   anim_type = "big",
   can_trigger = function(self, event, target, player, data)

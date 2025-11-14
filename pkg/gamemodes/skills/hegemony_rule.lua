@@ -2,7 +2,7 @@ local hegRule = fk.CreateSkill{
   name = "heg_rule",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 --- 野心家选择国家
 ---@param room Room

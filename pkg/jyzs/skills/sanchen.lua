@@ -14,7 +14,7 @@ Fk:loadTranslationTable{
   ["$jy_heg__sanchen2"] = "勘除弼事，三陈而就。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 sanchen:addEffect("active", {
   anim_type = "support",

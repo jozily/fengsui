@@ -1,7 +1,7 @@
 local xionghuo = fk.CreateSkill{
   name = "of_heg__xionghuo",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 xionghuo:addEffect("active", {
   anim_type = "offensive",
   card_num = 0,

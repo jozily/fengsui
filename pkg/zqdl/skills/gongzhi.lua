@@ -9,7 +9,7 @@ Fk:loadTranslationTable{
   ["#zq_heg__gongzhi-invoke"] = "共执：是否跳过摸牌阶段，令势力与你相同的角色摸共计四张牌？",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 gongzhi:addEffect(fk.EventPhaseChanging, {
   anim_type = "drawcard",

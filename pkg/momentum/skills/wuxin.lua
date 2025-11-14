@@ -10,7 +10,7 @@ Fk:loadTranslationTable{
   ["$wuxin2"] = "吾已明此救世之术矣。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 wuxin:addEffect(fk.EventPhaseStart, {
   anim_type = "control",

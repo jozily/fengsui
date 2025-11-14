@@ -1,7 +1,7 @@
 local deshao = fk.CreateSkill{
   name = "ty_heg__deshao",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 deshao:addEffect(fk.TargetSpecified, {
   anim_type = "defensive",
   can_trigger = function (self, event, target, player, data)

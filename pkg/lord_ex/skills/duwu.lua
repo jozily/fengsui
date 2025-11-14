@@ -14,7 +14,7 @@ Fk:loadTranslationTable {
   ["$ld__duwu2"] = "全力攻城！言退者，斩！",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 duwu:addEffect("active", {
   anim_type = "big",

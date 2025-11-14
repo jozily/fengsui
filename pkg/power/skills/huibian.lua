@@ -14,7 +14,7 @@ Fk:loadTranslationTable {
   ["$huibian2"] = "青青子衿，悠悠我心，但为君故，沉吟至今。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 huibian:addEffect("active", {
   anim_type = "control",

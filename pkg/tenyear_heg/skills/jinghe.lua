@@ -1,7 +1,7 @@
 local jinghe = fk.CreateSkill{
   name = "ty_heg__jinghe",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 jinghe:addEffect("active", {
   anim_type = "support",
   min_card_num = 1,

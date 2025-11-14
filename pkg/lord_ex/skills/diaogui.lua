@@ -12,7 +12,7 @@ Fk:loadTranslationTable {
   ["$ld__diaogui2"] = "臣虽驽钝，愿以此腔热血报国。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 diaogui:addEffect("viewas", {
   anim_type = "drawcard",

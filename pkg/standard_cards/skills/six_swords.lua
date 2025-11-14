@@ -4,7 +4,7 @@ local sixSwordsSkill = fk.CreateSkill{
   attached_equip = "six_swords",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 sixSwordsSkill:addEffect("atkrange", {
   correct_func = function (self, from, to)

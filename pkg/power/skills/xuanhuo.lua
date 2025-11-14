@@ -3,7 +3,7 @@ local xuanhuo = fk.CreateSkill {
   attached_skill_name = "ld__xuanhuo_other&",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 local xuanhuo_spec = {
   can_refresh = function(self, event, target, player, data)

@@ -3,7 +3,7 @@ local imperialOrderSkill = fk.CreateSkill{
   name = "imperial_order_skill",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 local function doImperialOrder(room, target)
   local all_choices = {"IO_reveal", "IO_discard", "IO_hplose"}

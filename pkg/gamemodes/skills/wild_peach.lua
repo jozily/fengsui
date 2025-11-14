@@ -1,7 +1,7 @@
 local wildPeach = fk.CreateSkill{
   name = "wild_peach&",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 wildPeach:addEffect("viewas", {
   anim_type = "support",
   prompt = "#wild_peach&",

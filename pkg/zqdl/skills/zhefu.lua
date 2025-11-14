@@ -13,7 +13,7 @@ Fk:loadTranslationTable{
   ["$zq_heg__zhefu2"] = "履行不端者，当有此罚。",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 Fk:addPoxiMethod{
   name = "zq_heg__zhefu",

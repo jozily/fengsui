@@ -2,7 +2,7 @@
 local cunsi = fk.CreateSkill{
   name = "cunsi",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 cunsi:addEffect("active", {
   anim_type = "big",
   target_num = 1,

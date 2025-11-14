@@ -2,7 +2,7 @@ local threatenEmperorSkill = fk.CreateSkill{
   name = "threaten_emperor_skill",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 threatenEmperorSkill:addEffect("cardskill", {
   prompt = "#threaten_emperor_skill",

@@ -12,7 +12,7 @@ Fk:loadTranslationTable{
   ["#zq_heg__luanchang-invoke"] = "乱常：是否令 %dest 将所有手牌当【万箭齐发】使用？",
 }
 
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 
 luanchang:addEffect(fk.TurnEnd, {
   anim_type = "offensive",

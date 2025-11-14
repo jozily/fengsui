@@ -1,7 +1,7 @@
 local jianliang = fk.CreateSkill{
   name = "ty_heg__jianliang",
 }
-local H = require "packages/hegemony/util"
+local H = require "packages.hegemony.util"
 jianliang:addEffect(fk.EventPhaseStart, {
   anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)
