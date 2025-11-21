@@ -9,7 +9,7 @@ huyuan:addEffect(fk.EventPhaseStart, {
   end,
   on_cost = function (self, event, target, player, data)
     local success, dat = player.room:askToUseActiveSkill(player, {skill_name = "#ld__huyuan_active",
-      prompt = "#ld__huyuan-choose", cancelable = true})
+      prompt = "#ld__huyuan-choose", extra_data = {skillName = huyuan.name}, cancelable = true})
     if success and dat then
       event:setCostData(self, {interaction = dat.interaction, tos = dat.targets, cards = dat.cards})
       return true
@@ -55,7 +55,7 @@ Fk:loadTranslationTable{
   ["#ld__huyuan-choose"] = "发动 护援，选择一张牌和一名角色",
   ["#ld__huyuan_discard-choose"] = "护援：选择一名角色，弃置其场上的一张牌",
 
-  ["$ld__huyuan1"] = "舍命献马，护我曹公！",
-  ["$ld__huyuan2"] = "拼将性命，定保曹公周全。",
+  ["$ld__huyuan1"] = "拼将性命，定保曹公周全。",
+  ["$ld__huyuan2"] = "舍命献马，护我曹公！",
 }
 return huyuan

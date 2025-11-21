@@ -34,7 +34,8 @@ limeng:addEffect(fk.EventPhaseStart, {
     local _, ret = room:askToUseActiveSkill(player, {
       skill_name = "#jy_heg__limeng_choose&",
       skip = true,
-      prompt = "#jy_heg__limeng-invoke"
+      prompt = "#jy_heg__limeng-invoke",
+      extra_data = {skillName = limeng.name}
     })
     if ret then
       event:setCostData(self, {tos = ret.targets, cards = ret.cards})

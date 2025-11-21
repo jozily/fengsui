@@ -42,7 +42,7 @@ luanchang:addEffect(fk.TurnEnd, {
     local targets = table.filter(room:getOtherPlayers(target), function(p)
       return not target:isProhibited(p, card)
     end)
-    room:useVirtualCard("archery_attack", target:getCardIds("h"), player, targets, luanchang.name)
+    room:useVirtualCard("archery_attack", target:getCardIds("h"), target, targets, luanchang.name)
   end,
 })
 

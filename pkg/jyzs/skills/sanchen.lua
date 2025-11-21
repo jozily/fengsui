@@ -38,6 +38,7 @@ sanchen:addEffect("active", {
         max_num = 3,
         skill_name = sanchen.name,
         prompt = "#jy_heg__sanchen-discard:" .. player.id,
+        cancelable = false,
       })
       if #cards > 0 then
         local types = {}

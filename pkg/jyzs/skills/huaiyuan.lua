@@ -53,7 +53,7 @@ huaiyuan:addEffect("atkrange", {
 huaiyuan:addEffect("targetmod", {
   residue_func = function(self, player, skill, scope)
     if skill.trueName == "slash_skill" and scope == Player.HistoryPhase then
-      return player:getMark("@jy_heg__huaiyuan_slash-turn")
+      return player:getMark("@jy_heg__huaiyuan_targetmod-turn")
     end
   end,
 })

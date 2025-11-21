@@ -258,6 +258,8 @@ Fk:loadTranslationTable{
   ['hs__menghuo'] = '孟获',
   ["#hs__menghuo"] = "南蛮王",
   ["illustrator:hs__menghuo"] = "废柴男",
+
+  ["~hs__menghuo"] = "七纵之恩……来世……再报了……",
 }
 
 General:new(extension, "hs__zhurong", "shu", 4, 4, General.Female):addSkills{"juxiang", "lieren"}
