@@ -102,6 +102,8 @@ Fk:loadTranslationTable{
   ["#lure_tiger_prohibit"] = "调虎离山",
   ["#lure_tiger_skill"] = "选择一至两名其他角色，这些角色于此回合内不计入距离和座次的计算，<br/>且不能使用牌，且不是牌的合法目标，且体力值不会改变",
 
+  ["lure_tiger_desc"] = "调离：被调离的角色不计入距离和座次的计算，且不能使用牌，且不是牌的合法目标，且体力值不会改变。",
+
   ["@@lure_tiger-turn"] = "调虎离山",
 }
 
