@@ -44,6 +44,11 @@ lureTigerSkill:addEffect(fk.PreHpLost, {
   end,
   on_refresh = function(self, event, target, player, data)
     data:preventHpLost()
+    player.room:sendLog{
+      type = "#lure_tiger-prevent",
+      to = {player.id},
+      toast = true,
+    }
   end,
 })
 lureTigerSkill:addEffect(fk.DamageInflicted, {
@@ -53,6 +58,18 @@ lureTigerSkill:addEffect(fk.DamageInflicted, {
   end,
   on_refresh = function(self, event, target, player, data)
     data:preventDamage()
+    player.room:sendLog{
+      type = "#lure_tiger-prevent",
+      to = {player.id},
+      toast = true,
+    }
+  end,
+})
+lureTigerSkill:addEffect("targetmod", {
+  global = true,
+  target_tip_func = function (self, player, to_select, selected, selected_cards, card, selectable, extra_data)
+    if not card or selectable then return end
+    if to_select:hasMark("@@lure_tiger", MarkEnum.TempMarkSuffix) then return {{content = "lure_tiger-prohibit", type = "warning"}} end
   end,
 })
 
@@ -103,6 +120,8 @@ Fk:loadTranslationTable{
   ["#lure_tiger_skill"] = "选择一至两名其他角色，这些角色于此回合内不计入距离和座次的计算，<br/>且不能使用牌，且不是牌的合法目标，且体力值不会改变",
 
   ["lure_tiger_desc"] = "调离：被调离的角色不计入距离和座次的计算，且不能使用牌，且不是牌的合法目标，且体力值不会改变。",
+  ["#lure_tiger-prevent"] = "由于【调虎离山】的效果，防止 %to 的体力值改变",
+  ["lure_tiger-prohibit"] = "受调虎离山保护",
 
   ["@@lure_tiger-turn"] = "调虎离山",
 }

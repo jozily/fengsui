@@ -10,6 +10,7 @@ local ex = require(prefix .. "lord_ex")
 local ziqidonglai = require(prefix .. "zqdl")
 local jinyinzishou = require(prefix .. "jyzs")
 
+local ol = require(prefix .. "online_heg")
 local mobile = require(prefix .. "mobile_heg")
 local tenyear = require(prefix .. "tenyear_heg")
 local overseas = require(prefix .. "overseas_heg")
@@ -34,6 +35,7 @@ return {
   ziqidonglai,
   jinyinzishou,
 
+  ol,
   mobile,
   tenyear,
   overseas,

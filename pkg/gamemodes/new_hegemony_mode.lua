@@ -562,6 +562,7 @@ heg = fk.CreateGameMode{
     "zqdl",
     "jyzs",
     "mobile_heg",
+    "online_heg",
 
     "lord_cards",
   },

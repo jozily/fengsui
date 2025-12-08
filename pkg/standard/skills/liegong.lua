@@ -36,13 +36,25 @@ liegong:addEffect("atkrange", {
     return 0
   end,
 })
+--烈弓提示
+liegong:addEffect("targetmod",{
+  target_tip_func = function(self, player, to_select, selected, selected_cards, card, selectable, extra_data)
+    if card.trueName == "slash" and player:hasSkill(liegong.name) and selectable then
+      if to_select.hp >= player.hp then
+        return {{ content = "hs__liegong_can", type = "normal" }}
+      end
+    end
+  end,
+})
+
 
 Fk:loadTranslationTable{
   ["hs__liegong"] = "烈弓",
   [":hs__liegong"] = "当你于出牌阶段内使用【杀】指定目标后，若其手牌数不小于你的体力值或不大于你的攻击范围，你可令其不能使用【闪】响应此【杀】。"..
   "若两项均满足，此【杀】伤害+1。",
- [":hs__liegong_shouyue"] = "当你于出牌阶段内使用【杀】指定目标后，若其手牌数不小于你的体力值或不大于你的攻击范围，你可令其不能使用【闪】响应此【杀】。你的攻击范围+1。"..
+  [":hs__liegong_shouyue"] = "当你于出牌阶段内使用【杀】指定目标后，若其手牌数不小于你的体力值或不大于你的攻击范围，你可令其不能使用【闪】响应此【杀】。你的攻击范围+1。"..
   "若两项均满足，此【杀】伤害+1。",
+  ["hs__liegong_can"] = "可烈弓",
 
   ["$hs__liegong1"] = "百步穿杨！",
   ["$hs__liegong2"] = "中！",

@@ -1113,7 +1113,19 @@ function H.removeHegMark(room, player, markName, number)
       player:loseFakeSkill("wild_peach&")
     end
   end
+  room:sendLog{
+    type = "#Use"..markName,
+    from = player.id,
+    toast = true,
+  }
 end
+
+Fk:loadTranslationTable{
+  ["#Usevanguard"] = "%from 使用了<font color=\"#DC143C\"><b> 先驱",
+  ["#Useyinyangfish"] = "%from 使用了<font color=\"#DC143C\"><b> 阴阳鱼",
+  ["#Usecompanion"] = "%from 使用了<font color=\"#DC143C\"><b> 珠联璧合",
+  ["#Usewild"] = "%from 使用了<font color=\"#9400D3\"><b> 野心家标记",
+}
 
 -- 合纵
 
@@ -1265,6 +1277,268 @@ function H.GeneralCardNameBox(spec)
   spec.type = "custom"
   spec.qml_path = "packages/hegemony/qml/SkillGeneralCardName"
   return spec
+end
+
+--为了复刻易位，重新判断国战标记（阴阳鱼和珠联）（仅限非双亮，会在双亮之后给，不会扣除已有标记）
+---@param p ServerPlayer
+function H.judegHegMark(p)
+  local room = p.room
+  local general = Fk.generals[H.getActualGeneral(p, false)]
+  local deputy = Fk.generals[H.getActualGeneral(p, true)]
+  local dmaxHp = deputy.maxHp + deputy.deputyMaxHpAdjustedValue
+  local gmaxHp = general.maxHp + general.mainMaxHpAdjustedValue
+
+  if (dmaxHp + gmaxHp) % 2 == 1 and not H.allGeneralsRevealed(p) and not string.find(general.name, "blank_") and not string.find(deputy.name, "blank_") then
+    p:setMark("HalfMaxHpLeft", 1)
+    p:doNotify("SetPlayerMark", { p.id, "HalfMaxHpLeft", 1})
+  else
+    room:setPlayerMark(p, "HalfMaxHpLeft", 0)
+  end
+  if general:isCompanionWith(deputy) and not H.allGeneralsRevealed(p) then
+    p:setMark("CompanionEffect", 1)
+    p:doNotify("SetPlayerMark", { p.id, "CompanionEffect", 1})
+  else
+    room:setPlayerMark(p, "CompanionEffect", 0)
+  end
+end
+
+--- 易位（交换副将）
+---@param room Room
+---@param player ServerPlayer
+---@param target ServerPlayer
+---@return boolean
+function H.SwapTwoPlayersDeputy(room, player, target)
+  if target == player then return false end
+  if not (player.deputyGeneral and target.deputyGeneral) then return false end
+  local g1hide, g2hide = false, false
+  if player.deputyGeneral == "anjiang" then g1hide = true end
+  if target.deputyGeneral == "anjiang" then g2hide = true end
+  local general1 = player.deputyGeneral == "anjiang" and player:getMark("__heg_deputy") or player.deputyGeneral
+  local general2 = target.deputyGeneral == "anjiang" and target:getMark("__heg_deputy") or target.deputyGeneral
+
+  local general11 = Fk.generals[general1]
+  local general22 = Fk.generals[general2]
+
+  --私人牌堆交换
+
+  local pile1 = {} ---@type string[]
+  local pile2 = {} ---@type string[]
+
+  for _, s in pairs(general11:getSkillNameList()) do
+    local skill = Fk.skill_skels[s]
+    if skill.derived_piles and #skill.derived_piles > 0 then
+      for _, p in ipairs(skill.derived_piles) do
+        table.insert(pile1, p)
+      end
+    end
+  end
+
+  for _, s in pairs(general22:getSkillNameList()) do
+    local skill = Fk.skill_skels[s]
+    if skill.derived_piles and #skill.derived_piles > 0 then
+      for _, p in ipairs(skill.derived_piles) do
+        table.insert(pile2, p)
+      end
+    end
+  end
+
+  local s1 = {} ---@type integer[]
+  local s2 = {} ---@type integer[]
+
+  if #pile1 > 0 then
+    for _, s in ipairs(pile1) do
+      local cards = player:getPile(s)
+      if #cards > 0 then
+        table.insertTableIfNeed(s1, cards)
+      end
+    end
+  end
+
+  if #pile2 > 0 then
+    for _, s in ipairs(pile2) do
+      local cards = target:getPile(s)
+      if #cards > 0 then
+        table.insertTableIfNeed(s2, cards)
+      end
+    end
+  end
+
+  local tolose1 = {}
+  --先把技能lose掉，就不会触发handleaddlose的失去技能效果了(不丢武将牌上的牌)
+  for _, s in ipairs(Fk.generals[general1]:getSkillNameList()) do
+    if player:hasSkill(s, true, true) then
+      local lost_skills = player:loseSkill(s)
+      for _, ss in ipairs(lost_skills) do
+        room:doBroadcastNotify("LoseSkill", {
+          player.id,
+          ss.name
+        })
+      end
+    else
+      table.insert(tolose1, s)
+    end
+    if Fk.skills[s]:hasTag(Skill.Limited) and player:usedSkillTimes(s, Player.HistoryGame) > 0 then
+      target:addSkillUseHistory(s, player:usedSkillTimes(s, Player.HistoryGame))
+    end
+  end
+  local tolose2 = {}
+  for _, s in ipairs(Fk.generals[general2]:getSkillNameList()) do
+    if target:hasSkill(s, true, true) then
+      local lost_skills = target:loseSkill(s)
+      for _, ss in ipairs(lost_skills) do
+        room:doBroadcastNotify("LoseSkill", {
+          target.id,
+          ss.name
+        })
+      end
+    else
+      table.insert(tolose2, s)
+    end
+    if Fk.skills[s]:hasTag(Skill.Limited) and target:usedSkillTimes(s, Player.HistoryGame) > 0 then
+      player:addSkillUseHistory(s, target:usedSkillTimes(s, Player.HistoryGame))
+    end
+  end
+  if not g2hide then
+    room:changeHero(player, general2, false, true, false, false, false)
+  else
+    room:changeHero(player, "anjiang", false, true, false, false, false)
+    room:setPlayerMark(player, "__heg_deputy", general2)
+    for _, sname in ipairs(general22:getSkillNameList()) do
+      if target:hasSkill(sname, true, true) or target:isFakeSkill(sname) then
+        target:loseFakeSkill(sname)
+        local s = Fk.skills[sname]
+        if not s:hasTag(Skill.MainPlace) then
+          if s:hasTag(Skill.Compulsory) then
+            player:addFakeSkill("reveal_skill&")
+          end
+          player:addFakeSkill(s)
+        end
+      end
+    end
+    local ret = true
+    if target.general == "anjiang" then
+      local other = Fk.generals["__heg_general"] or Fk.generals["blank_shibing"]
+      for _, sname in ipairs(other:getSkillNameList(true)) do
+        local s = Fk.skills[sname]
+        if s:hasTag(Skill.Compulsory) and not s:hasTag(Skill.DeputyPlace) and target:isFakeSkill(s) then
+          ret = false
+          break
+        end
+      end
+    end
+    if ret then
+      target:loseFakeSkill("reveal_skill&")
+    end
+  end
+  if not g1hide then
+    room:changeHero(target, general1, false, true, false, false, false)
+  else
+    room:changeHero(target, "anjiang", false, true, false, false, false)
+    room:setPlayerMark(target, "__heg_deputy", general1)
+    for _, sname in ipairs(general11:getSkillNameList()) do
+      if player:hasSkill(sname, true, true) or player:isFakeSkill(sname) then
+        player:loseFakeSkill(sname)
+        local s = Fk.skills[sname]
+        if not s:hasTag(Skill.MainPlace) then
+          if s:hasTag(Skill.Compulsory) then
+            target:addFakeSkill("reveal_skill&")
+          end
+          target:addFakeSkill(s)
+        end
+      end
+    end
+    local ret = true
+    if player.general == "anjiang" then
+      local other = Fk.generals["__heg_general"] or Fk.generals["blank_shibing"]
+      for _, sname in ipairs(other:getSkillNameList(true)) do
+        local s = Fk.skills[sname]
+        if s:hasTag(Skill.Compulsory) and not s:hasTag(Skill.DeputyPlace) and player:isFakeSkill(s) then
+          ret = false
+          break
+        end
+      end
+    end
+    if ret then
+      player:loseFakeSkill("reveal_skill&")
+    end
+  end
+  H.judegHegMark(player)
+  H.judegHegMark(target)
+  if H.getGeneralsRevealedNum(player) == 0 then
+    room:changeKingdom(player, "unknown")
+  end
+  if H.getGeneralsRevealedNum(target) == 0 then
+    room:changeKingdom(target, "unknown")
+  end
+
+  room:doSuperLightBox("packages/hegemony/qml/SwapTwoPlayersDeputy.qml",{
+    generalLeft = player.deputyGeneral,
+    generalRight = target.deputyGeneral,
+  })
+
+  room:sendLog{
+    type = "#heg_swap_deputy",
+    from = player.id,
+    to = {target.id},
+    toast = true,
+  }
+
+  local new_deputy1 = Fk.generals[target.deputyGeneral]
+  local new_deputy2 = Fk.generals[player.deputyGeneral]
+  if #tolose1 > 0 then
+    room:handleAddLoseSkills(target, "-"..table.concat(tolose1, "|-"), nil, false)
+  end
+  if #tolose2 > 0 then
+    room:handleAddLoseSkills(player, "-"..table.concat(tolose2, "|-"), nil, false)
+  end
+
+  local new_pile1 = {} ---@type string[]
+  local new_pile2 = {} ---@type string[]
+
+  for _, s in pairs(new_deputy1:getSkillNameList()) do
+    local skill = Fk.skill_skels[s]
+    if skill.derived_piles and #skill.derived_piles > 0 then
+      for _, p in ipairs(skill.derived_piles) do
+        table.insert(new_pile1, p)
+      end
+    end
+  end
+
+  for _, s in pairs(new_deputy2:getSkillNameList()) do
+    local skill = Fk.skill_skels[s]
+    if skill.derived_piles and #skill.derived_piles > 0 then
+      for _, p in ipairs(skill.derived_piles) do
+        table.insert(new_pile2, p)
+      end
+    end
+  end
+
+  if #new_pile1 > 0 then
+    for _, s in ipairs(pile1) do
+      if #s1 > 0 then
+        target:addToPile(s, s1, true)
+      end
+    end
+  end
+
+  if #new_pile2 > 0 then
+    for _, s in ipairs(pile2) do
+      if #s2 > 0 then
+        player:addToPile(s, s2, true)
+      end
+    end
+  end
+
+  for _, s in ipairs(general11:getSkillNameList()) do
+    room.logic:trigger(fk.EventLoseSkill, player, {skill = Fk.skills[s], who = player})
+    Fk.skills[s]:getSkeleton():onLose(player, false)
+  end
+  for _, s in ipairs(general22:getSkillNameList()) do
+    room.logic:trigger(fk.EventLoseSkill, target, {skill = Fk.skills[s], who = target})
+    Fk.skills[s]:getSkeleton():onLose(target, false)
+  end
+
+  return true
 end
 
 return H

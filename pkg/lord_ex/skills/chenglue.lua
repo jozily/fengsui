@@ -4,11 +4,12 @@ local chenglue = fk.CreateSkill {
 
 Fk:loadTranslationTable {
   ["ld__chenglue"] = "成略",
-  [":ld__chenglue"] = "当与你势力相同的角色使用多目标的牌结算后，你可令其摸一张牌。若你受到过此牌造成的伤害，你可令一名与你势力相同、武将牌均明置且没有国战标记的角色获得一个“阴阳鱼”标记。",
+  [":ld__chenglue"] = "当与你势力相同的角色使用多目标的牌结算后，你可令其摸一张牌。若你受到过此牌造成的伤害，"..
+  "你可令一名与你势力相同、武将牌均明置且没有国战标记的角色获得一枚“阴阳鱼”标记。",
 
   ["#ld__chenglue-ask"] = "成略：你可令 %src 摸一张牌",
-  ["#ld__chenglue-give"] = "成略：你可令一名与你势力相同、武将牌均明置且没有国战标记的角色获得一个“阴阳鱼”标记",
-  ["#ld__shicai_getyinyangfish"] = "%from 令 %to 获得了一个<font color=\"#DC143C\"><b> 阴阳鱼标记",
+  ["#ld__chenglue-give"] = "成略：你可令一名与你势力相同、武将牌均明置且没有国战标记的角色获得一枚“阴阳鱼”标记",
+  ["#ld__shicai_getyinyangfish"] = "%from 令 %to 获得了一枚<font color=\"#DC143C\"><b> 阴阳鱼标记",
 
   ["$ld__chenglue1"] = "阿瞒，苦思之事，我早有良策。",
   ["$ld__chenglue2"] = "策略已有，按部就班即可得胜。",

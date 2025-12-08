@@ -34,6 +34,17 @@ liegong:addEffect("atkrange", {
     return 0
   end,
 })
+--烈弓提示
+liegong:addEffect("targetmod",{
+  target_tip_func = function(self, player, to_select, selected, selected_cards, card, selectable, extra_data)
+    if card.trueName == "slash" and player:hasSkill(liegong.name) and selectable then
+      if to_select.hp >= player.hp then
+        return {{ content = "hs__liegong_can", type = "normal" }}
+      end
+    end
+  end,
+})
+
 
 liegong:addTest(function (room, me)
   local comp2 = room.players[2]

@@ -25,6 +25,8 @@ Fk:loadTranslationTable{
   ["jy_heg__wenyang"] = "文鸯",
   ["#jy_heg__wenyang"] = "勇冠三军",
   ["illustrator:jy_heg__wenyang"] = "小罗没想好",
+
+  ["~jy_heg__wenyang"] = "欲加之罪，何患吾辞？",
 }
 
 General:new(extension, "jy_heg__yanghu", "jin", 4):addSkills { "jy_heg__huaiyuan", "jy_heg__fushou" }

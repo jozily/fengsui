@@ -7,6 +7,9 @@ Fk:loadTranslationTable{
   [":jy_heg__duanqiu"] = "准备阶段，你可以选择一个其他势力，视为对该势力的所有角色使用一张【决斗】，此牌结算后，你令所有角色本回合内至多共计再使用X张手牌（X为此【决斗】结算过程中打出的【杀】数量）。",
 
   ["@jy_heg__duanqiu_count-turn"] = "断虬 限制",
+
+  ["$jy_heg__duanqiu1"] = "此击若中，万念俱灰！",
+  ["$jy_heg__duanqiu2"] = "姿器膂力，万人之雄。",
 }
 
 local H = require "packages.hegemony.util"
