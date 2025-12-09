@@ -40,7 +40,7 @@ liegong:addEffect("atkrange", {
 liegong:addEffect("targetmod",{
   target_tip_func = function(self, player, to_select, selected, selected_cards, card, selectable, extra_data)
     if card.trueName == "slash" and player:hasSkill(liegong.name) and selectable then
-      if to_select.hp >= player.hp then
+      if (to_select:getHandcardNum() >= player.hp) or (to_select:getHandcardNum() <= player:getAttackRange()) then
         return {{ content = "hs__liegong_can", type = "normal" }}
       end
     end
