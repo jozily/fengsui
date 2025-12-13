@@ -53,7 +53,7 @@ longdan:addEffect(fk.CardEffectCancelledOut, {
     if data.card.trueName ~= "slash" then return false end
     if target == player then -- 龙胆杀
       return table.contains(data.card.skillNames, "hs__longdan")
-    elseif data.to == player.id then -- 龙胆闪
+    elseif data.to == player then -- 龙胆闪
       for _, card in ipairs(data.cardsResponded) do
         if card.name == "jink" and table.contains(card.skillNames, "hs__longdan") then
           return true
@@ -67,15 +67,27 @@ longdan:addEffect(fk.CardEffectCancelledOut, {
     if target == player then
       local targets = room:getOtherPlayers(data.to)
       if #targets == 0 then return false end
-      tos = room:askToChoosePlayers(player, {targets = targets, min_num = 1, max_num = 1,
-        prompt = "#longdan_slash-ask::" .. data.to.id, skill_name = longdan.name, cancelable = true})
+      tos = room:askToChoosePlayers(player, {
+        targets = targets,
+        min_num = 1,
+        max_num = 1,
+        prompt = "#longdan_slash-ask::" .. data.to.id,
+        skill_name = longdan.name,
+        cancelable = true,
+      })
     else
       local targets = table.filter(room:getOtherPlayers(target), function(p) return
         p ~= player and p:isWounded()
       end)
       if #targets == 0 then return false end
-      tos = room:askToChoosePlayers(player, {targets = targets, min_num = 1, max_num = 1,
-        prompt = "#longdan_jink-ask::" .. target.id , skill_name = longdan.name, cancelable = true})
+      tos = room:askToChoosePlayers(player, {
+        targets = targets,
+        min_num = 1,
+        max_num = 1,
+        prompt = "#longdan_jink-ask::" .. target.id,
+        skill_name = longdan.name,
+        cancelable = true,
+      })
     end
     if #tos > 0 then
       event:setCostData(self, { tos = tos })
@@ -120,9 +132,9 @@ longdan:addEffect(fk.CardResponding, longdan_draw_spec)
 
 Fk:loadTranslationTable{
   ["hs__longdan"] = "龙胆",
-  [":hs__longdan"] = "①你可将【闪】当普【杀】使用或打出，当此【杀】被一名角色使用的【闪】抵消后，你可对另一名角色造成1点伤害。②你可将【杀】当【闪】使用或打出，当一名角色使用的【杀】被此【闪】抵消后，你可令另一名其他角色回复1点体力。",
+  [":hs__longdan"] = "①你可将【闪】当【杀】使用或打出，当此【杀】被一名角色使用的【闪】抵消后，你可对另一名角色造成1点伤害。②你可将【杀】当【闪】使用或打出，当一名角色使用的【杀】被此【闪】抵消后，你可令另一名其他角色回复1点体力。",
   ["hs__longdan_shouyue"] = "龙胆",
-  [":hs__longdan_shouyue"] = "①你可将【闪】当普【杀】使用或打出，当此【杀】被一名角色使用的【闪】抵消后，你可对另一名角色造成1点伤害。②你可将【杀】当【闪】使用或打出，当一名角色使用的【杀】被此【闪】抵消后，你可令另一名其他角色回复1点体力。③当你使用/打出因〖龙胆〗转化的普【杀】或【闪】时，你摸一张牌。",
+  [":hs__longdan_shouyue"] = "①你可将【闪】当【杀】使用或打出，当此【杀】被一名角色使用的【闪】抵消后，你可对另一名角色造成1点伤害。②你可将【杀】当【闪】使用或打出，当一名角色使用的【杀】被此【闪】抵消后，你可令另一名其他角色回复1点体力。③当你使用/打出因〖龙胆〗转化的普【杀】或【闪】时，你摸一张牌。",
   ["#longdan_slash-ask"] = "龙胆：你可对 %dest 以外的一名角色造成1点伤害",
   ["#longdan_jink-ask"] = "龙胆：你可令 %dest 以外的一名其他角色回复1点体力",
 

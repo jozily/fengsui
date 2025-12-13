@@ -1,6 +1,6 @@
 local extension = Package:new("online_heg")
 extension.extensionName = "hegemony"
-extension.game_modes_whitelist = { 'new_heg_mode' }
+extension.game_modes_whitelist = { "new_heg_mode" }
 
 extension:loadSkillSkelsByPath("./packages/hegemony/pkg/online_heg/skills")
 
@@ -11,6 +11,17 @@ Fk:loadTranslationTable{
   ["heg__yiwei"] = "易位：发起武将易位后，若目标角色选择执行，则易位双方交换对应武将。<br>"..
   "一名角色只能对相同势力的其他角色发起武将易位。易位武将不会影响你的体力上限，也不会获得珠联璧合、阴阳鱼标记。"..
   "易位武将不会移除武将牌上的牌，如“屯田”等，也不会影响技能状态，比如限定技、每回合限一次、断肠、铁骑等。",
+}
+
+local zhonghui = General:new(extension, "ol_heg__zhonghui", "wei", 4)
+zhonghui.mainMaxHpAdjustedValue = -1
+zhonghui:addSkills{ "ol_heg__quanji", "ol_heg__paiyi", "ol_heg__yaopan" }
+Fk:loadTranslationTable{
+  ["ol_heg__zhonghui"] = "钟会",
+  ["#ol_heg__zhonghui"] = "桀骜的野心家",
+  ["illustrator:ol_heg__zhonghui"] = "官方",
+
+  ["~ol_heg__zhonghui"] = "伯约，让你失望了。",
 }
 
 local wuyi = General:new(extension, "ol_heg__wuyi", "shu", 4)

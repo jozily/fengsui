@@ -12,7 +12,7 @@ luminousPearlSkill:addEffect("active", {
     return player.maxHp
   end,
   card_filter = function(self, player, to_select, selected)
-    return #selected < Self.maxHp and not player:prohibitDiscard(Fk:getCardById(to_select)) and Fk:getCardById(to_select).name ~= "luminous_pearl"
+    return #selected < player.maxHp and not player:prohibitDiscard(Fk:getCardById(to_select)) and Fk:getCardById(to_select).name ~= "luminous_pearl"
   end,
   on_use = function(self, room, effect)
     local from = effect.from

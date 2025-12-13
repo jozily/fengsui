@@ -35,7 +35,7 @@ youyan:addEffect(fk.AfterCardsMove, {
       return table.contains(suits, Fk:getCardById(id, true):getSuitString())
     end)
     if #to_get > 0 then
-      room:obtainCard(player.id, to_get, true, fk.ReasonJustMove)
+      room:obtainCard(player, to_get, true, fk.ReasonJustMove)
     end
     room:cleanProcessingArea(cards)
   end,

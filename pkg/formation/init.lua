@@ -113,18 +113,12 @@ lordliubei.hidden = true
 H.lordGenerals["hs__liubei"] = "ld__lordliubei"
 lordliubei:addSkills{"zhangwu", "shouyue", "jizhao"}
 lordliubei:addRelatedSkill("ex__rende")
-
 Fk:loadTranslationTable{
   ["ld__lordliubei"] = "君刘备",
   ["#ld__lordliubei"] = "龙横蜀汉",
   ["designer:ld__lordliubei"] = "韩旭",
   ["illustrator:ld__lordliubei"] = "LiuHeng",
 
-  ["jizhao"] = "激诏",
-  [":jizhao"] = "限定技，当你处于濒死状态时，你可将手牌摸至X张（X为你的体力上限），将体力回复至2点，失去〖授钺〗并获得〖仁德〗。",
-
-  ["$jizhao1"] = "仇未报，汉未兴，朕志犹在！",
-  ["$jizhao2"] = "王业不偏安，起师再兴汉！",
   ["$ex__rende_ld__lordliubei1"] = "勿以恶小而为之，勿以善小而不为。",
   ["$ex__rende_ld__lordliubei2"] = "君才十倍于丕，必能安国成事。",
   ["~ld__lordliubei"] = "若嗣子可辅，辅之。如其不才，君可自取……",

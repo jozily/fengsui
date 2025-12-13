@@ -1307,7 +1307,7 @@ end
 ---@param player ServerPlayer
 ---@param target ServerPlayer
 ---@return boolean
-function H.SwapTwoPlayersDeputy(room, player, target)
+function H.swapDeputy(room, player, target)
   if target == player then return false end
   if not (player.deputyGeneral and target.deputyGeneral) then return false end
   local g1hide, g2hide = false, false
@@ -1471,7 +1471,7 @@ function H.SwapTwoPlayersDeputy(room, player, target)
     room:changeKingdom(target, "unknown")
   end
 
-  room:doSuperLightBox("packages/hegemony/qml/SwapTwoPlayersDeputy.qml",{
+  room:doSuperLightBox("packages/hegemony/qml/swapDeputy.qml",{
     generalLeft = player.deputyGeneral,
     generalRight = target.deputyGeneral,
   })

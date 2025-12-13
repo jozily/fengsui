@@ -7,9 +7,9 @@ battleRoyal:addEffect("viewas", {
   mute_card = false,
   mute = true,
   handly_pile = true,
-  interaction = function()
+  interaction = function(self, player)
     local names = {}
-    if Fk.currentResponsePattern == nil and Self:canUse(Fk:cloneCard("slash")) then
+    if Fk.currentResponsePattern == nil and player:canUse(Fk:cloneCard("slash")) then
       table.insertIfNeed(names, "slash")
     else
       for _, name in ipairs{"slash", "jink"} do

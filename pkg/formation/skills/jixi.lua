@@ -13,7 +13,7 @@ jixi:addEffect("viewas", {
     return #player:getPile("ld__dengai_field") > 0
   end,
   card_filter = function(self, player, to_select, selected)
-    return #selected == 0 and Self:getPileNameOfId(to_select) == "ld__dengai_field"
+    return #selected == 0 and player:getPileNameOfId(to_select) == "ld__dengai_field"
   end,
   view_as = function(self, player, cards)
     if #cards ~= 1 then

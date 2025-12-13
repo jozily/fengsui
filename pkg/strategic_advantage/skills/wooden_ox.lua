@@ -9,7 +9,7 @@ wooden_ox_skill:addEffect("active", {
   end,
   card_num = 1,
   card_filter = function(self, player, to_select, selected)
-    return #selected == 0 and table.contains(Self.player_cards[Player.Hand], to_select)
+    return #selected == 0 and table.contains(player.player_cards[Player.Hand], to_select)
   end,
   target_num = 0,
   on_use = function(self, room, effect)

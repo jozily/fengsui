@@ -8,7 +8,7 @@ luanji:addEffect("viewas", {
   pattern = "archery_attack",
   card_filter = function(self, player, to_select, selected)
     if #selected == 2 or Fk:currentRoom():getCardArea(to_select) ~= Player.Hand then return false end
-    local record = Self:getTableMark("@hs__luanji-turn")
+    local record = player:getTableMark("@hs__luanji-turn")
     return not table.contains(record, Fk:getCardById(to_select):getSuitString(true))
   end,
   view_as = function(self, player, cards)
