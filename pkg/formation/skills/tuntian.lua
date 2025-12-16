@@ -35,9 +35,11 @@ tuntian:addEffect(fk.AfterCardsMove, {
   end,
 })
 tuntian:addEffect('distance', {
-  correct_func = function(self, from, to)
+  correct_func = function(self, from, to, card)
     if from:hasSkill(tuntian.name) then
-      return -#from:getPile("ld__dengai_field")
+      return -#table.filter(from:getPile("ld__dengai_field"), function(id)
+        return not (card and table.contains(Card:getIdList(card), id))
+      end)
     end
   end,
 })
