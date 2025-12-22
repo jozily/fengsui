@@ -33,12 +33,12 @@ quanjin:addEffect("active", {
     local player = effect.from
     local target = effect.tos[1]
     room:moveCardTo(effect.cards, Card.PlayerHand, target, fk.ReasonGive, quanjin.name, nil, false, player.id)
-    if H.askCommandTo(player, target, quanjin.name) then
+    if H.askToCommand(player, { tos = { target }, skill_name = quanjin.name }) then
       player:drawCards(1, quanjin.name)
     else
       local num = player:getHandcardNum()
-      for hc, p in ipairs(room.alive_players) do
-        hc = p:getHandcardNum()
+      for _, p in ipairs(room.alive_players) do
+        local hc = p:getHandcardNum()
         if hc > num then
           num = hc
         end

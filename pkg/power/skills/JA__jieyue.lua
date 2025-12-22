@@ -41,7 +41,7 @@ jieyue:addEffect(fk.EventPhaseStart, {
     local room = player.room
     local to = event:getCostData(self).tos[1]
     room:moveCardTo(event:getCostData(self).card, Player.Hand, to, fk.ReasonGive, jieyue.name, nil, false, player)
-    if H.askCommandTo(player, to, jieyue.name) then
+    if H.askToCommand(player, { tos = { to }, skill_name = jieyue.name }) then
       player:drawCards(1, jieyue.name)
     else
       room:addPlayerMark(player, "_ld__jieyue-turn")

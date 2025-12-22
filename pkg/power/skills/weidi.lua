@@ -15,7 +15,7 @@ weidi:addEffect("active", {
   on_use = function(self, room, effect)
     local player = effect.from
     local target = effect.tos[1]
-    if not H.askCommandTo(player, target, weidi.name) and not target:isKongcheng() then
+    if not H.askToCommand(player, { tos = { target }, skill_name = weidi.name }) and not target:isKongcheng() then
       local cards = target:getCardIds("h")
       room:obtainCard(player, cards, false, fk.ReasonPrey)
       local num = #cards

@@ -25,7 +25,9 @@ duwu:addEffect("active", {
   card_filter = Util.FalseFunc,
   on_use = function(self, room, effect)
     local player = effect.from
-    local index = H.startCommand(player, duwu.name)
+    local command = H.askToStartCommand(player, {
+      skill_name = duwu.name,
+    })
     local targets = table.filter(room.alive_players,
       function(p) return not H.compareKingdomWith(player, p) and player:inMyAttackRange(p) end)
     if #targets > 0 then
@@ -36,20 +38,12 @@ duwu:addEffect("active", {
       if events then
         x = #events
       end
-      for _, p in ipairs(targets) do
-        if player.dead then break end
-        if not p.dead and not H.doCommand(p, duwu.name, index, player) then
-          room:damage {
-            from = player,
-            to = p,
-            damage = 1,
-            skillName = duwu.name,
-          }
-          if not player.dead then
-            player:drawCards(1, duwu.name)
-          end
-        end
-      end
+      H.Command{
+        from = player,
+        tos = targets,
+        command = command,
+        skillName = duwu.name,
+      }
       if not player.dead then
         events = room.logic.event_recorder[GameEvent.Dying]
         if events then
@@ -63,6 +57,26 @@ duwu:addEffect("active", {
       end
     end
   end,
+})
+duwu:addEffect(H.CommandExecuted, {
+  is_delay_effect = true,
+  mute = true,
+  can_trigger = function(self, event, target, player, data)
+    return player == data.from and not target.dead and data.skillName == duwu.name and not data.succeed
+  end,
+  on_cost = Util.TrueFunc,
+  on_use = function(self, event, target, player, data)
+    local room = player.room
+    room:damage {
+      from = player,
+      to = target,
+      damage = 1,
+      skillName = duwu.name,
+    }
+    if not player.dead then
+      player:drawCards(1, duwu.name)
+    end
+  end
 })
 
 return duwu

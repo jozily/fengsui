@@ -11,7 +11,7 @@ jianglue:addEffect("active", {
   card_filter = Util.FalseFunc,
   on_use = function(self, room, effect)
     local player = effect.from
-    local index = H.startCommand(player, jianglue.name)
+    local command = H.askToStartCommand(player, {skill_name = jianglue.name})
     local kingdom = H.getKingdom(player)
     for _, p in ipairs(room:getAlivePlayers()) do
       if p.kingdom == "unknown" and p:isAlive() then
@@ -36,21 +36,22 @@ jianglue:addEffect("active", {
     local targets = table.filter(room.alive_players, function(p) return H.compareKingdomWith(p, player) and p ~= player end)
     local tos = {} ---@type ServerPlayer[]
     if #targets > 0 then
-      room:doIndicate(player.id, targets)
-      room:sortByAction(targets)
-      for _, p in ipairs(targets) do
-        if player.dead then break end
-        if p:isAlive() and H.doCommand(p, jianglue.name, index, player) then
-          table.insert(tos, p)
-        end
-      end
+      local dat = {
+        from = player,
+        tos = targets,
+        command = command,
+        skillName = jianglue.name,
+        no_indicate = true,
+      }
+      H.Command(dat)
+      table.insertTable(tos, dat.succeed_list)
     end
     table.insert(tos, 1, player)
     local num = 0
     for _, p in ipairs(tos) do
       if p:isAlive() then
         room:changeMaxHp(p, 1)
-        if p:isAlive() then
+        if p:isAlive() and p:isWounded() then
           if room:recover({
             who = p,
             num = 1,
@@ -68,7 +69,7 @@ jianglue:addEffect("active", {
 
 Fk:loadTranslationTable{
   ["jianglue"] = "将略",
-  [":jianglue"] = "限定技，出牌阶段，你可选择一个“军令”，然后发动势力召唤。你对所有与你势力相同的角色发起此“军令”。你加1点体力上限，回复1点体力，所有执行“军令”的角色各加1点体力上限，回复1点体力。然后你摸X张牌（X为以此法回复体力的角色数）。",
+  [":jianglue"] = "限定技，出牌阶段，你可选择一个“军令”，然后发动势力召唤。你对所有与你势力相同的角色发起此“军令”。你和所有执行“军令”的角色各加1点体力上限，回复1点体力。然后你摸X张牌（X为以此法回复体力的角色数）。",
 
   ["$jianglue1"] = "奇谋为短，将略为要。",
   ["$jianglue2"] = "为将者，需有谋略。",

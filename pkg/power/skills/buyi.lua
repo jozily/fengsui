@@ -20,7 +20,7 @@ buyi:addEffect(fk.AfterDying, {
   end,
   on_use = function(self, event, target, player, data)
     player.room:doIndicate(player.id, {data.damage.from.id})
-    if not H.askCommandTo(player, data.damage.from, buyi.name) then
+    if not H.askToCommand(player, { tos = { data.damage.from }, skill_name = buyi.name }) then
       player.room:recover({
         who = target,
         num = 1,

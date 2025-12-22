@@ -26,19 +26,12 @@ xiejian:addEffect("active", {
   on_use = function(self, room, effect)
     local player = effect.from
     local to = effect.tos[1]
-    local allCommands = { "command1", "command2", "command3", "command4", "command5", "command6" }
-    local commands = table.random(allCommands, 2) ---@type string[]
-    local choice = room:askToChoice(player, { choices = commands, skill_name = "start_command", detailed = true })
-    room:sendLog {
-        type = "#CommandChoice",
-        from = player.id,
-        arg = ":" + choice,
-        toast = true,
-    }
-    local index = table.indexOf(allCommands, choice)
+    local choice, commands = H.askToStartCommand(player, {
+      skill_name = xiejian.name,
+      no_log = true,
+    })
     table.removeOne(commands, choice)
-    local spare_index = commands[1]
-    if player.dead or to.dead then return false end
+    if player.dead or to.dead or not choice then return false end
     room:sendLog {
         type = "#AskCommandTo",
         from = player.id,
@@ -46,10 +39,22 @@ xiejian:addEffect("active", {
         arg = xiejian.name,
         toast = true,
     }
-    if not H.doCommand(to, xiejian.name, index, player, false) then
-        H.doCommand(to, xiejian.name, table.indexOf(allCommands, spare_index), player, true)
-      end
-    end,
+    if not H.Command({
+      tos = { to },
+      skillName = xiejian.name,
+      command = choice,
+      from = player,
+      forced = false,
+    }) then
+      H.Command({
+        tos = { to },
+        skillName = xiejian.name,
+        command = commands[1],
+        from = player,
+        forced = true,
+      })
+    end
+  end,
 })
 
 return xiejian
