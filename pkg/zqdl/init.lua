@@ -135,6 +135,8 @@ Fk:loadTranslationTable{
   ["zq_heg__wangjun"] = "王濬",
   ["#zq_heg__wangjun"] = "顺流长驱",
   ["illustrator:zq_heg__wangjun"] = "荆芥",
+
+  ["~zq_heg__wangjun"] = "吾功大无匹，但为浑父子所抑而已。",
 }
 
 General:new(extension, "zq_heg__malong", "jin", 4):addSkills{ "zq_heg__zhuanzhan", "zq_heg__xunjim" }
@@ -142,6 +144,8 @@ Fk:loadTranslationTable{
   ["zq_heg__malong"] = "马隆",
   ["#zq_heg__malong"] = "困局诡阵",
   ["illustrator:zq_heg__malong"] = "荆芥",
+
+  ["~zq_heg__malong"] = "惟愿长守边境，不使百姓为虏所扰。",
 }
 
 return extension

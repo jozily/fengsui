@@ -6,7 +6,10 @@ Fk:loadTranslationTable{
   ["zq_heg__xunjim"] = "勋济",
   [":zq_heg__xunjim"] = "你使用【杀】可以多选择至多两名角色为目标，此【杀】结算结束后，若对所有目标角色均造成伤害，此【杀】不计次数。",
 
-  ["#zq_heg__xunjim-choose"] = "誓仇：你可以为此%arg额外指定至多两个目标",
+  ["#zq_heg__xunjim-choose"] = "勋济：你可以为此%arg额外指定至多两个目标",
+
+  ["$zq_heg__xunjim1"] = "天统之境，岂容丑虏犯边。",
+  ["$zq_heg__xunjim2"] = "凉州有危，臣者当济。",
 }
 
 xunji:addEffect(fk.AfterCardTargetDeclared, {

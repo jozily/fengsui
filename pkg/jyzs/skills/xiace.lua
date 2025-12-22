@@ -9,6 +9,9 @@ Fk:loadTranslationTable{
 
   ["@jy_heg__xiace_slash-phase"] = "黠策",
   ["@@jy_heg__xiace_transform"] = "黠策 已变更",
+
+  ["$jy_heg__xiace1"] = "风之积非厚，其负大翼也无力。",
+  ["$jy_heg__xiace2"] = "人情同于抔土，岂穷达而异心。",
 }
 
 local H = require "packages.hegemony.util"
@@ -78,14 +81,5 @@ xiace:addEffect("targetmod", {
     end
   end
 })
-
-xiace:addTest(function (room, me)
-  FkTest.runInRoom(function ()
-    room:handleAddLoseSkills(me, xiace.name)
-  end)
-  FkTest.runInRoom(function ()
-    me:drawCards(1)
-  end)
-end)
 
 return xiace

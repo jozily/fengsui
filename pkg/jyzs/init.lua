@@ -11,7 +11,9 @@ Fk:loadTranslationTable{
 
 local H = require "packages.hegemony.util"
 
-General:new(extension, "jy_heg__zhanghuyuechen", "jin", 4):addSkills { "jy_heg__xijue", "jy_heg__lvxian", "jy_heg__yingwei" }
+local zhanghuyuechen = General:new(extension, "jy_heg__zhanghuyuechen", "jin", 4)
+zhanghuyuechen:addSkills { "jy_heg__xijue", "jy_heg__lvxian", "jy_heg__yingwei" }
+zhanghuyuechen:addRelatedSkills { "ex__tuxi", "xiaoguo" }
 Fk:loadTranslationTable{
   ["jy_heg__zhanghuyuechen"] = "张虎乐綝",
   ["#jy_heg__zhanghuyuechen"] = "文成武德",
@@ -52,6 +54,8 @@ Fk:loadTranslationTable{
   ["jy_heg__bailingyun"] = "柏夫人",
   ["#jy_heg__bailingyun"] = "玲珑心窍",
   ["illustrator:jy_heg__bailingyun"] = "小罗没想好",
+
+  ["~jy_heg__bailingyun"] = "世人皆惧司马，独我痴情仲达……",
 }
 
 General:new(extension, "jy_heg__wangxiang", "jin", 3):addSkills { "jy_heg__bingxin" }
