@@ -64,8 +64,7 @@ function Command:main()
       logic:breakEvent(false)
     end
     if to:isAlive() then
-      local choice = commandData.command
-      room:askToChoice(to, {
+      local choice = room:askToChoice(to, {
         choices = { commandData.command },
         skill_name = "do_command",
         detailed = true,
