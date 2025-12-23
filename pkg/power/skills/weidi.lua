@@ -1,9 +1,23 @@
 local weidi = fk.CreateSkill{
   name = "ld__weidi",
 }
+
+Fk:loadTranslationTable{
+  ["ld__weidi"] = "伪帝",
+  [":ld__weidi"] = "出牌阶段限一次，你可以选择一名本回合从牌堆获得过牌的其他角色，对其发起“军令”。若其不执行，你获得其所有手牌，然后交给其等量的牌。",
+
+  ["#ld__weidi"] = "伪帝：对一名角色发起“军令”，若其不执行则获得其所有手牌并交还等量的牌",
+  ["#ld__weidi-cards"] = "伪帝：交给 %dest %arg张牌",
+
+  ["$ld__weidi1"] = "你们都得听我的号令！",
+  ["$ld__weidi2"] = "我才是皇帝！",
+}
+
 local H = require "packages.hegemony.util"
+
 weidi:addEffect("active", {
   anim_type = "control",
+  prompt = "#ld__weidi",
   can_use = function(self, player)
     return player:usedSkillTimes(weidi.name, Player.HistoryPhase) == 0
   end,
@@ -66,15 +80,5 @@ weidi:addAcquireEffect(function (self, player, is_start)
     return false
   end, Player.HistoryTurn)
 end)
-
-Fk:loadTranslationTable{
-  ['ld__weidi'] = "伪帝",
-  [':ld__weidi'] = "出牌阶段限一次，你可选择一名本回合从牌堆获得过牌的其他角色，对其发起“军令”。若其不执行，则你获得其所有手牌，然后交给其等量的牌。",
-
-  ["#ld__weidi-cards"] = "伪帝：交给 %dest %arg 张牌",
-
-  ["$ld__weidi1"] = "你们都得听我的号令！",
-  ["$ld__weidi2"] = "我才是皇帝！",
-}
 
 return weidi

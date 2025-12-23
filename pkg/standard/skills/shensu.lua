@@ -1,6 +1,21 @@
 local shensu = fk.CreateSkill{
   name = "hs__shensu",
 }
+
+Fk:loadTranslationTable{
+  ["hs__shensu"] = "神速",
+  [":hs__shensu"] = "你可以作出如下选择：<br>"..
+  "1.跳过判定阶段和摸牌阶段；<br>2.跳过出牌阶段并弃置一张装备牌；<br>3.跳过弃牌阶段并失去1点体力。<br>"..
+  "你每执行一项，视为使用一张无距离限制的【杀】。",
+
+  ["#hs__shensu1-choose"] = "神速：你可以跳过判定阶段和摸牌阶段，视为使用一张无距离限制的【杀】",
+  ["#hs__shensu2-choose"] = "神速：你可以跳过出牌阶段并弃置一张装备牌，视为使用一张无距离限制的【杀】",
+  ["#hs__shensu3-choose"] = "神速：你可以跳过弃牌阶段并失去1点体力，视为使用一张无距离限制的【杀】",
+
+  ["$hs__shensu1"] = "吾善于千里袭人！",
+  ["$hs__shensu2"] = "取汝首级，有如探囊取物！",
+}
+
 shensu:addEffect(fk.EventPhaseChanging, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
@@ -28,27 +43,44 @@ shensu:addEffect(fk.EventPhaseChanging, {
     end)
     if #targets == 0 or max_num == 0 then return end
     if data.phase == Player.Judge then
-      local tos = room:askToChoosePlayers(player, {targets = targets, min_num = 1,
-        max_num = max_num, prompt = "#hs__shensu1-choose", skill_name = shensu.name, cancelable = true})
+      local tos = room:askToChoosePlayers(player, {
+        targets = targets,
+        min_num = 1,
+        max_num = max_num,
+        prompt = "#hs__shensu1-choose",
+        skill_name = shensu.name,
+        cancelable = true,
+      })
       if #tos > 0 then
         event:setCostData(self, {tos = tos})
         return true
       end
     elseif data.phase == Player.Play then
-      local cards = table.filter(player:getCardIds("he"), function (id)
-        return Fk:getCardById(id).type == Card.TypeEquip and not player:prohibitDiscard(id)
-      end)
-      local tos, id = room:askToChooseCardsAndPlayers(player, {targets = targets,
-        min_num = 1, max_num = max_num, pattern = ".|.|.|.|.|equip",
-        prompt = "#hs__shensu2-choose", skill_name = self.name, cancelable = true,
-        max_card_num = 1, min_card_num = 1, will_throw = true})
+      local tos, id = room:askToChooseCardsAndPlayers(player, {
+        targets = targets,
+        min_num = 1,
+        max_num = max_num,
+        pattern = ".|.|.|.|.|equip",
+        prompt = "#hs__shensu2-choose",
+        skill_name = shensu.name,
+        cancelable = true,
+        max_card_num = 1,
+        min_card_num = 1,
+        will_throw = true,
+      })
       if #tos > 0 and id then
         event:setCostData(self, { tos = tos, cards = id })
         return true
       end
     elseif data.phase == Player.Discard then
-      local tos = room:askToChoosePlayers(player, {targets = targets, min_num = 1,
-        max_num = max_num, prompt = "#hs__shensu3-choose", skill_name = shensu.name, cancelable = true})
+      local tos = room:askToChoosePlayers(player, {
+        targets = targets,
+        min_num = 1,
+        max_num = max_num,
+        prompt = "#hs__shensu3-choose",
+        skill_name = shensu.name,
+        cancelable = true,
+      })
       if #tos > 0 then
         event:setCostData(self, {tos = tos})
         return true
@@ -63,7 +95,7 @@ shensu:addEffect(fk.EventPhaseChanging, {
       player:skip(Player.Play)
       room:throwCard(event:getCostData(self).cards, shensu.name, player, player)
     elseif data.phase == Player.Discard then
-      player.room:loseHp(player, 1, self.name)
+      player.room:loseHp(player, 1, shensu.name)
     end
     data.skipped = true
     if player.dead then return end
@@ -101,17 +133,5 @@ shensu:addTest(function (room, me)
   lu.assertEquals(#me:getCardIds("h"), 6)
   lu.assertEquals(comp3.hp, orig_hp - 3)
 end)
-
-Fk:loadTranslationTable{
-  ["hs__shensu"] = "神速",
-  [":hs__shensu"] = "①判定阶段开始前，你可跳过此阶段和摸牌阶段视为使用普【杀】。②出牌阶段开始前，你可跳过此阶段并弃置一张装备牌视为使用普【杀】。③弃牌阶段开始前，你可跳过此阶段并失去1点体力视为使用普【杀】。",
-
-  ["#hs__shensu1-choose"] = "神速：你可以跳过判定阶段和摸牌阶段，视为使用一张无距离限制的【杀】",
-  ["#hs__shensu2-choose"] = "神速：你可以跳过出牌阶段并弃置一张装备牌，视为使用一张无距离限制的【杀】",
-  ["#hs__shensu3-choose"] = "神速：你可以跳过弃牌阶段并失去1点体力，视为使用一张无距离限制的【杀】",
-
-  ["$hs__shensu1"] = "吾善于千里袭人！",
-  ["$hs__shensu2"] = "取汝首级，有如探囊取物！",
-}
 
 return shensu

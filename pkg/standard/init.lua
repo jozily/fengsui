@@ -11,25 +11,25 @@ Fk:loadTranslationTable{
 
 local caocao = General:new(extension, "hs__caocao", "wei", 4)
 caocao:addSkill("jianxiong")
-caocao:addCompanions{"hs__dianwei", "hs__xuchu"}
+caocao:addCompanions{ "dianwei", "xuchu" }
 Fk:loadTranslationTable{
   ["hs__caocao"] = "曹操",
   ["#hs__caocao"] = "魏武帝",
-  -- ["illustrator:hs__caocao"] = "KayaK",
+  ["illustrator:hs__caocao"] = "KayaK",
   ["~hs__caocao"] = "霸业未成，未成啊……",
 }
 
-General:new(extension, "hs__simayi", "wei", 3):addSkills{"fankui", "ex__guicai"} -- 手杀
+General:new(extension, "hs__simayi", "wei", 3):addSkills{ "fankui", "ex__guicai" }
 Fk:loadTranslationTable{
   ["hs__simayi"] = "司马懿",
   ["#hs__simayi"] = "狼顾之鬼",
   ["illustrator:hs__simayi"] = "木美人",
-  ["~hs__simayi"] = "我的气数就到这里了吗？",
+  ["~hs__simayi"] = "我的气数……就到这里了吗？",
 }
 
 local xiahoudun = General:new(extension, "hs__xiahoudun", "wei", 4)
 xiahoudun:addSkill("hs__ganglie")
-xiahoudun:addCompanions("hs__xiahouyuan")
+xiahoudun:addCompanions("xiahouyuan")
 Fk:loadTranslationTable{
   ["hs__xiahoudun"] = "夏侯惇",
   ["#hs__xiahoudun"] = "独眼的罗刹",
@@ -37,7 +37,7 @@ Fk:loadTranslationTable{
   ["~hs__xiahoudun"] = "诸多败绩，有负丞相重托……",
 }
 
-General:new(extension, "hs__zhangliao", "wei", 4):addSkill("ex__tuxi") -- 手杀
+General:new(extension, "hs__zhangliao", "wei", 4):addSkill("ex__tuxi")
 Fk:loadTranslationTable{
   ["hs__zhangliao"] = "张辽",
   ["#zhangliao"] = "前将军",
@@ -62,9 +62,8 @@ Fk:loadTranslationTable{
 }
 
 local zhenji = General:new(extension, "hs__zhenji", "wei", 3, 3, General.Female)
-zhenji:addSkills{"hs__luoshen", "qingguo"}
-zhenji:addCompanions("hs__caopi")
-
+zhenji:addSkills{ "hs__luoshen", "qingguo" }
+zhenji:addCompanions("caopi")
 Fk:loadTranslationTable{
   ["hs__zhenji"] = "甄姬",
   ["#hs__zhenji"] = "薄幸的美人",
@@ -129,10 +128,10 @@ Fk:loadTranslationTable{
   ["~hs__caopi"] = "子建，子建……",
 }
 
-General:new(extension, "hs__yuejin", "wei", 4):addSkill("xiaoguo")
-
+General:new(extension, "hs__yuejin", "wei", 4):addSkill("nos__xiaoguo")
 Fk:loadTranslationTable{
   ["hs__yuejin"] = "乐进",
+  ["yuejin"] = "乐进",
   ["#hs__yuejin"] = "奋强突固",
   ["illustrator:hs__yuejin"] = "巴萨小马",
   ["desinger:hs__yuejin"] = "淬毒",
@@ -141,7 +140,7 @@ Fk:loadTranslationTable{
 
 local liubei = General:new(extension, "hs__liubei", "shu", 4)
 liubei:addSkill("ex__rende")
-liubei:addCompanions({"hs__guanyu", "hs__zhangfei", "hs__ganfuren"})
+liubei:addCompanions({ "guanyu", "zhangfei", "ganfuren" })
 Fk:loadTranslationTable{
   ["hs__liubei"] = "刘备",
   ["#hs__liubei"] = "乱世的枭雄",
@@ -151,7 +150,7 @@ Fk:loadTranslationTable{
 
 local guanyu = General:new(extension, "hs__guanyu", "shu", 5)
 guanyu:addSkill("hs__wusheng")
-guanyu:addCompanions("hs__zhangfei")
+guanyu:addCompanions("zhangfei")
 Fk:loadTranslationTable{
   ["hs__guanyu"] = "关羽",
   ["#hs__guanyu"] = "威震华夏",
@@ -160,17 +159,16 @@ Fk:loadTranslationTable{
 }
 
 General:new(extension, "hs__zhangfei", "shu", 4):addSkill("hs__paoxiao")
-
 Fk:loadTranslationTable{
   ["hs__zhangfei"] = "张飞",
   ["#hs__zhangfei"] = "万夫不当",
-  -- ["illustrator:hs__zhangfei"] = "宋其金",
+  ["illustrator:hs__zhangfei"] = "KayaK",
   ["~hs__zhangfei"] = "实在是杀不动了……",
 }
 
 local zhugeliang = General:new(extension, "hs__zhugeliang", "shu", 3)
-zhugeliang:addSkills{"hs__guanxing", "hs__kongcheng"}
-zhugeliang:addCompanions("hs__huangyueying")
+zhugeliang:addSkills{ "hs__guanxing", "hs__kongcheng" }
+zhugeliang:addCompanions("huangyueying")
 Fk:loadTranslationTable{
   ["hs__zhugeliang"] = "诸葛亮",
   ["#hs__zhugeliang"] = "迟暮的丞相",
@@ -180,8 +178,7 @@ Fk:loadTranslationTable{
 
 local zhaoyun = General:new(extension, "hs__zhaoyun", "shu", 4)
 zhaoyun:addSkill("hs__longdan")
-zhaoyun:addCompanions("hs__liushan")
-
+zhaoyun:addCompanions("liushan")
 Fk:loadTranslationTable{
   ["hs__zhaoyun"] = "赵云",
   ["#hs__zhaoyun"] = "虎威将军",
@@ -189,7 +186,7 @@ Fk:loadTranslationTable{
   ["~hs__zhaoyun"] = "这，就是失败的滋味吗？",
 }
 
-General:new(extension, "hs__machao", "shu", 4):addSkills{"mashu", "hs__tieqi"}
+General:new(extension, "hs__machao", "shu", 4):addSkills{ "hs_machao__mashu", "hs__tieqi" }
 Fk:loadTranslationTable{
   ["hs__machao"] = "马超",
   ["#hs__machao"] = "一骑当千",
@@ -198,8 +195,8 @@ Fk:loadTranslationTable{
 }
 
 local huangyueying = General:new(extension, "hs__huangyueying", "shu", 3, 3, General.Female)
-huangyueying:addSkills{"jizhi","qicai"}
-huangyueying:addCompanions("hs__wolong")
+huangyueying:addSkills{ "jizhi", "qicai" }
+huangyueying:addCompanions("wolong")
 Fk:loadTranslationTable{
   ["hs__huangyueying"] = "黄月英",
   ["#hs__huangyueying"] = "归隐的杰女",
@@ -209,7 +206,7 @@ Fk:loadTranslationTable{
 
 local huangzhong = General:new(extension, "hs__huangzhong", "shu", 4)
 huangzhong:addSkill("hs__liegong")
-huangzhong:addCompanions("hs__weiyan")
+huangzhong:addCompanions("weiyan")
 Fk:loadTranslationTable{
   ["hs__huangzhong"] = "黄忠",
   ["#hs__huangzhong"] = "老当益壮",
@@ -218,7 +215,6 @@ Fk:loadTranslationTable{
 }
 
 General:new(extension, "hs__weiyan", "shu", 4):addSkill("hs__kuanggu")
-
 Fk:loadTranslationTable{
   ["hs__weiyan"] = "魏延",
   ["#hs__weiyan"] = "嗜血的独狼",
@@ -227,15 +223,15 @@ Fk:loadTranslationTable{
 }
 
 local pangtong = General:new(extension, "hs__pangtong", "shu",3)
-pangtong:addSkills{"lianhuan", "niepan"}
-pangtong:addCompanions("hs__wolong")
+pangtong:addSkills{ "lianhuan", "niepan" }
+pangtong:addCompanions("wolong")
 Fk:loadTranslationTable{
   ["hs__pangtong"] = "庞统",
   ["#hs__pangtong"] = "凤雏",
   ["illustrator:hs__pangtong"] = "KayaK",
 }
 
-General:new(extension, "hs__wolong", "shu", 3):addSkills{"bazhen", "huoji", "kanpo"}
+General:new(extension, "hs__wolong", "shu", 3):addSkills{ "bazhen", "huoji", "kanpo" }
 Fk:loadTranslationTable{
   ["hs__wolong"] = "卧龙诸葛亮",
   ["#hs__wolong"] = "卧龙",
@@ -243,7 +239,7 @@ Fk:loadTranslationTable{
   ["~hs__wolong"] = "我的计谋竟被……",
 }
 
-General:new(extension, "hs__liushan", "shu", 3):addSkills{"xiangle", "fangquan"}
+General:new(extension, "hs__liushan", "shu", 3):addSkills{ "xiangle", "fangquan" }
 Fk:loadTranslationTable{
   ["hs__liushan"] = "刘禅",
   ["#hs__liushan"] = "无为的真命主",
@@ -252,8 +248,8 @@ Fk:loadTranslationTable{
 }
 
 local menghuo = General:new(extension, "hs__menghuo", "shu", 4)
-menghuo:addCompanions("hs__zhurong")
-menghuo:addSkills{"huoshou", "zaiqi"}
+menghuo:addCompanions("zhurong")
+menghuo:addSkills{ "huoshou", "hs__zaiqi" }
 Fk:loadTranslationTable{
   ["hs__menghuo"] = "孟获",
   ["#hs__menghuo"] = "南蛮王",
@@ -262,7 +258,7 @@ Fk:loadTranslationTable{
   ["~hs__menghuo"] = "七纵之恩……来世……再报了……",
 }
 
-General:new(extension, "hs__zhurong", "shu", 4, 4, General.Female):addSkills{"juxiang", "lieren"}
+General:new(extension, "hs__zhurong", "shu", 4, 4, General.Female):addSkills{ "juxiang", "lieren" }
 Fk:loadTranslationTable{
   ["hs__zhurong"] = "祝融",
   ["#hs__zhurong"] = "野性的女王",
@@ -270,9 +266,10 @@ Fk:loadTranslationTable{
   ["~hs__zhurong"] = "大王，我，先走一步了。",
 }
 
-General(extension, "hs__ganfuren", "shu", 3, 3, General.Female):addSkills{"shushen", "shenzhi"}
+General(extension, "hs__ganfuren", "shu", 3, 3, General.Female):addSkills{ "shushen", "shenzhi" }
 Fk:loadTranslationTable{
   ["hs__ganfuren"] = "甘夫人",
+  ["ganfuren"] = "甘夫人",
   ["#hs__ganfuren"] = "昭烈皇后",
   ["illustrator:hs__ganfuren"] = "琛·美弟奇",
   ["designer:hs__ganfuren"] = "淬毒",
@@ -281,8 +278,7 @@ Fk:loadTranslationTable{
 
 local sunquan = General:new(extension, "hs__sunquan", "wu", 4)
 sunquan:addSkill("hs__zhiheng")
-sunquan:addCompanions("hs__zhoutai")
-
+sunquan:addCompanions("zhoutai")
 Fk:loadTranslationTable{
   ["hs__sunquan"] = "孙权",
   ["#hs__sunquan"] = "年轻的贤君",
@@ -291,7 +287,6 @@ Fk:loadTranslationTable{
 }
 
 General:new(extension, "hs__ganning", "wu", 4):addSkill("qixi")
-
 Fk:loadTranslationTable{
   ["hs__ganning"] = "甘宁",
   ["#hs__ganning"] = "锦帆游侠",
@@ -299,8 +294,7 @@ Fk:loadTranslationTable{
   ["~hs__ganning"] = "二十年后，又是一条好汉！",
 }
 
-General:new(extension, "hs__lvmeng", "wu", 4):addSkills{"hs__keji", "hs__mouduan"}
-
+General:new(extension, "hs__lvmeng", "wu", 4):addSkills{ "hs__keji", "hs__mouduan" }
 Fk:loadTranslationTable{
   ["hs__lvmeng"] = "吕蒙",
   ["#hs__lvmeng"] = "白衣渡江",
@@ -310,8 +304,7 @@ Fk:loadTranslationTable{
 
 local huanggai = General:new(extension, "hs__huanggai", "wu", 4)
 huanggai:addSkill("hs__kurou")
-huanggai:addCompanions("hs__zhouyu")
-
+huanggai:addCompanions("zhouyu")
 Fk:loadTranslationTable{
   ["hs__huanggai"] = "黄盖",
   ["#hs__huanggai"] = "轻身为国",
@@ -320,8 +313,8 @@ Fk:loadTranslationTable{
 }
 
 local zhouyu = General:new(extension, "hs__zhouyu", "wu", 3)
-zhouyu:addSkills{"ex__yingzi", "ex__fanjian"}
-zhouyu:addCompanions("hs__xiaoqiao")
+zhouyu:addSkills{ "ex__yingzi", "ex__fanjian" }
+zhouyu:addCompanions("xiaoqiao")
 Fk:loadTranslationTable{
   ["hs__zhouyu"] = "周瑜",
   ["#hs__zhouyu"] = "大都督",
@@ -330,9 +323,8 @@ Fk:loadTranslationTable{
 }
 
 local daqiao = General:new(extension, "hs__daqiao", "wu", 3, 3, General.Female)
-daqiao:addSkills{"guose", "liuli"}
-daqiao:addCompanions("hs__xiaoqiao")
-
+daqiao:addSkills{ "guose", "liuli" }
+daqiao:addCompanions("xiaoqiao")
 Fk:loadTranslationTable{
   ["hs__daqiao"] = "大乔",
   ["#hs__daqiao"] = "矜持之花",
@@ -340,7 +332,7 @@ Fk:loadTranslationTable{
   ["~hs__daqiao"] = "伯符，我去了……",
 }
 
-General:new(extension, "hs__luxun", "wu", 3):addSkills{"hs__qianxun", "duoshi"}
+General:new(extension, "hs__luxun", "wu", 3):addSkills{ "hs__qianxun", "duoshi" }
 Fk:loadTranslationTable{
   ["hs__luxun"] = "陆逊",
   ["#hs__luxun"] = "擎天之柱",
@@ -348,7 +340,7 @@ Fk:loadTranslationTable{
   ["~hs__luxun"] = "还以为我已经不再年轻……",
 }
 
-General:new(extension, "hs__sunshangxiang", "wu", 3, 3, General.Female):addSkills{"hs__xiaoji", "jieyin"}
+General:new(extension, "hs__sunshangxiang", "wu", 3, 3, General.Female):addSkills{ "hs__xiaoji", "jieyin" }
 Fk:loadTranslationTable{
   ["hs__sunshangxiang"] = "孙尚香",
   ["#hs__sunshangxiang"] = "弓腰姬",
@@ -381,7 +373,6 @@ Fk:loadTranslationTable{
 }
 
 General:new(extension, "hs__zhoutai", "wu", 4):addSkills{"hs__buqu", "hs__fenji"}
-
 Fk:loadTranslationTable{
   ["hs__zhoutai"] = "周泰",
   ["#hs__zhoutai"] = "历战之躯",
@@ -405,16 +396,16 @@ Fk:loadTranslationTable{
   ["~hs__zhangzhaozhanghong"] = "竭力尽智，死而无憾。",
 }
 
-General:new(extension, "hs__dingfeng", "wu", 4):addSkills{"duanbing", "fenxun"}
+General:new(extension, "hs__dingfeng", "wu", 4):addSkills{ "duanbing", "fenxun" }
 Fk:loadTranslationTable{
   ["hs__dingfeng"] = "丁奉",
+  ["dingfeng"] = "丁奉",
   ["#hs__dingfeng"] = "清侧重臣",
   ["illustrator:hs__dingfeng"] = "魔鬼鱼",
   ["~hs__dingfeng"] = "这风，太冷了……",
 }
 
-General:new(extension, "hs__huatuo", "qun", 3):addSkills{"jijiu", "hs__chuli"}
-
+General:new(extension, "hs__huatuo", "qun", 3):addSkills{ "jijiu", "hs__chuli" }
 Fk:loadTranslationTable{
   ["hs__huatuo"] = "华佗",
   ["#hs__huatuo"] = "神医",
@@ -427,8 +418,7 @@ Fk:loadTranslationTable{
 
 local lvbu = General:new(extension, "hs__lvbu", "qun", 5)
 lvbu:addSkill("hs__wushuang")
-lvbu:addCompanions("hs__diaochan")
-
+lvbu:addCompanions("diaochan")
 Fk:loadTranslationTable{
   ["hs__lvbu"] = "吕布",
   ["#hs__lvbu"] = "戟指中原",
@@ -437,7 +427,6 @@ Fk:loadTranslationTable{
 }
 
 General:new(extension, "hs__diaochan", "qun", 3, 3, General.Female):addSkills{"hs__lijian", "biyue"}
-
 Fk:loadTranslationTable{
   ["hs__diaochan"] = "貂蝉",
   ["#hs__diaochan"] = "绝世的舞姬",
@@ -447,8 +436,7 @@ Fk:loadTranslationTable{
 
 local yuanshao = General:new(extension, "hs__yuanshao", "qun", 4)
 yuanshao:addSkill("hs__luanji")
-yuanshao:addCompanions("hs__yanliangwenchou")
-
+yuanshao:addCompanions("yanliangwenchou")
 Fk:loadTranslationTable{
   ["hs__yuanshao"] = "袁绍",
   ["#hs__yuanshao"] = "高贵的名门",
@@ -465,7 +453,7 @@ Fk:loadTranslationTable{
   ["~hs__yanliangwenchou"] = "这红脸长须大将是……",
 }
 
-General:new(extension, "hs__jiaxu", "qun", 3):addSkills{"wansha", "luanwu", "hs__weimu"}
+General:new(extension, "hs__jiaxu", "qun", 3):addSkills{ "wansha", "luanwu", "hs__weimu" }
 Fk:loadTranslationTable{
   ["hs__jiaxu"] = "贾诩",
   ["#hs__jiaxu"] = "冷酷的毒士",
@@ -473,7 +461,7 @@ Fk:loadTranslationTable{
   ["~hs__jiaxu"] = "我的时辰也到了……",
 }
 
-General:new(extension, "hs__pangde", "qun", 4):addSkills{"mashu", "jianchu"}
+General:new(extension, "hs__pangde", "qun", 4):addSkills{ "hs_pangde__mashu", "jianchu" }
 Fk:loadTranslationTable{
   ["hs__pangde"] = "庞德",
   ["#hs__pangde"] = "人马一体",
@@ -481,7 +469,7 @@ Fk:loadTranslationTable{
   ["~hs__pangde"] = "四面都是水……我命休矣。",
 }
 
-General:new(extension, "hs__zhangjiao", "qun", 3):addSkills{"leiji", "guidao"}
+General:new(extension, "hs__zhangjiao", "qun", 3):addSkills{ "leiji", "guidao" }
 Fk:loadTranslationTable{
   ["hs__zhangjiao"] = "张角",
   ["#hs__zhangjiao"] = "天公将军",
@@ -489,8 +477,7 @@ Fk:loadTranslationTable{
   ["~hs__zhangjiao"] = "黄天…也死了……",
 }
 
-General:new(extension, "hs__caiwenji", "qun", 3, 3, General.Female):addSkills{"beige", "hs__duanchang"}
-
+General:new(extension, "hs__caiwenji", "qun", 3, 3, General.Female):addSkills{ "beige", "hs__duanchang" }
 Fk:loadTranslationTable{
   ["hs__caiwenji"] = "蔡文姬",
   ["#hs__caiwenji"] = "异乡的孤女",
@@ -498,19 +485,20 @@ Fk:loadTranslationTable{
   ["~hs__caiwenji"] = "人生几何时，怀忧终年岁。",
 }
 
-General:new(extension, "hs__mateng", "qun", 4):addSkills{"hs_mateng__mashu", "xiongyi"}
-
+General:new(extension, "hs__mateng", "qun", 4):addSkills{ "hs_mateng__mashu", "xiongyi" }
 Fk:loadTranslationTable{
   ["hs__mateng"] = "马腾",
+  ["mateng"] = "马腾",
   ["#hs__mateng"] = "驰骋西陲",
   ["desinger:hs__mateng"] = "淬毒",
   ["illustrator:hs__mateng"] = "DH",
   ["~hs__mateng"] = "儿子，为爹报仇啊！",
 }
 
-General:new(extension, "hs__kongrong", "qun", 3):addSkills{"mingshi", "lirang"}
+General:new(extension, "hs__kongrong", "qun", 3):addSkills{ "mingshi", "lirang" }
 Fk:loadTranslationTable{
   ["hs__kongrong"] = "孔融",
+  ["kongrong"] = "孔融",
   ["#hs__kongrong"] = "凛然重义",
   ["desinger:hs__kongrong"] = "淬毒",
   ["illustrator:hs__kongrong"] = "苍月白龙",
@@ -518,19 +506,19 @@ Fk:loadTranslationTable{
 }
 
 General:new(extension, "hs__jiling", "qun", 4):addSkill("shuangren")
-
 Fk:loadTranslationTable{
   ["hs__jiling"] = "纪灵",
+  ["jiling"] = "纪灵",
   ["#hs__jiling"] = "仲家的主将",
   ["illustrator:hs__jiling"] = "樱花闪乱",
   ["desinger:hs__jiling"] = "淬毒",
   ["~hs__jiling"] = "额，将军为何咆哮不断……",
 }
 
-General:new(extension, "hs__tianfeng", "qun", 3):addSkills{"sijian", "suishi"}
-
+General:new(extension, "hs__tianfeng", "qun", 3):addSkills{ "sijian", "suishi" }
 Fk:loadTranslationTable{
   ["hs__tianfeng"] = "田丰",
+  ["tianfeng"] = "田丰",
   ["#hs__tianfeng"] = "河北瑰杰",
   ["illustrator:hs__tianfeng"] = "地狱许",
   ["desinger:hs__tianfeng"] = "淬毒",
@@ -540,15 +528,16 @@ Fk:loadTranslationTable{
 General:new(extension, "hs__panfeng", "qun", 4):addSkill("kuangfu")
 Fk:loadTranslationTable{
   ["hs__panfeng"] = "潘凤",
+  ["panfeng"] = "潘凤",
   ["#hs__panfeng"] = "联军上将",
   ["illustrator:hs__panfeng"] = "凡果",
-  ["~hs__panfeng"] = "潘凤又被华雄斩啦。",
+  ["~hs__panfeng"] = "潘凤又被华雄斩了。",
 }
 
-General:new(extension, "hs__zoushi", "qun", 3, 3, General.Female):addSkills{"huoshui", "qingcheng"}
-
+General:new(extension, "hs__zoushi", "qun", 3, 3, General.Female):addSkills{ "huoshui", "qingcheng" }
 Fk:loadTranslationTable{
   ["hs__zoushi"] = "邹氏",
+  ["zoushi"] = "邹氏",
   ["#hs__zoushi"] = "惑心之魅",
   ["illustrator:hs__zoushi"] = "Tuu",
   ["~hs__zoushi"] = "年老色衰了吗？",

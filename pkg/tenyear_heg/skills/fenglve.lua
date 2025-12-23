@@ -61,9 +61,8 @@ fenglve:addEffect("active", {
 
 Fk:loadTranslationTable{
   ["ty_heg__fenglve"] = "锋略",
-  [":ty_heg__fenglve"] = "出牌阶段限一次，你可和一名其他角色拼点，若你赢，该角色交给你其区域内的两张牌；若其赢，你交给其一张牌。"..
-  "<br><font color=\"blue\">◆纵横：交换〖锋略〗描述中的“一张牌”和“两张牌”。<font><br><font color=\"grey\">\"<b>纵横</b>\"："..
-  "当拥有“纵横”效果技能发动结算完成后，可以令技能目标角色获得对应修订描述后的技能，直到其下回合结束。",
+  [":ty_heg__fenglve"] = "出牌阶段限一次，你可和一名其他角色拼点，若你赢，该角色交给你其区域内的两张牌；若其赢，你交给其一张牌。<br>"..
+  "<a href='ty_heg_zongheng'>纵横</a>：交换〖锋略〗描述中的“一张牌”和“两张牌”。",
 
   ["#ty_heg__fenglve-active"] = "发动“锋略”，与一名角色拼点",
   ["#ty_heg__fenglve-give"] = "锋略：选择 %arg 张牌交给 %dest",

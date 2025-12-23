@@ -66,6 +66,7 @@ Fk:loadTranslationTable{
 General:new(extension, "zq_heg__simalun", "jin", 4):addSkills { "zq_heg__zhulan", "zq_heg__luanchang" }
 Fk:loadTranslationTable{
   ["zq_heg__simalun"] = "司马伦",
+  ["simalun"] = "司马伦",
   ["#zq_heg__simalun"] = "螭吻裂冠",
   ["illustrator:zq_heg__simalun"] = "荆芥",
 }

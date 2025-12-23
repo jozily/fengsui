@@ -1,64 +1,39 @@
 local midao = fk.CreateSkill {
   name = "ld__midao",
-  derived_piles = "ld__midao_rice",
 }
 
 Fk:loadTranslationTable {
   ["ld__midao"] = "米道",
-  [":ld__midao"] = "①当你明置此武将牌后，你摸两张牌，然后将两张牌置于武将牌上，称为“米”；②一名角色的判定牌生效前，你可以打出一张“米”替换之。",
+  [":ld__midao"] = "势力与你相同的角色于其出牌阶段内限一次，当其使用【杀】或伤害类锦囊牌指定目标时，其可以交给你一张手牌，"..
+  "令你声明一种花色和一种属性，其此次使用牌的花色和造成伤害的属性改为你声明的花色和属性。",
 
-  ["#ld__midao-choose"] = "布施：选择至多你体力上限数名角色各摸一张牌",
-  ["#ld__midao-ask"] = "米道：你可打出一张牌替换 %dest 的 %arg 判定",
-  ["#ld__midao"] = "米道：请将两张牌置于武将牌上，称为“米”。",
+  ["#ld__midao-invoke"] = "米道：你可以交给 %src 一张手牌，其改变你使用%arg的花色和伤害属性",
+  ["#ld__midao-suit"] = "米道：声明一种花色，此%arg改为你声明的花色",
+  ["#ld__midao-damageType"] = "米道：声明一种属性，此%arg造成的伤害改为你声明的属性",
 
   ["$ld__midao1"] = "恩结天地，法惠八荒。",
   ["$ld__midao2"] = "行五斗米道，可知暖饱。",
 }
 
-midao:addEffect(fk.GeneralRevealed, {
-  anim_type = "offensive",
-  can_trigger = function(self, event, target, player, data)
-    if player:hasSkill(midao.name) then
-      for _, v in pairs(data) do
-        if table.contains(Fk.generals[v]:getSkillNameList(), midao.name) then return true end
-      end
-    end
-  end,
-  on_use = function(self, event, target, player, data)
-    player:drawCards(2, midao.name)
-    if player:isNude() then return end
-    local cards
-    if #player:getCardIds("he") < 3 then
-      cards = player:getCardIds("he")
-    else
-      cards = player.room:askToCards(player, {
-        min_num = 2,
-        max_num = 2,
-        include_equip = true,
-        skill_name = midao.name,
-        prompt = "#ld__midao",
-        cancelable = false,
-      })
-    end
-    player:addToPile("ld__midao_rice", cards, true, midao.name)
-  end,
-})
+local H = require "packages.hegemony.util"
 
-midao:addEffect(fk.AskForRetrial, {
-  anim_type = "offensive",
+midao:addEffect(fk.TargetSpecifying, {
+  anim_type = "support",
   can_trigger = function(self, event, target, player, data)
-    return player:hasSkill(midao.name) and #player:getPile("ld__midao_rice") > 0
+    return player:hasSkill(midao.name) and data.firstTarget and
+      H.compareKingdomWith(target, player) and target.phase == Player.Play and
+      data.card.is_damage_card and not target:isKongcheng() and
+      player:usedSkillTimes(midao.name, Player.HistoryPhase) == 0
   end,
-  on_cost = function(self, event, target, player, data)
-    local card = player.room:askToCards(player, {
+  on_cost = function (self, event, target, player, data)
+    local room = player.room
+    local card = room:askToCards(target, {
       min_num = 1,
       max_num = 1,
       include_equip = false,
       skill_name = midao.name,
-      pattern = ".|.|.|ld__midao_rice",
-      prompt = "#ld__midao-ask::" .. target.id .. ":" .. data.reason,
-      expand_pile = "ld__midao_rice",
       cancelable = true,
+      prompt = "#ld__midao-invoke:"..player.id.."::"..data.card:toLogString(),
     })
     if #card > 0 then
       event:setCostData(self, { cards = card })
@@ -66,13 +41,58 @@ midao:addEffect(fk.AskForRetrial, {
     end
   end,
   on_use = function(self, event, target, player, data)
-    player.room:changeJudge {
-      card = Fk:getCardById(event:getCostData(self).cards[1]),
-      player = player,
-      data = data,
-      skillName = midao.name,
-      response = true,
+    local room = player.room
+    room:moveCardTo(event:getCostData(self).cards, Card.PlayerHand, player, fk.ReasonGive, midao.name, nil, false, target)
+    if player.dead then return end
+    data.extra_data = data.extra_data or {}
+    local choices = { "log_spade", "log_club", "log_heart", "log_diamond" }
+    local choice = room:askToChoice(player, {
+      choices = choices,
+      skill_name = midao.name,
+      prompt = "#ld__midao-suit:::"..data.card:toLogString(),
+    })
+    local log = Fk:translate(choice)
+    data.extra_data.ld__midao_suit = table.indexOf(choices, choice)
+    choices = { "normal_damage", "fire_damage", "thunder_damage" }
+    choice = room:askToChoice(player, {
+      choices = choices,
+      skill_name = midao.name,
+      prompt = "#ld__midao-damageType:::"..data.card:toLogString(),
+    })
+    log = log .. "，" .. Fk:translate(choice)
+    data.extra_data.ld__midao_damageType = table.indexOf(choices, choice)
+    room:sendLog{
+      type = "#Choice",
+      from = player.id,
+      arg = log,
+      toast = true,
     }
+  end,
+})
+
+midao:addEffect(fk.CardUsing, {
+  can_refresh = function(self, event, target, player, data)
+    return data.extra_data and data.extra_data.ld__midao_suit and
+      data.extra_data.ld__midao_suit ~= data.card.suit
+  end,
+  on_refresh = function(self, event, target, player, data)
+    data:changeCard(data.card.name, data.extra_data.ld__midao_suit)
+  end,
+})
+
+midao:addEffect(fk.PreDamage, {
+  can_refresh = function(self, event, target, player, data)
+    if data.card then
+      local use_event = player.room.logic:getCurrentEvent():findParent(GameEvent.UseCard)
+      if not use_event then return end
+      return use_event.data.extra_data and use_event.data.extra_data.ld__midao_damageType and
+        data.damageType ~= use_event.data.extra_data.ld__midao_damageType
+    end
+  end,
+  on_refresh = function(self, event, target, player, data)
+    local use_event = player.room.logic:getCurrentEvent():findParent(GameEvent.UseCard)
+    if not use_event then return end
+    data.damageType = (use_event.data.extra_data or {}).ld__midao_damageType
   end,
 })
 

@@ -2,6 +2,21 @@
 local boyan = fk.CreateSkill{
   name = "ty_heg__boyan",
 }
+
+Fk:loadTranslationTable{
+  ["ty_heg__boyan"] = "驳言",
+  [":ty_heg__boyan"] = "出牌阶段限一次，你可以选择一名其他角色，其将手牌摸至其体力上限，其本回合不能使用或打出手牌。<br>"..
+  "<a href='ty_heg_zongheng'>纵横</a>：删去〖驳言〗描述中的“其将手牌摸至体力上限”。",
+
+  ["ty_heg__boyan_mn_ask"] = "令%dest获得〖驳言（纵横）〗直到其下回合结束",
+
+  ["@@ty_heg__boyan-turn"] = "驳言",
+  ["@@ty_heg__boyan_manoeuvre"] = "驳言 纵横",
+
+  ["$ty_heg__boyan1"] = "黑白颠倒，汝言谬矣！",
+  ["$ty_heg__boyan2"] = "魏王高论，实为无知之言。",
+}
+
 boyan:addEffect("active", {
   anim_type = "control",
   card_num = 0,
@@ -48,19 +63,4 @@ boyan:addEffect("prohibit", {
   end,
 })
 
-Fk:loadTranslationTable{
-  ["ty_heg__boyan"] = "驳言",
-  [":ty_heg__boyan"] = "出牌阶段限一次，你可选择一名其他角色，其将手牌摸至其体力上限，其本回合不能使用或打出手牌。"..
-  "<br><font color=\"blue\">◆纵横：删去〖驳言〗描述中的“其将手牌摸至体力上限”。<font><br><font color=\"grey\">\"<b>纵横</b>\"："..
-  "当拥有“纵横”效果技能发动结算完成后，可以令技能目标角色获得对应修订描述后的技能，直到其下回合结束。",
-
-  ["ty_heg__boyan_mn_ask"] = "令%dest获得〖驳言（纵横）〗直到其下回合结束",
-
-  ["@@ty_heg__boyan-turn"] = "驳言",
-  ["@@ty_heg__boyan_manoeuvre"] = "驳言 纵横",
-
-  ["$ty_heg__boyan1"] = "黑白颠倒，汝言谬矣！",
-  ["$ty_heg__boyan2"] = "魏王高论，实为无知之言。",
-
-}
 return boyan

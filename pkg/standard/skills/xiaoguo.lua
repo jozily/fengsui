@@ -2,6 +2,18 @@
 local xiaoguo = fk.CreateSkill{
   name = "xiaoguo",
 }
+
+Fk:loadTranslationTable{
+  ["xiaoguo"] = "骁果",
+  [":xiaoguo"] = "其他角色的结束阶段，你可以弃置一张基本牌，然后其选择一项：1.弃置一张装备牌，你摸一张牌；2.你对其造成1点伤害。",
+
+  ["#xiaoguo-invoke"] = "骁果：你可以弃置一张基本牌，%dest 需弃置一张装备牌，否则你对其造成1点伤害",
+  ["#xiaoguo-discard"] = "骁果：你需弃置一张装备牌，否则 %src 对你造成1点伤害",
+
+  ["$xiaoguo1"] = "三军听我号令，不得撤退！",
+  ["$xiaoguo2"] = "看我先登城头，立下首功！",
+}
+
 xiaoguo:addEffect(fk.EventPhaseStart, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
@@ -50,15 +62,5 @@ xiaoguo:addEffect(fk.EventPhaseStart, {
     end
   end,
 })
-
-Fk:loadTranslationTable{
-  ["xiaoguo"] = "骁果",
-  [":xiaoguo"] = "其他角色的结束阶段，你可弃置一张基本牌，然后其选择一项：1.弃置一张装备牌，然后你摸一张牌；2.你对其造成1点伤害。",
-  ["#xiaoguo-invoke"] = "骁果：你可以弃置一张基本牌，%dest 需弃置一张装备牌，否则你对其造成1点伤害",
-  ["#xiaoguo-discard"] = "骁果：你需弃置一张装备牌，否则 %src 对你造成1点伤害",
-
-  ["$xiaoguo1"] = "三军听我号令，不得撤退！",
-  ["$xiaoguo2"] = "看我先登城头，立下首功！",
-}
 
 return xiaoguo

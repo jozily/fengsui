@@ -54,9 +54,9 @@ weimeng:addEffect("active", {
 
 Fk:loadTranslationTable{
   ["ty_heg__weimeng"] = "危盟",
-  [":ty_heg__weimeng"] = "出牌阶段限一次，你可选择一名其他角色，获得其至多X张手牌，然后交给其等量的牌（X为你的体力值）。"..
-  "<br><font color=\"blue\">◆纵横：〖危盟〗描述中的X改为1。<font><br><font color=\"grey\">\"<b>纵横</b>\"："..
-  "当拥有“纵横”效果技能发动结算完成后，可以令技能目标角色获得对应修订描述后的技能，直到其下回合结束。",
+  [":ty_heg__weimeng"] = "出牌阶段限一次，你可选择一名其他角色，获得其至多X张手牌，然后交给其等量的牌（X为你的体力值）。<br>"..
+  "<a href='ty_heg_zongheng'>纵横</a>：〖危盟〗描述中的X改为1。",
+
   ["#ty_heg__weimeng-give"] = "危盟：交还 %dest %arg 张牌。",
   ["ty_heg__weimeng_mn_ask"] = "令%dest获得〖危盟（纵横）〗直到其下回合结束。",
   ["@@ty_heg__weimeng_manoeuvre"] = "危盟 纵横",

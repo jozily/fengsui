@@ -1,6 +1,6 @@
 local extension = Package:new("formation")
 extension.extensionName = "hegemony"
-extension.game_modes_whitelist = { 'new_heg_mode' }
+extension.game_modes_whitelist = { "new_heg_mode" }
 
 local H = require "packages.hegemony.util"
 
@@ -13,7 +13,7 @@ Fk:loadTranslationTable{
 
 local dengai = General:new(extension, "ld__dengai", "wei", 4)
 dengai.mainMaxHpAdjustedValue = -1
-dengai:addSkills{"ld__tuntian", "ld__jixi", "ziliang"}
+dengai:addSkills{ "ld__tuntian", "ld__jixi", "ziliang" }
 Fk:loadTranslationTable{
   ["ld__dengai"] = "邓艾",
   ["#ld__dengai"] = "矫然的壮士",
@@ -25,9 +25,10 @@ Fk:loadTranslationTable{
 local caohong = General:new(extension, "ld__caohong", "wei", 4)
 caohong:addSkills{"ld__huyuan", "heyi"}
 caohong:addRelatedSkill("feiying")
-caohong:addCompanions("hs__caoren")
+caohong:addCompanions("caoren")
 Fk:loadTranslationTable{
   ["ld__caohong"] = "曹洪",
+  ["caohong"] = "曹洪",
   ["#ld__caohong"] = "魏之福将",
   ["designer:ld__caohong"] = "韩旭（淬毒）",
   ["illustrator:ld__caohong"] = "YellowKiss",
@@ -36,11 +37,10 @@ Fk:loadTranslationTable{
 }
 
 local jiangwei = General:new(extension, "ld__jiangwei", "shu", 4)
-jiangwei:addCompanions("hs__zhugeliang")
+jiangwei:addCompanions("zhugeliang")
 jiangwei.deputyMaxHpAdjustedValue = -1
-jiangwei:addSkills{"tiaoxin", "tianfu", "yizhi"}
+jiangwei:addSkills{ "tiaoxin", "tianfu", "yizhi" }
 jiangwei:addRelatedSkills{"ld__kanpo", "ld__guanxing"}
-
 Fk:loadTranslationTable{
   ["ld__jiangwei"] = "姜维",
   ["#ld__jiangwei"] = "龙的衣钵",
@@ -54,11 +54,11 @@ Fk:loadTranslationTable{
 }
 
 local jiangfei = General:new(extension, "ld__jiangwanfeiyi", "shu", 3)
-jiangfei:addSkills{"shengxi", "shoucheng"}
-jiangfei:addCompanions("hs__zhugeliang")
-
+jiangfei:addSkills{ "shengxi", "shoucheng" }
+jiangfei:addCompanions("zhugeliang")
 Fk:loadTranslationTable{
   ["ld__jiangwanfeiyi"] = "蒋琬费祎",
+  ["jiangwanfeiyi"] = "蒋琬费祎",
   ["#ld__jiangwanfeiyi"] = "社稷股肱",
   ["designer:ld__jiangwanfeiyi"] = "淬毒",
   ["illustrator:ld__jiangwanfeiyi"] = "cometrue",
@@ -67,10 +67,10 @@ Fk:loadTranslationTable{
 
 local xusheng = General:new(extension, "ld__xusheng", "wu", 4)
 xusheng:addSkill("yicheng")
-xusheng:addCompanions("hs__dingfeng")
-
+xusheng:addCompanions("dingfeng")
 Fk:loadTranslationTable{
   ["ld__xusheng"] = "徐盛",
+  ["xusheng"] = "徐盛",
   ["#ld__xusheng"] = "江东的铁壁",
   ["designer:ld__xusheng"] = "淬毒",
   ["illustrator:ld__xusheng"] = "天信",
@@ -78,10 +78,11 @@ Fk:loadTranslationTable{
 }
 
 local jiangqin = General:new(extension, "ld__jiangqin", "wu", 4)
-jiangqin:addSkills{"niaoxiang", "shangyi"}
-jiangqin:addCompanions("hs__zhoutai")
+jiangqin:addSkills{ "shangyi", "niaoxiang" }
+jiangqin:addCompanions("zhoutai")
 Fk:loadTranslationTable{
   ["ld__jiangqin"] = "蒋钦",
+  ["jiangqin"] = "蒋钦",
   ["#ld__jiangqin"] = "祁奚之器",
   ["designer:ld__jiangqin"] = "淬毒",
   ["illustrator:ld__jiangqin"] = "天空之城",
@@ -98,9 +99,10 @@ Fk:loadTranslationTable{
   ["~ld__yuji"] = "幻化之物，终是算不得真呐。",
 }
 
-General:new(extension, "ld__hetaihou", "qun", 3, 3, General.Female):addSkills{"zhendu", "qiluan"}
+General:new(extension, "ld__hetaihou", "qun", 3, 3, General.Female):addSkills{ "zhendu", "qiluan" }
 Fk:loadTranslationTable{
   ["ld__hetaihou"] = "何太后",
+  ["hetaihou"] = "何太后",
   ["#ld__hetaihou"] = "弄权之蛇蝎",
   ["cv:ld__hetaihou"] = "水原",
   ["illustrator:ld__hetaihou"] = "KayaK&木美人",
@@ -111,7 +113,7 @@ Fk:loadTranslationTable{
 local lordliubei = General(extension, "ld__lordliubei", "shu", 4)
 lordliubei.hidden = true
 H.lordGenerals["hs__liubei"] = "ld__lordliubei"
-lordliubei:addSkills{"zhangwu", "shouyue", "jizhao"}
+lordliubei:addSkills{ "zhangwu", "shouyue", "jizhao" }
 lordliubei:addRelatedSkill("ex__rende")
 Fk:loadTranslationTable{
   ["ld__lordliubei"] = "君刘备",

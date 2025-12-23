@@ -16,7 +16,7 @@ zhanghuyuechen:addSkills { "jy_heg__xijue", "jy_heg__lvxian", "jy_heg__yingwei" 
 zhanghuyuechen:addRelatedSkills { "ex__tuxi", "xiaoguo" }
 Fk:loadTranslationTable{
   ["jy_heg__zhanghuyuechen"] = "张虎乐綝",
-  ["#jy_heg__zhanghuyuechen"] = "文成武德",
+  ["#jy_heg__zhanghuyuechen"] = "不辱门庭",
   ["illustrator:jy_heg__zhanghuyuechen"] = "凝聚永恒",
 
   ["~jy_heg__zhanghuyuechen"] = "儿有辱……父亲威名……",
@@ -43,6 +43,7 @@ Fk:loadTranslationTable{
 General:new(extension, "jy_heg__yangjun", "jin", 4):addSkills { "jy_heg__neiji" }
 Fk:loadTranslationTable{
   ["jy_heg__yangjun"] = "杨骏",
+  ["yangjun"] = "杨骏",
   ["#jy_heg__yangjun"] = "阶缘佞宠",
   ["illustrator:jy_heg__yangjun"] = "荆芥",
 }
@@ -67,13 +68,14 @@ Fk:loadTranslationTable{
   ["~jy_heg__wangxiang"] = "夫生之有死，自然之理也。",
 }
 
-local sunxiu = General:new(extension, "jy_heg__sunxiu", "jin", 3)
+local sunxiu = General:new(extension, "jy_heg__sunxiuj", "jin", 3)
 sunxiu:addSkills{ "jy_heg__xiejian", "jy_heg__yinsha" }
 sunxiu:addCompanions("zq_heg__simalun")
 Fk:loadTranslationTable{
-  ["jy_heg__sunxiu"] = "孙秀",
-  ["#jy_heg__sunxiu"] = "黄钟毁弃",
-  ["illustrator:jy_heg__sunxiu"] = "荆芥",
+  ["jy_heg__sunxiuj"] = "孙秀",
+  ["sunxiuj"] = "孙秀",
+  ["#jy_heg__sunxiuj"] = "黄钟毁弃",
+  ["illustrator:jy_heg__sunxiuj"] = "荆芥",
 }
 
 local duyu = General:new(extension, "jy_heg__duyu", "jin", 4)

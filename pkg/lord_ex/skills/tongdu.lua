@@ -4,9 +4,9 @@ local tongdu = fk.CreateSkill {
 
 Fk:loadTranslationTable {
   ["ld__tongdu"] = "统度",
-  [":ld__tongdu"] = "与你势力相同的角色的结束阶段，其可摸X张牌（X为其于弃牌阶段弃置的牌数且至多为3）",
+  [":ld__tongdu"] = "与你势力相同的角色的结束阶段，其可以摸X张牌（X为其本回合弃牌阶段弃置的牌数且至多为3）。",
 
-  ["#ld__tongdu-ask"] = "你可发动%src的“统度”，摸 %arg 张牌",
+  ["#ld__tongdu-ask"] = "统度：你可以发动%src的“统度”，摸%arg张牌",
 
   ["$ld__tongdu1"] = "统荆益二州诸物之价，以为民生国祚之大计。",
   ["$ld__tongdu2"] = "铸直百之钱，可平物价，定军民之心。",
@@ -15,7 +15,7 @@ Fk:loadTranslationTable {
 local H = require "packages.hegemony.util"
 
 tongdu:addEffect(fk.EventPhaseStart, {
-  anim_type = "control",
+  anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)
     if target.phase ~= Player.Finish or not H.compareKingdomWith(player, target) or not player:hasSkill(tongdu.name)
         or (target ~= player and not player:hasShownSkill(tongdu.name)) then
