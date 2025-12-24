@@ -416,9 +416,7 @@ Fk:loadTranslationTable{
   ["~hs__huatuo"] = "生老病死，命不可违。",
 }
 
-local lvbu = General:new(extension, "hs__lvbu", "qun", 5)
-lvbu:addSkill("hs__wushuang")
-lvbu:addCompanions("diaochan")
+General:new(extension, "hs__lvbu", "qun", 5):addSkill("hs__wushuang")
 Fk:loadTranslationTable{
   ["hs__lvbu"] = "吕布",
   ["#hs__lvbu"] = "戟指中原",
@@ -426,7 +424,9 @@ Fk:loadTranslationTable{
   ["~hs__lvbu"] = "不可能！",
 }
 
-General:new(extension, "hs__diaochan", "qun", 3, 3, General.Female):addSkills{"hs__lijian", "biyue"}
+local diaochan = General:new(extension, "hs__diaochan", "qun", 3, 3, General.Female)
+diaochan:addSkills{"hs__lijian", "biyue"}
+diaochan:addCompanions("lvbu")
 Fk:loadTranslationTable{
   ["hs__diaochan"] = "貂蝉",
   ["#hs__diaochan"] = "绝世的舞姬",

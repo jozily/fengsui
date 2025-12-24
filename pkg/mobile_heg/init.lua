@@ -48,7 +48,7 @@ Fk:loadTranslationTable{
   ["m_heg__luxun"] = "陆逊",
   ["#m_heg__luxun"] = "擎天之柱",
   ["illustrator:m_heg__luxun"] = "Zero",
-  ["~m_heg__luxun"] = "",
+  ["~m_heg__luxun"] = "还以为我已经不再年轻……",
 }
 
 General:new(extension, "m_heg__sunshangxiang", "wu", 3, 3, General.Female):addSkills{ "xiaoji", "jieyin" }

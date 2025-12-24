@@ -18,18 +18,6 @@ Fk:loadTranslationTable{
   ["~of_heg__lifeng"] = "吾，有负丞相重托。",
 }
 
-local yangwan = General:new(extension, "ty_heg__yangwan", "shu", 3, 3,General.Female) -- 保留原本的前缀
-yangwan:addSkills{"ty_heg__youyan", "ty_heg__zhuihuan"}
-yangwan:addCompanions("hs__machao")
-
-Fk:loadTranslationTable{
-  ["ty_heg__yangwan"] = "杨婉",
-  ["#ty_heg__yangwan"] = "融沫之鲡",
-  --["designer:yangwan"] = "",
-  ["illustrator:ty_heg__yangwan"] = "木美人",
-  ["~ty_heg__yangwan"] = "遇人不淑……",
-}
-
 General:new(extension, "of_heg__lingcao", "wu", 4):addSkill("of_heg__dujin")
 Fk:loadTranslationTable{
   ["of_heg__lingcao"]= "凌操",

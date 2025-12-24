@@ -190,7 +190,7 @@ Fk:loadTranslationTable{
   ["~os_heg__zhangchunhua"] = "怎能如此对我！",
 }
 
---General:new(extension, "os_heg__yanghuiyu", "wei", 3, 3, General.Female):addSkills { "hongyi", "quanfeng" }
+General:new(extension, "os_heg__yanghuiyu", "wei", 3, 3, General.Female):addSkills { "hongyi", "quanfeng" }
 Fk:loadTranslationTable{
   ["os_heg__yanghuiyu"] = "羊徽瑜",
   ["#os_heg__yanghuiyu"] = "温慧母仪",
@@ -549,7 +549,15 @@ Fk:loadTranslationTable{
   ["~os_heg__zhouchu"] = "改励自砥，誓除三害……",
 }
 
---严畯
+General:new(extension, "os_heg__yanjun", "wu", 3):addSkills { "guanchao", "xunxian" }
+Fk:loadTranslationTable{
+  ["os_heg__yanjun"] = "严畯",
+  ["#os_heg__yanjun"] = "志存补益",
+  ["illustrator:os_heg__yanjun"] = "YanBai",
+  ["cv:os_heg__yanjun"] = "小思无邪强",
+
+  ["~os_heg__yanjun"] = "著作，还……没完成……",
+}
 
 General:new(extension, "os_heg__zhuhuan", "wu", 4):addSkills { "fenli", "m_ex__pingkou" }
 Fk:loadTranslationTable{
@@ -657,7 +665,7 @@ Fk:loadTranslationTable{
   ["~os_heg__zhangxiu"] = "若失文和……吾将何归……",
 }
 
---General:new(extension, "os_heg__liuqi", "qun", 3):addSkills { "wenji", "os_heg__tunjiang" }
+General:new(extension, "os_heg__liuqi", "qun", 3):addSkills { "wenji", "ld__tunjiang" }
 Fk:loadTranslationTable{
   ["os_heg__liuqi"] = "刘琦",
   ["#os_heg__liuqi"] = "居外而安",
@@ -686,7 +694,14 @@ Fk:loadTranslationTable{
   ["~os_heg__gongsunfan"] = "公孙氏之业，终付之一炬……",
 }
 
---段煨
+General:new(extension, "os_heg__duanwei", "qun", 4):addSkills { "langmie" }
+Fk:loadTranslationTable{
+  ["os_heg__duanwei"] = "段煨",
+  ["#os_heg__duanwei"] = "凉国之英",
+  ["illustrator:os_heg__duanwei"] = "匠人绘",
+
+  ["~os_heg__duanwei"] = "狼伴其侧，终不胜防。",
+}
 
 generals.os_heg__yangfeng = General:new(extension, "os_heg__yangfeng", "qun", 4)
 generals.os_heg__yangfeng:addSkills { "xuetu", "weiming" }
