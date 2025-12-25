@@ -12,7 +12,7 @@ local H = require "packages.hegemony.util"
 
 local cuiyanmaojie = General:new(extension, "ld__cuiyanmaojie", "wei", 3)
 cuiyanmaojie:addSkills{"ld__zhengbi", "ld__fengying"}
-cuiyanmaojie:addCompanions("caopi")
+cuiyanmaojie:addCompanions("hs__caopi")
 Fk:loadTranslationTable{
   ["ld__cuiyanmaojie"] = "崔琰毛玠",
   ["cuiyanmaojie"] = "崔琰毛玠",
@@ -24,7 +24,7 @@ Fk:loadTranslationTable{
 
 local yujin = General:new(extension, "ld__yujin", "wei", 4)
 yujin:addSkills{"ld__jieyue"}
-yujin:addCompanions("xiahoudun")
+yujin:addCompanions("hs__xiahoudun")
 Fk:loadTranslationTable{
   ["ld__yujin"] = "于禁",
   ["yujin"] = "于禁",
@@ -35,7 +35,7 @@ Fk:loadTranslationTable{
 }
 
 local wangping = General:new(extension, "ld__wangping", "shu", 4)
-wangping:addCompanions("jiangwanfeiyi")
+wangping:addCompanions("ld__jiangwanfeiyi")
 wangping:addSkill("jianglue")
 Fk:loadTranslationTable{
   ["ld__wangping"] = "王平",
@@ -45,7 +45,7 @@ Fk:loadTranslationTable{
 }
 
 local fazheng = General:new(extension, "ld__fazheng", "shu", 3)
-fazheng:addCompanions("liubei")
+fazheng:addCompanions("hs__liubei")
 fazheng:addSkills{ "ld__xuanhuo","ld__enyuan"}
 Fk:loadTranslationTable{
   ["ld__fazheng"] = "法正",
@@ -56,9 +56,9 @@ Fk:loadTranslationTable{
   ["~ld__fazheng"] = "汉室复兴，我，是看不到了……",
 }
 
-local lukang = General:new(extension, "ld__lukang", "wu", 3, 3, General.Male)
+local lukang = General:new(extension, "ld__lukang", "wu", 3)
 lukang:addSkills{ "ld__keshou", "ld__zhuwei" }
-lukang:addCompanions("luxun")
+lukang:addCompanions("hs__luxun")
 Fk:loadTranslationTable{
   ["ld__lukang"] = "陆抗",
   ["#ld__lukang"] = "孤柱扶厦",
@@ -68,7 +68,7 @@ Fk:loadTranslationTable{
 
 local wuguotai = General:new(extension, "ld__wuguotai", "wu", 3, 3, General.Female)
 wuguotai:addSkills{"ld__buyi", "ganlu"}
-wuguotai:addCompanions("sunjian")
+wuguotai:addCompanions("hs__sunjian")
 Fk:loadTranslationTable{
   ["ld__wuguotai"] = "吴国太",
   ["wuguotai"] = "吴国太",
@@ -80,7 +80,7 @@ Fk:loadTranslationTable{
 }
 
 local yuanshu = General:new(extension, "ld__yuanshu", "qun", 4)
-yuanshu:addCompanions("jiling")
+yuanshu:addCompanions("hs__jiling")
 yuanshu:addSkills{ "ld__weidi", "ld__yongsi" }
 Fk:loadTranslationTable{
   ["ld__yuanshu"] = "袁术",
@@ -92,7 +92,7 @@ Fk:loadTranslationTable{
 
 local zhangxiu = General:new(extension, "ld__zhangxiu", "qun", 4)
 zhangxiu:addSkills{"ld__fudi", "ld__congjian"}
-zhangxiu:addCompanions("jiaxu")
+zhangxiu:addCompanions("hs__jiaxu")
 Fk:loadTranslationTable{
   ["ld__zhangxiu"] = "张绣",
   ["#ld__zhangxiu"] = "北地枪王",

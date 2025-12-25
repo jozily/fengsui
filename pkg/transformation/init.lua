@@ -10,7 +10,7 @@ Fk:loadTranslationTable{
 }
 local xunyou = General:new(extension, "ld__xunyou", "wei", 3)
 xunyou:addSkills{"ld__qice", "ld__zhiyu"}
-xunyou:addCompanions("xunyu")
+xunyou:addCompanions("hs__xunyu")
 Fk:loadTranslationTable{
   ["ld__xunyou"] = "荀攸",
   ["xunyou"] = "荀攸",
@@ -21,7 +21,7 @@ Fk:loadTranslationTable{
 }
 
 local bianfuren = General:new(extension, "ld__bianfuren", "wei", 3)
-bianfuren:addCompanions("caocao")
+bianfuren:addCompanions("hs__caocao")
 bianfuren:addSkills{"ld__wanwei", "ld__yuejian"}
 Fk:loadTranslationTable{
   ["ld__bianfuren"] = "卞夫人",
@@ -53,7 +53,7 @@ Fk:loadTranslationTable{
 
 local lingtong = General:new(extension, "ld__lingtong", "wu", 4)
 lingtong:addSkills{ "xuanlve", "yongjin" }
-lingtong:addCompanions("ganning")
+lingtong:addCompanions("hs__ganning")
 Fk:loadTranslationTable{
   ["ld__lingtong"] = "凌统",
   ["lingtong"] = "凌统",

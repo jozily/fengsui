@@ -11,7 +11,7 @@ Fk:loadTranslationTable{
 
 local lidian = General:new(extension, "ld__lidian", "wei", 3)
 lidian:addSkills{"hs__xunxun", "hs__wangxi"}
-lidian:addCompanions("yuejin")
+lidian:addCompanions("hs__yuejin")
 Fk:loadTranslationTable{
   ["ld__lidian"] = "李典",
   ["lidian"] = "李典",
@@ -23,7 +23,7 @@ Fk:loadTranslationTable{
 
 local zangba = General:new(extension, "ld__zangba", "wei", 4)
 zangba:addSkill("hengjiang")
-zangba:addCompanions("zhangliao")
+zangba:addCompanions("hs__zhangliao")
 Fk:loadTranslationTable{
   ["ld__zangba"] = "臧霸",
   ["zangba"] = "臧霸",
@@ -35,7 +35,7 @@ Fk:loadTranslationTable{
 
 local madai = General:new(extension, "ld__madai", "shu", 4)
 madai:addSkills{"heg_madai__mashu", "re__qianxi"}
-madai:addCompanions("machao")
+madai:addCompanions("hs__machao")
 Fk:loadTranslationTable{
   ["ld__madai"] = "马岱",
   ["madai"] = "马岱",
@@ -59,7 +59,7 @@ Fk:loadTranslationTable{
 
 local sunce = General:new(extension, "ld__sunce", "wu", 4)
 sunce.deputyMaxHpAdjustedValue = -1
-sunce:addCompanions { "zhouyu", "taishici", "daqiao" }
+sunce:addCompanions { "hs__zhouyu", "hs__taishici", "hs__daqiao" }
 sunce:addSkills{ "jiang", "yingyang", "hunshang" }
 sunce:addRelatedSkills{"heg_sunce__yingzi", "heg_sunce__yinghun"}
 Fk:loadTranslationTable{

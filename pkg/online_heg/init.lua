@@ -25,7 +25,7 @@ Fk:loadTranslationTable{
 }
 
 generals.ol_heg__simayi = General:new(extension, "ol_heg__simayi", "jin", 3)
-generals.ol_heg__simayi:addCompanions({ "ol_heg__zhangchunhua", "ol_heg__shibao" })
+generals.ol_heg__simayi:addCompanions({ "ol_heg__zhangchunhua", "ol_heg__shibao", "zq_heg__zhangchunhua" })
 generals.ol_heg__simayi:addSkills { "yingshis", "xiongzhi", "quanbian" }
 Fk:loadTranslationTable{
   ["ol_heg__simayi"] = "司马懿",
@@ -65,7 +65,7 @@ Fk:loadTranslationTable{
 }
 
 generals.ol_heg__simazhao = General:new(extension, "ol_heg__simazhao", "jin", 3)
-generals.ol_heg__simazhao:addCompanions("ol_heg__wangyuanji")
+generals.ol_heg__simazhao:addCompanions{ "ol_heg__wangyuanji", "zq_heg__wangyuanji" }
 generals.ol_heg__simazhao:addSkills { "choufa", "zhaoran" }
 Fk:loadTranslationTable{
   ["ol_heg__simazhao"] = "司马昭",
@@ -153,7 +153,7 @@ Fk:loadTranslationTable{
 }
 
 generals.ol_heg__chengpu = General:new(extension, "ol_heg__chengpu", "wu", 4)
-generals.ol_heg__chengpu:addCompanions{ "hs__zhouyu","hs__huanggai" }
+generals.ol_heg__chengpu:addCompanions{ "hs__zhouyu", "hs__huanggai" }
 generals.ol_heg__chengpu:addSkills{ "ol_heg__daohuo","ol_heg__chunlao" }
 Fk:loadTranslationTable{
   ["ol_heg__chengpu"] = "程普",

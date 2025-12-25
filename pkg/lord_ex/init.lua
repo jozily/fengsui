@@ -31,7 +31,7 @@ Fk:loadTranslationTable{
 
 local xushu = General:new(extension, "ld__xushu", "shu", 4)
 xushu.deputyMaxHpAdjustedValue = -1
-xushu:addCompanions({ "wolong", "zhaoyun" })
+xushu:addCompanions({ "hs__wolong", "hs__zhaoyun" })
 xushu:addSkills{ "ld__qiance", "ld__jujian" }
 Fk:loadTranslationTable{
   ["ld__xushu"] = "徐庶",
@@ -180,7 +180,7 @@ Fk:loadTranslationTable{
 
 local xiahouba = General:new(extension, "ld__xiahouba", "shu", 4)
 xiahouba.subkingdom = "wei"
-xiahouba:addCompanions("jiangwei")
+xiahouba:addCompanions("ld__jiangwei")
 xiahouba:addSkills{ "ld__baolie" }
 Fk:loadTranslationTable{
   ["ld__xiahouba"] = "夏侯霸",
@@ -220,7 +220,7 @@ Fk:loadTranslationTable{
 
 local sufei = General:new(extension, "ld__sufei", "qun", 4) 
 sufei.subkingdom = "wu"
-sufei:addCompanions("ganning")
+sufei:addCompanions("hs__ganning")
 sufei:addSkills{ "ld__lianpian" }
 Fk:loadTranslationTable{
   ["ld__sufei"] = "苏飞",
@@ -259,7 +259,7 @@ Fk:loadTranslationTable{
 }
 
 local zhonghui = General:new(extension, "ld__zhonghui", "wild", 4)
-zhonghui:addCompanions("jiangwei")
+zhonghui:addCompanions("ld__jiangwei")
 zhonghui:addSkills{ "ld__quanji", "ld__paiyi"}
 Fk:loadTranslationTable{
   ["ld__zhonghui"] = "钟会",
@@ -272,7 +272,7 @@ Fk:loadTranslationTable{
 }
 
 local simazhao = General:new(extension, "ld__simazhao", "wild", 3)
-simazhao:addCompanions("simayi")
+simazhao:addCompanions("hs__simayi")
 simazhao:addSkills{ "ld__suzhi", "ld__zhaoxin" }
 simazhao:addRelatedSkill("ld__simazhao__fankui")
 Fk:loadTranslationTable{

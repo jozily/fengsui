@@ -25,7 +25,7 @@ Fk:loadTranslationTable{
 local caohong = General:new(extension, "ld__caohong", "wei", 4)
 caohong:addSkills{"ld__huyuan", "heyi"}
 caohong:addRelatedSkill("feiying")
-caohong:addCompanions("caoren")
+caohong:addCompanions("hs__caoren")
 Fk:loadTranslationTable{
   ["ld__caohong"] = "曹洪",
   ["caohong"] = "曹洪",
@@ -37,7 +37,7 @@ Fk:loadTranslationTable{
 }
 
 local jiangwei = General:new(extension, "ld__jiangwei", "shu", 4)
-jiangwei:addCompanions("zhugeliang")
+jiangwei:addCompanions("hs__zhugeliang")
 jiangwei.deputyMaxHpAdjustedValue = -1
 jiangwei:addSkills{ "tiaoxin", "tianfu", "yizhi" }
 jiangwei:addRelatedSkills{"ld__kanpo", "ld__guanxing"}
@@ -55,7 +55,7 @@ Fk:loadTranslationTable{
 
 local jiangfei = General:new(extension, "ld__jiangwanfeiyi", "shu", 3)
 jiangfei:addSkills{ "shengxi", "shoucheng" }
-jiangfei:addCompanions("zhugeliang")
+jiangfei:addCompanions("hs__zhugeliang")
 Fk:loadTranslationTable{
   ["ld__jiangwanfeiyi"] = "蒋琬费祎",
   ["jiangwanfeiyi"] = "蒋琬费祎",
@@ -67,7 +67,7 @@ Fk:loadTranslationTable{
 
 local xusheng = General:new(extension, "ld__xusheng", "wu", 4)
 xusheng:addSkill("yicheng")
-xusheng:addCompanions("dingfeng")
+xusheng:addCompanions("hs__dingfeng")
 Fk:loadTranslationTable{
   ["ld__xusheng"] = "徐盛",
   ["xusheng"] = "徐盛",
@@ -79,7 +79,7 @@ Fk:loadTranslationTable{
 
 local jiangqin = General:new(extension, "ld__jiangqin", "wu", 4)
 jiangqin:addSkills{ "shangyi", "niaoxiang" }
-jiangqin:addCompanions("zhoutai")
+jiangqin:addCompanions("hs__zhoutai")
 Fk:loadTranslationTable{
   ["ld__jiangqin"] = "蒋钦",
   ["jiangqin"] = "蒋钦",

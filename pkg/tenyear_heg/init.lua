@@ -18,7 +18,9 @@ Fk:loadTranslationTable{
   ["~ty_heg__panfeng"] = "潘凤又被华雄斩了。",
 }
 
-General:new(extension, "ty_heg__luxun", "wu", 3):addSkills{ "hs__qianxun", "ty_heg__duoshi" }
+local luxun = General:new(extension, "ty_heg__luxun", "wu", 3)
+luxun:addSkills{ "hs__qianxun", "ty_heg__duoshi" }
+luxun:addCompanions{ "ld__lukang" }
 Fk:loadTranslationTable{
   ["ty_heg__luxun"] = "陆逊",
   ["#ty_heg__luxun"] = "擎天之柱",
@@ -27,7 +29,9 @@ Fk:loadTranslationTable{
   ["~ty_heg__luxun"] = "我的未竟之业……",
 }
 
-General:new(extension, "ty_heg__lvbu", "qun", 5):addSkills{ "wushuang" }
+local lvbu = General:new(extension, "ty_heg__lvbu", "qun", 5)
+lvbu:addSkills{ "wushuang" }
+lvbu:addCompanions{ "hs__diaochan" }
 Fk:loadTranslationTable{
   ["ty_heg__lvbu"] = "吕布",
   ["#ty_heg__lvbu"] = "武的化身",
@@ -144,7 +148,7 @@ Fk:loadTranslationTable{
 
 local yangwan = General:new(extension, "ty_heg__yangwan", "shu", 3, 3, General.Female)
 yangwan:addSkills{ "ty_heg__youyan", "ty_heg__zhuihuan" }
-yangwan:addCompanions("machao")
+yangwan:addCompanions("hs__machao")
 Fk:loadTranslationTable{
   ["ty_heg__yangwan"] = "杨婉",
   ["#ty_heg__yangwan"] = "融沫之鲡",

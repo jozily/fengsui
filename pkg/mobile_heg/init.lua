@@ -11,7 +11,7 @@ Fk:loadTranslationTable{
 
 local xiahoudun = General:new(extension, "m_heg__xiahoudun", "wei", 5)
 xiahoudun:addSkill("ganglie")
-xiahoudun:addCompanions("xiahouyuan")
+xiahoudun:addCompanions("hs__xiahouyuan")
 Fk:loadTranslationTable{
   ["m_heg__xiahoudun"] = "夏侯惇",
   ["#m_heg__xiahoudun"] = "独眼的罗刹",
@@ -19,7 +19,9 @@ Fk:loadTranslationTable{
   ["~m_heg__xiahoudun"] = "两边都看不见了……",
 }
 
-General:new(extension, "m_heg__xiahouyuan", "wei", 4):addSkill("shensu")
+local xiahouyuan = General:new(extension, "m_heg__xiahouyuan", "wei", 4)
+xiahouyuan:addSkill("shensu")
+xiahouyuan:addCompanions{"hs__xiahoudun", "m_heg__xiahoudun"}
 Fk:loadTranslationTable{
   ["m_heg__xiahouyuan"] = "夏侯渊",
   ["#m_heg__xiahouyuan"] = "疾行的猎豹",
@@ -27,7 +29,9 @@ Fk:loadTranslationTable{
   ["~m_heg__xiahouyuan"] = "竟然比我还……快……",
 }
 
-General:new(extension, "m_heg__yuejin", "wei", 4):addSkill("xiaoguo")
+local yuejin = General:new(extension, "m_heg__yuejin", "wei", 4)
+yuejin:addSkill("xiaoguo")
+yuejin:addCompanions("ld__lidian")
 Fk:loadTranslationTable{
   ["m_heg__yuejin"] = "乐进",
   ["#m_heg__yuejin"] = "奋强突固",
@@ -35,7 +39,9 @@ Fk:loadTranslationTable{
   ["~m_heg__yuejin"] = "箭疮发作，吾命休矣。",
 }
 
-General(extension, "m_heg__ganfuren", "shu", 3, 3, General.Female):addSkills{ "m_heg__shushen", "shenzhi" }
+local ganfuren = General:new(extension, "m_heg__ganfuren", "shu", 3, 3, General.Female)
+ganfuren:addSkills{ "m_heg__shushen", "shenzhi" }
+ganfuren:addCompanions{ "hs__liubei" }
 Fk:loadTranslationTable{
   ["m_heg__ganfuren"] = "甘夫人",
   ["#m_heg__ganfuren"] = "昭烈皇后",
@@ -43,7 +49,9 @@ Fk:loadTranslationTable{
   ["~m_heg__ganfuren"] = "请替我照顾好阿斗……",
 }
 
-General:new(extension, "m_heg__luxun", "wu", 3):addSkills{ "m_heg__qianxun", "m_heg__duoshi" }
+local luxun = General:new(extension, "m_heg__luxun", "wu", 3)
+luxun:addSkills{ "m_heg__qianxun", "m_heg__duoshi" }
+luxun:addCompanions{ "ld__lukang" }
 Fk:loadTranslationTable{
   ["m_heg__luxun"] = "陆逊",
   ["#m_heg__luxun"] = "擎天之柱",

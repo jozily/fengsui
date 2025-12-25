@@ -9,7 +9,9 @@ Fk:loadTranslationTable{
   ["zq_heg"] = "紫气",
 }
 
-General:new(extension, "zq_heg__simayi", "jin", 4):addSkills { "zq_heg__yingshis", "zq_heg__shunfu" }
+local simayi = General:new(extension, "zq_heg__simayi", "jin", 4)
+simayi:addSkills { "zq_heg__yingshis", "zq_heg__shunfu" }
+simayi:addCompanions{ "ol_heg__zhangchunhua" }
 Fk:loadTranslationTable{
   ["zq_heg__simayi"] = "司马懿",
   ["#zq_heg__simayi"] = "应期佐命",
@@ -20,7 +22,7 @@ Fk:loadTranslationTable{
 
 local zhangchunhua = General:new(extension, "zq_heg__zhangchunhua", "jin", 3, 3, General.Female)
 zhangchunhua:addSkills { "zq_heg__ejue", "zq_heg__shangshi" }
-zhangchunhua:addCompanions("zq_heg__simayi")
+zhangchunhua:addCompanions{ "zq_heg__simayi" }
 Fk:loadTranslationTable{
   ["zq_heg__zhangchunhua"] = "张春华",
   ["#zq_heg__zhangchunhua"] = "锋刃染霜",
@@ -29,7 +31,9 @@ Fk:loadTranslationTable{
   ["~zq_heg__zhangchunhua"] = "冷眸残情，孤苦为一人。",
 }
 
-General:new(extension, "zq_heg__simashi", "jin", 4):addSkills { "zq_heg__yimie", "zq_heg__ruilve" }
+local simashi = General:new(extension, "zq_heg__simashi", "jin", 4)
+simashi:addSkills { "zq_heg__yimie", "zq_heg__ruilve" }
+simashi:addCompanions{ "ol_heg__xiahouhui", "ol_heg__yanghuiyu" }
 Fk:loadTranslationTable{
   ["zq_heg__simashi"] = "司马师",
   ["#zq_heg__simashi"] = "睚眥侧目",
@@ -38,7 +42,9 @@ Fk:loadTranslationTable{
   ["~zq_heg__simashi"] = "子上，这是为兄给你打下的江山……",
 }
 
-General:new(extension, "zq_heg__simazhao", "jin", 3):addSkills { "zq_heg__zhaoran", "zq_heg__beiluan" }
+local simazhao = General:new(extension, "zq_heg__simazhao", "jin", 3)
+simazhao:addSkills { "zq_heg__zhaoran", "zq_heg__beiluan" }
+simazhao:addCompanions{ "ol_heg__wangyuanji" }
 Fk:loadTranslationTable{
   ["zq_heg__simazhao"] = "司马昭",
   ["#zq_heg__simazhao"] = "天下畏威",
@@ -82,7 +88,7 @@ Fk:loadTranslationTable{
 
 local yanghuiyu = General:new(extension, "zq_heg__yanghuiyu", "jin", 3, 3, General.Female)
 yanghuiyu:addSkills { "zq_heg__ciwei", "zq_heg__caiyuan" }
-yanghuiyu:addCompanions("zq_heg__simashi")
+yanghuiyu:addCompanions{ "zq_heg__simashi", "ol_heg__simashi" }
 Fk:loadTranslationTable{
   ["zq_heg__yanghuiyu"] = "羊徽瑜",
   ["#zq_heg__yanghuiyu"] = "克明礼教",

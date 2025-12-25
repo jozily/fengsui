@@ -426,7 +426,7 @@ Fk:loadTranslationTable{
 
 local diaochan = General:new(extension, "hs__diaochan", "qun", 3, 3, General.Female)
 diaochan:addSkills{"hs__lijian", "biyue"}
-diaochan:addCompanions("lvbu")
+diaochan:addCompanions("hs__lvbu")
 Fk:loadTranslationTable{
   ["hs__diaochan"] = "貂蝉",
   ["#hs__diaochan"] = "绝世的舞姬",
