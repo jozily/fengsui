@@ -15,6 +15,13 @@ Fk:loadTranslationTable{
 
 local generals = {}  --绕过变量上限的东西
 
+General:new(extension, "ol_heg__hetaihou", "qun", 3, 3, General.Female):addSkills{ "ol__zhendu", "ol__qiluan" }
+Fk:loadTranslationTable{
+  ["ol_heg__hetaihou"] = "何太后",
+  ["#ol_heg__hetaihou"] = "弄权之蛇蝎",
+  ["illustrator:ol_heg__hetaihou"] = "琛·美弟奇",
+}
+
 General:new(extension, "ol_heg__zhangchunhua", "jin", 3, 3, General.Female):addSkills{ "ol__huishi", "qingleng" }
 Fk:loadTranslationTable{
   ["ol_heg__zhangchunhua"] = "张春华",

@@ -23,7 +23,7 @@ dangxian:addEffect(fk.GeneralRevealed, {
     end
   end,
   on_use = function(self, event, target, player, data)
-    H.addHegMark(player.room, player, "vanguard")
+    H.addHegMark(player, "vanguard")
   end
 })
 

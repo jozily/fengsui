@@ -76,6 +76,15 @@ Fk:loadTranslationTable{
   ["~m_heg__panfeng"] = "潘凤又被华雄斩了。",
 }
 
+General:new(extension, "m_heg__jiangwanfeiyi", "shu", 3):addSkills{ "ty__shengxi", "shoucheng" }
+Fk:loadTranslationTable{
+  ["m_heg__jiangwanfeiyi"] = "蒋琬费祎",
+  ["#m_heg__jiangwanfeiyi"] = "社稷股肱",
+  ["illustrator:m_heg__jiangwanfeiyi"] = "",
+
+  ["~m_heg__jiangwanfeiyi"] = "",
+}
+
 General:new(extension, "m_heg__duyu", "qun", 4):addSkills{ "m_heg__wuku", "m_heg__miewu" }
 Fk:loadTranslationTable{
   ["m_heg__duyu"] = "杜预",

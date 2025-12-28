@@ -239,16 +239,6 @@ Fk:loadTranslationTable{
   ["~os_heg__simashi"] = "吾家夙愿，得偿与否，尽看子上……",
 }
 
-General(extension, "os_heg__caoang", "wei", 4):addSkills { "kangkai" }
-Fk:loadTranslationTable{
-  ["os_heg__caoang"] = "曹昂",
-  ["#os_heg__caoang"] = "取义成仁",
-  ["designer:os_heg__caoang"] = "韩旭",
-  ["illustrator:os_heg__caoang"] = "Zero",
-
-  ["~os_heg__caoang"] = "典将军，还是你赢了……",
-}
-
 generals.os_heg__guanqiujian = General(extension, "os_heg__guanqiujian", "wei", 4)
 generals.os_heg__guanqiujian:addSkills { "os__zhengrong", "os__hongju" }
 generals.os_heg__guanqiujian:addRelatedSkills { "os__qingce", "os__saotao" }

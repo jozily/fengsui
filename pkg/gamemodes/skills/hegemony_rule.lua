@@ -208,20 +208,20 @@ hegRule:addEffect(fk.GeneralRevealed, {
     for _, general_name in pairs(data) do
       if room:getTag("TheFirstToShowRewarded") == player.id and player:getMark("_vanguard_gained") == 0 then
         room:setPlayerMark(player, "_vanguard_gained", 1)
-        H.addHegMark(room, player, "vanguard")
+        H.addHegMark(player, "vanguard")
       end
       if player:getMark("hasShownMainGeneral") == 1 and Fk.generals[general_name].kingdom == "wild" and player:getMark("_wild_gained") == 0 then
         room:setPlayerMark(player, "_wild_gained", 1)
-        H.addHegMark(room, player, "wild")
+        H.addHegMark(player, "wild")
       end
       if player.general == "anjiang" or player.deputyGeneral == "anjiang" then return false end
       if player:getMark("HalfMaxHpLeft") > 0 then
         room:setPlayerMark(player, "HalfMaxHpLeft", 0)
-        H.addHegMark(room, player, "yinyangfish")
+        H.addHegMark(player, "yinyangfish")
       end
       if player:getMark("CompanionEffect") > 0 then
         room:setPlayerMark(player, "CompanionEffect", 0)
-        H.addHegMark(room, player, "companion")
+        H.addHegMark(player, "companion")
       end
     end
   end

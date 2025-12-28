@@ -63,7 +63,7 @@ chenglue:addEffect(fk.CardUseFinished, {
     end
   end,
   on_use = function(self, event, target, player, data)
-    H.addHegMark(player.room, event:getCostData(self).to[1], "yinyangfish")
+    H.addHegMark(event:getCostData(self).to[1], "yinyangfish")
     player.room:sendLog {
       type = "#ld__shicai_getyinyangfish",
       from = player.id,

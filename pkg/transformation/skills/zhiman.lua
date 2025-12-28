@@ -22,7 +22,7 @@ zhiman:addEffect(fk.DamageCaused, {
         flag = "ej",
         skill_name = zhiman.name,
       })
-      room:obtainCard(player.id, card, true, fk.ReasonPrey)
+      room:obtainCard(player, card, true, fk.ReasonPrey)
     end
     if H.compareKingdomWith(target, player) and player:getMark("@@ld__zhiman_transform") == 0
       and room:askToChoice(player, {

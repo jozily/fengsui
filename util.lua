@@ -666,11 +666,11 @@ end
 ---@alias HegMarkType "vanguard" | "yinyangfish" | "companion" | "wild"
 
 --- 添加国战标记
----@param room Room @ 房间
 ---@param player ServerPlayer @ 角色
 ---@param markName string|HegMarkType @ 标记种类
 ---@param number? integer @ 数量，默认为1
-function HegUtil.addHegMark(room, player, markName, number)
+function HegUtil.addHegMark(player, markName, number)
+  local room = player.room
   number = number or 1
   if markName == "vanguard" then
     room:addPlayerMark(player, "@!!vanguard", number)

@@ -69,7 +69,7 @@ daohuo:addEffect(fk.TargetSpecified, {
     })
     if choice == "ol_heg__daohuo_getyinyangfish:" .. player.id then
       if player:getMark("@!!yinyangfish") == 0 then
-        H.addHegMark(room, player, "yinyangfish", 1)
+        H.addHegMark(player, "yinyangfish")
         room:sendLog {
           type = "#heg_getyinyangfish",
           from = player.id,
