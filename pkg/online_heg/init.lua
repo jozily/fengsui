@@ -148,6 +148,16 @@ Fk:loadTranslationTable{
   ["~ol_heg__zhonghui"] = "伯约，让你失望了。",
 }
 
+generals.ol_heg__liaohua = General:new(extension, "ol_heg__liaohua", "shu", 4)
+generals.ol_heg__liaohua:addSkills{ "ol_heg__zhengxian" }
+Fk:loadTranslationTable{
+  ["ol_heg__liaohua"] = "廖化",
+  ["#ol_heg__liaohua"] = "历尽沧桑",
+  ["illustrator:ol_heg__liaohua"] = "官方",
+
+  ["~ol_heg__liaohua"] = "今后，就靠你们了……",
+}
+
 generals.ol_heg__wuyi = General:new(extension, "ol_heg__wuyi", "shu", 4)
 generals.ol_heg__wuyi:addCompanions("hs__weiyan")
 generals.ol_heg__wuyi:addSkills{ "ol_heg__benxi","ol_heg__zhuanzheng"}

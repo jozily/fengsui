@@ -77,7 +77,7 @@ Fk:loadTranslationTable{
 
 generals.ofl_heg__zhugedan = General(extension, "ofl_heg__zhugedan", "wild", 4)
 generals.ofl_heg__zhugedan:addSkills { "ofl_heg__gongao" }
-generals.ofl_heg__lifeng.headnote = "E7010T国战：全武将无双"
+generals.ofl_heg__zhugedan.headnote = "E7010T国战：全武将无双"
 Fk:loadTranslationTable{
   ["ofl_heg__zhugedan"] = "诸葛诞",
   ["#ofl_heg__zhugedan"] = "薤露蒿里",
@@ -128,6 +128,51 @@ Fk:loadTranslationTable{
   ["#ofl_heg__wenyang"] = "独骑破军",
   ["illustrator:ofl_heg__wenyang"] = "鬼画府",
   ["~ofl_heg__wenyang"] = "半生功业，而见疑于一家之言，岂能无怨！",
+}
+
+generals.ofl_heg__guanyinping = General(extension, "ofl_heg__guanyinping", "shu", 3, 3, General.Female)
+generals.ofl_heg__guanyinping:addCompanions { "hs__guanyu" }
+generals.ofl_heg__guanyinping:addSkills { "ol__xuehen", "ofl_heg__huxiao" }
+generals.ofl_heg__guanyinping.headnote = "E7010T国战：全武将无双"
+Fk:loadTranslationTable{
+  ["ofl_heg__guanyinping"] = "关银屏",
+  ["#ofl_heg__guanyinping"] = "武姬",
+  ["illustrator:ofl_heg__guanyinping"] = "木美人",
+  ["~ofl_heg__guanyinping"] = "父亲，你来救我了吗……",
+}
+
+generals.ofl_heg__xingcai = General(extension, "ofl_heg__xingcai", "shu", 3, 3, General.Female)
+generals.ofl_heg__xingcai:addSkills { "ol__shenxian", "ofl_heg__qiangwu" }
+generals.ofl_heg__xingcai.headnote = "E7010T国战：全武将无双"
+Fk:loadTranslationTable{
+  ["ofl_heg__xingcai"] = "张星彩",
+  ["#ofl_heg__xingcai"] = "敬哀皇后",
+  ["illustrator:ofl_heg__xingcai"] = "depp",
+  ["cv:ofl_heg__xingcai"] = "shourei小N",
+  ["~ofl_heg__xingcai"] = "复兴汉室之路，臣妾再也不能陪伴左右了……",
+}
+
+generals.ofl_heg__guansuo = General:new(extension, "ofl_heg__guansuo", "shu", 4)
+generals.ofl_heg__guansuo:addSkills { "ofl_heg__zhengnan" }
+generals.ofl_heg__guansuo:addRelatedSkills { "hs__wusheng", "os_heg__dangxian", "ld__zhiman" }
+Fk:loadTranslationTable{
+  ["ofl_heg__guansuo"] = "关索",
+  ["#ofl_heg__guansuo"] = "倜傥孑侠",
+  ["illustrator:ofl_heg__guansuo"] = "depp",
+
+  ["$hs__wusheng_ofl_heg__guansuo"] = "逆贼，可识得关氏之勇？",
+  ["$os_heg__dangxian_ofl_heg__guansuo"] = "各位将军，且让小辈先行出战！",
+  ["$ld__zhiman_ofl_heg__guansuo"] = "蛮夷可抚，不可剿！",
+  ["~ofl_heg__guansuo"] = "只恨天下未平，空留遗志。",
+}
+
+generals.ofl_heg__mizhu = General:new(extension, "ofl_heg__mizhu", "shu", 3)
+generals.ofl_heg__mizhu:addSkills { "ofl_heg__ziyuan", "ofl_heg__jugu" }
+Fk:loadTranslationTable{
+  ["ofl_heg__mizhu"] = "糜竺",
+  ["#ofl_heg__mizhu"] = "挥金追义",
+  ["illustrator:ofl_heg__mizhu"] = "瞎子Ghe",
+  ["~ofl_heg__mizhu"] = "劣弟背主，我之罪也。",
 }
 
 --鲁芝 曹婴 文鸯 关银屏 张星彩 关索 糜竺 张嫙 张媱 麹义 高览 星张郃 十常侍
