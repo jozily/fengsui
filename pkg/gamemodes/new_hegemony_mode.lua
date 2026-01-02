@@ -571,32 +571,39 @@ heg = fk.CreateGameMode{
     local alive = table.filter(room.alive_players, function(p)
       return not p.surrendered
     end)
+    local kingdom = ""
     if #alive == 1 then
-      local p = alive[1] ---@type ServerPlayer
-      p:revealGeneral(false)
-      p:revealGeneral(true)
-      return p.role
+      kingdom = alive[1].role
     end
-
-    local winner -- = alive[1]
-    for _, p in ipairs(alive) do
-      if p.kingdom ~= "unknown" then
-        winner = p
-        break
+    if kingdom ~= "" then
+      local winner -- = alive[1]
+      for _, p in ipairs(alive) do
+        if p.kingdom ~= "unknown" then
+          winner = p
+          break
+        end
+      end
+      if not winner then return "" end
+      kingdom = H.getKingdom(winner)
+      local i = H.getKingdomPlayersNum(room, true)[kingdom]
+      for _, p in ipairs(alive) do
+        if not H.compareExpectedKingdomWith(p, winner) then
+          return ""
+        end
+        if p.kingdom == "unknown" then
+          i = i + 1
+        end
+      end
+      if i > #room.players // 2 and not H.getHegLord(room, winner) then return "" end
+      for _, p in ipairs(room.players) do
+        if p.general == "anjiang" then
+          room:setPlayerProperty(p, "general", p:getMark("__heg_general"))
+        end
+        if p.deputyGeneral == "anjiang" then
+          room:setPlayerProperty(p, "deputyGeneral", p:getMark("__heg_deputy"))
+        end
       end
     end
-    if not winner then return "" end
-    local kingdom = H.getKingdom(winner)
-    local i = H.getKingdomPlayersNum(room, true)[kingdom]
-    for _, p in ipairs(alive) do
-      if not H.compareExpectedKingdomWith(p, winner) then
-        return ""
-      end
-      if p.kingdom == "unknown" then
-        i = i + 1
-      end
-    end
-    if i > #room.players // 2 and not H.getHegLord(room, winner) then return "" end
     return kingdom
   end,
   surrender_func = function(self, playedTime)
@@ -752,7 +759,7 @@ Fk:loadTranslationTable{
   ["heg_zhou"] = "周",
   ["heg_liang"] = "凉",
   ["#WildChooseKingdom"] = "%from 成为 %arg2 ，选择了势力 %arg",
-  ["heg: besieged on all sides"] = "四面楚歌，被同一势力围观",
+  ["heg: besieged on all sides"] = "四面楚歌，被同一势力围观；所有主将都已亮",
   ["@@alliance"] = "合",
   ["@@alliance-public"] = "合",
   ["@@alliance-inhand"] = "合",
