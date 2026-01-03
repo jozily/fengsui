@@ -1,12 +1,49 @@
-local fightTogetherSkill = fk.CreateSkill{
+local skill = fk.CreateSkill{
   name = "fight_together_skill",
 }
 
 local H = require "packages.hegemony.util"
 
-fightTogetherSkill:addEffect("cardskill", {
+Fk:loadTranslationTable{
+  ["fight_together"] = "勠力同心",
+  [":fight_together"] = "锦囊牌<br/>"..
+  "<b>时机</b>：出牌阶段<br/>"..
+  "<b>目标</b>：所有大势力角色或所有小势力角色<br/>"..
+  "<b>效果</b>：若目标角色：不处于连环状态，其横置；处于连环状态，其摸一张牌。",
+
+  ["#fight_together_skill"] = "选择所有大势力角色或小势力角色，处于连环状态者摸一张牌，不处于连环状态者横置",
+  ["big_kingdom"] = "大势力",
+  ["small_kingdom"] = "小势力",
+}
+
+skill:addEffect("cardskill", {
   prompt = "#fight_together_skill",
   target_num = 1,
+  target_tip = function (self, player, to_select, selected, selected_cards, card, selectable, extra_data)
+    if #selected == 0 then
+      if not selectable then return end
+      if H.isBigKingdomPlayer(to_select) then
+        return "big_kingdom"
+      end
+      if H.isSmallKingdomPlayer(to_select) then
+        return "small_kingdom"
+      end
+    elseif #selected == 1 then
+      if H.isBigKingdomPlayer(selected[1]) and H.isBigKingdomPlayer(to_select) then
+        if to_select.chained then
+          return "draw1"
+        else
+          return "chained"
+        end
+      elseif H.isSmallKingdomPlayer(selected[1]) and H.isSmallKingdomPlayer(to_select) then
+        if to_select.chained then
+          return "draw1"
+        else
+          return "chained"
+        end
+      end
+    end
+  end,
   mod_target_filter = function(self, player, to_select, selected, card, distance_limited)
     if table.every(Fk:currentRoom().alive_players, function(p) return not H.isBigKingdomPlayer(p) end) then return false end
     if #selected == 0 then
@@ -53,7 +90,7 @@ fightTogetherSkill:addEffect("cardskill", {
   end,
 })
 
-fightTogetherSkill:addTest(function(room, me)
+skill:addTest(function(room, me)
   local comp2 = room.players[2]
   local card = Fk:cloneCard("fight_together")
   if table.find(Fk:currentRoom().alive_players, function(p)
@@ -86,10 +123,4 @@ fightTogetherSkill:addTest(function(room, me)
   lu.assertEquals(comp2:getHandcardNum(), 1)
 end)
 
-Fk:loadTranslationTable{
-  ["fight_together"] = "勠力同心",
-  [":fight_together"] = "锦囊牌<br/><b>时机</b>：出牌阶段<br/><b>目标</b>：所有大势力角色或所有小势力角色<br/><b>效果</b>：若目标角色：不处于连环状态，其横置；处于连环状态，其摸一张牌。<br/><font color='grey'>操作提示：选择一名角色，若其为大势力角色，则目标为所有大势力角色；若其为小势力角色，则目标为所有小势力角色</font>",
-  ["#fight_together_skill"] = "选择所有大势力角色或小势力角色，若这些角色处于/不处于连环状态，其摸一张牌/横置",
-}
-
-return fightTogetherSkill
+return skill

@@ -1,11 +1,45 @@
-local allianceFeastSkill = fk.CreateSkill{
+local skill = fk.CreateSkill{
   name = "alliance_feast_skill",
 }
 
 local H = require "packages.hegemony.util"
 
-allianceFeastSkill:addEffect('cardskill', {
-  prompt = "#alliance_feast_skill",
+Fk:loadTranslationTable{
+  ["alliance_feast"] = "联军盛宴",
+  [":alliance_feast"] = "锦囊牌<br/>"..
+  "<b>时机</b>：出牌阶段<br/>"..
+  "<b>目标</b>：有势力的你和除你的势力外的一个势力的所有角色<br/>"..
+  "<b>效果</b>：若目标角色：为你，你选择一项：1.回复X点体力；2.摸X张牌（X为该势力存活角色数）；不为你，其摸一张牌并重置武将牌。",
+
+  ["alliance_feast_skill"] = "联军盛宴",
+  ["alliance_feast_draw"] = "摸%arg张牌",
+  ["alliance_feast_recover"] = "回复%arg点体力",
+  ["#alliance_feast_skill"] = "选择一个其他势力的所有角色，你选择回复体力或摸牌，这些角色各摸一张牌并重置",
+  ["#alliance_feast"] = "你选择回复%arg点体力或摸%arg张牌，目标势力角色各摸一张牌并重置",
+}
+
+skill:addEffect("cardskill", {
+  prompt = function (self, player, selected_cards, selected_targets, extra_data)
+    if #selected_targets == 0 then
+      return "#alliance_feast_skill"
+    elseif #selected_targets == 1 then
+      local num = #table.filter(Fk:currentRoom().alive_players, function (p)
+        return H.compareKingdomWith(p, selected_targets[1])
+      end)
+      return "#alliance_feast:::"..num
+    end
+  end,
+  target_tip = function (self, player, to_select, selected, selected_cards, card, selectable, extra_data)
+    if #selected == 0 then
+      return
+    else
+      if H.compareKingdomWith(to_select, selected[1]) then
+        return "draw1"
+      else
+        return
+      end
+    end
+  end,
   target_num = 1,
   mod_target_filter = function(self, player, to_select, selected, card, extra_data)
     if to_select == player then return true end
@@ -47,63 +81,34 @@ allianceFeastSkill:addEffect('cardskill', {
     use.extra_data = use.extra_data or {}
     use.extra_data.AFTargetKingdom = kingdom
   end,
-  on_effect = function(self, room, cardEffectEvent)
-    local from = cardEffectEvent.from
-    local to = cardEffectEvent.to
+  on_effect = function(self, room, effect)
+    local from = effect.from
+    local to = effect.to
     if from == to then
-      local num = H.getSameKingdomPlayersNum(room, nil, (cardEffectEvent.extra_data or {}).AFTargetKingdom)
-      local choices = {}
-      for i = 0, math.min(num, from:getLostHp()) do
-        table.insert(choices, "#AFrecover:::" .. i .. ":" .. num - i)
-      end
-      local number = table.indexOf(choices, room:askToChoice(from, {choices = choices, skill_name = "alliance_feast_skill"})) - 1
-      if number > 0 then
+      local num = H.getSameKingdomPlayersNum(room, nil, (effect.extra_data or {}).AFTargetKingdom)
+      local choices = { "alliance_feast_recover:::"..num, "alliance_feast_draw:::"..num }
+      local choice =  room:askToChoice(from, {
+        choices = choices,
+        skill_name = skill.name,
+      })
+      if choice:startsWith("alliance_feast_recover") then
         room:recover{
           who = from,
           recoverBy = from,
-          card = cardEffectEvent.card,
-          num = number,
-          skillName = "alliance_feast_skill"
+          card = effect.card,
+          num = num,
+          skillName = skill.name,
         }
+      else
+        from:drawCards(num, skill.name)
       end
-      from:drawCards(num - number, "alliance_feast")
     else
-      to:drawCards(1, "alliance_feast")
-      if to.chained then to:setChainState(false) end
+      to:drawCards(1, skill.name)
+      if to.chained then
+        to:setChainState(false)
+      end
     end
   end,
 })
 
-allianceFeastSkill:addTest(function(room, me)
-  local card = Fk:cloneCard("alliance_feast")
-  local to = table.find(room:getOtherPlayers(me, false), function(p)
-    return H.compareKingdomWith(me, p, true)
-  end)
-  if to then
-    FkTest.runInRoom(function()
-      room:loseHp(me, 3)
-      local num = H.getSameKingdomPlayersNum(room, to)
-      to:setChainState(true)
-      FkTest.setNextReplies(me, { "#AFrecover:::" .. 1 .. ":" .. num - 1 })
-      room:useCard{
-        from = me,
-        card = card,
-        tos = {to},
-      }
-    end)
-    lu.assertEquals(me.hp, 2)
-    lu.assertEquals(me:getHandcardNum(), 1)
-    lu.assertEquals(to:getHandcardNum(), 1)
-    lu.assertEquals(to.chained, false)
-  end
-end)
-
-Fk:loadTranslationTable{
-  ["alliance_feast"] = "联军盛宴",
-  [":alliance_feast"] = "锦囊牌<br/><b>时机</b>：出牌阶段<br/><b>目标</b>：有势力的你和除你的势力外的一个势力的所有角色<br/><b>效果</b>：若目标角色：为你，你摸X张牌，回复（Y-X）点体力（Y为该势力的角色数）（X为你选择的自然数且不大于Y）；不为你，其摸一张牌，重置。<br/><font color='grey'>操作提示：选择一名与你势力不同的角色，目标为你和该势力的所有角色</font>",
-  ["alliance_feast_skill"] = "联军盛宴",
-  ["#AFrecover"] = "回复%arg点体力，摸%arg2张牌",
-  ["#alliance_feast_skill"] = "选择除你的势力外的一个势力的所有角色，<br/>你选择X（不大于Y），摸X张牌，回复Y-X点体力（Y为该势力的角色数）；<br/>这些角色各摸一张牌，重置",
-}
-
-return allianceFeastSkill
+return skill

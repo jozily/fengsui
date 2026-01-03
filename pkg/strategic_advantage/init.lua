@@ -64,6 +64,7 @@ local drowning = fk.CreateCard{
   skill = "sa__drowning_skill",
   type = Card.TypeTrick,
   is_damage_card = true,
+  damage_type = fk.ThunderDamage,
 }
 
 extension:addCardSpec("sa__drowning", Card.Heart, 13)
@@ -75,6 +76,7 @@ local burningCamps = fk.CreateCard{
   skill = "burning_camps_skill",
   multiple_targets = true,
   is_damage_card = true,
+  damage_type = fk.FireDamage,
 }
 
 H.addAllianceCardSpec(extension, "burning_camps", Card.Heart, 12)
