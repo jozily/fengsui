@@ -575,7 +575,6 @@ heg = fk.CreateGameMode{
     if #alive == 1 then
       kingdom = alive[1].role
     end
-    if kingdom ~= "" then
       local winner -- = alive[1]
       for _, p in ipairs(alive) do
         if p.kingdom ~= "unknown" then
@@ -603,7 +602,6 @@ heg = fk.CreateGameMode{
           room:setPlayerProperty(p, "deputyGeneral", p:getMark("__heg_deputy"))
         end
       end
-    end
     return kingdom
   end,
   surrender_func = function(self, playedTime)

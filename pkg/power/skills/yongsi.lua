@@ -46,7 +46,7 @@ yongsi:addEffect(fk.EventPhaseStart, {
 yongsi:addEffect(fk.DrawNCards, {
   anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(self.name) and canYongsi(player)
+    return target == player and player:hasSkill(self.name) and canYongsi(player) and player:hasShownSkill(self.name)
   end,
   on_use = function(self, event, target, player, data)
     data.n = data.n + 1

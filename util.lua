@@ -971,8 +971,8 @@ function HegUtil.swapDeputy(room, player, target)
     else
       table.insert(tolose1, s)
     end
-    if Fk.skills[s]:hasTag(Skill.Limited) and player:usedSkillTimes(s, Player.HistoryGame) > 0 then
-      target:addSkillUseHistory(s, player:usedSkillTimes(s, Player.HistoryGame))
+    for _, h in ipairs({Player.HistoryPhase, Player.HistoryTurn, Player.HistoryRound, Player.HistoryGame}) do
+      target:setSkillUseHistory(s, player:usedSkillTimes(s, h), h)
     end
   end
   local tolose2 = {}
@@ -988,8 +988,8 @@ function HegUtil.swapDeputy(room, player, target)
     else
       table.insert(tolose2, s)
     end
-    if Fk.skills[s]:hasTag(Skill.Limited) and target:usedSkillTimes(s, Player.HistoryGame) > 0 then
-      player:addSkillUseHistory(s, target:usedSkillTimes(s, Player.HistoryGame))
+    for _, h in ipairs({Player.HistoryPhase, Player.HistoryTurn, Player.HistoryRound, Player.HistoryGame}) do
+      player:setSkillUseHistory(s, target:usedSkillTimes(s, h), h)
     end
   end
   if not g2hide then
