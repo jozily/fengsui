@@ -123,7 +123,9 @@ Fk:loadTranslationTable{
   ["#lure_tiger-prevent"] = "由于【调虎离山】的效果，防止 %to 的体力值改变",
   ["lure_tiger-prohibit"] = "受调虎离山保护",
 
-  ["@@lure_tiger-turn"] = "调虎离山",
+  ["@@lure_tiger-turn"] = "调离",
+  ["@@lure_tiger"] = "调离",
+  ["lure_tiger_skill"] = "调离",
 }
 
 return lureTigerSkill
