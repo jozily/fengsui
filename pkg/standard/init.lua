@@ -6,7 +6,7 @@ extension:loadSkillSkelsByPath("./packages/hegemony/pkg/standard/skills")
 
 Fk:loadTranslationTable{
   ["hegemony_standard"] = "国战标准版",
-  ["hs"] = "国标",
+  ["hs"] = "国战",
 }
 
 local caocao = General:new(extension, "hs__caocao", "wei", 4)
@@ -218,8 +218,8 @@ General:new(extension, "hs__weiyan", "shu", 4):addSkill("hs__kuanggu")
 Fk:loadTranslationTable{
   ["hs__weiyan"] = "魏延",
   ["#hs__weiyan"] = "嗜血的独狼",
-  ["illustrator:hs__weiyan"] = "瞌瞌一休",
-  ["~hs__weiyan"] = "奸贼……害我……",
+  ["illustrator:hs__weiyan"] = "SoniaTang",
+  ["~hs__weiyan"] = "谁敢杀我！呃啊！",
 }
 
 local pangtong = General:new(extension, "hs__pangtong", "shu",3)

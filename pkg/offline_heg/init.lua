@@ -6,7 +6,7 @@ extension:loadSkillSkelsByPath("./packages/hegemony/pkg/offline_heg/skills")
 
 Fk:loadTranslationTable{
   ["offline_heg"] = "国战-线下",
-  ["ofl_heg"] = "线下",
+  ["ofl_heg"] = "线下国战",
 }
 
 local generals = {}  --绕过变量上限的东西
@@ -45,8 +45,42 @@ Fk:loadTranslationTable{
   ["illustrator:ofl_heg__caocao"] = "F.源",
   ["~ofl_heg__caocao"] = "霸业未成！未成啊！",
 }
---毌丘俭 郭淮 朱儁 许贡 陈宫 黄权
 
+generals.ofl_heg__guanqiujian = General:new(extension, "ofl_heg__guanqiujian", "wei", 4)
+generals.ofl_heg__guanqiujian:addCompanions({ "ld__wenqin" })
+generals.ofl_heg__guanqiujian:addSkills { "ofl_heg__zhengrong", "ofl_heg__hongju" }
+generals.ofl_heg__guanqiujian.headnote = "E0045群雄割据"
+Fk:loadTranslationTable{
+  ["ofl_heg__guanqiujian"] = "毌丘俭",
+  ["#ofl_heg__guanqiujian"] = "镌功铭征荣",
+  ["illustrator:ofl_heg__guanqiujian"] = "凝聚永恒",
+  ["~ofl_heg__guanqiujian"] = "峥嵘一生，然被平民所击射！",
+}
+
+generals.ofl_heg__guohuai = General:new(extension, "ofl_heg__guohuai", "wei", 4)
+generals.ofl_heg__guohuai:addCompanions({ "hs__xiahouyuan", "hs__zhanghe" })
+generals.ofl_heg__guohuai.mainMaxHpAdjustedValue = -1
+generals.ofl_heg__guohuai:addSkills { "ofl_heg__duanshi", "ofl_heg__jingce" }
+generals.ofl_heg__guohuai.headnote = "E0045群雄割据"
+Fk:loadTranslationTable{
+  ["ofl_heg__guohuai"] = "郭淮",
+  ["#ofl_heg__guohuai"] = "垂问秦雍",
+  ["illustrator:ofl_heg__guohuai"] = "心中一凛",
+  ["~ofl_heg__guohuai"] = "岂料姜维……空手接箭！",
+}
+
+--朱儁 许贡 陈宫
+
+generals.ofl_heg__huangquan = General:new(extension, "ofl_heg__huangquan", "wei", 3)
+generals.ofl_heg__huangquan.subkingdom = "shu"
+generals.ofl_heg__huangquan:addSkills { "ofl_heg__dianhu", "ofl_heg__jianji" }
+generals.ofl_heg__huangquan.headnote = "E0045群雄割据"
+Fk:loadTranslationTable{
+  ["ofl_heg__huangquan"] = "黄权",
+  ["#ofl_heg__huangquan"] = "道绝殊途",
+  ["illustrator:ofl_heg__huangquan"] = "兴游",
+  ["~ofl_heg__huangquan"] = "魏王厚待于我，降魏又有何错？",
+}
 
 --十年经典
 --典韦 乐进 陆逊 太史慈 丁奉 颜良文丑 曹洪 徐盛 董卓 吕范 左慈 陆抗 钟会 孙綝 公孙渊 宗预
@@ -84,11 +118,30 @@ Fk:loadTranslationTable{
   ["illustrator:ofl_heg__zhugedan"] = "雪君S",
   ["~ofl_heg__zhugedan"] = "诸葛一氏定会为我复仇！",
 }
---魏延 吕布 袁术 刘焉
+
+generals.ofl_heg__weiyan = General(extension, "ofl_heg__weiyan", "wild", 4)
+generals.ofl_heg__weiyan:addSkills { "ofl_heg__kuanggu" }
+generals.ofl_heg__weiyan.headnote = "E7010T国战：全武将无双"
+Fk:loadTranslationTable{
+  ["ofl_heg__weiyan"] = "魏延",
+  ["#ofl_heg__weiyan"] = "嗜血的独狼",
+  ["illustrator:ofl_heg__weiyan"] = "瞌瞌一休",
+  ["~ofl_heg__weiyan"] = "奸贼……害我……",
+}
+--吕布 袁术 
+generals.ofl_heg__liuyan = General(extension, "ofl_heg__liuyan", "wild", 3)
+generals.ofl_heg__liuyan:addSkills { "ofl_heg__tushe", "ofl_heg__limu" }
+generals.ofl_heg__liuyan.headnote = "E7010T国战：全武将无双"
+Fk:loadTranslationTable{
+  ["ofl_heg__liuyan"] = "刘焉",
+  ["#ofl_heg__liuyan"] = "裂土之宗",
+  ["illustrator:ofl_heg__liuyan"] = "心中一凛",
+  ["~ofl_heg__liuyan"] = "背疮难治，世子难继。",
+}
 
 generals.ofl_heg__caoang = General(extension, "ofl_heg__caoang", "wei", 4)
 generals.ofl_heg__caoang:addCompanions { "hs__caocao" }
-generals.ofl_heg__caoang:addSkills { "kangkai" }
+generals.ofl_heg__caoang:addSkills { "ofl_heg__kangkai" }
 generals.ofl_heg__caoang.headnote = "E7010T国战：全武将无双"
 Fk:loadTranslationTable{
   ["ofl_heg__caoang"] = "曹昂",
@@ -155,6 +208,7 @@ Fk:loadTranslationTable{
 generals.ofl_heg__guansuo = General:new(extension, "ofl_heg__guansuo", "shu", 4)
 generals.ofl_heg__guansuo:addSkills { "ofl_heg__zhengnan" }
 generals.ofl_heg__guansuo:addRelatedSkills { "hs__wusheng", "os_heg__dangxian", "ld__zhiman" }
+generals.ofl_heg__guansuo.headnote = "E7010T国战：全武将无双"
 Fk:loadTranslationTable{
   ["ofl_heg__guansuo"] = "关索",
   ["#ofl_heg__guansuo"] = "倜傥孑侠",
@@ -168,11 +222,22 @@ Fk:loadTranslationTable{
 
 generals.ofl_heg__mizhu = General:new(extension, "ofl_heg__mizhu", "shu", 3)
 generals.ofl_heg__mizhu:addSkills { "ofl_heg__ziyuan", "ofl_heg__jugu" }
+generals.ofl_heg__mizhu.headnote = "E7010T国战：全武将无双"
 Fk:loadTranslationTable{
   ["ofl_heg__mizhu"] = "糜竺",
   ["#ofl_heg__mizhu"] = "挥金追义",
   ["illustrator:ofl_heg__mizhu"] = "瞎子Ghe",
   ["~ofl_heg__mizhu"] = "劣弟背主，我之罪也。",
+}
+
+generals.ofl_heg__quyi = General:new(extension, "ofl_heg__quyi", "qun", 4)
+generals.ofl_heg__quyi:addSkills { "fuji", "jiaozi" }
+generals.ofl_heg__quyi.headnote = "E7010T国战：全武将无双"
+Fk:loadTranslationTable{
+  ["ofl_heg__quyi"] = "麴义",
+  ["#ofl_heg__quyi"] = "名门的骁将",
+  ["illustrator:ofl_heg__quyi"] = "秋呆呆",
+  ["~ofl_heg__quyi"] = "我为主公戎马一生，主公为何如此对我……",
 }
 
 --鲁芝 曹婴 文鸯 关银屏 张星彩 关索 糜竺 张嫙 张媱 麹义 高览 星张郃 十常侍

@@ -15,7 +15,7 @@ vanguardSkill:addEffect("active", {
     end) and 1 or 0
   end,
   target_filter = function(self, player, to_select, selected, selected_cards)
-    if to_select ~= player.id and #selected == 0 and
+    if to_select ~= player and #selected == 0 and
       table.find(Fk:currentRoom().alive_players, function(p)
         return (p.general == "anjiang" or p.deputyGeneral == "anjiang") and p ~= player
       end) then

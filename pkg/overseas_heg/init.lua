@@ -6,7 +6,7 @@ extension:loadSkillSkelsByPath("./packages/hegemony/pkg/overseas_heg/skills")
 
 Fk:loadTranslationTable{
   ["overseas_heg"] = "国战-国际服专属",
-  ["os_heg"] = "国际",
+  ["os_heg"] = "国际国战",
 }
 
 local generals = {}  --绕过变量上限的东西
@@ -245,9 +245,9 @@ generals.os_heg__guanqiujian:addRelatedSkills { "os__qingce", "os__saotao" }
 Fk:loadTranslationTable{
   ["os_heg__guanqiujian"] = "毌丘俭",
   ["#os_heg__guanqiujian"] = "镌功铭征荣",
-  ["illustrator:os_heg__guanqiujian"] = "凝聚永恒",
+  ["illustrator:os_heg__guanqiujian"] = "猎枭",
 
-  ["~os_heg__guanqiujian"] = "峥嵘一生，然被平民所击射！",
+  ["~os_heg__guanqiujian"] = "好谋而不达，此事必有隐患。",
 }
 
 --李昭焦伯

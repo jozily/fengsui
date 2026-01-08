@@ -6,7 +6,7 @@ extension:loadSkillSkelsByPath("./packages/hegemony/pkg/online_heg/skills")
 
 Fk:loadTranslationTable{
   ["online_heg"] = "国战-OL专属",
-  ["ol_heg"] = "OL",
+  ["ol_heg"] = "OL国战",
   ["#heg_swap_deputy"] = "%from 与 %to 交换了副将",
   ["heg__yiwei"] = "易位：发起武将易位后，若目标角色选择执行，则易位双方交换对应武将。<br>"..
   "一名角色只能对相同势力的其他角色发起武将易位。易位武将不会影响你的体力上限，也不会获得珠联璧合、阴阳鱼标记。"..

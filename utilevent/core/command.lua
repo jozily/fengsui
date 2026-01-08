@@ -130,22 +130,6 @@ function HegUtil.askToCommand(player, params)
   return data.succeed, data
 end
 
----@deprecated 请使用 HegUtil.askToCommand
---- 对某角色发起军令（抽取、选择、询问）
----@param from ServerPlayer @ 军令发起者
----@param to ServerPlayer @ 军令执行者
----@param skill_name string @ 技能名
----@param forced? boolean @ 是否强制执行
----@return boolean @ 是否执行
-function HegUtil.askCommandTo(from, to, skill_name, forced)
-  local ret = HegUtil.askToCommand(from, {
-    tos = { to },
-    skill_name = skill_name,
-    forced = forced,
-  })
-  return ret
-end
-
 ---@class HegUtil.AskToStartCommandParams: AskToSkillInvokeParams
 ---@field num? integer @ 抽取数量，默认为2
 ---@field pool? string[] @ 总军令列表，默认为六个command军令
@@ -249,7 +233,7 @@ HegUtil.registerCommand("command1", {
       from = from.id,
       to = {dest.id},
     }
-    room:doIndicate(from.id, {dest.id})
+    room:doIndicate(from, {dest})
     data.command_data = { tos = { dest } }
   end,
   on_use = function(to, from, data)
@@ -269,26 +253,20 @@ HegUtil.registerCommand("command2", {
     local room = to.room
     to:drawCards(1, "command")
     if to == from or to:isNude() then return true end
-    local cards = {}
-    if #to:getCardIds{Player.Hand, Player.Equip} == 1 then
-      cards = to:getCardIds{Player.Hand, Player.Equip}
-    else
-      cards = room:askToCards(to,{
-        min_num = 2,
-        max_num = 2,
-        include_equip = true,
-        skill_name = "command",
-        prompt = "#command2-give::" .. from.id,
-        cancelable = false,
-      })
-    end
-    room:moveCardTo(cards, Player.Hand, from, fk.ReasonGive, "command", nil, false, from.id)
+    local cards = room:askToCards(to,{
+      min_num = 2,
+      max_num = 2,
+      include_equip = true,
+      skill_name = "command",
+      prompt = "#command2-give::" .. from.id,
+      cancelable = false,
+    })
+    room:moveCardTo(cards, Player.Hand, from, fk.ReasonGive, "command", nil, false, from)
   end
 })
 HegUtil.registerCommand("command3", {
   on_use = function(to)
-    local room = to.room
-    room:loseHp(to, 1, "command")
+    to.room:loseHp(to, 1, "command")
   end
 })
 HegUtil.registerCommand("command4", {
@@ -296,7 +274,7 @@ HegUtil.registerCommand("command4", {
     local room = to.room
     room:setPlayerMark(to, "@@command4_effect-turn", 1)
     room:addPlayerMark(to, MarkEnum.UncompulsoryInvalidity .. "-turn")
-    room:handleAddLoseSkills(to, "#command4_prohibit", nil, false, true) -- 为了不全局，流汗了
+    room:addSkill("#command_skill")
   end
 })
 HegUtil.registerCommand("command5", {
@@ -304,7 +282,7 @@ HegUtil.registerCommand("command5", {
     local room = to.room
     to:turnOver()
     room:setPlayerMark(to, "@@command5_effect-turn", 1)
-    room:handleAddLoseSkills(to, "#command5_cannotrecover", nil, false, true) -- 为了不全局，流汗了
+    room:addSkill("#command_skill")
   end
 })
 HegUtil.registerCommand("command6", {
@@ -318,11 +296,15 @@ HegUtil.registerCommand("command6", {
     if #to:getCardIds("e") > 0 then
       table.insert(to_remain, to:getCardIds("e")[1])
     end
-    local _, ret = room:askToUseActiveSkill(to, {prompt = "#command6_select", skill_name = "#command6-select", cancelable = false})
+    local _, ret = room:askToUseActiveSkill(to, {
+      prompt = "command",
+      skill_name = "#command6-select",
+      cancelable = false,
+    })
     if ret then
       to_remain = ret.cards
     end
-    local cards = table.filter(to:getCardIds{Player.Hand, Player.Equip}, function (id)
+    local cards = table.filter(to:getCardIds("he"), function (id)
       return not (table.contains(to_remain, id) or to:prohibitDiscard(Fk:getCardById(id)))
     end)
     if #cards > 0 then

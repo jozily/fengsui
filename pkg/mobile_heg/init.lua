@@ -6,7 +6,7 @@ extension:loadSkillSkelsByPath("./packages/hegemony/pkg/mobile_heg/skills")
 
 Fk:loadTranslationTable{
   ["mobile_heg"] = "国战-手杀专属",
-  ["m_heg"] = "手杀",
+  ["m_heg"] = "手杀国战",
 }
 
 local xiahoudun = General:new(extension, "m_heg__xiahoudun", "wei", 5)

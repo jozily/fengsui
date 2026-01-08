@@ -6,7 +6,7 @@ extension:loadSkillSkelsByPath("./packages/hegemony/pkg/jyzs/skills")
 
 Fk:loadTranslationTable{
   ["jyzs"] = "国战-金印紫授",
-  ["jy_heg"] = "金印",
+  ["jy_heg"] = "国战",
 }
 
 local H = require "packages.hegemony.util"

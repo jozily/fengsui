@@ -6,7 +6,7 @@ extension:loadSkillSkelsByPath("./packages/hegemony/pkg/zqdl/skills")
 
 Fk:loadTranslationTable{
   ["zqdl"] = "国战-紫气东来",
-  ["zq_heg"] = "紫气",
+  ["zq_heg"] = "国战",
 }
 
 local simayi = General:new(extension, "zq_heg__simayi", "jin", 4)

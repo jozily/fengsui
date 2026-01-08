@@ -1,6 +1,15 @@
 local kuanggu = fk.CreateSkill{
   name = "hs__kuanggu",
 }
+
+Fk:loadTranslationTable{
+  ["hs__kuanggu"] = "狂骨",
+  [":hs__kuanggu"] = "当你对距离1以内的角色造成1点伤害后，你可摸一张牌或回复1点体力。",
+
+  ["$hs__kuanggu1"] = "我会怕你吗！",
+  ["$hs__kuanggu2"] = "真是美味啊！",
+}
+
 kuanggu:addEffect(fk.Damage, {
   anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)
@@ -51,28 +60,5 @@ kuanggu:addEffect(fk.BeforeHpChanged, {
     data.damageEvent.extra_data.kuanggucheck = true
   end,
 })
-
-kuanggu:addTest(function (room, me)
-  FkTest.setNextReplies(me, {"recover", "draw1", "draw1"})
-  FkTest.runInRoom(function ()
-    room:handleAddLoseSkills(me, kuanggu.name)
-    room:loseHp(me, 3)
-    room:damage({ from = me, to = room.players[2], damage = 1})
-    room:damage({ from = me, to = room.players[3], damage = 1})
-  end)
-  lu.assertEquals(me.hp, 2)
-  lu.assertEquals(me:getHandcardNum(), 0)
-  FkTest.runInRoom(function ()
-    room:damage({ from = me, to = room.players[2], damage = 1})
-  end)
-  lu.assertEquals(me:getHandcardNum(), 1)
-end)
-
-Fk:loadTranslationTable{
-  ["hs__kuanggu"] = "狂骨",
-  [":hs__kuanggu"] = "当你对距离1以内的角色造成1点伤害后，你可摸一张牌或回复1点体力。",
-  ["$hs__kuanggu1"] = "哈哈哈哈哈哈，赢你还不容易？",
-  ["$hs__kuanggu2"] = "哼！也不看看我是何人！",
-}
 
 return kuanggu

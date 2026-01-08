@@ -8,7 +8,7 @@ extension:loadSkillSkelsByPath("./packages/hegemony/pkg/formation/skills")
 
 Fk:loadTranslationTable{
   ["formation"] = "君临天下·阵",
-  ["ld"] = "君临",
+  ["ld"] = "国战",
 }
 
 local dengai = General:new(extension, "ld__dengai", "wei", 4)

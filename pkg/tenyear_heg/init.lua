@@ -6,7 +6,7 @@ extension:loadSkillSkelsByPath("./packages/hegemony/pkg/tenyear_heg/skills")
 
 Fk:loadTranslationTable{
   ["tenyear_heg"] = "国战-十周年专属",
-  ["ty_heg"] = "新服",
+  ["ty_heg"] = "新服国战",
   ["ty_heg_zongheng"] = "<b>纵横：</b><br>当拥有“纵横”效果技能发动结算完成后，可以令技能目标角色获得对应修订描述后的技能，直到其下回合结束。",
 }
 
