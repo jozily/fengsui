@@ -224,7 +224,8 @@ HegUtil.registerCommand("command1", {
       targets = room.alive_players,
       min_num = 1,
       max_num = 1,
-      prompt = "#command1-damage::" .. from.id,
+      prompt = "#command1-damage:::" .. table.concat(
+        table.map(data.tos, Player.__touistring), "、"),
       skill_name = data.skillName,
       cancelable = false,
     })[1]
@@ -297,8 +298,11 @@ HegUtil.registerCommand("command6", {
       table.insert(to_remain, to:getCardIds("e")[1])
     end
     local _, ret = room:askToUseActiveSkill(to, {
-      prompt = "command",
-      skill_name = "#command6-select",
+      skill_name = "#command_skill",
+      prompt = "#command6-select",
+      extra_data = {
+        skillName = "command",
+      },
       cancelable = false,
     })
     if ret then
@@ -343,7 +347,7 @@ Fk:loadTranslationTable{
   ["#commandselect_yes"] = "执行军令",
   ["#commandselect_no"] = "不执行军令",
 
-  ["#command1-damage"] = "军令：请选择 %dest 伤害的目标",
+  ["#command1-damage"] = "军令：请选择要造成伤害的目标",
   ["#Command1Damage"] = "%from 选择对 %to 造成伤害",
   ["#command2-give"] = "军令：请选择两张牌交给 %dest",
   ["@@command4_effect-turn"] = "军令禁出牌技能",
