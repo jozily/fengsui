@@ -42,7 +42,7 @@ zhiman:addEffect(fk.DamageCaused, {
 
 Fk:loadTranslationTable{
   ["ld__zhiman"] = "制蛮",
-  [":ld__zhiman"] = "当你对其他角色造成伤害时，你可防止此伤害，你获得其装备区或判定区里的一张牌。若其与你势力相同，你可令其选择是否变更。",
+  [":ld__zhiman"] = "当你对其他角色造成伤害时，你可防止此伤害，你获得其装备区或判定区里的一张牌。若其与你势力相同，你可令其选择是否变更副将。",
 
   ["#ld__zhiman-invoke"] = "制蛮：你可以防止对 %dest 造成的伤害，获得其场上的一张牌。若其与你势力相同，你可令其选择是否变更副将",
   ["ld__zhiman_transform"] = "令%dest选择是否变更副将",

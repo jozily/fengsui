@@ -12,6 +12,9 @@ Fk:loadTranslationTable {
   ["ol_heg__daohuo_getyinyangfish"] = "令 %src 将“阴阳鱼”标记补至1",
   ["ol_heg__daohuo_yiwei"] = "%src 选择你与另一名同势力角色易位",
   ["#heg_getyinyangfish"] = "%from 获得了一枚<font color=\"#DC143C\"><b> 阴阳鱼 </b></font>标记",
+
+  ["$ol_heg__daohuo1"] = "将士们，引火对敌！",
+  ["$ol_heg__daohuo2"] = "和我同归于尽吧！",
 }
 
 local H = require "packages.hegemony.util"

@@ -20,6 +20,8 @@ Fk:loadTranslationTable{
   ["ol_heg__hetaihou"] = "何太后",
   ["#ol_heg__hetaihou"] = "弄权之蛇蝎",
   ["illustrator:ol_heg__hetaihou"] = "琛·美弟奇",
+
+  ["~ol_heg__hetaihou"] = "扰乱朝堂之事，我怎么会做……",
 }
 
 General:new(extension, "ol_heg__zhangchunhua", "jin", 3, 3, General.Female):addSkills{ "ol__huishi", "qingleng" }
@@ -153,7 +155,7 @@ generals.ol_heg__liaohua:addSkills{ "ol_heg__zhengxian" }
 Fk:loadTranslationTable{
   ["ol_heg__liaohua"] = "廖化",
   ["#ol_heg__liaohua"] = "历尽沧桑",
-  ["illustrator:ol_heg__liaohua"] = "官方",
+  ["illustrator:ol_heg__liaohua"] = "天空之城",
 
   ["~ol_heg__liaohua"] = "今后，就靠你们了……",
 }
@@ -175,8 +177,21 @@ generals.ol_heg__chengpu:addSkills{ "ol_heg__daohuo","ol_heg__chunlao" }
 Fk:loadTranslationTable{
   ["ol_heg__chengpu"] = "程普",
   ["#ol_heg__chengpu"] = "三朝虎臣",
+  ["illustrator:ol_heg__chengpu"] = "G.G.G.",
 
   ["~ol_heg__chengpu"] = "没，没有酒了……",
+}
+
+generals.ol_heg__xuyou = General:new(extension, "ol_heg__xuyou", "qun", 3)
+generals.ol_heg__xuyou:addSkills { "ol_heg__chenglue", "ol_heg__fushi" }
+generals.ol_heg__xuyou:addRelatedSkills { "ol_heg__zezhu", "ol_heg__chenggong" }
+Fk:loadTranslationTable {
+  ["ol_heg__xuyou"] = "许攸",
+  ["#ol_heg__xuyou"] = "朝秦暮楚",
+  ["cv:ol_heg__xuyou"] = "曹毅",
+  ["illustrator:ol_heg__xuyou"] = "兴游",
+
+  ["~ol_heg__xuyou"] = "阿瞒，没有我你得不到冀州啊！",
 }
 
 return extension

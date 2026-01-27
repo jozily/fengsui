@@ -41,7 +41,7 @@ diancai:addEffect(fk.EventPhaseEnd, {
 
 Fk:loadTranslationTable{
   ["diancai"] = "典财",
-  [":diancai"] = "其他角色的出牌阶段结束时，若你于此阶段失去过不少于X张牌（X为你的体力值），则你可将手牌摸至你体力上限，然后你可变更。",
+  [":diancai"] = "其他角色的出牌阶段结束时，若你于此阶段失去过不少于X张牌（X为你的体力值），则你可将手牌摸至你体力上限，然后你可变更副将。",
 
   ["#diancai-ask"] = "典财：你可摸 %arg 张牌，然后你可变更副将",
 

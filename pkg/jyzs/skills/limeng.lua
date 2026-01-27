@@ -2,12 +2,15 @@ local limeng = fk.CreateSkill{
   name = "jy_heg__limeng",
 }
 
-Fk:loadTranslationTable{
+Fk:loadTranslationTable {
   ["jy_heg__limeng"] = "离梦",
   [":jy_heg__limeng"] = "结束阶段，你可以弃置一张非基本牌并选择场上两张珠联璧合的武将牌，" ..
-    "若不为同一名角色的武将，则这些角色分别对另一名角色造成1点伤害。",
+  "若不为同一名角色的武将，则这些角色分别对另一名角色造成1点伤害。",
   ["#jy_heg__limeng-invoke"] = "你可发动 离梦，弃置一张非基本牌并选择场上两张珠联璧合的武将牌，<br>" ..
-    "若不为同一名角色的武将，则这些角色分别对另一名角色造成1点伤害",
+  "若不为同一名角色的武将，则这些角色分别对另一名角色造成1点伤害",
+
+  ["$jy_heg__limeng1"] = "得一人知情识趣，何妨同甘共苦。",
+  ["$jy_heg__limeng2"] = "临千军而不改其静，御心无波尔。",
 }
 
 limeng:addEffect(fk.EventPhaseStart, {

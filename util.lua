@@ -1150,4 +1150,14 @@ function HegUtil.GeneralCardNameBox(spec)
   return spec
 end
 
+--是否控制武将牌
+---@param player ServerPlayer @ 判断角色
+---@param general string @ 武将名
+---@return boolean
+function HegUtil.isControllingGeneral(player, general)
+  if HegUtil.getActualGeneral(player, false) == general then return true end
+  if HegUtil.getActualGeneral(player, true) == general then return true end
+  return false
+end
+
 return HegUtil

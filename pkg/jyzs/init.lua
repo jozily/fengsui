@@ -92,7 +92,7 @@ Fk:loadTranslationTable{
 
 local lordsimayi = General:new(extension, "jy_heg__lordsimayi", "jin", 4)
 lordsimayi.hidden = true
-H.lordGenerals["zq_heg__simayiz"] = "jy_heg__lordsimayi"
+H.lordGenerals["zq_heg__simayi"] = "jy_heg__lordsimayi"
 lordsimayi:addSkills{ "jy_heg__jiaping", "jy_heg__guikuang", "jy_heg__shujuan" }
 Fk:loadTranslationTable{
   ["jy_heg__lordsimayi"] = "君司马懿",

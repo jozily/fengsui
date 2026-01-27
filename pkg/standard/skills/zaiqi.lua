@@ -4,14 +4,14 @@ local zaiqi = fk.CreateSkill{
 
 Fk:loadTranslationTable {
   ["hs__zaiqi"] = "再起",
-  [":hs__zaiqi"] = "弃牌阶段结束时，你可以令至多X名势力与你相同的角色依次选择一项（X为本回合进入弃牌堆红色牌数）："..
+  [":hs__zaiqi"] = "弃牌阶段结束时，你可以令至多X名与你势力相同的角色依次选择一项（X为本回合进入弃牌堆红色牌数）："..
   "1.摸一张牌；2.令你回复1点体力。",
 
   ["#hs__zaiqi-choose"] = "再起：选择至多%arg名角色，这些角色各选择令你回复1点体力或摸一张牌",
   ["hs__zaiqi_recover"] = "%src回复1点体力",
 
-  ["$hs__zaiqi1"] = "挫而弥坚，战而弥勇！",
-  ["$hs__zaiqi2"] = "蛮人骨硬，其势复来！",
+  ["$hs__zaiqi1"] = "丞相助我！",
+  ["$hs__zaiqi2"] = "起！",
 }
 
 local H = require "packages.hegemony.util"

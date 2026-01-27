@@ -82,7 +82,7 @@ Fk:loadTranslationTable{
   ["#m_heg__jiangwanfeiyi"] = "社稷股肱",
   ["illustrator:m_heg__jiangwanfeiyi"] = "",
 
-  ["~m_heg__jiangwanfeiyi"] = "",
+  ["~m_heg__jiangwanfeiyi"] = "墨守成规，终为其害啊……",
 }
 
 General:new(extension, "m_heg__duyu", "qun", 4):addSkills{ "m_heg__wuku", "m_heg__miewu" }

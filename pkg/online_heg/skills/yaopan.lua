@@ -11,8 +11,8 @@ Fk:loadTranslationTable{
   ["#ol_heg__yaopan-choose"] = "邀叛：令一名同势力角色可以与你副将易位，控制钟会的角色获得“权”并执行额外出牌阶段",
   ["ol_heg__yaopan__yiwei"] = "与 %src 易位",
 
-  ["$ol_heg__yaopan1"] = "时机已到，今日起兵！",
-  ["$ol_heg__yaopan2"] = "欲取天下，当在此时！"
+  ["$ol_heg__yaopan1"] = "得蜀而望天下，事成，当为汉高祖！",
+  ["$ol_heg__yaopan2"] = "猛将锐卒尽在我手，怎能再居于人下！"
 }
 
 local H = require "packages.hegemony.util"

@@ -8,8 +8,8 @@ Fk:loadTranslationTable{
   [":ol_heg__zhengxian"] = "锁定技，当你首次明置此武将牌后，你获得一枚“先驱”标记。同势力角色的回合开始时，若其有“先驱”标记，"..
   "你令其执行一个额外的出牌阶段。",
 
-  ["$ol_heg__zhengxian1"] = "谁言蜀汉已无大将？",
-  ["$ol_heg__zhengxian2"] = "老将虽白发，宝刀刃犹锋！",
+  ["$ol_heg__zhengxian1"] = "先锋就由老夫来当！",
+  ["$ol_heg__zhengxian2"] = "看我先行破敌！",
 }
 
 local H = require "packages.hegemony.util"
