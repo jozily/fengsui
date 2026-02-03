@@ -6,31 +6,9 @@ local H = require "packages.hegemony.util"
 
 awaitExhaustedSkill:addEffect("cardskill", {
   prompt = "#await_exhausted_skill",
+  can_use = Util.CanUseFixedTarget,
   mod_target_filter = function(self, player, to_select, selected)
     return H.compareKingdomWith(to_select, player, false)
-  end,
-  can_use = function(self, player, card)
-    if player:prohibitUse(card) then return end
-    for _, p in ipairs(Fk:currentRoom().alive_players) do
-      if not player:isProhibited(p, card) and self:modTargetFilter(player, p, {}, card, true) then
-        return true
-      end
-    end
-  end,
-  on_use = function(self, room, use)
-    if not use.tos or #use.tos == 0 then
-      local player = use.from
-      if player.kingdom == "unknown" then
-        use.tos = { use.from }
-      else
-        use.tos = {}
-        for _, p in ipairs(room:getAlivePlayers()) do
-          if not player:isProhibited(p, use.card) and H.compareKingdomWith(p, player) then
-            use:addTarget(p)
-          end
-        end
-      end
-    end
   end,
   on_effect = function(self, room, effect)
     local target = effect.to

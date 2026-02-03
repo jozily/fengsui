@@ -4,7 +4,6 @@ local lureTigerSkill = fk.CreateSkill{
 local H = require "packages.hegemony.util"
 lureTigerSkill:addEffect("cardskill", {
   prompt = "#lure_tiger_skill",
-  can_use = Util.CanUse,
   min_target_num = 1,
   max_target_num = 2,
   mod_target_filter = function(self, player, to_select, selected)

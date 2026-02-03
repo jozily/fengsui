@@ -11,9 +11,6 @@ befriendAttackingSkill:addEffect("cardskill", {
     return player ~= to_select and H.compareKingdomWith(to_select, player, true)
   end,
   target_filter = Util.CardTargetFilter,
-  can_use = function(self, player, card)
-    return player.kingdom ~= "unknown" and not player:prohibitUse(card)
-  end,
   on_effect = function(self, room, effect)
     local player = effect.from
     local target = effect.to

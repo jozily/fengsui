@@ -3,7 +3,6 @@ local drowningSkill = fk.CreateSkill{
 }
 drowningSkill:addEffect("cardskill", {
   prompt = "#sa__drowning_skill",
-  can_use = Util.CanUse,
   target_num = 1,
   mod_target_filter = function(self, player, to_select, selected, card, distance_limited)
     return to_select ~= player and #to_select:getCardIds("e") > 0

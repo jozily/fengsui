@@ -476,7 +476,7 @@ function HegLogic:attachSkillToPlayers()
       type = "#WatchNextPlayerDeputyLog",
     }
     local req = Request:new(players, "CustomDialog")
-    req.focus_text = "Watch next player deputy"
+    req.focus_text = "heg_watch_next_deputy"
     local path = "packages/hegemony/qml/KnownBothBox.qml"
     for _, p in ipairs(players) do
       local next = p:getNextAlive()
@@ -509,30 +509,30 @@ end
 
 local settings = {
   W.PreferenceGroup {
-    title = "Hegemony Additional Rule",
+    title = "hegemony_additional_rule",
 
     W.SwitchRow {
       _settingsKey = "watchNextDeputy",
-      title = "Watch next player deputy",
+      title = "heg_watch_next_deputy",
     },
 
     W.SwitchRow {
       _settingsKey = "notBanToFourKingdoms",
-      title = "Not ban to four kingdoms",
+      title = "heg_not_ban_to_four_kingdoms",
     },
 
     W.SwitchRow {
       _settingsKey = "enterBattleRoyalOnFirstShuffle",
-      title = "Enter battle royal on first shuffle",
+      title = "heg_enter_battle_royal_on_first_shuffle",
     },
   },
 
   W.PreferenceGroup {
-    title = "Special Rule",
+    title = "hegemony_special_rule",
 
     W.SwitchRow {
       _settingsKey = "revealAllOnStart",
-      title = "Reveal all on start",
+      title = "heg_reveal_all_on_start",
     }
   }
 }
@@ -765,16 +765,16 @@ Fk:loadTranslationTable{
   ["@seat"] = "",
   ["stack"] = "叠置",
 
-  ["Hegemony Additional Rule"] = "国战附加规则",
-  ["Watch next player deputy"] = "观看下家副将",
-  ["help: Watch next player deputy"] = "游戏开始前观看下家的副将",
-  ["Enter battle royal on first shuffle"] = "第一次洗牌进入鏖战",
-  ["Not ban to four kingdoms"] = "不禁用至四个势力",
-  ["help: Not ban to four kingdoms"] = "保留所有势力。请确认选将数量和将池以保证至少有一对武将可选",
+  ["hegemony_additional_rule"] = "国战附加规则",
+  ["heg_watch_next_deputy"] = "观看下家副将",
+  ["help: heg_watch_next_deputy"] = "游戏开始前观看下家的副将",
+  ["heg_enter_battle_royal_on_first_shuffle"] = "第一次洗牌进入鏖战",
+  ["heg_not_ban_to_four_kingdoms"] = "不禁用至四个势力",
+  ["help: heg_not_ban_to_four_kingdoms"] = "保留所有势力。请确认选将数量和将池以保证至少有一对武将可选",
 
-  ["Special Rule"] = "特殊规则",
-  ["Reveal all on start"] = "全亮国战",
-  ["help: Reveal all on start"] = "游戏开始时所有角色依次亮出所有武将",
+  ["hegemony_special_rule"] = "特殊规则",
+  ["heg_reveal_all_on_start"] = "全亮国战",
+  ["help: heg_reveal_all_on_start"] = "游戏开始时所有角色依次亮出所有武将",
 
   ["#SuccessBuildCountry"] = "%from 成功建立国家，国号 %arg ，队友是 %arg2",
   ["heg_rule_join_country"] = "加入 <b><font color='purple'>%src</font></b> 的阵营 <b><font color='purple'>%arg</font></b>，回复1点体力，将手牌摸至4张",

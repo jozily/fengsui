@@ -46,30 +46,12 @@ end
 
 imperialOrderSkill:addEffect('cardskill', {
   prompt = "#imperial_order_skill",
+  can_use = Util.CanUseFixedTarget,
   mod_target_filter = function(self, player, to_select, selected)
     return to_select.kingdom == "unknown"
   end,
-  can_use = function(self, player, card)
-    for _, p in ipairs(Fk:currentRoom().alive_players) do
-      if not player:isProhibited(p, card) and self:modTargetFilter(player, p, {}, card, true) then
-        return true
-      end
-    end
-  end,
-  on_use = function(self, room, use)
-    if not use.tos or #use.tos == 0 then
-      use.tos = {}
-      local user = use.from
-      for _, player in ipairs(room.alive_players) do
-        if player.kingdom == "unknown" and not user:isProhibited(player, use.card) then
-          use:addTarget(player)
-        end
-      end
-    end
-  end,
   on_effect = function(self, room, effect)
-    local target = effect.to
-    doImperialOrder(room, target)
+    doImperialOrder(room, effect.to)
   end,
 })
 imperialOrderSkill:addEffect(fk.TurnEnd, {

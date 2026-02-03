@@ -31,7 +31,7 @@ jieyue:addEffect(fk.EventPhaseStart, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     local to = event:getCostData(self).tos[1]
-    room:moveCardTo(event:getCostData(self).cards, Player.Hand, to, fk.ReasonGive, jieyue.name, nil, false, player.id)
+    room:moveCardTo(event:getCostData(self).cards, Player.Hand, to, fk.ReasonGive, jieyue.name, nil, false, player)
     if H.askToCommand(player, { tos = { to }, skill_name = jieyue.name }) then
       player:drawCards(1, jieyue.name)
     else

@@ -52,9 +52,7 @@ skill:addEffect("cardskill", {
       return H.isBigKingdomPlayer(selected[1]) == H.isBigKingdomPlayer(to_select)
     end
   end,
-  target_filter = function(self, player, to_select, selected, _, card, extra_data)
-    return #selected == 0 and Util.CardTargetFilter(self, player, to_select, selected, _, card, extra_data)
-  end,
+  target_filter = Util.CardTargetFilter,
   can_use = function(self, player, card)
     return not player:prohibitUse(card) and table.find(Fk:currentRoom().alive_players, function(p)
       return H.isBigKingdomPlayer(p) end)

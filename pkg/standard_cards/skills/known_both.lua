@@ -4,7 +4,6 @@ local knownBothSkill = fk.CreateSkill{
 
 knownBothSkill:addEffect("cardskill", {
   prompt = "#known_both_skill",
-  can_use = Util.CanUse,
   target_num = 1,
   mod_target_filter = function(self, player, to_select, selected)
     return player ~= to_select and (not to_select:isKongcheng() or to_select.general == "anjiang" or to_select.deputyGeneral == "anjiang")
