@@ -74,7 +74,7 @@ Fk:loadTranslationTable{
 }
 
 local zuoci = General:new(extension, "ld__zuoci", "qun", 3)
-zuoci:addCompanions("yuji")
+zuoci:addCompanions("ld__yuji")
 zuoci:addSkills{"ld__yigui", "ld__jihun"}
 Fk:loadTranslationTable{
   ["ld__zuoci"] = "左慈",
@@ -84,7 +84,7 @@ Fk:loadTranslationTable{
 }
 
 local lijueguosi = General:new(extension, "ld__lijueguosi", "qun", 4)
-lijueguosi:addCompanions("jiaxu")
+lijueguosi:addCompanions("hs__jiaxu")
 lijueguosi:addSkill("xiongsuan")
 Fk:loadTranslationTable{
   ["ld__lijueguosi"] = "李傕郭汜",
