@@ -326,7 +326,7 @@ function HegLogic:chooseGenerals()
   generals = table.filter(generals, function(g) return not table.contains(selected, g) end)
   room:returnToGeneralPile(generals)
 
-  req = Request:new(players, "AskForChoice")
+  req = Request:new(players, "AskForChoices")
   req.focus_text = "AskForKingdom"
   req.receive_decode = false
 
@@ -347,7 +347,7 @@ function HegLogic:chooseGenerals()
         table.insert(allKingdoms, "wu")
     end
 
-    req:setData(p, {kingdoms, allKingdoms, "AskForKingdom", "#ChooseHegInitialKingdom"})
+    req:setData(p, {kingdoms, allKingdoms, {1, 1}, false, "AskForKingdom", "#ChooseHegInitialKingdom"})
     req:setDefaultReply(p, kingdoms[1])
   end
 
