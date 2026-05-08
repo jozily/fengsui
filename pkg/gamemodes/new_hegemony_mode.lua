@@ -352,7 +352,7 @@ function HegLogic:chooseGenerals()
   end
 
   for _, p in ipairs(players) do
-    local kingdomChosen = req:getResult(p)
+    local kingdomChosen = req:getResult(p)[1]
     room:setPlayerMark(p, "__heg_kingdom", kingdomChosen) -- 变野后变为wild
     room:setPlayerMark(p, "__heg_init_kingdom", kingdomChosen) -- 保存初始势力
     -- p.kingdom = kingdomChosen
