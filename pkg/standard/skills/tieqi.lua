@@ -1,4 +1,5 @@
 local H = require "packages.hegemony.util"
+local U = require "packages.utility.utility"
 
 local tieqi = fk.CreateSkill{
   name = "hs__tieqi",
@@ -39,24 +40,13 @@ tieqi:addEffect(fk.TargetSpecified, {
       if H.hasHegLordSkill(room, player, "shouyue") and #choices > 1 then
         choice = choices
       else
-        local result = room:askToCustomDialog(player, {
-          skill_name = self.name,
-          qml_path = "packages/utility/qml/ChooseGeneralsAndChoiceBox.qml",
-          extra_data = {
-            all_choices,
-            {"OK"},
-            "#hs__tieqi-ask::" .. to.id,
-            {},
-            1,
-            1,
-            disable_choices
-          }
+        choice = U.askToChooseGeneralsAndChoice(player, {
+          skill_name = tieqi.name,
+          generals = all_choices,
+          prompt = "#hs__tieqi-ask::" .. to.id,
+          max_num = 1,
+          disable_choices = disable_choices
         })
-        if result ~= "" then
-          choice = result.cards
-        else
-          choice = table.random(choices, 1)
-        end
       end
       local generals = to:getTableMark("@hs__tieqi-turn")
       local skills = to:getTableMark("_hs__tieqi-turn")

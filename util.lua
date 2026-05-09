@@ -1,6 +1,8 @@
 ---@class HegUtil
 local HegUtil = require "packages.hegemony.utilevent._base"
 
+local U = require "packages.utility.utility"
+
 HegUtil.GameEvent = {}
 
 -- 势力相关
@@ -591,28 +593,15 @@ function HegUtil.doHideGeneral(room, player, target, skill_name)
     table.insert(disable_choices, target.deputyGeneral)
   end
   if #disable_choices == 2 then return false end
-  local result = room:askToCustomDialog(player,{
+  local generals = U.askToChooseGeneralsAndChoice(player,{
     skill_name = skill_name,
-    qml_path = "packages/utility/qml/ChooseGeneralsAndChoiceBox.qml",
-    extra_data = {
-    all_choices,
-    {"OK"},
-    "#hide_general-ask::" .. target.id .. ":" .. skill_name,
-    {},
-    1,
-    1,
-    disable_choices}
+    generals = all_choices,
+    prompt = "#hide_general-ask::" .. target.id .. ":" .. skill_name,
+    min_num = 1,
+    max_num = 1,
+    disable_generals = disable_choices,
   })
-  local choice
-  if result ~= "" then
-    local reply = result
-    choice = reply.cards[1]
-  else
-    choice = table.find(all_choices, function(g)
-      return not table.contains(disable_choices, g)
-    end)
-  end
-  local isDeputy = choice == target.deputyGeneral
+  local isDeputy = generals[1] == target.deputyGeneral
   if isDeputy then room:setPlayerMark(target, "__heg_deputy", target.deputyGeneral)
   else room:setPlayerMark(target, "__heg_general", target.general) end
   target:hideGeneral(isDeputy)

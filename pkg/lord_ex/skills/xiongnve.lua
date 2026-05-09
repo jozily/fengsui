@@ -2,6 +2,8 @@ local xiongnve = fk.CreateSkill {
   name = "xiongnve",
 }
 
+local U = require "packages.utility.utility"
+
 Fk:loadTranslationTable {
   ["xiongnve"] = "凶虐",
   [":xiongnve"] = "出牌阶段开始时，你可以移去一张“戮”，令你本回合对此“戮”势力角色获得下列效果中的一项：" ..
@@ -36,22 +38,17 @@ xiongnve:addEffect(fk.EventPhaseStart, {
     end
   end,
   on_cost = function(self, event, target, player, data)
-    local result = player.room:askToCustomDialog(player, {
+    local generals, choice = U.askToChooseGeneralsAndChoice(player, {
       skill_name = xiongnve.name,
-      qml_path = "packages/utility/qml/ChooseGeneralsAndChoiceBox.qml",
-      extra_data = {
-        player:getMark("@&massacre"),
-        { "xiongnve_choice1", "xiongnve_choice2", "xiongnve_choice3" },
-        "#xiongnve-chooose",
-        { "Cancel" }
-      }
+      generals = player:getMark("@&massacre"),
+      choices = { "xiongnve_choice1", "xiongnve_choice2", "xiongnve_choice3" },
+      prompt = "#xiongnve-chooose",
+      cancelable = true,
+      max_num = 1,
     })
-    if result ~= "" then
-      local reply = result
-      if reply.choice ~= "Cancel" then
-        event:setCostData(self, { cards = reply.cards, choice = reply.choice })
-        return true
-      end
+    if choice ~= "Cancel" then
+      event:setCostData(self, { generals = generals, choice = choice })
+      return true
     end
   end,
   on_use = function(self, event, target, player, data)
@@ -59,7 +56,7 @@ xiongnve:addEffect(fk.EventPhaseStart, {
     player:broadcastSkillInvoke(xiongnve.name)
     room:notifySkillInvoked(player, xiongnve.name,
       event:getCostData(self).choice == "xiongnve_choice2" and "control" or "offensive")
-    local cards = event:getCostData(self).cards
+    local cards = event:getCostData(self).generals
     room:returnToGeneralPile(cards, "bottom")
     local generals = player:getMark("@&massacre")
     local choosegenerlas = {}
@@ -90,31 +87,24 @@ xiongnve:addEffect(fk.EventPhaseEnd, {
     end
   end,
   on_cost = function(self, event, target, player, data)
-    local result = player.room:askToCustomDialog(player, {
+    local generals, choice = U.askToChooseGeneralsAndChoice(player, {
       skill_name = xiongnve.name,
-      qml_path = "packages/utility/qml/ChooseGeneralsAndChoiceBox.qml",
-      extra_data = {
-        player:getMark("@&massacre"),
-        { "OK" },
-        "#xiongnve-defence",
-        { "Cancel" },
-        2,
-        2
-      }
+      generals = player:getMark("@&massacre"),
+      prompt = "#xiongnve-defence",
+      cancelable = true,
+      min_num = 2,
+      max_num = 2,
     })
-    if result ~= "" then
-      local reply = result
-      if reply.choice == "OK" then
-        event:setCostData(self, { cards = reply.cards })
-        return true
-      end
+    if choice ~= "Cancel" then
+      event:setCostData(self, { generals = generals })
+      return true
     end
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
     player:broadcastSkillInvoke(xiongnve.name)
     room:notifySkillInvoked(player, xiongnve.name, "defensive")
-    local cards = event:getCostData(self).cards
+    local cards = event:getCostData(self).generals ---@type string[]
     room:returnToGeneralPile(cards, "bottom")
     local generals = player:getMark("@&massacre")
     if generals == 0 then generals = {} end

@@ -1,3 +1,5 @@
+local U = require "packages.utility.utility"
+
 ---@param player ServerPlayer
 ---@param skillName string
 local addFangkeSkill = function(player, skillName)
@@ -66,42 +68,22 @@ xinsheng:addEffect(fk.EventPhaseStart, {
     local m = player:getMark("@&ld__xing")
     if m == 0 or #m < 2 then
       local all_xing = room:getNGenerals(5)
-      local result = room:askToCustomDialog(player, {
+      generals = U.askToChooseGeneralsAndChoice(player, {
         skill_name = xinsheng.name,
-        qml_path =  "packages/utility/qml/ChooseGeneralsAndChoiceBox.qml",
-        extra_data = {
-        all_xing,
-        {"OK"},
-        "#ld__xinshen_xing2",
-        {},
-        2,
-        2
-      }})
-      if result ~= "" then
-        local reply = result
-        generals = reply.cards
-      else
-        generals = table.random(all_xing, 2)
-      end
+        generals = all_xing,
+        prompt = "#ld__xinshen_xing2",
+        min_num = 2,
+        max_num = 2,
+      })
     else
       local choices = player:getMark("@&ld__xing")
-      local choice
-      local result = room:askToCustomDialog(player, {
+      local result = U.askToChooseGeneralsAndChoice(player, {
         skill_name = xinsheng.name,
-        qml_path = "packages/utility/qml/ChooseGeneralsAndChoiceBox.qml",
-        extra_data = {
-          choices,
-          {"OK"},
-          "#ld__xinshen_xing_recast"
-        }
+        generals = choices,
+        prompt = "#ld__xinshen_xing_recast",
+        max_num = 1,
       })
-      if result ~= "" then
-        local reply = result
-        choice = reply.cards[1]
-      else
-        choice = table.random(choices) ---@type string
-      end
-      removeFangke(player, choice)
+      removeFangke(player, result[1])
       generals = room:getNGenerals(1)
     end
     table.forEach(generals, function(g) addFangke(player, Fk.generals[g], true) end)
