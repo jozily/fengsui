@@ -2,6 +2,8 @@ local knownBothSkill = fk.CreateSkill{
   name = "known_both_skill",
 }
 
+local U = require "packages.utility.utility"
+
 knownBothSkill:addEffect("cardskill", {
   prompt = "#known_both_skill",
   target_num = 1,
@@ -37,18 +39,29 @@ knownBothSkill:addEffect("cardskill", {
         })
       end
     else
+      --[[
       local general = choice == "known_both_main" and {target:getMark("__heg_general"), target.deputyGeneral, tostring(target.seat)} or {target.general, target:getMark("__heg_deputy"), tostring(target.seat)}
       room:askToCustomDialog(player, {
         skill_name = knownBothSkill.name,
         qml_path = "packages/hegemony/qml/KnownBothBox.qml",
         extra_data = general,
       })
+      --]]
+      local isMain = choice == "known_both_main"
+      U.askToChooseGeneralsAndChoice(player, {
+        skill_name = knownBothSkill.name,
+        generals = isMain and {target:getMark("__heg_general"), target.deputyGeneral} or {target.general, target:getMark("__heg_deputy")},
+        min_num = 0,
+        max_num = 0,
+        cancelable = false,
+        prompt = "#known_both-general::" .. target.id .. ":" .. (isMain and "mainGeneral" or "deputyGeneral"),
+      })
       for _, p in ipairs(room:getOtherPlayers(player, false)) do
         p:doNotify("GameLog", {
           type = "#know_general",
           from = player.id,
           to = {target.id},
-          arg = choice == "known_both_main" and "mainGeneral" or "deputyGeneral",
+          arg = isMain and "mainGeneral" or "deputyGeneral",
           toast = true,
         })
       end
@@ -56,13 +69,20 @@ knownBothSkill:addEffect("cardskill", {
         type = "#WatchGeneral",
         from = player.id,
         to = {target.id},
-        arg = choice == "known_both_main" and "mainGeneral" or "deputyGeneral",
-        arg2 = choice == "known_both_main" and target:getMark("__heg_general") or target:getMark("__heg_deputy"),
+        arg = isMain and "mainGeneral" or "deputyGeneral",
+        arg2 = isMain and target:getMark("__heg_general") or target:getMark("__heg_deputy"),
       }
       player:doNotify("GameLog", log)
     end
   end,
 })
+
+knownBothSkill:addAI(Fk.Ltk.AI.newCardSkillStrategy {
+  keep_value = 3.24,
+  use_value = 5,
+  use_priority = 9.1,
+})
+
 
 knownBothSkill:addTest(function (room, me)
   local card = Fk:cloneCard("known_both")
@@ -92,6 +112,7 @@ Fk:loadTranslationTable{
   ["known_both_deputy"] = "观看副将",
   ["known_both_hand"] = "观看手牌",
   ["#KnownBothGeneral"] = "观看 %1 武将",
+  ["#known_both-general"] = "知己知彼：观看%dest的%arg",
   ["#known_both-hand"] = "知己知彼：观看%dest的手牌",
   ["#known_both_skill"] = "选择一名其他角色，观看其一张暗置的武将牌或其手牌",
   ["#know_hand"] = "%from 观看了 %to 的手牌",

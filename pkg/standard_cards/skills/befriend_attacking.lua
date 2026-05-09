@@ -15,10 +15,21 @@ befriendAttackingSkill:addEffect("cardskill", {
     local player = effect.from
     local target = effect.to
     if target.dead then return end
-    target:drawCards(1, "befriend_attacking")
+    target:drawCards(1, befriendAttackingSkill.name)
     if player.dead then return end
-    player:drawCards(3, "befriend_attacking")
+    player:drawCards(3, befriendAttackingSkill.name)
   end
+})
+
+befriendAttackingSkill:addAI(Fk.Ltk.AI.newCardSkillStrategy {
+  keep_value = 3.92,
+  use_value = 11,
+  use_priority = 9.28,
+
+  on_effect = function(self, logic, effect)
+    logic:drawCards(effect.to, 1, befriendAttackingSkill.name)
+    logic:drawCards(effect.from, 3, befriendAttackingSkill.name)
+  end,
 })
 
 befriendAttackingSkill:addTest(function (room, me)

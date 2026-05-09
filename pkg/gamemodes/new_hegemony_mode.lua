@@ -347,10 +347,10 @@ function HegLogic:chooseGenerals()
         table.insert(allKingdoms, "wu")
     end
 
-    req:setData(p, {kingdoms, allKingdoms, {1, 1}, false, "AskForKingdom", "#ChooseHegInitialKingdom"})
-    req:setDefaultReply(p, kingdoms[1])
+    req:setData(p, {kingdoms, allKingdoms, {1, 1}, false, "AskForKingdom", "#ChooseHegInitialKingdom", false })
+    req:setDefaultReply(p, room:tableRandomPick(kingdoms, 1) )
   end
-
+  req:ask()
   for _, p in ipairs(players) do
     local kingdomChosen = req:getResult(p)[1]
     room:setPlayerMark(p, "__heg_kingdom", kingdomChosen) -- 变野后变为wild

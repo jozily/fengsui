@@ -53,6 +53,11 @@ hegNullificationSkill:addEffect("cardskill", {
   end
 })
 
+hegNullificationSkill:addAI(Fk.Ltk.AI.newCardSkillStrategy {
+  keep_value = 4,
+  use_value = 7.8,
+})
+
 Fk:loadTranslationTable{
   ["heg__nullification"] = "无懈可击·国",
   ["heg__nullification_skill"] = "无懈可击·国",

@@ -9,34 +9,34 @@ import Fk.Components.Common
 Item {
   id: root
   anchors.fill: parent
-  property string generalNameLeft: "liubei"   
+  property string generalNameLeft: "liubei"
   property string generalNameRight: "guanyu"
 
   GeneralCardItem {
     id: leftCard
     name: generalNameLeft
-    scale: 1.7            
+    scale: 1.7
     x: -leftCard.width - 200
     y: root.height / 2  - 100
-    opacity: 0              
-    detailed: false        
-    z: 1                     
+    opacity: 0
+    detailed: false
+    z: 1
   }
 
   GeneralCardItem {
     id: rightCard
-    name: generalNameRight  
-    scale: 1.7           
-    x: root.width + 200     
-    y: root.height / 2 - 100 
-    opacity: 0               
-    detailed: false        
-    z: 1                   
+    name: generalNameRight
+    scale: 1.7
+    x: root.width + 200
+    y: root.height / 2 - 100
+    opacity: 0
+    detailed: false
+    z: 1
   }
 
   SequentialAnimation {
     id: crossAnim
-    running: false          
+    running: false
 
     // 阶段1：双卡同时淡入并向中间交叉移动
     ParallelAnimation {
@@ -50,7 +50,7 @@ Item {
       PropertyAnimation {
         target: leftCard
         property: "opacity"
-        to: 1            
+        to: 1
         duration: 700
       }
 
@@ -64,7 +64,7 @@ Item {
       PropertyAnimation {
         target: rightCard
         property: "opacity"
-        to: 1                
+        to: 1
         duration: 700
       }
     }
@@ -77,14 +77,14 @@ Item {
       PropertyAnimation {
         target: leftCard
         property: "x"
-        to: root.width + 125   
+        to: root.width + 125
         duration: 2000
         easing.type: Easing.InBack 
       }
       PropertyAnimation {
         target: leftCard
         property: "opacity"
-        to: 0                 
+        to: 0
         duration: 1000
       }
 
@@ -98,7 +98,7 @@ Item {
       PropertyAnimation {
         target: rightCard
         property: "opacity"
-        to: 0                  
+        to: 0
         duration: 1000
       }
     }

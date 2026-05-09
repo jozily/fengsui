@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// 暂时用utility里的代替
+
 import QtQuick
 import QtQuick.Layouts
 import Fk
