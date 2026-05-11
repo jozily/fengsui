@@ -2,6 +2,8 @@ local shangyi = fk.CreateSkill{
   name = "shangyi",
 }
 
+local H = require "packages.hegemony.util"
+
 Fk:loadTranslationTable{
   ["shangyi"] = "尚义",
   [":shangyi"] = "出牌阶段限一次，你可以令一名其他角色观看你的手牌，然后你选择一项：1.观看其手牌，然后可以弃置其中一张黑色牌；"..
@@ -50,12 +52,7 @@ shangyi:addEffect("active", {
       skill_name = shangyi.name,
     })
     if choice == "shangyi_hidden" then
-      local general = { target:getMark("__heg_general"), target:getMark("__heg_deputy"), target.seat }
-      room:askToCustomDialog(player, {
-        skill_name = shangyi.name,
-        qml_path = "packages/hegemony/qml/KnownBothBox.qml",
-        extra_data = general,
-      })
+      H.viewGeneral(player, target, shangyi.name, true, true)
     elseif choice == "shangyi_card" then
       local black = table.filter(target:getCardIds("h"), function(id)
         return Fk:getCardById(id).color == Card.Black

@@ -21,6 +21,7 @@ Fk:loadTranslationTable {
 }
 
 local H = require "packages.hegemony.util"
+local U = require "packages.utility.utility"
 
 jianan:addEffect(fk.EventPhaseStart, {
   anim_type = "support",
@@ -77,18 +78,11 @@ jianan:addEffect(fk.EventPhaseStart, {
       if can_choose then table.insert(choices, skill) end
     end
     if #choices == 0 then return false end
-    local result = room:askToCustomDialog(target, {
+    local choice = U.askToChooseSkills(target, {
       skill_name = jianan.name,
-      qml_path = "packages/utility/qml/ChooseSkillBox.qml",
-      extra_data = {
-        choices,
-        1,
-        1,
-        "#jianan-choice",
-      }
-    })
-    if result == "" then return false end
-    local choice = result[1]
+      skills = choices,
+      prompt = "#jianan-choice",
+    })[1]
     room:handleAddLoseSkills(target, choice, nil)
     record = target:getTableMark("@jianan_skills")
     table.insert(record, choice)

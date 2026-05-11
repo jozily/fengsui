@@ -14,6 +14,8 @@ Fk:loadTranslationTable{
   ["#fenghuotu-choose"] = "缘江烽火图：可选择%arg个技能",
 }
 local H = require "packages.hegemony.util"
+local U = require "packages.utility.utility"
+
 fenghuotu:addEffect(fk.EventPhaseStart, {
   anim_type = "support",
   can_trigger = function (self, event, target, player, data)
@@ -24,15 +26,13 @@ fenghuotu:addEffect(fk.EventPhaseStart, {
     local room = player.room
     local skills = {"ld__lordsunquan_yingzi", "ld__lordsunquan_haoshi", "ld__lordsunquan_shelie", "ld__lordsunquan_duoshi"}
     local num = #player:getPile("lord_fenghuo") >= 5 and 2 or 1
-    local result = room:askToCustomDialog(target, {
+    local choice = U.askToChooseSkills(target, {
+      skills = table.slice(skills, 1, #player:getPile("lord_fenghuo") + 1),
+      min_num = num,
+      max_num = num,
       skill_name = fenghuotu.name,
-      qml_path = "packages/utility/qml/ChooseSkillBox.qml",
-      extra_data = {
-        table.slice(skills, 1, #player:getPile("lord_fenghuo") + 1), 0, num, "#fenghuotu-choose:::" .. tostring(num)
-      }
-  })
-    if result == "" then return false end
-    local choice = result
+      prompt = "#fenghuotu-choose:::" .. tostring(num),
+    })
     if #choice > 0 then
       room:handleAddLoseSkills(target, table.concat(choice, "|"), nil, true, false)
       room.logic:getCurrentEvent():findParent(GameEvent.Turn):addCleaner(function()

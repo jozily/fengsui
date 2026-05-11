@@ -632,6 +632,49 @@ function HegUtil.hideBySkillName(player, skill, allowBothHidden)
   end
 end
 
+--- 观看武将牌
+---@param player ServerPlayer
+---@param target ServerPlayer
+---@param skillName string
+---@---@param isMain? boolean
+---@param isDeputy? boolean
+---@param prompt? string
+function HegUtil.viewGeneral(player, target, skillName, isMain, isDeputy, prompt)
+  local generals = {isMain and target:getMark("__heg_general") or target.general, isDeputy and target:getMark("__heg_deputy") or target.deputyGeneral}
+  prompt = prompt or ("#ViewGeneral::" .. target.id .. ":" .. skillName .. ":" .. ((isMain and Fk:translate("mainGeneral") or "") .. (isDeputy and Fk:translate("deputyGeneral") or "")))
+  local room = player.room
+  room:askToCustomDialog(player, {
+    skill_name = skillName,
+    component = {
+      url = "packages/hegemony/qml/KnownBothBox.qml",
+      model = {
+        url = "packages/utility/qml/models/ChooseGeneralsAndChoiceModel.qml",
+        prop = {
+          cards = generals,
+          all_cards = generals,
+          disable_cards = {},
+          min = 0,
+          max = 0,
+          prompt = prompt,
+          ok_options = {"OK"},
+          cancel_options = {},
+        }
+      }
+    },
+  })
+  room:sendLog{
+    type = "#ViewGeneralLog",
+    from = player.id,
+    to = {target.id},
+    arg = (isMain and Fk:translate("mainGeneral") or "") .. (isDeputy and Fk:translate("deputyGeneral") or ""),
+  }
+end
+
+Fk:loadTranslationTable{
+  ["#ViewGeneral"] = "%arg：观看 %dest 的 %arg2",
+  ["#ViewGeneralLog"] = "%from 观看了 %to 的 %arg",
+}
+
 -- 技能相关
 
 --- 技能是否为主将/副将武将牌上的技能，返回“m”“d”或nil

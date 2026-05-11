@@ -52,12 +52,7 @@ wildDraw:addEffect("active", {
         skill_name = wildDraw.name,
         prompt = "#known_both-choice::"..target.id, false,
       })
-      local general = choice == "known_both_main" and {target:getMark("__heg_general"), target.deputyGeneral, target.seat} or {target.general, target:getMark("__heg_deputy"), target.seat}
-      room:askToCustomDialog(player, {
-        skill_name = wildDraw.name,
-        qml_path = "packages/hegemony/qml/KnownBothBox.qml",
-        extra_data = general,
-      })
+      H.viewGeneral(player, target, wildDraw.name, choice == "known_both_main", choice == "known_both_deputy")
     end
   end,
 })

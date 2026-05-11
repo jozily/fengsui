@@ -2,7 +2,7 @@ local knownBothSkill = fk.CreateSkill{
   name = "known_both_skill",
 }
 
-local U = require "packages.utility.utility"
+local H = require "packages.hegemony.util"
 
 knownBothSkill:addEffect("cardskill", {
   prompt = "#known_both_skill",
@@ -39,24 +39,17 @@ knownBothSkill:addEffect("cardskill", {
         })
       end
     else
-      --[[
-      local general = choice == "known_both_main" and {target:getMark("__heg_general"), target.deputyGeneral, tostring(target.seat)} or {target.general, target:getMark("__heg_deputy"), tostring(target.seat)}
-      room:askToCustomDialog(player, {
-        skill_name = knownBothSkill.name,
-        qml_path = "packages/hegemony/qml/KnownBothBox.qml",
-        extra_data = general,
-      })
-      --]]
       local isMain = choice == "known_both_main"
-      U.askToChooseGeneralsAndChoice(player, {
+      H.viewGeneral(player, target, knownBothSkill.name, isMain, not isMain)
+      --[[ U.askToChooseGeneralsAndChoice(player, {
         skill_name = knownBothSkill.name,
         generals = isMain and {target:getMark("__heg_general"), target.deputyGeneral} or {target.general, target:getMark("__heg_deputy")},
         min_num = 0,
         max_num = 0,
         cancelable = false,
         prompt = "#known_both-general::" .. target.id .. ":" .. (isMain and "mainGeneral" or "deputyGeneral"),
-      })
-      for _, p in ipairs(room:getOtherPlayers(player, false)) do
+      }) ]]
+      --[[ for _, p in ipairs(room:getOtherPlayers(player, false)) do
         p:doNotify("GameLog", {
           type = "#know_general",
           from = player.id,
@@ -64,7 +57,7 @@ knownBothSkill:addEffect("cardskill", {
           arg = isMain and "mainGeneral" or "deputyGeneral",
           toast = true,
         })
-      end
+      end ]]
       local log = {
         type = "#WatchGeneral",
         from = player.id,
