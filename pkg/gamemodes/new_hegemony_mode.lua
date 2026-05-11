@@ -347,7 +347,7 @@ function HegLogic:chooseGenerals()
         table.insert(allKingdoms, "wu")
     end
 
-    req:setData(p, {kingdoms, allKingdoms, {1, 1}, false, "AskForKingdom", "#ChooseHegInitialKingdom", false })
+    req:setData(p, {kingdoms, allKingdoms, {1, 1}, false, "AskForKingdom", "#ChooseHegInitialKingdom", false, true })
     req:setDefaultReply(p, room:tableRandomPick(kingdoms, 1) )
   end
   req:ask()
