@@ -17,10 +17,6 @@ GraphicsBox {
 
   required property ChooseGeneralsAndChoiceModel dataModel
 
-  //ListModel {
-    //id: generalList
-  //}
-
   title.text: Ltk.processPrompt(dataModel.prompt)
   width: generalArea.width + body.anchors.leftMargin + body.anchors.rightMargin
   height: body.implicitHeight + body.anchors.topMargin + body.anchors.bottomMargin
@@ -33,7 +29,7 @@ GraphicsBox {
 
     GridView {
       id: generalArea
-      width: 220
+      width: 200
       height: 150
       cellWidth: 93 + 5
       cellHeight: 130 + 5

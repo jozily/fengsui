@@ -619,7 +619,7 @@ Fk:loadTranslationTable{
   ["#HideOtherGeneral"] = "%from 暗置了 %to 的 %arg %arg2",
 }
 
--- 根据技能暗置武将牌
+--- 根据技能暗置武将牌
 ---@param player ServerPlayer
 ---@param skill string | Skill
 ---@param allowBothHidden? boolean?

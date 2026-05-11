@@ -477,13 +477,27 @@ function HegLogic:attachSkillToPlayers()
     }
     local req = Request:new(players, "CustomDialog")
     req.focus_text = "heg_watch_next_deputy"
-    local path = "packages/hegemony/qml/KnownBothBox.qml"
     for _, p in ipairs(players) do
       local next = p:getNextAlive()
-      local dat = {next.general, next:getMark("__heg_deputy"), tostring(next.seat)}
+      local generals = {next.general, next:getMark("__heg_deputy")}
+      local prompt = "#WatchNextPlayer::" .. next.id
       req:setData(p, {
-        path = path,
-        data = dat,
+        component = {
+          url = "packages/hegemony/qml/KnownBothBox.qml",
+          model = {
+            url = "packages/utility/qml/models/ChooseGeneralsAndChoiceModel.qml",
+            prop = {
+              cards = generals,
+              all_cards = generals,
+              disable_cards = {},
+              min = 0,
+              max = 0,
+              prompt = prompt,
+              ok_options = {"OK"},
+              cancel_options = {},
+            }
+          }
+        },
       })
       p:doNotify("GameLog", {
         type = "#WatchGeneral",
@@ -781,6 +795,7 @@ Fk:loadTranslationTable{
   ["heg_build_country"] = "拉拢人心，询问其他角色加入 <b><font color='purple'>%arg</font></b>",
 
   ["#WatchNextPlayerDeputyLog"] = "每名角色观看下家的副将",
+  ["#WatchNextPlayer"] = "观看下家%dest的副将",
 
   ["#HegInitialNotice"] = "提示：<b><font color='purple'>模式规则</font></b><b>已上线</b>，请在创建房间页面中查看",
 }

@@ -41,23 +41,6 @@ knownBothSkill:addEffect("cardskill", {
     else
       local isMain = choice == "known_both_main"
       H.viewGeneral(player, target, knownBothSkill.name, isMain, not isMain)
-      --[[ U.askToChooseGeneralsAndChoice(player, {
-        skill_name = knownBothSkill.name,
-        generals = isMain and {target:getMark("__heg_general"), target.deputyGeneral} or {target.general, target:getMark("__heg_deputy")},
-        min_num = 0,
-        max_num = 0,
-        cancelable = false,
-        prompt = "#known_both-general::" .. target.id .. ":" .. (isMain and "mainGeneral" or "deputyGeneral"),
-      }) ]]
-      --[[ for _, p in ipairs(room:getOtherPlayers(player, false)) do
-        p:doNotify("GameLog", {
-          type = "#know_general",
-          from = player.id,
-          to = {target.id},
-          arg = isMain and "mainGeneral" or "deputyGeneral",
-          toast = true,
-        })
-      end ]]
       local log = {
         type = "#WatchGeneral",
         from = player.id,
