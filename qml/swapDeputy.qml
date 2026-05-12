@@ -2,41 +2,39 @@ import QtQuick
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import Fk
-import Fk.Components.LunarLTK
-import Fk.Pages.LunarLTK
-import Fk.Components.Common
+import LunarLtk
+import LunarLtk.Pages.Popups
+import LunarLtk.Components
 
 Item {
   id: root
   anchors.fill: parent
-  property string generalNameLeft: "liubei"
-  property string generalNameRight: "guanyu"
+  property string generalLeft: "liubei"
+  property string generalRight: "guanyu"
 
   GeneralCardItem {
     id: leftCard
-    name: generalNameLeft
+    dataModel: Ltk.createGeneralCardModel(generalLeft, { detailed: false })
     scale: 1.7
     x: -leftCard.width - 200
     y: root.height / 2  - 100
     opacity: 0
-    detailed: false
     z: 1
   }
 
   GeneralCardItem {
     id: rightCard
-    name: generalNameRight
+    dataModel: Ltk.createGeneralCardModel(generalRight, { detailed: false })
     scale: 1.7
     x: root.width + 200
     y: root.height / 2 - 100
     opacity: 0
-    detailed: false
     z: 1
   }
 
   SequentialAnimation {
     id: crossAnim
-    running: false
+    running: true
 
     // 阶段1：双卡同时淡入并向中间交叉移动
     ParallelAnimation {
@@ -113,9 +111,8 @@ Item {
   }
 
   function loadData(data) {
-    generalNameLeft = data.generalLeft || "liubei";
-    generalNameRight = data.generalRight || "guanyu";
-    crossAnim.restart();
+    generalLeft = data.generalLeft;
+    generalRight = data.generalRight;
   }
 }
 

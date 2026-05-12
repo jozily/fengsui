@@ -20,12 +20,12 @@ local H = require "packages.hegemony.util"
 chenglue:addEffect(fk.EventPhaseStart, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
-    return player:hasSkill(chenglue.name) and H.compareKingdomWith(target, player) and not player:isNude() 
+    return player:hasSkill(chenglue.name) and H.compareKingdomWith(target, player) and not player:isNude()
     and target.phase == Player.Play
   end,
   on_cost = function(self, event, target, player, data)
     local room = player.room
-    local cards = room:askToDiscard(player,{
+    local cards = room:askToCards(player,{
       min_num = 1,
       max_num = 1,
       pattern = ".",
@@ -35,7 +35,7 @@ chenglue:addEffect(fk.EventPhaseStart, {
       cancelable = true,
     })
     if #cards > 0 then
-      event:setCostData(self, { cards = cards })
+      event:setCostData(self, { cards = cards, tos = { target } })
       return true
     end
   end,
@@ -51,7 +51,6 @@ chenglue:addEffect(fk.EventPhaseStart, {
       moveVisible = true,
     })
     if player.dead or target.dead then return end
-    room:doIndicate(player, { target })
     local choices = { "ol_heg__chenglue-yiwei:"..player.id }
     if #target:getCardIds("he") > 1 then
       table.insert(choices, "ol_heg__chenglue-discard")

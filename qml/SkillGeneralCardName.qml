@@ -7,11 +7,13 @@ import Fk.Components.Common
 MetroButton {
   id: root
   property string skill
-  property var extra_data 
+  property var extra_data
   property var choices : (extra_data !== undefined) ? extra_data.choices : []
   property var all_choices : (extra_data !== undefined) ? extra_data.all_choices : []
   property string default_choice : (extra_data !== undefined) ? extra_data.default_choice : ""
   property string answer: default_choice
+
+  readonly property var roomScene: Ltk.roomScene
 
   text: Util.processPrompt(answer)
 
@@ -26,8 +28,7 @@ MetroButton {
 
   onClicked: {
     answer = default_choice;
-    roomScene.popupBox.sourceComponent =
-      Qt.createComponent(AppPath + "/packages/hegemony/qml/ChooseGeneralsBox.qml");
+    roomScene.popupBox.sourceComponent = Qt.createComponent("./ChooseGeneralsBox.qml");
     
     const box = roomScene.popupBox.item;
     box.cards = all_choices;

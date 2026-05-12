@@ -4,8 +4,9 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import Fk
-import Fk.Components.LunarLTK
-import Fk.Pages.LunarLTK
+import LunarLtk
+import LunarLtk.Pages.Popups
+import LunarLtk.Components
 
 GraphicsBox {
   id: root
@@ -24,8 +25,9 @@ GraphicsBox {
   Component {
     id: cardDelegate
     GeneralCardItem {
-      name: modelData
-      selectable: available_cards.includes(name)
+      required property string modelData
+      dataModel: Ltk.createGeneralCardModel(modelData)
+      selectable: available_cards.includes(modelData)
       onSelectedChanged: {
         result = modelData;
         close();
@@ -86,7 +88,6 @@ GraphicsBox {
         horizontalAlignment: Text.AlignHCenter
         Layout.fillWidth: true
       }
-        
     }
   }
 }

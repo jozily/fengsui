@@ -1,6 +1,7 @@
 local fushi = fk.CreateSkill {
   name = "ol_heg__fushi",
   tags = { Skill.Compulsory },
+  related_skills = { "ol_heg__zezhu", "ol_heg__chenggong" },
 }
 
 Fk:loadTranslationTable {

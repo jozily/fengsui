@@ -706,20 +706,18 @@ function HegUtil.addHegMark(player, markName, number)
   number = number or 1
   if markName == "vanguard" then
     room:addPlayerMark(player, "@!!vanguard", number)
-    player:addFakeSkill("vanguard_skill&")
+    room:handleAddLoseSkills(player, "vanguard_skill&")
   elseif markName == "yinyangfish" then
     room:addPlayerMark(player, "@!!yinyangfish", number)
-    player:addFakeSkill("yinyangfish_skill&")
-    player:prelightSkill("yinyangfish_skill&", true)
+    room:handleAddLoseSkills(player, "yinyangfish_skill&")
   elseif markName == "companion" then
     room:addPlayerMark(player, "@!!companion", number)
-    player:addFakeSkill("companion_draw&")
-    player:addFakeSkill("companion_peach&")
+    room:handleAddLoseSkills(player, "companion_draw&")
+    room:handleAddLoseSkills(player, "companion_peach&")
   elseif markName == "wild" then
     room:addPlayerMark(player, "@!!wild", number)
-    player:addFakeSkill("wild_draw&")
-    player:addFakeSkill("wild_peach&")
-    player:prelightSkill("wild_draw&", true)
+    room:handleAddLoseSkills(player, "wild_draw&")
+    room:handleAddLoseSkills(player, "wild_peach&")
   end
 end
 
