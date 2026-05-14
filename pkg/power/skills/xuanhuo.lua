@@ -1,6 +1,8 @@
 local xuanhuo = fk.CreateSkill {
   name = "ld__xuanhuo",
   attached_skill_name = "ld__xuanhuo_other&",
+  related_skills = { "xuanhuo__hs__wusheng", "xuanhuo__hs__paoxiao", "xuanhuo__hs__longdan", "xuanhuo__hs__tieqi",
+      "xuanhuo__hs__liegong", "xuanhuo__hs__kuanggu" },
 }
 
 local H = require "packages.hegemony.util"

@@ -1,5 +1,6 @@
 local zhengnan = fk.CreateSkill{
   name = "ofl_heg__zhengnan",
+  related_skills = { "hs__wusheng", "os_heg__dangxian", "ld__zhiman" },
 }
 
 Fk:loadTranslationTable{

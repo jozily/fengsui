@@ -1,5 +1,6 @@
 local sanchen = fk.CreateSkill{
   name = "ol_heg__sanchen",
+  related_skills = { "pozhu" },
 }
 
 Fk:loadTranslationTable{

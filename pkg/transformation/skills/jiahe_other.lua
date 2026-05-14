@@ -1,5 +1,6 @@
 local jiaheOther = fk.CreateSkill{
   name = "ld__jiahe_other&",
+  related_skills = { "ld__lordsunquan_yingzi", "ld__lordsunquan_haoshi", "ld__lordsunquan_shelie", "ld__lordsunquan_duoshi" }
 }
 
 Fk:loadTranslationTable{

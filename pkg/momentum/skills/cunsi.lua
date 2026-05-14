@@ -1,6 +1,7 @@
 
 local cunsi = fk.CreateSkill{
   name = "cunsi",
+  related_skills = { "yongjue" },
 }
 local H = require "packages.hegemony.util"
 cunsi:addEffect("active", {

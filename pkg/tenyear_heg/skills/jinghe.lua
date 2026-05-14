@@ -1,5 +1,6 @@
 local jinghe = fk.CreateSkill{
   name = "ty_heg__jinghe",
+  related_skills = { "ex__leiji", "yinbingn", "huoqi", "guizhu", "xianshou", "lundao", "guanyue", "yanzhengn" },
 }
 
 Fk:loadTranslationTable{

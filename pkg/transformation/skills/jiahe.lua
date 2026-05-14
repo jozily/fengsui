@@ -1,7 +1,8 @@
 local jiahe = fk.CreateSkill{
   name = "jiahe",
   derived_piles = "lord_fenghuo",
-  tags = {Skill.Compulsory}
+  tags = {Skill.Compulsory},
+  related_skills = { "ld__lordsunquan_yingzi", "ld__lordsunquan_haoshi", "ld__lordsunquan_shelie", "ld__lordsunquan_duoshi" }
 }
 
 Fk:loadTranslationTable{

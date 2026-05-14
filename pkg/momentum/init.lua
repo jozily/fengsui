@@ -45,9 +45,7 @@ Fk:loadTranslationTable{
   ["~ld__madai"] = "我怎么会死在这里……",
 }
 
-local mifuren = General:new(extension, "ld__mifuren", "shu", 3, 3, General.Female)
-mifuren:addSkills{ "guixiu", "cunsi" }
-mifuren:addRelatedSkill("yongjue")
+General:new(extension, "ld__mifuren", "shu", 3, 3, General.Female):addSkills{ "guixiu", "cunsi" }
 Fk:loadTranslationTable{
   ["ld__mifuren"] = "糜夫人",
   ["mifuren"] = "糜夫人",
@@ -61,7 +59,6 @@ local sunce = General:new(extension, "ld__sunce", "wu", 4)
 sunce.deputyMaxHpAdjustedValue = -1
 sunce:addCompanions { "hs__zhouyu", "hs__taishici", "hs__daqiao" }
 sunce:addSkills{ "jiang", "yingyang", "hunshang" }
-sunce:addRelatedSkills{"heg_sunce__yingzi", "heg_sunce__yinghun"}
 Fk:loadTranslationTable{
   ["ld__sunce"] = "孙策",
   ["#ld__sunce"] = "江东的小霸王",
@@ -80,9 +77,7 @@ Fk:loadTranslationTable{
   ["~ld__chenwudongxi"] = "杀身卫主，死而无憾！",
 }
 
-local dongzhuo = General:new(extension, "ld__dongzhuo", "qun", 4)
-dongzhuo:addSkills{ "hengzheng", "baoling" }
-dongzhuo:addRelatedSkill("benghuai")
+General:new(extension, "ld__dongzhuo", "qun", 4):addSkills{ "hengzheng", "baoling" }
 Fk:loadTranslationTable{
   ["ld__dongzhuo"] = "董卓",
   ["#ld__dongzhuo"] = "魔王",

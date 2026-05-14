@@ -95,7 +95,6 @@ Fk:loadTranslationTable{
 
 generals.ol_heg__duyu = General:new(extension, "ol_heg__duyu", "jin", 4)
 generals.ol_heg__duyu:addSkills{ "ol_heg__sanchen" }
-generals.ol_heg__duyu:addRelatedSkills{ "pozhu" }
 Fk:loadTranslationTable{
   ["ol_heg__duyu"] = "杜预",
   ["#ol_heg__duyu"] = "文成武德",
@@ -126,7 +125,6 @@ Fk:loadTranslationTable{
 
 generals.ol_heg__zhanghuyuechen = General:new(extension, "ol_heg__zhanghuyuechen", "jin", 4)
 generals.ol_heg__zhanghuyuechen:addSkills{ "ol_heg__xijue" }
-generals.ol_heg__zhanghuyuechen:addRelatedSkills{ "ex__tuxi", "nos__xiaoguo" }
 Fk:loadTranslationTable{
   ["ol_heg__zhanghuyuechen"] = "张虎乐綝",
   ["#ol_heg__zhanghuyuechen"] = "不辱门庭",
@@ -184,7 +182,6 @@ Fk:loadTranslationTable{
 
 generals.ol_heg__xuyou = General:new(extension, "ol_heg__xuyou", "qun", 3)
 generals.ol_heg__xuyou:addSkills { "ol_heg__chenglue", "ol_heg__fushi" }
-generals.ol_heg__xuyou:addRelatedSkills { "ol_heg__zezhu", "ol_heg__chenggong" }
 Fk:loadTranslationTable {
   ["ol_heg__xuyou"] = "许攸",
   ["#ol_heg__xuyou"] = "朝秦暮楚",

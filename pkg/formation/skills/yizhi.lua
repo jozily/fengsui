@@ -1,6 +1,7 @@
 local yizhi = fk.CreateSkill{
   name = "yizhi",
   tags = {Skill.DeputyPlace, Skill.Compulsory},
+  related_skills = { "ld__guanxing" },
 }
 
 local yizhi_spec = {

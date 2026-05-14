@@ -1,6 +1,7 @@
 local jianan = fk.CreateSkill {
   name = "jianan",
   tags = { Skill.Compulsory },
+  related_skills = { "jianan__ld__jieyue", "jianan__ex__tuxi", "jianan__qiaobian", "jianan__hs__duanliang", "jianan__hs__xiaoguo" },
 }
 
 Fk:loadTranslationTable {

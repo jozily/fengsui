@@ -202,7 +202,6 @@ Fk:loadTranslationTable{
 
 generals.os_heg__wangling = General:new(extension, "os_heg__wangling", "wei", 4)
 generals.os_heg__wangling:addSkills { "os__mibei", "os__xingqi" }
-generals.os_heg__wangling:addRelatedSkill("os__mouli")
 Fk:loadTranslationTable{
   ["os_heg__wangling"] = "王凌",
   ["#os_heg__wangling"] = "风节格尚",
@@ -241,7 +240,6 @@ Fk:loadTranslationTable{
 
 generals.os_heg__guanqiujian = General(extension, "os_heg__guanqiujian", "wei", 4)
 generals.os_heg__guanqiujian:addSkills { "os__zhengrong", "os__hongju" }
-generals.os_heg__guanqiujian:addRelatedSkills { "os__qingce", "os__saotao" }
 Fk:loadTranslationTable{
   ["os_heg__guanqiujian"] = "毌丘俭",
   ["#os_heg__guanqiujian"] = "镌功铭征荣",
@@ -695,7 +693,6 @@ Fk:loadTranslationTable{
 
 generals.os_heg__yangfeng = General:new(extension, "os_heg__yangfeng", "qun", 4)
 generals.os_heg__yangfeng:addSkills { "xuetu", "weiming" }
-generals.os_heg__yangfeng:addRelatedSkills { "xuetu_v2", "xuetu_v3" }
 Fk:loadTranslationTable{
   ["os_heg__yangfeng"] = "杨奉",
   ["#os_heg__yangfeng"] = "忠勇半途",
@@ -724,7 +721,6 @@ Fk:loadTranslationTable{
 
 generals.os_heg__zhaoyun = General:new(extension, "os_heg__zhaoyun", "shu", 4)
 generals.os_heg__zhaoyun:addSkills { "os__jiezhan", "os__longjin" }
-generals.os_heg__zhaoyun:addRelatedSkills { "longdan", "chongzhen" }
 Fk:loadTranslationTable{
   ["os_heg__zhaoyun"] = "幻赵云",
   ["#os_heg__zhaoyun"] = "天武耆龙",

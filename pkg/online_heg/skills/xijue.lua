@@ -1,5 +1,6 @@
 local xijue = fk.CreateSkill{
   name = "ol_heg__xijue",
+  related_skills = { "ex__tuxi", "nos__xiaoguo" },
 }
 
 Fk:loadTranslationTable{

@@ -1,6 +1,7 @@
 local jizhao = fk.CreateSkill{
   name = "jizhao",
   tags = { Skill.Limited },
+  related_skills = { "ex__rende" },
 }
 
 Fk:loadTranslationTable{

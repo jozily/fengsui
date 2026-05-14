@@ -6,7 +6,7 @@ Fk:loadTranslationTable {
   ["ld__simazhao__fankui"] = "反馈",
   [":ld__simazhao__fankui"] = "当你受到伤害后，你可获得来源的一张牌。",
 
-  ["$ld__simazhao__fankui1"] = "胆敢诽谤惑众，这就是下场！",
+  ["$ld__simazhao__fankui1"] = "胆敢谤言惑众，这就是下场！",
   ["$ld__simazhao__fankui2"] = "今天，就拿你来杀鸡儆猴。",
 }
 

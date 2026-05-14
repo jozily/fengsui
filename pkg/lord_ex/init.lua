@@ -167,7 +167,6 @@ Fk:loadTranslationTable{
 local tangzi = General:new(extension, "ld__tangzi", "wei", 4)
 tangzi.subkingdom = "wu"
 tangzi:addSkills{ "ld__xingzhao" }
-tangzi:addRelatedSkill("ld__xunxun")
 Fk:loadTranslationTable{
   ["ld__tangzi"] = "唐咨",
   ["tangzi"] = "唐咨",
@@ -274,7 +273,6 @@ Fk:loadTranslationTable{
 local simazhao = General:new(extension, "ld__simazhao", "wild", 3)
 simazhao:addCompanions("hs__simayi")
 simazhao:addSkills{ "ld__suzhi", "ld__zhaoxin" }
-simazhao:addRelatedSkill("ld__simazhao__fankui")
 Fk:loadTranslationTable{
   ["ld__simazhao"] = "司马昭",
   ["simazhao"] = "司马昭",

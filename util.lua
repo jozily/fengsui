@@ -742,24 +742,24 @@ function HegUtil.removeHegMark(room, player, markName, number)
   if markName == "vanguard" then
     room:removePlayerMark(player, "@!!vanguard", number)
     if player:getMark("@!!vanguard") == 0 then
-      player:loseFakeSkill("vanguard_skill&")
+      room:handleAddLoseSkills(player, "-vanguard_skill&")
     end
   elseif markName == "yinyangfish" then
     room:removePlayerMark(player, "@!!yinyangfish", number)
     if player:getMark("@!!yinyangfish") == 0 then
-      player:loseFakeSkill("yinyangfish_skill&")
+      room:handleAddLoseSkills(player, "-yinyangfish_skill&")
     end
   elseif markName == "companion" then
     room:removePlayerMark(player, "@!!companion", number)
     if player:getMark("@!!companion") == 0 then
-      player:loseFakeSkill("companion_draw&")
-      player:loseFakeSkill("companion_peach&")
+      room:handleAddLoseSkills(player, "-companion_draw&")
+      room:handleAddLoseSkills(player, "-companion_peach&")
     end
   elseif markName == "wild" then
     room:removePlayerMark(player, "@!!wild", number)
     if player:getMark("@!!wild") == 0 then
-      player:loseFakeSkill("wild_draw&")
-      player:loseFakeSkill("wild_peach&")
+      room:handleAddLoseSkills(player, "-wild_draw&")
+      room:handleAddLoseSkills(player, "-wild_peach&")
     end
   end
 end
@@ -1172,11 +1172,20 @@ dofile 'packages/hegemony/utilevent/init.lua'
 -- 必输参数：可选牌名choices；可输参数：全部牌名all_choices
 -- For 役鬼
 function HegUtil.GeneralCardNameBox(spec)
-  spec.choices = type(spec.choices) == "table" and spec.choices or Util.DummyTable
-  spec.all_choices = type(spec.all_choices) == "table" and spec.all_choices or spec.choices
-  spec.default_choice = spec.default_choice and spec.default_choice or spec.choices[1]
+  local choices = type(spec.choices) == "table" and spec.choices or Util.DummyTable
+  local all_choices = type(spec.all_choices) == "table" and spec.all_choices or spec.choices
+  local default_choice = spec.default_choice or spec.choices[1]
   spec.type = "custom"
-  spec.qml_path = "packages/hegemony/qml/SkillGeneralCardName"
+  spec.qml = {
+    model = {
+      url = "packages/hegemony/qml/SkillGeneralCardName.qml",
+      prop = {
+        choices = choices,
+        all_choices = all_choices,
+        default_choice = default_choice,
+      }
+    }
+  }
   return spec
 end
 

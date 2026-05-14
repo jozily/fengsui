@@ -1,6 +1,7 @@
 local jubao = fk.CreateSkill{
   name = "jubao",
   tags = {Skill.Compulsory},
+  related_skills = { "ld__lordsunquan_zhiheng" },
 }
 
 Fk:loadTranslationTable{
@@ -62,31 +63,17 @@ jubao:addEffect(fk.BeforeCardsMove, {
   end,
   on_use = function(self, event, target, player, data)
     local ids = {}
-    player.room:notifySkillInvoked(player, "jubao", "defensive")
-    player:broadcastSkillInvoke("jubao")
     for _, move in ipairs(data) do
       if move.from == player and move.to ~= move.from and move.toArea == Card.PlayerHand then
-        local move_info = {}
         for _, info in ipairs(move.moveInfo) do
           local id = info.cardId
           if info.fromArea == Card.PlayerEquip and Fk:getCardById(id).sub_type == Card.SubtypeTreasure then
             table.insert(ids, id)
-          else
-            table.insert(move_info, info)
           end
-        end
-        if #ids > 0 then
-          move.moveInfo = move_info
         end
       end
     end
-    if #ids > 0 then
-      player.room:sendLog{
-        type = "#cancelDismantle",
-        card = ids,
-        arg = jubao.name,
-      }
-    end
+    player.room:cancelMove(data, ids)
   end,
 })
 

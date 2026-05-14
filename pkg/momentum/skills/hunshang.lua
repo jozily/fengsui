@@ -1,6 +1,7 @@
 local hunshang = fk.CreateSkill{
   name = "hunshang",
   tags = {Skill.DeputyPlace, Skill.Compulsory},
+  related_skills = { "heg_sunce__yingzi", "heg_sunce__yinghun" },
 }
 hunshang:addEffect(fk.EventPhaseStart, {
   can_trigger = function(self, event, target, player, data)

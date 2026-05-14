@@ -19,7 +19,9 @@ Fk:loadTranslationTable {
 local U = require "packages.utility.utility"
 local H = require "packages.hegemony.util"
 
---从牌堆获取魂
+---从牌堆获取魂
+---@param player ServerPlayer
+---@param n integer
 local function GetHuashen(player, n)
   local room = player.room
   local generals = room:findGenerals(function() return true end, n)
@@ -27,11 +29,13 @@ local function GetHuashen(player, n)
   table.insertTableIfNeed(mark, generals)
   U.setPrivateMark(player, "&ld__hun", mark)
   if #player:getTableMark("ld__yigui_cards") == 0 then
-    room:setPlayerMark(player, "ld__yigui_cards", U.getUniversalCards(room, "bt"))
+    room:setPlayerMark(player, "ld__yigui_cards", room:getUniversalCards("bt"))
   end
 end
 
---获取魂的合法目标
+---获取魂的合法目标
+---@param to Player
+---@param name string
 local function canbeTargetedbySoul(to, name)
   local kingdoms, general = {}, Fk.generals[name]
   if general then
@@ -47,7 +51,9 @@ local function canbeTargetedbySoul(to, name)
   return tokingdom == "unknown" or table.contains(kingdoms, tokingdom)
 end
 
---获取可用的魂
+---获取可用的魂
+---@param player Player
+---@return string[]
 local function getAvailableSoul(player)
   local souls = U.getPrivateMark(player, "&ld__hun")
   if #souls == 0 then return {} end
@@ -75,7 +81,12 @@ local function getAvailableSoul(player)
   return availables
 end
 
---获取可以印的虚拟牌
+---获取可以印的虚拟牌
+---@param player Player
+---@param skill_name string
+---@param card_names? string[]
+---@param souls? string[]
+---@return string[]
 local function getAvailableYiguiCard(player, skill_name, card_names, souls)
   souls = souls or getAvailableSoul(player)
   card_names = card_names or

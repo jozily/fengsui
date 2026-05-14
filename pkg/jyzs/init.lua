@@ -11,9 +11,7 @@ Fk:loadTranslationTable{
 
 local H = require "packages.hegemony.util"
 
-local zhanghuyuechen = General:new(extension, "jy_heg__zhanghuyuechen", "jin", 4)
-zhanghuyuechen:addSkills { "jy_heg__xijue", "jy_heg__lvxian", "jy_heg__yingwei" }
-zhanghuyuechen:addRelatedSkills { "ex__tuxi", "xiaoguo" }
+General:new(extension, "jy_heg__zhanghuyuechen", "jin", 4):addSkills { "jy_heg__xijue", "jy_heg__lvxian", "jy_heg__yingwei" }
 Fk:loadTranslationTable{
   ["jy_heg__zhanghuyuechen"] = "张虎乐綝",
   ["#jy_heg__zhanghuyuechen"] = "不辱门庭",

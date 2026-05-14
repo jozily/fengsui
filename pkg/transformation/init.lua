@@ -101,10 +101,6 @@ local lordsunquan = General:new(extension, "ld__lordsunquan", "wu", 4)
 lordsunquan.hidden = true
 H.lordGenerals["hs__sunquan"] = "ld__lordsunquan"
 lordsunquan:addSkills{"jiahe", "lianzi", "jubao"}
-lordsunquan:addRelatedSkills{
-  "ld__lordsunquan_yingzi", "ld__lordsunquan_haoshi",
-  "ld__lordsunquan_shelie", "ld__lordsunquan_duoshi", "ld__lordsunquan_zhiheng"
-}
 Fk:loadTranslationTable{
   ["ld__lordsunquan"] = "君孙权",
   ["#ld__lordsunquan"] = "虎踞江东",

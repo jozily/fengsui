@@ -1,11 +1,12 @@
 local xingzhao = fk.CreateSkill {
   name = "ld__xingzhao",
   tags = { Skill.Compulsory },
+  related_skills = { "ld__xunxun" },
 }
 
 Fk:loadTranslationTable {
   ["ld__xingzhao"] = "兴棹",
-  [":ld__xingzhao"] = "锁定技，若场上受伤角色的势力数为：1个或以上，你拥有技能〖恂恂〗；2个或以上，你受到伤害后，你与伤害来源手牌数较少的角色摸一张牌；3个或以上，你的手牌上限+4；4个或以上，你失去装备区内的牌时，摸一张牌。",
+  [":ld__xingzhao"] = "锁定技，若场上受伤角色的势力数为：1个或以上，你拥有〖恂恂〗；2个或以上，你受到伤害后，你与伤害来源手牌数较少的角色摸一张牌；3个或以上，你的手牌上限+4；4个或以上，你失去装备区内的牌时，摸一张牌。",
 
   ["$ld__xingzhao1"] = "精挑细选，方能成百年之计。",
   ["$ld__xingzhao2"] = "拿些上好的木料来。",

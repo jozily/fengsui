@@ -207,7 +207,6 @@ Fk:loadTranslationTable{
 
 generals.ofl_heg__guansuo = General:new(extension, "ofl_heg__guansuo", "shu", 4)
 generals.ofl_heg__guansuo:addSkills { "ofl_heg__zhengnan" }
-generals.ofl_heg__guansuo:addRelatedSkills { "hs__wusheng", "os_heg__dangxian", "ld__zhiman" }
 generals.ofl_heg__guansuo.headnote = "E7010T国战：全武将无双"
 Fk:loadTranslationTable{
   ["ofl_heg__guansuo"] = "关索",

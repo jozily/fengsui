@@ -1,6 +1,7 @@
 local tianfu = fk.CreateSkill{
   name = "tianfu",
   tags = {Skill.Compulsory, Skill.MainPlace},
+  related_skills = { "ld__kanpo" },
 }
 local H = require "packages.hegemony.util"
 

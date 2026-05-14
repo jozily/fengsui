@@ -1,12 +1,13 @@
 local suzhi = fk.CreateSkill {
   name = "ld__suzhi",
   tags = { Skill.Compulsory },
+  related_skills = { "ld__simazhao__fankui" },
 }
 
 Fk:loadTranslationTable {
   ["ld__suzhi"] = "夙智",
   [":ld__suzhi"] = "锁定技，你的回合内：1.你执行【杀】或【决斗】的效果而造成伤害时，此伤害+1；2.你使用非转化锦囊牌时摸一张牌且无距离限制；" ..
-      "3.其他角色的牌被弃置后，你获得其一张牌。当你于一回合内触发上述效果三次后，此技能于此回合内失效。回合结束时，你获得“反馈”直至回合开始。",
+      "3.其他角色的牌被弃置后，你获得其一张牌。当你于一回合内触发上述效果三次后，此技能于此回合内失效。回合结束时，你获得〖反馈〗直至回合开始。",
   ["@ld__suzhi-turn"] = "夙智",
   ["@@ld__fankui_simazhao"] = "夙智 反馈",
 

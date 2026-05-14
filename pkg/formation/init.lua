@@ -24,7 +24,6 @@ Fk:loadTranslationTable{
 
 local caohong = General:new(extension, "ld__caohong", "wei", 4)
 caohong:addSkills{"ld__huyuan", "heyi"}
-caohong:addRelatedSkill("feiying")
 caohong:addCompanions("hs__caoren")
 Fk:loadTranslationTable{
   ["ld__caohong"] = "曹洪",
@@ -40,7 +39,6 @@ local jiangwei = General:new(extension, "ld__jiangwei", "shu", 4)
 jiangwei:addCompanions("hs__zhugeliang")
 jiangwei.deputyMaxHpAdjustedValue = -1
 jiangwei:addSkills{ "tiaoxin", "tianfu", "yizhi" }
-jiangwei:addRelatedSkills{"ld__kanpo", "ld__guanxing"}
 Fk:loadTranslationTable{
   ["ld__jiangwei"] = "姜维",
   ["#ld__jiangwei"] = "龙的衣钵",
@@ -114,7 +112,6 @@ local lordliubei = General(extension, "ld__lordliubei", "shu", 4)
 lordliubei.hidden = true
 H.lordGenerals["hs__liubei"] = "ld__lordliubei"
 lordliubei:addSkills{ "zhangwu", "shouyue", "jizhao" }
-lordliubei:addRelatedSkill("ex__rende")
 Fk:loadTranslationTable{
   ["ld__lordliubei"] = "君刘备",
   ["#ld__lordliubei"] = "龙横蜀汉",

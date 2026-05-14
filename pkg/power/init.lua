@@ -105,7 +105,6 @@ local lordcaocao = General:new(extension, "ld__lordcaocao", "wei", 4)
 lordcaocao.hidden = true
 H.lordGenerals["hs__caocao"] = "ld__lordcaocao"
 lordcaocao:addSkills{ "jianan", "huibian", "zongyu" }
-lordcaocao:addRelatedSkills{ "jianan__ld__jieyue", "jianan__ex__tuxi", "jianan__qiaobian", "jianan__hs__duanliang", "jianan__hs__xiaoguo"}
 Fk:loadTranslationTable{
   ["ld__lordcaocao"] = "君曹操",
   ["#ld__lordcaocao"] = "凤舞九霄",

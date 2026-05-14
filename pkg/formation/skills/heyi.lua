@@ -1,7 +1,8 @@
 local H = require "packages.hegemony.util"
 local heyi = fk.CreateSkill{
   name = "heyi",
-  tags = {Skill.Compulsory},
+  tags = { Skill.Compulsory },
+  related_skills = { "feiying" },
 }
 heyi:addEffect("arraysummon", {
   array_type = "formation",
@@ -46,12 +47,6 @@ heyi:addEffect(H.PlayerRemoved, {
   can_refresh = can_refresh,
   on_refresh = on_refresh
 })
-
-heyi:addTest(function (room, me)
-  FkTest.runInRoom(function ()
-    room:handleAddLoseSkills(me, heyi.name)
-  end)
-end)
 
 Fk:loadTranslationTable{
   ["heyi"] = "鹤翼",

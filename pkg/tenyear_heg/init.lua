@@ -123,9 +123,7 @@ Fk:loadTranslationTable{
   ["~ty_heg__jianggan"] = "丞相，再给我一次机会啊！",
 }
 
-local nanhualaoxian = General:new(extension, "ty_heg__nanhualaoxian", "qun", 4)
-nanhualaoxian:addSkills{ "ty_heg__gongxiu", "ty_heg__jinghe" }
-nanhualaoxian:addRelatedSkills { "ex__leiji", "yinbingn", "huoqi", "guizhu", "xianshou", "lundao", "guanyue", "yanzhengn" }
+General:new(extension, "ty_heg__nanhualaoxian", "qun", 4):addSkills{ "ty_heg__gongxiu", "ty_heg__jinghe" }
 Fk:loadTranslationTable{
   ["ty_heg__nanhualaoxian"] = "南华老仙",
   ["#ty_heg__nanhualaoxian"] = "仙人指路",
