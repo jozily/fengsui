@@ -29,7 +29,7 @@ extension:addCardSpec("slash", Card.Club, 8)
 extension:addCardSpec("slash", Card.Club, 9)
 extension:addCardSpec("slash", Card.Club, 10)
 extension:addCardSpec("slash", Card.Club, 11)
-extension:addCardSpec("slash", Card.Club, 12)
+extension:addCardSpec("slash", Card.Club, 11)
 extension:addCardSpec("slash", Card.Diamond, 10)
 extension:addCardSpec("slash", Card.Diamond, 11)
 extension:addCardSpec("slash", Card.Diamond, 12)
@@ -85,7 +85,6 @@ extension:addCardSpec("collateral", Card.Club, 12)
 extension:addCardSpec("ex_nihilo", Card.Heart, 7)
 extension:addCardSpec("ex_nihilo", Card.Heart, 8)
 extension:addCardSpec("nullification", Card.Spade, 11)
-extension:addCardSpec("nullification", Card.Diamond, 13)
 extension:addCardSpec("savage_assault", Card.Spade, 13)
 extension:addCardSpec("savage_assault", Card.Club, 7)
 extension:addCardSpec("archery_attack", Card.Heart, 1)
@@ -153,7 +152,7 @@ local sixSwords = fk.CreateCard{
   equip_skill = "#six_swords_skill",
 }
 
-extension:addCardSpec("six_swords", Card.Diamond, 2)
+extension:addCardSpec("six_swords", Card.Diamond, 6)
 
 extension:addCardSpec("spear", Card.Spade, 12)
 extension:addCardSpec("axe", Card.Diamond, 5)
