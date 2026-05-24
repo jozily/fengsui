@@ -7,6 +7,7 @@ extension:loadSkillSkelsByPath("./packages/hegemony/pkg/online_heg/skills")
 Fk:loadTranslationTable{
   ["online_heg"] = "国战-OL专属",
   ["ol_heg"] = "OL国战",
+  ["ol_ex_heg"] = "OL国战",
   ["#heg_swap_deputy"] = "%from 与 %to 交换了副将",
   ["heg__yiwei"] = "易位：发起武将易位后，若目标角色选择执行，则易位双方交换对应武将。<br>"..
   "一名角色只能对相同势力的其他角色发起武将易位。易位武将不会影响你的体力上限，也不会获得珠联璧合、阴阳鱼标记。"..
@@ -135,6 +136,75 @@ Fk:loadTranslationTable{
   ["$nos__xiaoguo_ol_heg__zhanghuyuechen1"] = "大丈夫生于世，当沙场效忠！",
   ["$nos__xiaoguo_ol_heg__zhanghuyuechen2"] = "骁勇善战，刚毅果断！",
   ["~ol_heg__zhanghuyuechen"] = "儿有辱……父亲威名……",
+}
+
+generals.ol_heg__wangrongh = General:new(extension, "ol_heg__wangrongh", "qun", 3, 3, General.Female)
+generals.ol_heg__wangrongh:addSkills{ "fengzi", "jizhan", "fusong" }
+Fk:loadTranslationTable{
+  ["ol_heg__wangrongh"] = "王荣",
+  ["#ol_heg__wangrongh"] = "灵怀皇后",
+  ["illustrator:ol_heg__wangrongh"] = "君桓文化",
+
+  ["~ol_heg__wangrongh"] = "只求吾儿，一生平安……",
+}
+
+generals.ol_ex_heg__xusheng = General:new(extension, "ol_ex_heg__xusheng", "wu", 4)
+generals.ol_ex_heg__xusheng:addCompanions("hs__dingfeng")
+generals.ol_ex_heg__xusheng:addSkills{ "ol_ex__pojun" }
+Fk:loadTranslationTable{
+  ["ol_ex_heg__xusheng"] = "界徐盛",
+  ["#ol_ex_heg__xusheng"] = "誓卫吴疆",
+  ["illustrator:ol_ex_heg__xusheng"] = "黯荧岛",
+
+  ["~ol_ex_heg__xusheng"] = "长江犹在，铁壁已残……",
+}
+
+generals.ol_ex_heg__lvbu = General:new(extension, "ol_ex_heg__lvbu", "qun", 5)
+generals.ol_ex_heg__lvbu:addCompanions("hs__diaochan")
+generals.ol_ex_heg__lvbu:addSkills{ "wushuang", "liyu" }
+Fk:loadTranslationTable{
+  ["ol_ex_heg__lvbu"] = "界吕布",
+  ["#ol_ex_heg__lvbu"] = "武的化身",
+  ["cv:ol_ex_heg__lvbu"] = "金垚",
+  ["illustrator:ol_ex_heg__lvbu"] = "张帅",
+
+  ["$wushuang_ol_ex_heg__lvbu1"] = "还有哪个敢挑战我！？",
+  ["$wushuang_ol_ex_heg__lvbu2"] = "三个齐上，也不是我的对手！",
+  ["~ol_ex_heg__lvbu"] = "我竟然输了……不可能！",
+}
+
+generals.ol_ex_heg__taishici = General:new(extension, "ol_ex_heg__taishici", "wu", 4)
+generals.ol_ex_heg__taishici:addSkills{ "tianyi", "hanzhan" }
+Fk:loadTranslationTable{
+  ["ol_ex_heg__taishici"] = "界太史慈",
+  ["#ol_ex_heg__taishici"] = "信义笃烈",
+  ["illustrator:ol_ex_heg__taishici"] = "biou09",
+
+  ["$tianyi_ol_ex_heg__taishici1"] = "天降大任，速战解围！",
+  ["$tianyi_ol_ex_heg__taishici2"] = "义不从之，天必不佑！",
+  ["~ol_ex_heg__taishici"] = "无妄之灾，难以避免……",
+}
+
+generals.ol_heg__mayunlu = General:new(extension, "ol_heg__mayunlu", "shu", 4, 4, General.Female)
+generals.ol_heg__mayunlu:addSkills{ "ol_heg__mayunlu__mashu", "fengpo" }
+Fk:loadTranslationTable{
+  ["ol_heg__mayunlu"] = "马云騄",
+  ["#ol_heg__mayunlu"] = "剑胆琴心",
+  ["cv:ol_heg__mayunlu"] = "水原",
+  ["illustrator:ol_heg__mayunlu"] = "木美人",
+
+  ["~ol_heg__mayunlu"] = "呜呜……是你们欺负人……",
+}
+
+generals.ol_heg__luzhiw = General:new(extension, "ol_heg__luzhiw", "wei", 3)
+generals.ol_heg__luzhiw:addSkills { "qingzhong", "weijing" }
+Fk:loadTranslationTable{
+  ["ol_heg__luzhiw"] = "鲁芝",
+  ["#ol_heg__luzhiw"] = "夷夏慕德",
+  ["designer:ol_heg__luzhiw"] = "世外高v狼",
+  ["illustrator:ol_heg__luzhiw"] = "秋呆呆",
+
+  ["~ol_heg__luzhiw"] = "年迈力微，是该告老还乡了……",
 }
 
 generals.ol_heg__zhonghui = General:new(extension, "ol_heg__zhonghui", "wei", 4)
