@@ -138,6 +138,7 @@ Fk:loadTranslationTable{
   ["~ol_heg__zhanghuyuechen"] = "儿有辱……父亲威名……",
 }
 
+--他山之石
 generals.ol_heg__wangrongh = General:new(extension, "ol_heg__wangrongh", "qun", 3, 3, General.Female)
 generals.ol_heg__wangrongh:addSkills{ "fengzi", "jizhan", "fusong" }
 Fk:loadTranslationTable{
@@ -207,6 +208,64 @@ Fk:loadTranslationTable{
   ["~ol_heg__luzhiw"] = "年迈力微，是该告老还乡了……",
 }
 
+--礼
+generals.ol_heg__chengpu = General:new(extension, "ol_heg__chengpu", "wu", 4)
+generals.ol_heg__chengpu:addCompanions{ "hs__zhouyu", "hs__huanggai" }
+generals.ol_heg__chengpu:addSkills{ "ol_heg__daohuo","ol_heg__chunlao" }
+Fk:loadTranslationTable{
+  ["ol_heg__chengpu"] = "程普",
+  ["#ol_heg__chengpu"] = "三朝虎臣",
+  ["illustrator:ol_heg__chengpu"] = "G.G.G.",
+
+  ["~ol_heg__chengpu"] = "没，没有酒了……",
+}
+
+--谦
+generals.ol_heg__xuyou = General:new(extension, "ol_heg__xuyou", "qun", 3)
+generals.ol_heg__xuyou:addSkills { "ol_heg__chenglue", "ol_heg__fushi" }
+Fk:loadTranslationTable {
+  ["ol_heg__xuyou"] = "许攸",
+  ["#ol_heg__xuyou"] = "朝秦暮楚",
+  ["cv:ol_heg__xuyou"] = "曹毅",
+  ["illustrator:ol_heg__xuyou"] = "兴游",
+
+  ["~ol_heg__xuyou"] = "阿瞒，没有我你得不到冀州啊！",
+}
+
+generals.ol_heg__jianshuo = General:new(extension, "ol_heg__jianshuo", "qun", 4)
+generals.ol_heg__jianshuo.hidden = true
+Fk:loadTranslationTable {
+  ["ol_heg__jianshuo"] = "蹇硕",
+  --["#ol_heg__jianshuo"] = "",
+  --["illustrator:ol_heg__jianshuo"] = "",
+
+  ["~ol_heg__jianshuo"] = "",
+}
+
+--辞
+generals.ol_heg__wuyi = General:new(extension, "ol_heg__wuyi", "shu", 4)
+generals.ol_heg__wuyi:addCompanions("hs__weiyan")
+generals.ol_heg__wuyi:addSkills{ "ol_heg__benxi", "ol_heg__zhuanzheng"}
+Fk:loadTranslationTable{
+  ["ol_heg__wuyi"] = "吴懿",
+  ["#ol_heg__wuyi"] = "建兴鞍辔",
+  ["illustrator:ol_heg__wuyi"] = "官方",
+
+  ["~ol_heg__wuyi"] = "奔波已疲，难以，再战。",
+}
+
+generals.ol_heg__caozhi = General:new(extension, "ol_heg__caozhi", "wei", 3)
+generals.ol_heg__caozhi:addCompanions("hs__caopi")
+generals.ol_heg__caozhi:addSkills{ "ol_heg__jiushi", "ol_heg__zongpei" }
+Fk:loadTranslationTable{
+  ["ol_heg__caozhi"] = "曹植",
+  --["#ol_heg__caozhi"] = "",
+  --["illustrator:ol_heg__caozhi"] = "",
+
+  ["~ol_heg__caozhi"] = "",
+}
+
+--诈
 generals.ol_heg__zhonghui = General:new(extension, "ol_heg__zhonghui", "wei", 4)
 generals.ol_heg__zhonghui.mainMaxHpAdjustedValue = -1
 generals.ol_heg__zhonghui:addSkills{ "ol_heg__quanji", "ol_heg__paiyi", "ol_heg__yaopan" }
@@ -226,39 +285,6 @@ Fk:loadTranslationTable{
   ["illustrator:ol_heg__liaohua"] = "天空之城",
 
   ["~ol_heg__liaohua"] = "今后，就靠你们了……",
-}
-
-generals.ol_heg__wuyi = General:new(extension, "ol_heg__wuyi", "shu", 4)
-generals.ol_heg__wuyi:addCompanions("hs__weiyan")
-generals.ol_heg__wuyi:addSkills{ "ol_heg__benxi","ol_heg__zhuanzheng"}
-Fk:loadTranslationTable{
-  ["ol_heg__wuyi"] = "吴懿",
-  ["#ol_heg__wuyi"] = "建兴鞍辔",
-  ["illustrator:ol_heg__wuyi"] = "官方",
-
-  ["~ol_heg__wuyi"] = "奔波已疲，难以，再战。",
-}
-
-generals.ol_heg__chengpu = General:new(extension, "ol_heg__chengpu", "wu", 4)
-generals.ol_heg__chengpu:addCompanions{ "hs__zhouyu", "hs__huanggai" }
-generals.ol_heg__chengpu:addSkills{ "ol_heg__daohuo","ol_heg__chunlao" }
-Fk:loadTranslationTable{
-  ["ol_heg__chengpu"] = "程普",
-  ["#ol_heg__chengpu"] = "三朝虎臣",
-  ["illustrator:ol_heg__chengpu"] = "G.G.G.",
-
-  ["~ol_heg__chengpu"] = "没，没有酒了……",
-}
-
-generals.ol_heg__xuyou = General:new(extension, "ol_heg__xuyou", "qun", 3)
-generals.ol_heg__xuyou:addSkills { "ol_heg__chenglue", "ol_heg__fushi" }
-Fk:loadTranslationTable {
-  ["ol_heg__xuyou"] = "许攸",
-  ["#ol_heg__xuyou"] = "朝秦暮楚",
-  ["cv:ol_heg__xuyou"] = "曹毅",
-  ["illustrator:ol_heg__xuyou"] = "兴游",
-
-  ["~ol_heg__xuyou"] = "阿瞒，没有我你得不到冀州啊！",
 }
 
 return extension
