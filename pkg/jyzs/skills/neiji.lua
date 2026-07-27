@@ -9,6 +9,8 @@ Fk:loadTranslationTable {
 
   ["#jy_heg__neiji-choose"] = "内忌：选择一名其他角色，你与其同时展示两张手牌",
   ["#jy_heg__neiji_showcards"] = "内忌：展示两张手牌",
+      ["$jy_heg__neiji1"] = "你我势不两立，必要争个高下，来吧！",
+  ["$jy_heg__neiji2"] = "必要整个你死我活，方为痛快！",
 }
 
 local H = require "packages.hegemony.util"

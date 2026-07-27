@@ -19,6 +19,9 @@ local offline = require(prefix .. "offline_heg")
 local hegemony_cards = require(prefix .. "standard_cards")
 local strategic_advantage = require(prefix .. "strategic_advantage")
 local lord_cards = require(prefix .. "lord_cards")
+local fengsui = require(prefix .. "fengsui")
+local fengsui_cards = require(prefix .. "fengsui_cards")
+
 
 Fk:loadTranslationTable{ ["hegemony"] = "国战" }
 Fk:loadTranslationTable(require 'packages/hegemony/i18n/en_US', 'en_US')
@@ -34,6 +37,7 @@ return {
   ex,
   ziqidonglai,
   jinyinzishou,
+  fengsui,
 
   ol,
   mobile,
@@ -44,4 +48,7 @@ return {
   hegemony_cards,
   strategic_advantage,
   lord_cards,
+  fengsui_cards,
+
+
 }

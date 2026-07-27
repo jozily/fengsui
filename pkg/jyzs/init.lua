@@ -44,6 +44,8 @@ Fk:loadTranslationTable{
   ["yangjun"] = "杨骏",
   ["#jy_heg__yangjun"] = "阶缘佞宠",
   ["illustrator:jy_heg__yangjun"] = "荆芥",
+    ["~jy_heg__yangjun"] = "唉！终是难逃灭门之祸......",
+
 }
 
 local bailingyun = General:new(extension, "jy_heg__bailingyun", "jin", 3, 3, General.Female)
@@ -74,6 +76,7 @@ Fk:loadTranslationTable{
   ["sunxiuj"] = "孙秀",
   ["#jy_heg__sunxiuj"] = "黄钟毁弃",
   ["illustrator:jy_heg__sunxiuj"] = "荆芥",
+    ["~jy_heg__sunxiuj"] = "许我虚名，归我老去，成败转头即非白，哈哈哈......",
 }
 
 local duyu = General:new(extension, "jy_heg__duyu", "jin", 4)

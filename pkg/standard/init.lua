@@ -71,7 +71,7 @@ Fk:loadTranslationTable{
   ["~hs__zhenji"] = "悼良会之永绝兮，哀一逝而异乡。",
 }
 
-General:new(extension, "hs__xiahouyuan", "wei", 5):addSkill("hs__shensu")
+General:new(extension, "hs__xiahouyuan", "wei", 4):addSkill("hs__shensu")
 Fk:loadTranslationTable{
   ["hs__xiahouyuan"] = "夏侯渊",
   ["#hs__xiahouyuan"] = "虎步关右",
@@ -104,7 +104,7 @@ Fk:loadTranslationTable{
   ["~hs__caoren"] = "实在是守不住了……",
 }
 
-General:new(extension, "hs__dianwei", "wei", 4):addSkill("hs__qiangxi")
+General:new(extension, "hs__dianwei", "wei", 5):addSkill("hs__qiangxi")
 Fk:loadTranslationTable{
   ["hs__dianwei"] = "典韦",
   ["#hs__dianwei"] = "古之恶来",

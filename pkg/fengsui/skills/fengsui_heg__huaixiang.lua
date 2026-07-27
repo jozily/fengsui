@@ -1,0 +1,64 @@
+local H = require "packages.hegemony.util"
+
+local huaixiang = fk.CreateSkill{
+  name = "fengsui_heg__huaixiang",
+}
+
+huaixiang:addEffect("active", {
+  anim_type = "support",
+  prompt = "#fengsui_heg__huaixiang-active",
+  card_num = 1,
+  target_num = 1,
+  can_use = Util.TrueFunc,
+  card_filter = function(self, player, to_select, selected)
+    -- 本回合未进入弃牌堆类别的牌
+    if #selected > 0 then return false end
+    local current_c = Fk:getCardById(to_select)
+    local tFound = false
+    player.room.logic:getEventsOfScope(GameEvent.MoveCards, 1, function(e)
+       for _, move in ipairs(e.data) do
+          if move.toArea == Card.DiscardPile then
+             for _, info in ipairs(move.moveInfo) do
+                if Fk:getCardById(info.cardId).type == current_c.type then tFound = true return true end
+             end
+          end
+       end
+       return false
+    end, Player.HistoryTurn)
+    return not tFound
+  end,
+  target_filter = function(self, player, to_select, selected)
+    return #selected == 0 and to_select.kingdom ~= "unknown"
+  end,
+  on_use = function(self, room, effect)
+     room:recastCard(effect.cards, effect.from, huaixiang.name)
+     room:addPlayerMark(effect.tos[1], "fengsui_heg__huaixiang_unknown-turn", 1)
+     room:setPlayerProperty(effect.tos[1], "kingdom", "unknown")
+  end
+})
+
+huaixiang:addEffect(fk.EventPhaseStart, {
+  global = true,
+  can_refresh = function(self, event, target, player, data)
+    return target == player and player.phase == Player.Finish
+  end,
+  on_refresh = function(self, event, target, player, data)
+    local room = player.room
+    for _, p in ipairs(room.alive_players) do
+       if p:getMark("fengsui_heg__huaixiang_unknown-turn") > 0 then
+          room:setPlayerMark(p, "fengsui_heg__huaixiang_unknown-turn", 0)
+          local kingdom = p:getMark("__heg_kingdom")
+          if kingdom == "wild" then kingdom = p:getMark("__heg_init_kingdom") end
+          room:setPlayerProperty(p, "kingdom", kingdom)
+       end
+    end
+  end,
+})
+
+Fk:loadTranslationTable{
+  ["fengsui_heg__huaixiang"] = "怀香",
+  [":fengsui_heg__huaixiang"] = "出牌阶段，你可以重铸一张本回合未进入弃牌堆类别的牌并选择一名确定势力的角色，其本回合视为未确定势力。",
+  ["#fengsui_heg__huaixiang-active"] = "怀香：重铸一张合规手牌，令一名确定势力的角色暂时变为未确定势力",
+}
+
+return huaixiang

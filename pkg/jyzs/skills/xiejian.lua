@@ -7,6 +7,8 @@ Fk:loadTranslationTable {
     [":jy_heg__xiejian"] = "出牌阶段限一次，你可以对一名其他角色发起“军令”，且你以此法抽取的备选“军令”对其他角色不可见，若其不执行，其强制执行你抽取的备选“军令”。",
 
     ["#jy_heg__xiejian"] = "挟奸：选择一名其他角色发起“军令”",
+      ["$jy_heg__xiejian1"] = "朝中亲党下场，汝等的好日子到了！",
+  ["$jy_heg__xiejian2"] = "图财还是保命，亦或者，玉石俱焚？",
 }
 
 local H = require "packages.hegemony.util"

@@ -1,0 +1,47 @@
+local H = require "packages.hegemony.util"
+
+local juangu = fk.CreateSkill{
+  name = "fengsui_heg__juangu",
+}
+
+local function hasCompanionAcross(from, to)
+  local from_generals = {H.getActualGeneral(from, false), H.getActualGeneral(from, true)}
+  local to_generals = {H.getActualGeneral(to, false), H.getActualGeneral(to, true)}
+  for _, first in ipairs(from_generals) do
+    local general = Fk.generals[first]
+    if general then
+      for _, second in ipairs(to_generals) do
+        if Fk.generals[second] and general:isCompanionWith(second) then return true end
+      end
+    end
+  end
+  return false
+end
+
+juangu:addEffect(fk.TargetSpecified, {
+  anim_type = "drawcard",
+  can_trigger = function(self, event, target, player, data)
+    if not player:hasSkill(juangu.name) or target.room.current ~= target or
+      target:usedCardTimes(data.card.trueName, Player.HistoryTurn) > 1 or
+      #data:getAllTargets() ~= 1 then
+      return false
+    end
+    return hasCompanionAcross(target, data.to)
+  end,
+  on_cost = function(self, event, target, player, data)
+    return player.room:askToSkillInvoke(player, {
+      skill_name = juangu.name,
+      prompt = "#fengsui_heg__juangu-invoke::" .. target.id .. ":" .. data.to.id,
+    })
+  end,
+  on_use = function(self, event, target, player, data)
+    if target == data.to then
+      data.additionalEffect = (data.additionalEffect or 0) + 1
+    else
+      if target:isAlive() then target:drawCards(1, juangu.name) end
+      if data.to:isAlive() then data.to:drawCards(1, juangu.name) end
+    end
+  end,
+})
+
+return juangu
