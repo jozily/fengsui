@@ -7,9 +7,8 @@ local lianxi = fk.CreateSkill{
 lianxi:addEffect(fk.GeneralHidden, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
-    -- 检测与其势力相同的角色暗置武将牌
-    -- 因为已暗置可能导致自身 kingdom 变成 unknown，所以使用兼容性检测
-    return player:hasSkill(lianxi.name) and player ~= target and H.compareExpectedKingdomWith(target, player)
+    return target and player:hasSkill(lianxi.name) and target:isAlive() and
+      H.compareKingdomWith(target, player) and data ~= "fengsui_heg__zhangbai"
   end,
   on_cost = function(self, event, target, player, data)
     if player.room:askToSkillInvoke(player, { skill_name = lianxi.name, prompt = "#fengsui_heg__lianxi-invoke::" .. target.id }) then
@@ -63,9 +62,7 @@ lianxi:addEffect(fk.GeneralHidden, {
 })
 
 Fk:loadTranslationTable{
-  ["fengsui_heg__lianxi"] = "连徙",
-  [":fengsui_heg__lianxi"] = "当与你势力相同的角色暗置武将牌后，你可以弃置其一个区域所有牌并对当前回合角色造成一点伤害，然后你与一名同势力其他角色副将<a href='heg__yiwei'>易位</a>。",
-  ["#fengsui_heg__lianxi-invoke"] = "连徙：你可以弃置 %dest 一个区域所有牌并对当前角色造成1点伤害，然后与队友易位！",
+ ["#fengsui_heg__lianxi-invoke"] = "连徙：你可以弃置 %dest 一个区域所有牌并对当前角色造成1点伤害，然后与队友易位！",
   ["#fengsui_heg__lianxi-swap"] = "连徙：请选择一名同势力角色进行副将易位",
   ["lianxi_hand"] = "手牌区",
   ["lianxi_equip"] = "装备区",

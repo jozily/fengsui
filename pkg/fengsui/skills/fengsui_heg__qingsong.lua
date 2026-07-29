@@ -34,11 +34,14 @@ qingsong:addEffect(fk.TargetConfirmed, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     local cost = event:getCostData(self)
-    U.hideSkillGeneral(player, qingsong.name)
+    local skill_place = U.getSkillPlace(player, qingsong.name)
+    if skill_place ~= nil then player:hideGeneral(not skill_place) end
     room:moveCardTo(cost.card, Card.PlayerHand, cost.to, fk.ReasonGive,
       qingsong.name, nil, true, player)
     if not H.compareKingdomWith(player, cost.to) then
-      room:addTableMark(player, "fengsui_heg__qingsong_use-turn", cost.card)
+      local card_name = Fk:getCardById(cost.card).trueName
+      room:addTableMark(player, "fengsui_heg__qingsong_use-turn", card_name)
+      room:addTableMarkIfNeed(player, "@fengsui_heg__qingsong-turn", card_name)
     end
   end,
 })
@@ -52,14 +55,14 @@ qingsong:addEffect(fk.TurnEnd, {
     local room = player.room
     local cards = player:getTableMark("fengsui_heg__qingsong_use-turn")
     room:setPlayerMark(player, "fengsui_heg__qingsong_use-turn", 0)
-    for _, id in ipairs(cards) do
-      if player:isAlive() and room:getCardArea(id) == Card.PlayerHand then
-        room:askToUseRealCard(player, {
-          pattern = {id},
-          expand_pile = {id},
+    for _, name in ipairs(cards) do
+      if player:isAlive() then
+        room:askToUseVirtualCard(player, {
+          name = name,
           skill_name = qingsong.name,
           prompt = "#fengsui_heg__qingsong-use",
-          cancelable = false,
+          cancelable = true,
+          extra_data = {bypass_times = true, extraUse = true},
         })
       end
     end

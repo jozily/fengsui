@@ -6,10 +6,13 @@ ruxiang:addEffect(fk.GeneralRevealed, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
     if target ~= player or not player:hasSkill(ruxiang.name) then return false end
-    return table.find(data, function(general_name)
+    for _, general_name in pairs(data) do
       local general = Fk.generals[general_name]
-      return general and table.contains(general:getSkillNameList(true), ruxiang.name)
-    end) ~= nil
+      if general and table.contains(general:getSkillNameList(true), ruxiang.name) then
+        return true
+      end
+    end
+    return false
   end,
   on_cost = function(self, event, target, player, data)
     local use = player.room:askToUseCard(player, {

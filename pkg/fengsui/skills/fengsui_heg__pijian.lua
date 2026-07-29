@@ -2,7 +2,6 @@ local U = require "packages.hegemony.pkg.fengsui.util"
 
 local pijian = fk.CreateSkill{
   name = "fengsui_heg__pijian",
-  tags = {Skill.MainPlace},
 }
 
 local function getDiscardTypes(room)
@@ -23,8 +22,7 @@ end
 pijian:addEffect(fk.EventPhaseStart, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
-    if target == player or target.phase ~= Player.Finish or not player:hasSkill(pijian.name) or
-      not U.isMainGeneralSkill(player, pijian.name) then
+    if target == player or target.phase ~= Player.Finish or not player:hasSkill(pijian.name) then
       return false
     end
 

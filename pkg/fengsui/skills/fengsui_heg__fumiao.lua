@@ -6,8 +6,11 @@ local fumiao = fk.CreateSkill{
 }
 
 local function getUnusedBasicNames(player)
-  local names = table.simpleClone(Fk:getAllCardNames("basic"))
-  player.room.logic:getEventsOfScope(GameEvent.UseCard, 999, function(e)
+  local names = U.getNationalCardNames({"basic"})
+  local room = player.room or Fk:currentRoom()
+  -- Skill availability is also evaluated by the client, where player.room is absent.
+  if not room or not room.logic then return names end
+  room.logic:getEventsOfScope(GameEvent.UseCard, 999, function(e)
     if e.data.card.type == Card.TypeBasic then
       table.removeOne(names, e.data.card.trueName)
     end

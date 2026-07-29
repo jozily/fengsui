@@ -6,10 +6,18 @@ local chendu = fk.CreateSkill{
   tags = { Skill.Limited },
 }
 
+local function removedGeneralHasChendu(target, player, data)
+  if target ~= player or not data.origName then return false end
+  local general = Fk.generals[data.origName]
+  return general and table.contains(general:getSkillNameList(), chendu.name)
+end
+
 chendu:addEffect(H.GeneralRemoved, {
   global = true,
   can_trigger = function(self, event, target, player, data)
-    return player:hasSkill(chendu.name) and player:usedSkillTimes(chendu.name, Player.HistoryGame) == 0
+    return player:isAlive() and
+      (player:hasSkill(chendu.name) or removedGeneralHasChendu(target, player, data)) and
+      player:usedSkillTimes(chendu.name, Player.HistoryGame) == 0
   end,
   on_cost = function(self, event, target, player, data)
     return player.room:askToSkillInvoke(player, { skill_name = chendu.name, prompt = "#fengsui_heg__chendu-invoke::" .. target.id })

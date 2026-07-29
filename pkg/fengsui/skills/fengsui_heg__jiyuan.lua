@@ -7,6 +7,7 @@ local jiyuan = fk.CreateSkill{
 }
 
 local remove_mark = "fengsui_heg__jiyuan_remove"
+local remove_place_mark = "fengsui_heg__jiyuan_remove_place"
 
 jiyuan:addEffect(fk.EnterDying, {
   anim_type = "support",
@@ -27,13 +28,17 @@ jiyuan:addEffect(fk.EnterDying, {
       cancelable = true,
     })
     if #chosen > 0 then
-      event:setCostData(self, { to = chosen[1] })
+      event:setCostData(self, {
+        to = chosen[1],
+        is_deputy = U.getSkillPlace(player, jiyuan.name),
+      })
       return true
     end
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local to = event:getCostData(self).to
+    local cost_data = event:getCostData(self)
+    local to = cost_data.to
     if to.hp < to.maxHp then
       room:recover{
         who = to,
@@ -59,6 +64,7 @@ jiyuan:addEffect(fk.EnterDying, {
       H.transformGeneral(room, to, false, true)
     end
     room:setPlayerMark(player, remove_mark, 1)
+    room:setPlayerMark(player, remove_place_mark, cost_data.is_deputy and 2 or 1)
   end,
 })
 
@@ -70,8 +76,9 @@ jiyuan:addEffect(fk.AfterDying, {
   on_use = function(self, event, target, player, data)
     player.room:setPlayerMark(player, remove_mark, 0)
     if player:isAlive() then
-      U.removeGeneralByName(player, "fengsui_heg__yangyan")
+      H.removeGeneral(player, player:getMark(remove_place_mark) == 2)
     end
+    player.room:setPlayerMark(player, remove_place_mark, 0)
   end,
 })
 

@@ -5,6 +5,20 @@ local guru = fk.CreateSkill{
   tags = { Skill.Compulsory },
 }
 
+local distance_mark = "@fengsui_heg__guru_distance"
+
+local function getDistanceX(player)
+  if not player:hasSkill(guru.name) or not H.allGeneralsRevealed(player) then return 0 end
+  local room = player.room or Fk:currentRoom()
+  if not room then return 0 end
+  local same = H.getSameKingdomPlayersNum(room, player)
+  local kingdoms = 0
+  for _, count in pairs(H.getKingdomPlayersNum(room)) do
+    if count > 0 then kingdoms = kingdoms + 1 end
+  end
+  return same < kingdoms and same or 0
+end
+
 guru:addEffect(fk.DrawNCards, {
   anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)
@@ -18,14 +32,31 @@ guru:addEffect(fk.DrawNCards, {
 
 guru:addEffect("distance", {
   correct_func = function(self, from, to)
-    if not from:hasSkill(guru.name) or not H.allGeneralsRevealed(from) then return 0 end
-    local same = H.getSameKingdomPlayersNum(from.room, from)
-    local kingdoms = 0
-    for _, count in pairs(H.getKingdomPlayersNum(from.room)) do
-      if count > 0 then kingdoms = kingdoms + 1 end
-    end
-    return same < kingdoms and same or 0
+    return getDistanceX(from) + getDistanceX(to)
   end,
 })
+
+local mark_refresh_events = {
+  fk.TurnStart,
+  fk.GeneralRevealed,
+  fk.GeneralHidden,
+  fk.Death,
+  H.PlayerRemoved,
+  fk.EventAcquireSkill,
+  fk.EventLoseSkill,
+}
+
+for _, refresh_event in ipairs(mark_refresh_events) do
+  guru:addEffect(refresh_event, {
+    global = true,
+    mute = true,
+    can_refresh = function(self, event, target, player, data)
+      return player:getMark(distance_mark) > 0 or player:hasSkill(guru.name, true, true)
+    end,
+    on_refresh = function(self, event, target, player, data)
+      player.room:setPlayerMark(player, distance_mark, getDistanceX(player))
+    end,
+  })
+end
 
 return guru

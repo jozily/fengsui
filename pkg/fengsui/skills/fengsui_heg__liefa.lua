@@ -37,7 +37,7 @@ liefa:addEffect("viewas", {
           max_num = num,
           include_equip = true,
           skill_name = liefa.name,
-          prompt = "#fengsui_heg__liefa-discard::" .. num,
+          prompt = "#fengsui_heg__liefa-discard:::" .. num,
           cancelable = false,
         })
       end

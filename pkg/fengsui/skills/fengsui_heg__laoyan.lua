@@ -17,9 +17,8 @@ laoyan:addEffect(fk.CardUsing, {
        if p ~= player and H.compareKingdomWith(p, player) then table.insert(team, p) end
     end
     if #team > 0 then
-       for _, p in ipairs(team) do
-          data:nullifyTarget(p)
-       end
+       data.nullifiedTargets = data.nullifiedTargets or {}
+       table.insertTableIfNeed(data.nullifiedTargets, team)
        data.extra_data = data.extra_data or {}
        data.extra_data.laoyan_trigger = player.id
     end

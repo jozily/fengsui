@@ -1,5 +1,4 @@
 local H = require "packages.hegemony.util"
-local U = require "packages.hegemony.pkg.fengsui.util"
 
 local weiluan = fk.CreateSkill{
   name = "fengsui_heg__weiluan",
@@ -8,8 +7,8 @@ local weiluan = fk.CreateSkill{
 weiluan:addEffect(fk.TargetConfirmed, {
   anim_type = "defensive",
   can_trigger = function(self, event, target, player, data)
-    return target ~= player and player:hasSkill(weiluan.name) and 
-           H.compareKingdomWith(target, player) and H.allGeneralsRevealed(player) and
+    return player:hasSkill(weiluan.name) and
+           H.compareKingdomWith(target, player) and H.allGeneralsRevealed(target) and
            data.card and data.card.is_damage_card
   end,
   on_cost = function(self, event, target, player, data)
@@ -20,7 +19,7 @@ weiluan:addEffect(fk.TargetConfirmed, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    U.hideSkillGeneral(player, weiluan.name)
+    H.doHideGeneral(room, target, target, weiluan.name)
     
     target:drawCards(1, weiluan.name)
     if target:isAlive() and not target:isKongcheng() then

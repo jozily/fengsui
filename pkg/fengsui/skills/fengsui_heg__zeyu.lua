@@ -10,8 +10,8 @@ zeyu:addEffect(fk.Death, {
   can_trigger = function(self, event, target, player, data)
     local damage = data.damage
     if not damage or not damage.from then return false end
-    return player:hasSkill(zeyu.name) and not U.isMainGeneralSkill(player, zeyu.name)
-       and H.compareKingdomWith(damage.from, player) and not H.compareKingdomWith(target, damage.from)
+    return player:hasSkill(zeyu.name) and H.compareKingdomWith(damage.from, player) and
+      not H.compareKingdomWith(target, damage.from)
   end,
   on_cost = function(self, event, target, player, data)
     return player.room:askToSkillInvoke(player, {

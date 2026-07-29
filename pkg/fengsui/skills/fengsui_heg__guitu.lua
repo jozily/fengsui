@@ -21,6 +21,7 @@ guitu:addEffect(fk.DamageInflicted, {
     data:preventDamage()
     if data.from and data.from:isAlive() then
       player.room:setPlayerMark(data.from, "@fengsui_heg__guitu-turn", 1)
+      player.room:addTableMarkIfNeed(player, "@fengsui_heg__guitu_targets-turn", data.from.id)
     end
   end,
 })

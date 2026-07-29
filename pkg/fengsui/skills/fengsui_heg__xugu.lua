@@ -11,9 +11,10 @@ xugu:addEffect("active", {
     return player:usedSkillTimes(xugu.name, Player.HistoryPhase) == 0
   end,
   card_num = 0,
-  target_num = 999,
+  min_target_num = 1,
+  max_target_num = 999,
   target_filter = function(self, player, to_select, selected)
-    return not H.compareKingdomWith(to_select, player)
+    return true
   end,
   feasible = function(self, player, selected, selected_cards)
     return #selected > 0
@@ -27,7 +28,9 @@ xugu:addEffect("active", {
     for _, target in ipairs(effect.tos) do
       if target:isAlive() then
         local choices = {"xugu_do_command"}
-        if not target:isKongcheng() then table.insert(choices, 1, "xugu_show_hide") end
+        if H.allGeneralsRevealed(target) and not target:isKongcheng() then
+          table.insert(choices, 1, "xugu_show_hide")
+        end
         local choice = room:askToChoice(target, {
           choices = choices,
           skill_name = xugu.name,

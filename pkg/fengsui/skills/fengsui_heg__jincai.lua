@@ -4,7 +4,7 @@ local jincai = fk.CreateSkill{
   name = "fengsui_heg__jincai",
 }
 
-local damage_mark = "fengsui_heg__jincai_targets-round"
+local damage_sources_mark = "fengsui_heg__jincai_damage_sources-round"
 
 jincai:addEffect(fk.CardUseFinished, {
   anim_type = "control",
@@ -31,37 +31,41 @@ jincai:addEffect(fk.CardUseFinished, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     local to = event:getCostData(self).to
+    local all_choices = { "fengsui_heg__jincai_draw", "fengsui_heg__jincai_red" }
+    local choices = { "fengsui_heg__jincai_red" }
+    if H.allGeneralsRevealed(to) then
+      table.insert(choices, 1, "fengsui_heg__jincai_draw")
+    end
     local choice = room:askToChoice(to, {
-      choices = { "fengsui_heg__jincai_draw", "fengsui_heg__jincai_red" },
+      choices = choices,
+      all_choices = all_choices,
       skill_name = jincai.name,
       prompt = "#fengsui_heg__jincai-choice::" .. player.id,
     })
     if choice == "fengsui_heg__jincai_draw" then
       to:drawCards(2, jincai.name)
-      if to:isAlive() and H.getGeneralsRevealedNum(to) > 0 then
+      if to:isAlive() then
         H.doHideGeneral(room, to, to, jincai.name)
       end
-      local targets = to:getTableMark(damage_mark)
-      table.insertIfNeed(targets, player.id)
-      room:setPlayerMark(to, damage_mark, targets)
+      room:addTableMarkIfNeed(player, damage_sources_mark, to.id)
     else
       room:setPlayerMark(to, "fengsui_heg__jincai_red-turn", 1)
     end
   end,
 })
 
-jincai:addEffect(fk.DamageCaused, {
+jincai:addEffect(fk.DamageInflicted, {
   global = true,
   is_delay_effect = true,
   can_trigger = function(self, event, target, player, data)
-    return target == player and data.to and
-      table.contains(player:getTableMark(damage_mark), data.to.id)
+    return target == player and data.from and
+      table.contains(player:getTableMark(damage_sources_mark), data.from.id)
   end,
   on_use = function(self, event, target, player, data)
     data:changeDamage(-1)
-    local targets = player:getTableMark(damage_mark)
-    table.removeOne(targets, data.to.id)
-    player.room:setPlayerMark(player, damage_mark, #targets > 0 and targets or 0)
+    local sources = player:getTableMark(damage_sources_mark)
+    table.removeOne(sources, data.from.id)
+    player.room:setPlayerMark(player, damage_sources_mark, #sources > 0 and sources or 0)
   end,
 })
 

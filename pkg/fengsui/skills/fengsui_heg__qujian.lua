@@ -11,14 +11,14 @@ qujian:addEffect(fk.EventPhaseStart, {
   end,
   on_cost = function(self, event, target, player, data)
     local room = player.room
-    local same_count = table.count(room.alive_players, function(p)
+    local same_count = #table.filter(room.alive_players, function(p)
       return H.compareKingdomWith(p, player)
     end)
     
     local chosen = room:askToChoosePlayers(player, {
       targets = room.alive_players,
       min_num = 1, max_num = same_count,
-      prompt = "#fengsui_heg__qujian-choose::" .. same_count,
+      prompt = "#fengsui_heg__qujian-choose:::" .. same_count,
       skill_name = qujian.name,
       cancelable = true,
     })

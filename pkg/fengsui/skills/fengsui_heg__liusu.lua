@@ -9,8 +9,9 @@ liusu:addEffect("active", {
   card_num = 1,
   target_num = 0,
   can_use = function(self, player)
+    local room = Fk:currentRoom()
     return player:usedSkillTimes(liusu.name, Player.HistoryPhase) == 0 and
-      #player.room.discard_pile > 0
+      room and #room.discard_pile > 0
   end,
   card_filter = Util.TrueFunc,
   on_use = function(self, room, effect)
@@ -28,7 +29,7 @@ liusu:addEffect("active", {
     if not id then return end
 
     local card = Fk:getCardById(id)
-    local unknown = table.count(card:getAvailableTargets(player), function(p)
+    local unknown = #table.filter(card:getAvailableTargets(player), function(p)
       return p.kingdom == "unknown"
     end)
     room:obtainCard(player, id, true, fk.ReasonPrey, player, liusu.name)

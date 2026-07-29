@@ -17,9 +17,9 @@ juansui:addEffect(fk.HpChanged, {
     
     local used = player:getTableMark("fengsui_heg__juansui_used_tricks")
     local tricks = {}
-    for _, name in ipairs(Fk.all_card_names) do
+    for _, name in ipairs(require("packages.hegemony.pkg.fengsui.util").getNationalCardNames({"trick"})) do
       local card = Fk:cloneCard(name)
-      if card:isCommonTrick() and not card.is_derived and not table.contains(used, name) then
+      if not table.contains(used, name) then
         table.insertIfNeed(tricks, name)
       end
     end

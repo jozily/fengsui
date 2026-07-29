@@ -3,7 +3,6 @@ local U = require "packages.hegemony.pkg.fengsui.util"
 
 local yuandao = fk.CreateSkill{
   name = "fengsui_heg__yuandao",
-  tags = { Skill.MainPlace },
 }
 
 yuandao:addEffect(fk.CardUseFinished, {
@@ -12,7 +11,7 @@ yuandao:addEffect(fk.CardUseFinished, {
   can_refresh = function(self, event, target, player, data)
     if player == target and player.phase ~= Player.NotActive and data.card.type == Card.TypeTrick then
        for _, p in ipairs(player.room.alive_players) do
-         if p:hasSkill(yuandao.name) and U.isMainGeneralSkill(p, yuandao.name) and U.inSameQueue(p, target) then
+         if p:hasSkill(yuandao.name) and U.inSameQueue(p, target) then
            return true
          end
        end

@@ -47,29 +47,28 @@ shenqing:addEffect("active", {
        -- 参考【离梦】：从武将原数据的 relatives["companion"] 获取真正的珠联璧合判定表
        local g1_info = Fk.generals[gen1]
        local g2_info = Fk.generals[gen2]
-       local is_companion = (g1_info and g1_info:isCompanionWith(gen2)) or
-         (g2_info and g2_info:isCompanionWith(gen1))
+       local is_companion = g1_info and g2_info and
+         (g1_info:isCompanionWith(g2_info) or g2_info:isCompanionWith(g1_info))
        
        if is_companion then
           if p1 and p1:isAlive() then H.addHegMark(p1, "companion") end
           if p2 and p2:isAlive() and p1 ~= p2 then H.addHegMark(p2, "companion") end
        else
-          local options = {}
-          if p1 and p1:isAlive() then table.insert(options, "shenqing_hebi::" .. p1.id) end
-          if p2 and p2:isAlive() and p1 ~= p2 then table.insert(options, "shenqing_hebi::" .. p2.id) end
-          table.insert(options, "Cancel")
-          
-          local choice = room:askToChoice(player, {
-             choices = options,
-             skill_name = shenqing.name,
-             prompt = "#fengsui_heg__shenqing-hebi"
-          })
-          
-          if choice ~= "Cancel" then
-             local to_hebi = room:getPlayerById(tonumber(choice:match("::(%d+)$")))
-             if to_hebi then
-                H.askToHebiOrTransform(room, to_hebi, shenqing.name, false)
-             end
+          local targets = {}
+          if p1 and p1:isAlive() then table.insert(targets, p1) end
+          if p2 and p2:isAlive() and p1 ~= p2 then table.insert(targets, p2) end
+          if #targets > 0 then
+            local chosen = room:askToChoosePlayers(player, {
+              targets = targets,
+              min_num = 1,
+              max_num = 1,
+              skill_name = shenqing.name,
+              prompt = "#fengsui_heg__shenqing-hebi",
+              cancelable = true,
+            })
+            if #chosen > 0 then
+              H.askToHebiOrTransform(room, chosen[1], shenqing.name, false)
+            end
           end
        end
     end

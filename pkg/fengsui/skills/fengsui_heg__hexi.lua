@@ -47,8 +47,9 @@ hexi:addEffect(fk.AfterCardsMove, {
     
     if to:isAlive() then
        local choices = {}
-       if not H.allGeneralsRevealed(to) then table.insert(choices, "fengsui_heg__hexi_reveal_draw") end
-       if to.general ~= "anjiang" or to.deputyGeneral ~= "anjiang" then
+       if not H.allGeneralsRevealed(to) then
+          table.insert(choices, "fengsui_heg__hexi_reveal_draw")
+       else
           table.insert(choices, "fengsui_heg__hexi_hide_damage")
        end
        if #choices == 0 then return end

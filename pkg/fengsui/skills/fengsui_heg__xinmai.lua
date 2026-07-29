@@ -37,9 +37,10 @@ xinmai:addEffect("active", {
   card_num = 0,
   target_num = 1,
   can_use = function(self, player)
+    local room = Fk:currentRoom()
     return player:usedSkillTimes(xinmai.name, Player.HistoryPhase) == 0 and
       table.find(player:getTableMark(slash_mark), function(id)
-        return player.room:getCardArea(id) == Card.DiscardPile
+        return room:getCardArea(id) == Card.DiscardPile
       end) ~= nil
   end,
   target_filter = function(self, player, to_select, selected)
@@ -55,7 +56,7 @@ xinmai:addEffect("active", {
     if target.dead then return end
 
     local choices = {"fengsui_heg__xinmai_damage"}
-    if target.general ~= "anjiang" or target.deputyGeneral ~= "anjiang" then
+    if H.allGeneralsRevealed(target) then
       table.insert(choices, "fengsui_heg__xinmai_hide")
     end
     local choice = room:askToChoice(target, {

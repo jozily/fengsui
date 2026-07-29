@@ -5,52 +5,39 @@ local xianwan = fk.CreateSkill{
   name = "fengsui_heg__xianwan",
 }
 
-local function matches(pattern, name)
-  return pattern and (pattern == name or string.find(pattern, name, 1, true) ~= nil)
+local function availableNames(player)
+  return player:getViewAsCardNames(xianwan.name, { "slash", "jink" })
 end
 
-xianwan:addEffect(fk.AskForCardUse, {
+xianwan:addEffect("viewas", {
   anim_type = "defensive",
-  can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(xianwan.name) and
-      H.allGeneralsRevealed(player) and matches(data.pattern, "slash")
+  pattern = "slash,jink",
+  prompt = "#fengsui_heg__xianwan",
+  interaction = function(self, player)
+    local names = availableNames(player)
+    if #names == 0 then return end
+    return UI.CardNameBox {
+      choices = names,
+      all_choices = { "slash", "jink" },
+    }
   end,
-  on_cost = function(self, event, target, player, data)
-    return player.room:askToSkillInvoke(player, {
-      skill_name = xianwan.name,
-      prompt = "#fengsui_heg__xianwan-slash",
-    })
-  end,
-  on_use = function(self, event, target, player, data)
-    U.hideSkillGeneral(player, xianwan.name)
-    local card = Fk:cloneCard("slash")
+  card_filter = Util.FalseFunc,
+  view_as = function(self, player, cards)
+    if #cards ~= 0 or not self.interaction.data then return end
+    local card = Fk:cloneCard(self.interaction.data)
     card.skillName = xianwan.name
-    data.result = { from = player, tos = {}, card = card }
-    return true
+    return card
   end,
-})
-
-xianwan:addEffect(fk.AskForCardResponse, {
-  anim_type = "defensive",
-  can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(xianwan.name) and
-      H.allGeneralsRevealed(player) and
-      (matches(data.pattern, "jink") or matches(data.pattern, "slash"))
-  end,
-  on_cost = function(self, event, target, player, data)
-    local name = matches(data.pattern, "jink") and "jink" or "slash"
-    event:setCostData(self, { name = name })
-    return player.room:askToSkillInvoke(player, {
-      skill_name = xianwan.name,
-      prompt = "#fengsui_heg__xianwan-" .. name,
-    })
-  end,
-  on_use = function(self, event, target, player, data)
+  before_use = function(self, player, use)
     U.hideSkillGeneral(player, xianwan.name)
-    local card = Fk:cloneCard(event:getCostData(self).name)
-    card.skillName = xianwan.name
-    data.result = { from = player, card = card }
-    return true
+  end,
+  enabled_at_play = function(self, player)
+    return player:hasSkill(xianwan.name) and H.allGeneralsRevealed(player) and
+      #availableNames(player) > 0
+  end,
+  enabled_at_response = function(self, player, response)
+    return not response and player:hasSkill(xianwan.name) and
+      H.allGeneralsRevealed(player) and #availableNames(player) > 0
   end,
 })
 

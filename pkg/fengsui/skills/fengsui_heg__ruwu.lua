@@ -17,26 +17,31 @@ local function resolveRuwu(player, target, skill_name)
     player:drawCards(mark_skills[skill_name], ruwu.name)
     if player.dead or H.compareKingdomWith(target, player) then return end
 
-    local x = table.count(room.alive_players, function(p)
+    local x = #table.filter(room.alive_players, function(p)
       return p:getMark("@!!companion") > 0 or p:getMark("@!!yinyangfish") > 0 or
         p:getMark("@!!vanguard") > 0 or p:getMark("@!!wild") > 0
     end)
-    if x == 0 or #player:getCardIds("he") < x then return end
-    local cards = room:askToDiscard(player, {
-      min_num = x,
-      max_num = x,
-      include_equip = true,
-      skill_name = ruwu.name,
-      prompt = "#fengsui_heg__ruwu-drop:::" .. x,
-      cancelable = false,
-    })
-    if #cards ~= x or player.dead then return end
+    local choices = {"fengsui_heg__ruwu_transform"}
+    if #player:getCardIds("he") >= x then
+      table.insert(choices, 1, "fengsui_heg__ruwu_yinyang")
+    end
     local choice = room:askToChoice(player, {
-      choices = {"fengsui_heg__ruwu_yinyang", "fengsui_heg__ruwu_transform"},
+      choices = choices,
       skill_name = ruwu.name,
       prompt = "#fengsui_heg__ruwu-choice",
     })
     if choice == "fengsui_heg__ruwu_yinyang" then
+      if x > 0 then
+        local cards = room:askToDiscard(player, {
+          min_num = x,
+          max_num = x,
+          include_equip = true,
+          skill_name = ruwu.name,
+          prompt = "#fengsui_heg__ruwu-drop:::" .. x,
+          cancelable = false,
+        })
+        if #cards ~= x or player.dead then return end
+      end
       H.addHegMark(player, "yinyangfish")
     else
       H.transformGeneral(room, player, false, false)

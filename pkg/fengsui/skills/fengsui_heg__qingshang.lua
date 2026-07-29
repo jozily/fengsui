@@ -10,6 +10,7 @@ qingshang:addEffect(fk.DamageInflicted, {
   anim_type = "defensive",
   can_trigger = function(self, event, target, player, data)
     return target == player and player:hasSkill(qingshang.name) and
+      data.from and data.from ~= player and
       U.hasGeneralName(player, "fengsui_heg__caoshi") and
       player:usedSkillTimes(qingshang.name, Player.HistoryGame) == 0 and
       data.damage >= player.hp + player.shield

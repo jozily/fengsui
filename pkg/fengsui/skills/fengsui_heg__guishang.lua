@@ -10,20 +10,27 @@ guishang:addEffect("active", {
   can_use = function(self, player)
     return not player:isKongcheng()
   end,
-  card_num = 0,
+  min_card_num = 1,
+  max_card_num = 999,
   target_num = 1,
   target_filter = function(self, player, to_select, selected)
     return #selected == 0 and
       not table.contains(player:getTableMark("fengsui_heg__guishang_targets-turn"), to_select.id)
+  end,
+  card_filter = function(self, player, to_select, selected)
+    return table.contains(player:getCardIds("h"), to_select)
+  end,
+  feasible = function(self, player, selected, selected_cards)
+    return #selected == 1 and #selected_cards > 0
   end,
   on_use = function(self, room, effect)
     local player = effect.from
     local target = effect.tos[1]
     room:addTableMark(player, "fengsui_heg__guishang_targets-turn", target.id)
 
-    local shown = U.chooseCardsFromList(room, player, player:getCardIds("h"), 1,
-      player:getHandcardNum(), "#fengsui_heg__guishang-show::" .. target.id,
-      guishang.name, false)
+    local shown = effect.cards
+    local command = H.askToStartCommand(player, {skill_name = guishang.name})
+    if not command then return end
     room:showCards(shown, player)
 
     local suits = {}
@@ -45,7 +52,8 @@ guishang:addEffect("active", {
     if choice == "fengsui_heg__guishang_gain" then
       room:moveCardTo(shown, Card.PlayerHand, target, fk.ReasonGive, guishang.name, nil, true, player)
       if player:isAlive() and target:isAlive() then
-        H.askToCommand(player, {tos = {target}, skill_name = guishang.name})
+        H.Command{tos = {target}, from = player, command = command,
+          skillName = guishang.name, forced = true}
       end
       return
     end

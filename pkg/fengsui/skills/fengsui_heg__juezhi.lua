@@ -1,8 +1,20 @@
 local H = require "packages.hegemony.util"
-local U = require "packages.hegemony.pkg.fengsui.util"
 
 local juezhi = fk.CreateSkill{
   name = "fengsui_heg__juezhi",
+}
+
+Fk:addPoxiMethod{
+  name = "fengsui_heg__juezhi",
+  prompt = "#fengsui_heg__juezhi-choose",
+  card_filter = function(to_select, selected, data)
+    local card = Fk:getCardById(to_select)
+    return table.every(selected, function(id)
+      local chosen = Fk:getCardById(id)
+      return chosen.suit ~= card.suit and chosen.number ~= card.number
+    end)
+  end,
+  feasible = Util.TrueFunc,
 }
 
 juezhi:addEffect("active", {
@@ -40,25 +52,11 @@ juezhi:addEffect("active", {
     local pool = table.filter(judge_cards, function(id)
       return room:getCardArea(id) == Card.DiscardPile
     end)
-    local chosen, suits, numbers = {}, {}, {}
-    while #pool > 0 and not player.dead do
-      local available = table.filter(pool, function(id)
-        local card = Fk:getCardById(id)
-        return not table.contains(suits, card.suit) and not table.contains(numbers, card.number)
-      end)
-      if #available == 0 then break end
-
-      local selected = U.chooseCardsFromList(room, player, available, 1, 1,
-        "#fengsui_heg__juezhi-choose", juezhi.name, true)
-      if #selected == 0 then break end
-
-      local id = selected[1]
-      local card = Fk:getCardById(id)
-      table.insert(chosen, id)
-      table.insert(suits, card.suit)
-      table.insert(numbers, card.number)
-      table.removeOne(pool, id)
-    end
+    local chosen = room:askToPoxi(player, {
+      poxi_type = juezhi.name,
+      data = {{juezhi.name, pool}},
+      cancelable = true,
+    })
 
     if #chosen > 0 then
       room:obtainCard(player, chosen, true, fk.ReasonPrey, player, juezhi.name)

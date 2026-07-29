@@ -22,7 +22,8 @@ local function handleHejue(room, player)
    })
    if #choices > 0 then
       if #choices == 2 then
-         local is_comp = Fk.generals[choices[1]]:isCompanionWith(choices[2]) or Fk.generals[choices[2]]:isCompanionWith(choices[1])
+         local first, second = Fk.generals[choices[1]], Fk.generals[choices[2]]
+         local is_comp = first and second and first:isCompanionWith(second)
          if is_comp then
             for _, gen in ipairs(choices) do
                for _, p in ipairs(room.alive_players) do
@@ -77,9 +78,7 @@ hejue:addEffect(fk.EventPhaseStart, {
 })
 
 Fk:loadTranslationTable{
-  ["fengsui_heg__hejue"] = "合珏",
-  [":fengsui_heg__hejue"] = "当你受到伤害后或结束阶段，你可以选择至多两张武将牌并选择一项：若为两张珠联璧合的武将牌，则其对应角色各摸一张牌；若对应角色数为1，你可以令其<a href='heg__hebi'>合璧</a>或变更副将然后移除此选项。",
-  ["#fengsui_heg__hejue-invoke1"] = "合珏：是否发动？",
+ ["#fengsui_heg__hejue-invoke1"] = "合珏：是否发动？",
   ["#fengsui_heg__hejue-invoke2"] = "合珏：结束阶段是否发动？",
   ["#fengsui_heg__hejue-choose"] = "合珏：选择一张或两张武将牌对应的角色",
   ["#fengsui_heg__hejue-choice"] = "合珏：请选择一种方式影响该角色",

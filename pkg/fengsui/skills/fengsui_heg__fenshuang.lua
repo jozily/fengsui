@@ -17,9 +17,18 @@ fenshuang:addEffect("active", {
   end,
   on_use = function(self, room, effect)
     local player, target = effect.from, effect.tos[1]
-    room:damage{from = target, to = player, damage = 1, skillName = fenshuang.name}
-    if player:isAlive() then
-      room:addTableMark(player, "fengsui_heg__fenshuang_proxy-round", target.id)
+    local mark_name = "fengsui_heg__fenshuang_proxy-round"
+    room:addTableMark(player, mark_name, target.id)
+    local damaged = room:damage{
+      from = target,
+      to = player,
+      damage = 1,
+      skillName = fenshuang.name,
+    }
+    if not damaged or player.dead then
+      local proxies = player:getTableMark(mark_name)
+      table.remove(proxies)
+      room:setPlayerMark(player, mark_name, #proxies > 0 and proxies or 0)
     end
   end,
 })
@@ -28,7 +37,7 @@ fenshuang:addEffect(H.CommandExecuting, {
   global = true,
   priority = 10,
   can_trigger = function(self, event, target, player, data)
-    return table.contains(data.tos, player) and
+    return target == player and
       #player:getTableMark("fengsui_heg__fenshuang_proxy-round") > 0
   end,
   on_cost = Util.TrueFunc,
@@ -40,14 +49,16 @@ fenshuang:addEffect(H.CommandExecuting, {
     room:setPlayerMark(player, "fengsui_heg__fenshuang_proxy-round",
       #proxies > 0 and proxies or 0)
     if new_to and new_to:isAlive() then
-      table.removeOne(data.tos, player)
-      table.insertIfNeed(data.tos, new_to)
       room:sendLog{
         type = "#FenshuangTransfer",
         from = player.id,
         to = {new_to.id},
         arg = fenshuang.name,
       }
+      data.succeed = true
+      table.insertIfNeed(data.succeed_list, new_to)
+      H.CommandCB(data.command, new_to, data.from, data)
+      return true
     end
   end,
 })

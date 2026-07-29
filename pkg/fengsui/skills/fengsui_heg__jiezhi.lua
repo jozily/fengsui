@@ -57,8 +57,10 @@ jiezhi:addEffect(fk.AfterCardsMove, {
     local obtained = Fk:getCardById(cost.discard)
     if given:compareColorWith(obtained) then
       room:addTableMarkIfNeed(cost.to, "fengsui_heg__jiezhi_prohibit-turn", player.id)
+      room:addTableMarkIfNeed(cost.to, "@fengsui_heg__jiezhi-turn", player.id)
     else
       room:addTableMarkIfNeed(player, "fengsui_heg__jiezhi_prohibit-turn", cost.to.id)
+      room:addTableMarkIfNeed(player, "@fengsui_heg__jiezhi-turn", cost.to.id)
     end
   end,
 })

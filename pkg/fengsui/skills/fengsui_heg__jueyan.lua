@@ -8,7 +8,7 @@ local jueyan = fk.CreateSkill{
 jueyan:addEffect(fk.TargetSpecified, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(jueyan.name) and #data.tos == 1 and
+    return target == player and player:hasSkill(jueyan.name) and #data:getAllTargets() == 1 and
       data.to ~= player and H.allGeneralsRevealed(player)
   end,
   on_cost = function(self, event, target, player, data)

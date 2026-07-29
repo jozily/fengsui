@@ -5,17 +5,25 @@ local weihou = fk.CreateSkill{
   name = "fengsui_heg__weihou",
 }
 
+local function retrialCards(player)
+  return table.filter(player:getCardIds("e"), function(id)
+    return not player:prohibitResponse(Fk:getCardById(id))
+  end)
+end
+
 weihou:addEffect(fk.AskForRetrial, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
     return player:hasSkill(weihou.name) and H.compareKingdomWith(target, player) and
-      H.allGeneralsRevealed(player) and #player:getCardIds("e") > 0
+      H.allGeneralsRevealed(player) and #retrialCards(player) > 0
   end,
   on_cost = function(self, event, target, player, data)
+    local ids = retrialCards(player)
     local cards = player.room:askToCards(player, {
       min_num = 1,
       max_num = 1,
-      pattern = tostring(Exppattern{ id = player:getCardIds("e") }),
+      include_equip = true,
+      pattern = tostring(Exppattern{ id = ids }),
       skill_name = weihou.name,
       prompt = "#fengsui_heg__weihou-invoke::" .. target.id,
       cancelable = true,
@@ -39,7 +47,23 @@ weihou:addEffect(fk.AskForRetrial, {
       response = true,
     }
     if same_color and target:isAlive() then
-      H.askToHebiOrTransform(room, target, weihou.name, false)
+      room:addPlayerMark(target, "fengsui_heg__weihou_pending", 1)
+    end
+  end,
+})
+
+weihou:addEffect(fk.FinishRetrial, {
+  global = true,
+  can_trigger = function(self, event, target, player, data)
+    return target == player and player:getMark("fengsui_heg__weihou_pending") > 0
+  end,
+  on_use = function(self, event, target, player, data)
+    local room = player.room
+    local count = player:getMark("fengsui_heg__weihou_pending")
+    room:setPlayerMark(player, "fengsui_heg__weihou_pending", 0)
+    for _ = 1, count do
+      if player.dead then return end
+      H.askToHebiOrTransform(room, player, weihou.name, false)
     end
   end,
 })

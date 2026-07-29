@@ -5,6 +5,34 @@ local baizu = fk.CreateSkill{
   tags = {Skill.Compulsory},
 }
 
+local function getSelectableKingdoms(player)
+  local kingdoms = {}
+  local room = player.room or Fk:currentRoom()
+  if not room then return kingdoms end
+  for _, p in ipairs(room.alive_players) do
+    local kingdom = H.getKingdom(p)
+    if p ~= player and kingdom ~= "unknown" then
+      table.insertIfNeed(kingdoms, kingdom)
+    end
+  end
+  return kingdoms
+end
+
+baizu:addEffect("active", {
+  card_num = 0,
+  target_num = function(self, player)
+    return #getSelectableKingdoms(player)
+  end,
+  card_filter = Util.FalseFunc,
+  target_filter = function(self, player, to_select, selected)
+    local kingdom = H.getKingdom(to_select)
+    return to_select ~= player and kingdom ~= "unknown" and
+      not table.find(selected, function(p) return H.getKingdom(p) == kingdom end)
+  end,
+  can_use = Util.FalseFunc,
+  on_use = function() end,
+})
+
 baizu:addEffect(fk.EventPhaseStart, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
@@ -13,68 +41,67 @@ baizu:addEffect(fk.EventPhaseStart, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    
-    -- 1. 抓取场上所有其他存在的势力
-    local kingdoms = {}
-    for _, p in ipairs(room.alive_players) do
-      if p ~= player then
-        local kd = H.getKingdom(p)
-        if not table.contains(kingdoms, kd) then
-          table.insert(kingdoms, kd)
-        end
-      end
-    end
-    
-    -- 2. 强制令玩家在每一个势力中挑选一名角色
+    local kingdoms = getSelectableKingdoms(player)
     local chosen_targets = {}
-    for _, kd in ipairs(kingdoms) do
-      local p_in_kd = table.filter(room.alive_players, function(p)
-        return p ~= player and H.getKingdom(p) == kd
-      end)
-      if #p_in_kd > 0 then
-        local display_kd = Fk:translate(kd)
-        local to = room:askToChoosePlayers(player, {
-          targets = p_in_kd,
-          min_num = 1, max_num = 1,
-          prompt = "#fengsui_heg__baizu-choose::" .. display_kd,
-          skill_name = baizu.name,
-          cancelable = false,
-        })
-        if #to > 0 then
-          table.insert(chosen_targets, to[1])
+    if #kingdoms > 0 then
+      local success, result = room:askToUseActiveSkill(player, {
+        skill_name = baizu.name,
+        prompt = "#fengsui_heg__baizu-choose-all:::" .. #kingdoms,
+        cancelable = false,
+        skip = true,
+      })
+      if success and result then
+        chosen_targets = result.targets
+      else
+        for _, kingdom in ipairs(kingdoms) do
+          local fallback = table.find(room.alive_players, function(p)
+            return p ~= player and H.getKingdom(p) == kingdom
+          end)
+          if fallback then
+            table.insert(chosen_targets, fallback)
+          end
         end
       end
     end
-    
-    -- 3. 将技能主本人一并加入弃牌序列
+
     table.insert(chosen_targets, player)
-    
-    -- 4. 按顺序执行弃牌操作，并记录每一个弃用牌的分类
+
+    local cards_map = room:askToJointCards(player, {
+      players = chosen_targets,
+      min_num = 1,
+      max_num = 1,
+      include_equip = true,
+      skill_name = baizu.name,
+      cancelable = false,
+      prompt = "#fengsui_heg__baizu-discard",
+      will_throw = true,
+    })
+
     local discards = {}
+    local move_infos = {}
     for _, t in ipairs(chosen_targets) do
-      -- Freekill中 not isNude 即可囊括 装备区 与 手牌区
-      if t:isAlive() and not t:isNude() then
-        local t_card = room:askToDiscard(t, {
-          min_num = 1, max_num = 1,
-          include_equip = true,
-          prompt = "#fengsui_heg__baizu-discard",
-          skill_name = baizu.name,
-          cancelable = false,
+      local ids = cards_map[t] or {}
+      if #ids > 0 then
+        discards[t.id] = Fk:getCardById(ids[1]).type
+        table.insert(move_infos, {
+          ids = ids,
+          from = t,
+          toArea = Card.DiscardPile,
+          moveReason = fk.ReasonDiscard,
+          proposer = t,
+          skillName = baizu.name,
         })
-        if #t_card > 0 then
-          local ctype = Fk:getCardById(t_card[1]).type
-          discards[t.id] = ctype
-        end
       end
     end
-    
-    -- 5. 统计种类被命中的次数
+    if #move_infos > 0 then
+      room:moveCards(table.unpack(move_infos))
+    end
+
     local type_count = {}
     for pid, ctype in pairs(discards) do
       type_count[ctype] = (type_count[ctype] or 0) + 1
     end
     
-    -- 6. 对记录在多选类别上的所有相关倒霉蛋发送惩罚
     local to_lose_hp = {}
     for pid, ctype in pairs(discards) do
       if type_count[ctype] > 1 then
@@ -84,7 +111,6 @@ baizu:addEffect(fk.EventPhaseStart, {
       end
     end
     
-    -- 7. 结算扣血及死亡奖励机制
     local dead_info = {}
     for _, info in ipairs(to_lose_hp) do
       local t = info.target
@@ -96,7 +122,6 @@ baizu:addEffect(fk.EventPhaseStart, {
       end
     end
     
-    -- 8. 奖励收尾 (死亡后清算)
     for _, dk in ipairs(dead_info) do
       if dk == H.getKingdom(player) then
         local deputy = player.deputyGeneral == "anjiang" and player:getMark("__heg_deputy") or player.deputyGeneral
@@ -104,7 +129,7 @@ baizu:addEffect(fk.EventPhaseStart, {
       H.removeGeneral(player, true)
         end
       else
-        local kingdom_num = table.count(room.alive_players, function(p)
+        local kingdom_num = #table.filter(room.alive_players, function(p)
           return H.getKingdom(p) == dk
         end)
         if kingdom_num > 0 then

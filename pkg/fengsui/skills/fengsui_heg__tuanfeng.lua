@@ -21,20 +21,34 @@ tuanfeng:addEffect(fk.EventPhaseStart, {
   end,
   on_use = function(self, event, target, player, data)
     local id = event:getCostData(self).cards[1]
-    local card_type = Fk:getCardById(id).type
+    local card = Fk:getCardById(id)
+    local card_type = card.type
     player.room:recastCard(id, player, tuanfeng.name)
     player.room:setPlayerMark(player, "fengsui_heg__tuanfeng_type_" .. card_type .. "-round", 1)
+    player.room:addTableMarkIfNeed(player, "@fengsui_heg__tuanfeng-round", card.trueName)
   end,
 })
 
 local function canModify(player, card)
   if not card or player.phase ~= Player.Play or
     player:getMark("fengsui_heg__tuanfeng_used_" .. card.type .. "-turn") > 0 then return false end
-  return table.find(player.room.alive_players, function(owner)
+  local room = Fk:currentRoom()
+  return room and table.find(room.alive_players, function(owner)
     return owner:hasSkill(tuanfeng.name) and H.compareKingdomWith(owner, player) and
       owner:getMark("fengsui_heg__tuanfeng_type_" .. card.type .. "-round") > 0
   end) ~= nil
 end
+
+tuanfeng:addEffect(fk.PreCardUse, {
+  global = true,
+  mute = true,
+  can_refresh = function(self, event, target, player, data)
+    return target == player and canModify(player, data.card)
+  end,
+  on_refresh = function(self, event, target, player, data)
+    data.extraUse = true
+  end,
+})
 
 tuanfeng:addEffect("targetmod", {
   bypass_times = function(self, player, skill, scope, card)

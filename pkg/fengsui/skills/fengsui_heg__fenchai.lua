@@ -24,27 +24,9 @@ fenchai:addEffect("active", {
   end,
   on_use = function(self, room, effect)
     local player, target = effect.from, effect.tos[1]
-    local first = Fk:cloneVirtualCard("ice__slash")
-    first.skillName = fenchai.name
-    room:useCard{
-      from = player,
-      tos = {target},
-      card = first,
-      extraUse = true,
-      bypass_distances = true,
-      bypass_times = true,
-    }
+    room:useVirtualCard("ice__slash", nil, player, target, fenchai.name, true)
     if player:isAlive() and target:isAlive() then
-      local second = Fk:cloneVirtualCard("ice__slash")
-      second.skillName = fenchai.name
-      room:useCard{
-        from = target,
-        tos = {player},
-        card = second,
-        extraUse = true,
-        bypass_distances = true,
-        bypass_times = true,
-      }
+      room:useVirtualCard("ice__slash", nil, target, player, fenchai.name, true)
     end
   end,
 })
@@ -73,13 +55,27 @@ fenchai:addEffect(fk.CardUseFinished, {
       return
     end
 
+    local participants = {data.from}
+    for _, p in ipairs(data.tos) do
+      table.insertIfNeed(participants, p)
+    end
+    if not table.find(participants, function(p)
+      return p and p:isAlive() and p:getMark("@!!yinyangfish") == 0
+    end) then
+      return
+    end
+
     if room:askToSkillInvoke(player, {
       skill_name = fenchai.name,
       prompt = "#fengsui_heg__fenchai-fish",
     }) then
-      if data.from and data.from:isAlive() then H.addHegMark(data.from, "yinyangfish") end
+      if data.from and data.from:isAlive() and data.from:getMark("@!!yinyangfish") == 0 then
+        H.addHegMark(data.from, "yinyangfish")
+      end
       for _, p in ipairs(data.tos) do
-        if p:isAlive() and p ~= data.from then H.addHegMark(p, "yinyangfish") end
+        if p:isAlive() and p ~= data.from and p:getMark("@!!yinyangfish") == 0 then
+          H.addHegMark(p, "yinyangfish")
+        end
       end
     end
   end,

@@ -21,12 +21,10 @@ youming:addEffect(fk.TargetConfirmed, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     U.hideSkillGeneral(player, youming.name)
-    local id = room:askToChooseCard(player, {
-      target = data.from,
-      flag = "h",
-      skill_name = youming.name,
-      prompt = "#fengsui_heg__youming-top::" .. data.from.id,
-    })
+    local selected = U.chooseCardsFromList(room, player, data.from:getCardIds("h"), 1, 1,
+      "#fengsui_heg__youming-top::" .. data.from.id, youming.name, false)
+    local id = selected[1]
+    if not id then return end
     room:moveCards{
       ids = {id},
       from = data.from,

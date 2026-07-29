@@ -12,6 +12,9 @@ local function commonAreas(first, second)
   if #first:getCardIds("e") > 0 and #second:getCardIds("e") > 0 then
     table.insert(areas, "fengsui_heg__qiangong_equip")
   end
+  if #first:getCardIds("j") > 0 and #second:getCardIds("j") > 0 then
+    table.insert(areas, "fengsui_heg__qiangong_judge")
+  end
   return areas
 end
 
@@ -26,7 +29,7 @@ qiangong:addEffect("active", {
   card_filter = Util.FalseFunc,
   target_filter = function(self, player, to_select, selected)
     if #selected == 0 then
-      return not to_select:isNude()
+      return #to_select:getCardIds("hej") > 0
     end
     return #selected == 1 and to_select ~= selected[1] and
       #commonAreas(selected[1], to_select) > 0
@@ -41,39 +44,27 @@ qiangong:addEffect("active", {
       skill_name = qiangong.name,
       prompt = "#fengsui_heg__qiangong-area",
     })
-    local flag = choice == "fengsui_heg__qiangong_hand" and "h" or "e"
-    local from_second = room:askToChooseCard(player, {
+    local flags = {
+      fengsui_heg__qiangong_hand = "h",
+      fengsui_heg__qiangong_equip = "e",
+      fengsui_heg__qiangong_judge = "j",
+    }
+    local flag = flags[choice]
+    local from_second = room:askToChooseCard(first, {
       target = second,
       flag = flag,
       skill_name = qiangong.name,
       prompt = "#fengsui_heg__qiangong-take::" .. second.id,
     })
-    local from_first = room:askToChooseCard(player, {
+    room:moveCardTo(from_second, Card.PlayerHand, first, fk.ReasonPrey, qiangong.name, nil, false, first)
+    if second.dead or first.dead or #first:getCardIds(flag) == 0 then return end
+    local from_first = room:askToChooseCard(second, {
       target = first,
       flag = flag,
       skill_name = qiangong.name,
       prompt = "#fengsui_heg__qiangong-take::" .. first.id,
     })
-    room:moveCards(
-      {
-        ids = {from_second},
-        from = second,
-        to = first,
-        toArea = Card.PlayerHand,
-        moveReason = fk.ReasonPrey,
-        proposer = player,
-        skillName = qiangong.name,
-      },
-      {
-        ids = {from_first},
-        from = first,
-        to = second,
-        toArea = Card.PlayerHand,
-        moveReason = fk.ReasonPrey,
-        proposer = player,
-        skillName = qiangong.name,
-      }
-    )
+    room:moveCardTo(from_first, Card.PlayerHand, second, fk.ReasonPrey, qiangong.name, nil, false, second)
     local small = table.filter({first, second}, function(p)
       return p:isAlive() and H.isSmallKingdomPlayer(p)
     end)

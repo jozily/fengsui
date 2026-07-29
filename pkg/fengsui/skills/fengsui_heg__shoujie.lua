@@ -25,27 +25,21 @@ shoujie:addEffect(fk.TargetConfirming, {
   end,
 })
 
-shoujie:addEffect(fk.TargetSpecified, {
+shoujie:addEffect(fk.TargetConfirmed, {
   anim_type = "support",
-  -- 多目标锦囊牌目标保护段
   can_trigger = function(self, event, target, player, data)
-    if not player:hasSkill(shoujie.name) or not data.firstTarget then return false end
-    if data.card.type ~= Card.TypeTrick then return false end
-    if #data.tos <= 1 then return false end
-    
-    -- 本来目标内至少包含一名与玩家同势力的角色
-    local has_mate = false
-    for _, p in ipairs(data.tos) do
-       if H.compareKingdomWith(p, player) then has_mate = true; break end
-    end
-    
-    return has_mate and #player:getCardIds("he") > 0
+    local used = ((data.extra_data or {}).fengsui_heg__shoujie_used or {})[player.id]
+    return player:hasSkill(shoujie.name) and not used and
+      H.compareKingdomWith(target, player) and data.card.type == Card.TypeTrick and
+      #data.use.tos > 1 and #player:getCardIds("he") > 0
   end,
   on_cost = function(self, event, target, player, data)
     local room = player.room
-    
+    local choices = { "Cancel" }
+    if not player:isKongcheng() then table.insert(choices, 1, "shoujie_hand") end
+    if #player:getCardIds("e") > 0 then table.insert(choices, 1, "shoujie_equip") end
     local choice = room:askToChoice(player, {
-       choices = {"shoujie_hand", "shoujie_equip", "Cancel"},
+       choices = choices,
        prompt = "#fengsui_heg__shoujie-protect",
        skill_name = shoujie.name,
     })
@@ -57,7 +51,11 @@ shoujie:addEffect(fk.TargetSpecified, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     local choice = event:getCostData(self).choice
-    
+
+    data.extra_data = data.extra_data or {}
+    data.extra_data.fengsui_heg__shoujie_used = data.extra_data.fengsui_heg__shoujie_used or {}
+    data.extra_data.fengsui_heg__shoujie_used[player.id] = true
+
     local cards = {}
     if choice == "shoujie_hand" then cards = player:getCardIds("h")
     elseif choice == "shoujie_equip" then cards = player:getCardIds("e") end
@@ -66,8 +64,9 @@ shoujie:addEffect(fk.TargetSpecified, {
     room:throwCard(cards, shoujie.name, player, player)
     
     if c_len > 0 then
-       -- 选择其中至多等量名角色的目标取消之
-       local target_mates = table.filter(data.tos, function(p) return H.compareKingdomWith(p, player) end)
+       local target_mates = table.filter(data:getAllTargets(), function(p)
+         return H.compareKingdomWith(p, player)
+       end)
        local tos = room:askToChoosePlayers(player, {
           targets = target_mates,
           min_num = 1,
@@ -76,10 +75,9 @@ shoujie:addEffect(fk.TargetSpecified, {
           skill_name = shoujie.name,
           cancelable = false,
        })
-       
+
        for _, p in ipairs(tos) do
-          -- 在这里用 data:removeTarget 取消目标
-          data:removeTarget(p)
+          data:cancelTarget(p)
        end
     end
   end,
@@ -87,7 +85,7 @@ shoujie:addEffect(fk.TargetSpecified, {
 
 Fk:loadTranslationTable{
   ["fengsui_heg__shoujie"] = "守节",
-  [":fengsui_heg__shoujie"] = "与你势力相同的角色成为多目标锦囊牌的目标后，你可以弃置手牌区或装备区的所有牌，取消其中至多等量名角色的目标。当你成为同势力角色牌的目标后，若你任意一个区域的牌大于其，取消之。",
+  [":fengsui_heg__shoujie"] = "当你或与你势力相同的角色成为多目标锦囊牌的目标后，你可以弃置手牌区或装备区的所有牌，取消其中至多等量名同势力角色的目标。当你成为同势力角色牌的目标后，若你任意一个区域的牌大于其，取消之。",
   ["#fengsui_heg__shoujie-cancel"] = "守节：你的某区域牌多于 %dest，是否取消该牌的目标？",
   ["#fengsui_heg__shoujie-protect"] = "守节：是否弃置所有手牌或装备区牌，来拯救此锦囊牌下的队友？",
   ["shoujie_hand"] = "弃置所有手牌",

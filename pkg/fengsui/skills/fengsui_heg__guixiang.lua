@@ -5,7 +5,7 @@ local guixiang = fk.CreateSkill{
   tags = {Skill.Limited},
 }
 
-guixiang:addEffect(fk.EventPhaseStart, {
+guixiang:addEffect(fk.EventPhaseChanging, {
   anim_type = "control",
   can_trigger = function(self, event, target, player, data)
     if not player:hasSkill(guixiang.name) or player.room.current ~= target or
@@ -13,7 +13,7 @@ guixiang:addEffect(fk.EventPhaseStart, {
       player:usedSkillTimes(guixiang.name, Player.HistoryGame) > 0 then
       return false
     end
-    if target.phase == Player.Start or target.phase == Player.Finish then return false end
+    if data.skipped or data.phase == Player.Start or data.phase == Player.Finish then return false end
     
     local same_count = 0
     for _, p in ipairs(player.room.alive_players) do
@@ -51,7 +51,7 @@ guixiang:addEffect(fk.EventPhaseStart, {
       fengsui_heg__guixiang_play = Player.Play,
       fengsui_heg__guixiang_discard = Player.Discard,
     }
-    target.phase = mapping[choice]
+    data.phase = mapping[choice]
     room:sendLog{
       type = "#fengsui_heg__guixiang-change",
       from = player.id,

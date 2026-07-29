@@ -18,7 +18,7 @@ local caixia_trigger = {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local n = table.count(room.alive_players, function(p)
+    local n = #table.filter(room.alive_players, function(p)
       return H.compareKingdomWith(p, player)
     end)
     player:drawCards(n, caixia.name)

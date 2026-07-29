@@ -4,6 +4,14 @@ local bizun = fk.CreateSkill{
   name = "fengsui_heg__bizun",
 }
 
+local function sameKingdomNum(player)
+  local room = player.room or Fk:currentRoom()
+  if not room then return 0 end
+  return #table.filter(room.alive_players, function(p)
+    return H.compareKingdomWith(p, player)
+  end)
+end
+
 local function emptiedAreas(move)
   if not move.from then return false end
   for _, info in ipairs(move.moveInfo) do
@@ -16,8 +24,14 @@ end
 
 bizun:addEffect(fk.AfterCardsMove, {
   anim_type = "drawcard",
+  times = function(self, player)
+    return sameKingdomNum(player) - player:usedSkillTimes(bizun.name, Player.HistoryTurn)
+  end,
   can_trigger = function(self, event, target, player, data)
-    if not player:hasSkill(bizun.name) then return false end
+    if not player:hasSkill(bizun.name) or
+      player:usedSkillTimes(bizun.name, Player.HistoryTurn) >= sameKingdomNum(player) then
+      return false
+    end
     return table.find(data, function(move)
       return move.from and H.compareKingdomWith(move.from, player) and emptiedAreas(move)
     end) ~= nil

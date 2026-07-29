@@ -6,10 +6,7 @@ local fuhui = fk.CreateSkill{
 }
 
 local function allNames(player)
-  local names = table.filter(Fk:getAllCardNames("bt"), function(name)
-    local card = Fk:cloneCard(name)
-    return card.type == Card.TypeBasic or card:isCommonTrick()
-  end)
+  local names = U.getNationalCardNames({"basic", "trick"})
   return player:getViewAsCardNames(fuhui.name, names)
 end
 

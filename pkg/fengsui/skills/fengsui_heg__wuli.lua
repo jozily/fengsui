@@ -7,6 +7,7 @@ local wuli = fk.CreateSkill{
 }
 
 local forbid_mark = "fengsui_heg__wuli_kingdoms-round"
+local response_block_mark = "fengsui_heg__wuli_response_block"
 
 wuli:addEffect(fk.Damaged, {
   anim_type = "negative",
@@ -27,15 +28,45 @@ wuli:addEffect(fk.Damaged, {
   end,
 })
 
+local function updateResponseBlock(room, source, delta)
+  local kingdom = H.getKingdom(source)
+  for _, p in ipairs(room.alive_players) do
+    if table.contains(p:getTableMark(forbid_mark), kingdom) then
+      if delta > 0 then
+        room:addPlayerMark(p, response_block_mark, delta)
+      else
+        room:removePlayerMark(p, response_block_mark, -delta)
+      end
+    end
+  end
+end
+
+wuli:addEffect(fk.CardUsing, {
+  global = true,
+  mute = true,
+  can_refresh = function(self, event, target, player, data)
+    return target == player
+  end,
+  on_refresh = function(self, event, target, player, data)
+    updateResponseBlock(player.room, player, 1)
+  end,
+})
+
+wuli:addEffect(fk.CardUseFinished, {
+  global = true,
+  mute = true,
+  can_refresh = function(self, event, target, player, data)
+    return target == player
+  end,
+  on_refresh = function(self, event, target, player, data)
+    updateResponseBlock(player.room, player, -1)
+  end,
+})
+
 wuli:addEffect("prohibit", {
   global = true,
   prohibit_response = function(self, player, card)
-    local kingdoms = player:getTableMark(forbid_mark)
-    if #kingdoms == 0 then return false end
-    local event = player.room.logic:getCurrentEvent()
-    local use_event = event and event:findParent(GameEvent.UseCard, true)
-    if not use_event or not use_event.data.from then return false end
-    return table.contains(kingdoms, H.getKingdom(use_event.data.from))
+    return player:getMark(response_block_mark) > 0
   end,
 })
 

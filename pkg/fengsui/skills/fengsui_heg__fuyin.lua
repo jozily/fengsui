@@ -7,7 +7,16 @@ local fuyin = fk.CreateSkill{
 fuyin:addEffect(fk.EventPhaseStart, {
   anim_type = "control",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(fuyin.name) and player.phase == Player.Start
+    return target == player and player:hasSkill(fuyin.name) and player.phase == Player.Start and
+      table.find(player.room.alive_players, function(p)
+        return p ~= player and H.compareKingdomWith(p, player) and not p:isNude()
+      end) ~= nil
+  end,
+  on_cost = function(self, event, target, player, data)
+    return player.room:askToSkillInvoke(player, {
+      skill_name = fuyin.name,
+      prompt = "#fengsui_heg__fuyin-invoke",
+    })
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
@@ -38,10 +47,12 @@ fuyin:addEffect(fk.EventPhaseStart, {
          else table.insert(bottoms, p.id) end
       end
     end
-    room:setPlayerMark(player, "fengsui_heg__fuyin_tops-turn", tops)
-    room:setPlayerMark(player, "fengsui_heg__fuyin_bottoms-turn", bottoms)
-    room:setPlayerMark(player, "fengsui_heg__fuyin_damage-turn", 0)
-    room:setPlayerMark(player, "fengsui_heg__fuyin_discard-turn", 0)
+    if #tops + #bottoms > 0 then
+      room:setPlayerMark(player, "fengsui_heg__fuyin_tops-turn", tops)
+      room:setPlayerMark(player, "fengsui_heg__fuyin_bottoms-turn", bottoms)
+      room:setPlayerMark(player, "fengsui_heg__fuyin_damage-turn", 0)
+      room:setPlayerMark(player, "fengsui_heg__fuyin_discard-turn", 0)
+    end
   end,
 })
 
@@ -119,6 +130,7 @@ fuyin:addEffect(fk.EventPhaseStart, {
 Fk:loadTranslationTable{
   ["fengsui_heg__fuyin"] = "负胤",
   [":fengsui_heg__fuyin"] = "准备阶段，所有其他同势力角色可选择用一张牌替换牌堆顶/底的牌。回合结束时，若你于本回合造成的伤害数大于/小于弃置的牌数，所有选择牌堆顶/牌堆底的角色摸两张牌，选择另一项的角色失去一点体力。",
+  ["#fengsui_heg__fuyin-invoke"] = "负胤：是否令其他同势力角色选择替换牌堆顶或牌堆底？",
   ["fuyin_top"] = "替换牌堆顶",
   ["fuyin_bottom"] = "替换牌堆底",
 }

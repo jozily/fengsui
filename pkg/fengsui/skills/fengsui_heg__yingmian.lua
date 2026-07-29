@@ -32,17 +32,20 @@ yingmian:addEffect(fk.Damaged, {
 
     local command = H.askToStartCommand(player, { skill_name = yingmian.name })
     if not command or player.dead or to.dead then return end
-    if H.Command{
+    local command_data = {
       tos = {to},
       from = player,
       command = command,
       skillName = yingmian.name,
-    } then
-      local revealed = H.getGeneralsRevealedNum(to)
+    }
+    if H.Command(command_data) then
+      local executor = command_data.succeed_list[#command_data.succeed_list]
+      if not executor then return end
+      local revealed = H.getGeneralsRevealedNum(executor)
       local x = 2 - revealed
-      if to.general == "anjiang" then to:revealGeneral(false, true) end
-      if to.deputyGeneral == "anjiang" then to:revealGeneral(true, true) end
-      if x > 0 and to:isAlive() then to:drawCards(2 * x, yingmian.name) end
+      if executor.general == "anjiang" then executor:revealGeneral(false, true) end
+      if executor.deputyGeneral == "anjiang" then executor:revealGeneral(true, true) end
+      if x > 0 and executor:isAlive() then executor:drawCards(2 * x, yingmian.name) end
     end
   end,
 })

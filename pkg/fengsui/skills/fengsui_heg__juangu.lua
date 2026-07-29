@@ -11,7 +11,8 @@ local function hasCompanionAcross(from, to)
     local general = Fk.generals[first]
     if general then
       for _, second in ipairs(to_generals) do
-        if Fk.generals[second] and general:isCompanionWith(second) then return true end
+        local other = Fk.generals[second]
+        if other and general:isCompanionWith(other) then return true end
       end
     end
   end

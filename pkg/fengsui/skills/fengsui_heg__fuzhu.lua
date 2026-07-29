@@ -5,6 +5,8 @@ local fuzhu = fk.CreateSkill{
   name = "fengsui_heg__fuzhu",
 }
 
+local pending_mark = "fengsui_heg__fuzhu_pending"
+
 local function getHegemonyMarkCount(player)
   local result = 0
   for _, name in ipairs({"@!!vanguard", "@!!yinyangfish", "@!!companion", "@!!wild"}) do
@@ -16,8 +18,9 @@ end
 fuzhu:addEffect(fk.AfterCardTargetDeclared, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(fuzhu.name) and data.card.is_damage_card and
-      #data.tos > 0 and H.allGeneralsRevealed(player)
+    return target == player and player:hasSkill(fuzhu.name) and data.card and
+      data.card.is_damage_card and #data.tos > 0 and H.allGeneralsRevealed(player) and
+      not (data.extra_data or {}).fengsui_heg__fuzhu_delayed
   end,
   on_cost = function(self, event, target, player, data)
     local chosen = player.room:askToChoosePlayers(player, {
@@ -38,49 +41,66 @@ fuzhu:addEffect(fk.AfterCardTargetDeclared, {
     local to = event:getCostData(self).to
     U.hideSkillGeneral(player, fuzhu.name)
     data.extraUse = true
-    data:nullifyTarget(to)
+    data.nullifiedTargets = data.nullifiedTargets or {}
+    table.insertIfNeed(data.nullifiedTargets, to)
     if to.dead then return end
 
-    local choices = room:askToChoices(to, {
-      choices = {"fengsui_heg__fuzhu_draw", "fengsui_heg__fuzhu_discard", "fengsui_heg__fuzhu_use"},
-      min_num = 2,
-      max_num = 2,
+    local mark_count = getHegemonyMarkCount(player)
+    local choices = {"fengsui_heg__fuzhu_use"}
+    if mark_count == 0 or #to:getCardIds("he") >= mark_count then
+      table.insert(choices, 1, "fengsui_heg__fuzhu_discard")
+    end
+    local choice = room:askToChoice(to, {
+      choices = choices,
       skill_name = fuzhu.name,
-      prompt = "#fengsui_heg__fuzhu-choice::" .. player.id,
+      prompt = "#fengsui_heg__fuzhu-choice::" .. player.id .. ":" .. mark_count,
       cancelable = false,
     })
-    if table.contains(choices, "fengsui_heg__fuzhu_draw") then
-      local count = getHegemonyMarkCount(player)
-      if count > 0 then player:drawCards(count, fuzhu.name) end
-    end
-    if table.contains(choices, "fengsui_heg__fuzhu_discard") and not to:isNude() then
-      local id = room:askToChooseCard(player, {
-        target = to,
-        flag = "he",
-        skill_name = fuzhu.name,
-        prompt = "#fengsui_heg__fuzhu-discard::" .. to.id,
-      })
-      room:throwCard(id, fuzhu.name, to, player)
-    end
-    if table.contains(choices, "fengsui_heg__fuzhu_use") then
-      room:addTableMark(player, "fengsui_heg__fuzhu_pending-turn", {to.id, data.card.name})
+    if choice == "fengsui_heg__fuzhu_discard" then
+      if mark_count > 0 then
+        room:askToDiscard(to, {
+          min_num = mark_count,
+          max_num = mark_count,
+          include_equip = true,
+          skill_name = fuzhu.name,
+          prompt = "#fengsui_heg__fuzhu-discard:::" .. mark_count,
+          cancelable = false,
+        })
+      end
+    else
+      room:addTableMark(player, pending_mark, {to.id, data.card.name})
     end
   end,
 })
 
 fuzhu:addEffect(fk.TurnEnd, {
   global = true,
+  mute = true,
   can_trigger = function(self, event, target, player, data)
-    return #player:getTableMark("fengsui_heg__fuzhu_pending-turn") > 0
+    return #player:getTableMark(pending_mark) > 0
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local pending = player:getTableMark("fengsui_heg__fuzhu_pending-turn")
-    room:setPlayerMark(player, "fengsui_heg__fuzhu_pending-turn", 0)
+    local pending = player:getTableMark(pending_mark)
+    room:setPlayerMark(player, pending_mark, 0)
     for _, info in ipairs(pending) do
       local to = room:getPlayerById(info[1])
       if player:isAlive() and to and to:isAlive() then
-        room:useVirtualCard(info[2], nil, player, to, fuzhu.name, true)
+        local card = Fk:cloneCard(info[2])
+        card.skillName = fuzhu.name
+        if player:canUseTo(card, to, {bypass_times = true, bypass_distances = true}) then
+          room:useCard{
+            from = player,
+            tos = {to},
+            card = card,
+            extraUse = true,
+            extra_data = {
+              bypass_times = true,
+              bypass_distances = true,
+              fengsui_heg__fuzhu_delayed = true,
+            },
+          }
+        end
       end
     end
   end,

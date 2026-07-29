@@ -53,7 +53,8 @@ niejiang:addEffect(fk.HpChanged, {
 niejiang:addEffect("distance", {
   fixed_func = function(self, from, to)
     if from == to then return 0 end
-    local room = from.room
+    local room = Fk:currentRoom()
+    if not room then return end
     if from:hasSkill(niejiang.name) or to:hasSkill(niejiang.name) then
       local target = from:hasSkill(niejiang.name) and to or from
       local lowest = list_lowest_hp_players(room)

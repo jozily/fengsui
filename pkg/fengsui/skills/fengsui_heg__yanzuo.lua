@@ -1,3 +1,5 @@
+local U = require "packages.hegemony.pkg.fengsui.util"
+
 local yanzuo = fk.CreateSkill{
   name = "fengsui_heg__yanzuo",
 }
@@ -25,9 +27,12 @@ yanzuo:addEffect("active", {
     room:recastCard(cards, player, yanzuo.name)
     if player.dead or card_type == Card.TypeEquip then return end
 
-    local names = table.filter(Fk.all_card_names, function(name)
+    local names = table.filter(U.getNationalCardNames({"basic", "trick"}), function(name)
       local card = Fk:cloneCard(name)
-      return card.type == card_type and (card.type == Card.TypeBasic or card:isCommonTrick())
+      if card.type ~= card_type then return false end
+      card:addSubcards(cards)
+      card.skillName = yanzuo.name
+      return U.getLegalTargetNum(player, card) >= #cards
     end)
     if #names == 0 then return end
 

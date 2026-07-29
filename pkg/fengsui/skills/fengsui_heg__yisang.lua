@@ -4,19 +4,28 @@ local yisang = fk.CreateSkill{
   name = "fengsui_heg__yisang",
 }
 
+yisang:addEffect(fk.CardUsing, {
+  global = true,
+  mute = true,
+  can_refresh = function(self, event, target, player, data)
+    return target == player and player.room.current == player and data.card ~= nil
+  end,
+  on_refresh = function(self, event, target, player, data)
+    data.extra_data = data.extra_data or {}
+    data.extra_data.fengsui_heg__yisang_previous_color =
+      player:getMark("fengsui_heg__yisang_last_color-turn")
+    player.room:setPlayerMark(player, "fengsui_heg__yisang_last_color-turn", data.card.color)
+  end,
+})
+
 yisang:addEffect(fk.TargetSpecified, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
     local recipient = data.to
     if not (player:hasSkill(yisang.name) and recipient and
       H.compareKingdomWith(recipient, player)) then return false end
-    local current = player.room.current
-    if not current then return false end
-    local events = player.room.logic:getEventsOfScope(GameEvent.UseCard, 2, function(e)
-      return e.data.from == current
-    end, Player.HistoryTurn)
-    local previous = events[2] and events[2].data.card
-    return previous and previous:compareColorWith(data.card)
+    local previous_color = (data.extra_data or {}).fengsui_heg__yisang_previous_color
+    return previous_color and previous_color ~= 0 and previous_color == data.card.color
   end,
   on_cost = function(self, event, target, player, data)
     local recipient = data.to

@@ -2,7 +2,7 @@ local H = require "packages.hegemony.util"
 
 local yinbing = fk.CreateSkill{
   name = "fengsui_heg__yinbing",
-  tags = { Skill.Compulsory, Skill.DeputyPlace },
+  tags = { Skill.Compulsory },
 }
 
 local yinbing_trigger = {
@@ -16,16 +16,7 @@ local yinbing_trigger = {
     local source = data.from
     if not injured or injured.dead or not source or source.dead then return end
 
-    local ice_slash = Fk:cloneVirtualCard("ice__slash")
-    ice_slash.skillName = yinbing.name
-    room:useCard{
-      from = injured,
-      tos = {source},
-      card = ice_slash,
-      extraUse = true,
-      bypass_distances = true,
-      bypass_times = true,
-    }
+    room:useVirtualCard("ice__slash", nil, injured, source, yinbing.name, true)
   end,
 }
 yinbing:addEffect(fk.Damaged, yinbing_trigger)

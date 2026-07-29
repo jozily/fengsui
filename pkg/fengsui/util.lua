@@ -27,6 +27,23 @@ function U.chooseCardsFromList(room, player, cards, min_num, max_num, prompt, sk
   return selected
 end
 
+-- Return names backed by physical cards in the currently loaded card pool.
+-- This keeps view-as skills from offering derived or non-deck cards.
+function U.getNationalCardNames(types)
+  local names = {}
+  local wanted = {}
+  for _, card_type in ipairs(types or {}) do wanted[card_type] = true end
+  for _, id in ipairs(Fk:getAllCardIds()) do
+    local card = Fk:getCardById(id)
+    if card and not card.is_derived and
+      ((wanted.basic and card.type == Card.TypeBasic) or
+       (wanted.trick and card:isCommonTrick())) then
+      table.insertIfNeed(names, card.name)
+    end
+  end
+  return names
+end
+
 function U.isMainGeneralSkill(player, skill_name)
   return H.inGeneralSkills(player, skill_name) == "m"
 end
@@ -64,7 +81,9 @@ function U.getLegalTargetNum(player, card)
     return 1
   end
   local count = 0
-  for _, target in ipairs(player.room.alive_players) do
+  local room = player.room or Fk:currentRoom()
+  if not room then return 0 end
+  for _, target in ipairs(room.alive_players) do
     if not player:isProhibited(target, card) and
       card.skill:modTargetFilter(player, target, {}, card) then
       count = count + 1

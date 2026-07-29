@@ -11,16 +11,12 @@ yuyuan:addEffect(fk.AfterCardTargetDeclared, {
     if target ~= player or not player:hasSkill(yuyuan.name) or #data.tos ~= 1 then return false end
     if data.card.type ~= Card.TypeBasic and not data.card:isCommonTrick() then return false end
 
-    local uses = player.room.logic:getEventsOfScope(GameEvent.UseCard, 1, function(e)
-      local use = e.data
-      return use.from == player and #use.tos == 1 and
-        (use.card.type == Card.TypeBasic or use.card:isCommonTrick())
-    end, Player.HistoryTurn)
-    if #uses ~= 1 or uses[1].data ~= data then return false end
+    if player:getMark("fengsui_heg__yuyuan_used-turn") > 0 then return false end
 
     return table.find(data:getExtraTargets(), function(p) return p.kingdom == "unknown" end) ~= nil
   end,
   on_cost = function(self, event, target, player, data)
+    player.room:setPlayerMark(player, "fengsui_heg__yuyuan_used-turn", 1)
     local targets = table.filter(data:getExtraTargets(), function(p) return p.kingdom == "unknown" end)
     local tos = player.room:askToChoosePlayers(player, {
       targets = targets,

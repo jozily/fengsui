@@ -24,9 +24,11 @@ juanzhi:addEffect(fk.EventPhaseStart, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     local cid = event:getCostData(self).card_id
-    local cType = Fk:getCardById(cid).type
+    local card = Fk:getCardById(cid)
+    local cType = card.type
     room:recastCard(cid, player, juanzhi.name)
     room:setPlayerMark(player, "fengsui_heg__juanzhi_type_" .. cType .. "-turn", 1)
+    room:addTableMarkIfNeed(player, "@fengsui_heg__juanzhi-turn", card.trueName)
   end,
 })
 
@@ -40,12 +42,12 @@ juanzhi:addEffect(fk.TargetConfirmed, {
   end,
   on_cost = function(self, event, target, player, data)
     local room = player.room
-    local same_count = table.count(room.alive_players, function(p) return H.compareKingdomWith(p, player) end)
+    local same_count = #table.filter(room.alive_players, function(p) return H.compareKingdomWith(p, player) end)
     if same_count == 0 then return false end
 
     local available_tos = table.filter(room.alive_players, function(p)
       return not table.contains(data.tos, p) and not data.from:isProhibited(p, data.card) and
-        data.card.skill:modTargetFilter(data.from, p, data.tos, data.card, true)
+        data.card.skill:modTargetFilter(data.from, p, data.tos, data.card, {})
     end)
     if #available_tos == 0 then return false end
 

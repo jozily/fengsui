@@ -40,10 +40,8 @@ yunie:addEffect(fk.AskForRetrial, {
     })
     if not moved then return end
 
+    local old_id = data.card:getEffectiveId()
     local vcard = Fk:cloneCard(data.card.name, moved.card.suit, moved.card.number)
-    if data.card.id then
-      vcard:addSubcard(data.card.id)
-    end
     vcard.skillName = yunie.name
     data.card = vcard
     room:sendLog{
@@ -51,8 +49,12 @@ yunie:addEffect(fk.AskForRetrial, {
       from = player.id,
       to = {data.who.id},
       arg = yunie.name,
-      arg2 = vcard,
+      arg2 = vcard:toLogString(),
     }
+    if old_id and room:getCardArea(old_id) == Card.Processing then
+      room:moveCardTo(old_id, Card.DiscardPile, nil, fk.ReasonJudge,
+        yunie.name, nil, true, player)
+    end
   end,
 })
 

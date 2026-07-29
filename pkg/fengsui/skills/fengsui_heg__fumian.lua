@@ -1,85 +1,78 @@
 local H = require "packages.hegemony.util"
+local U = require "packages.hegemony.pkg.fengsui.util"
 
 local fumian = fk.CreateSkill{
   name = "fengsui_heg__fumian",
 }
 
+local count_mark = "fengsui_heg__fumian_count-turn"
+local pending_mark = "fengsui_heg__fumian_pending-turn"
+
+local function revealedKingdomGenerals(room, player)
+  local n = 0
+  for _, p in ipairs(room.alive_players) do
+    if H.compareKingdomWith(p, player) then n = n + H.getGeneralsRevealedNum(p) end
+  end
+  return n
+end
+
 fumian:addEffect(fk.EventPhaseStart, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(fumian.name) and player.phase == Player.Play and not player:isKongcheng()
+    return target == player and player:hasSkill(fumian.name) and player.phase == Player.Play and
+      not player:isNude() and revealedKingdomGenerals(player.room, player) > 0
   end,
   on_cost = function(self, event, target, player, data)
-    local room = player.room
-    if not room:askToSkillInvoke(player, {
-      skill_name = fumian.name,
-      prompt = "#fengsui_heg__fumian-invoke",
-    }) then return false end
-    local card = room:askToChooseCard(player, {
-      target = player,
-      flag = "h",
-      prompt = "#fengsui_heg__fumian-show",
-      skill_name = fumian.name,
-    })
-    if card then
-       event:setCostData(self, { cid = card })
-       return true
-    end
+    local max_num = math.min(#player:getCardIds("he"), revealedKingdomGenerals(player.room, player))
+    local cards = U.chooseCardsFromList(player.room, player, player:getCardIds("he"), 1, max_num,
+      "#fengsui_heg__fumian-recast:::" .. max_num, fumian.name, true)
+    if #cards > 0 then event:setCostData(self, {cards = cards}); return true end
   end,
   on_use = function(self, event, target, player, data)
-    local room = player.room
-    local cid = event:getCostData(self).cid
-    room:showCards({cid}, player)
-    room:setPlayerMark(player, "fengsui_heg__fumian_card-turn", cid)
+    local cards = event:getCostData(self).cards
+    player.room:recastCard(cards, player, fumian.name)
+    player.room:setPlayerMark(player, count_mark, #cards)
+    player.room:setPlayerMark(player, "@fengsui_heg__fumian-turn", #cards)
   end,
 })
 
-fumian:addEffect(fk.AfterCardsMove, {
-  anim_type = "support",
+fumian:addEffect(fk.CardUseFinished, {
   can_trigger = function(self, event, target, player, data)
-    local tracked = player:getMark("fengsui_heg__fumian_card-turn")
-    if tracked == 0 then return false end
-    for _, move in ipairs(data) do
-      if move.from == player and table.find(move.moveInfo, function(info)
-        return info.cardId == tracked and info.fromArea == Card.PlayerHand
-      end) then
-        event:setCostData(self, {card = tracked, visible = move.moveVisible == true})
-        return true
-      end
-    end
-    return false
+    local n = player:getMark(count_mark)
+    return target == player and n > 0 and player:getMark(pending_mark) == 0 and
+      Fk:translate(data.card.trueName, "zh_CN"):len() == n
+  end,
+  on_use = function(self, event, target, player, data)
+    player.room:setPlayerMark(player, pending_mark, data.card.trueName)
+    player.room:setPlayerMark(player, count_mark, 0)
+  end,
+})
+
+fumian:addEffect(fk.EventPhaseEnd, {
+  can_trigger = function(self, event, target, player, data)
+    return target == player and player.phase == Player.Play and player:getMark(pending_mark) ~= 0
+  end,
+  on_cost = function(self, event, target, player, data)
+    local choice = player.room:askToChoice(player, {
+      choices = {"fengsui_heg__fumian_use", "fengsui_heg__fumian_draw", "Cancel"},
+      skill_name = fumian.name,
+      prompt = "#fengsui_heg__fumian-choice::" .. player:getMark(pending_mark) .. ":" ..
+        player:getMark("@fengsui_heg__fumian-turn"),
+    })
+    if choice ~= "Cancel" then event:setCostData(self, {choice = choice}); return true end
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local cost = event:getCostData(self)
-    room:setPlayerMark(player, "fengsui_heg__fumian_card-turn", 0)
-    if cost.visible then
-      room:setPlayerMark(player, "fengsui_heg__fumian_use-turn", cost.card)
+    local name = player:getMark(pending_mark)
+    local n = player:getMark("@fengsui_heg__fumian-turn")
+    room:setPlayerMark(player, pending_mark, 0)
+    if event:getCostData(self).choice == "fengsui_heg__fumian_draw" then
+      player:drawCards(n, fumian.name)
     else
-      local same_count = table.count(room.alive_players, function(p)
-        return H.compareKingdomWith(p, player)
-      end)
-      player:drawCards(same_count, fumian.name)
+      room:askToUseVirtualCard(player, {name = name, skill_name = fumian.name,
+        prompt = "#fengsui_heg__fumian-use", cancelable = false,
+        extra_data = {bypass_times = true, extraUse = true}})
     end
-  end,
-})
-
-fumian:addEffect(fk.EventPhaseStart, {
-  can_trigger = function(self, event, target, player, data)
-    return target == player and player.phase == Player.Finish and
-      player:getMark("fengsui_heg__fumian_use-turn") > 0
-  end,
-  on_use = function(self, event, target, player, data)
-    local room = player.room
-    local cid = player:getMark("fengsui_heg__fumian_use-turn")
-    room:setPlayerMark(player, "fengsui_heg__fumian_use-turn", 0)
-    room:askToUseRealCard(player, {
-      pattern = {cid},
-      expand_pile = {cid},
-      skill_name = fumian.name,
-      prompt = "#fengsui_heg__fumian-use",
-      cancelable = false,
-    })
   end,
 })
 

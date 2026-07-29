@@ -6,10 +6,7 @@ local ciying = fk.CreateSkill{
 }
 
 local function allCardNames()
-  return table.filter(Fk:getAllCardNames("bt"), function(name)
-    local card = Fk:cloneCard(name)
-    return card.type == Card.TypeBasic or card:isCommonTrick()
-  end)
+  return U.getNationalCardNames({"basic", "trick"})
 end
 
 ciying:addEffect("viewas", {
@@ -36,7 +33,8 @@ ciying:addEffect("viewas", {
   end,
   enabled_at_play = Util.FalseFunc,
   enabled_at_response = function(self, player, response)
-    local current = player.room.current
+    local room = Fk:currentRoom()
+    local current = room and room.current
     return current and current ~= player and
       (current.kingdom == "unknown" or H.isBigKingdomPlayer(current))
   end,

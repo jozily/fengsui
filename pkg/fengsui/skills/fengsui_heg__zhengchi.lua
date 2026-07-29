@@ -7,19 +7,22 @@ local zhengchi = fk.CreateSkill{
 zhengchi:addEffect(fk.TargetSpecified, {
   anim_type = "control",
   can_trigger = function(self, event, target, player, data)
-    if not player:hasSkill(zhengchi.name) or not target or
+    if not data.firstTarget or data.card.type == Card.TypeEquip or
+      not player:hasSkill(zhengchi.name) or not target or
       not H.compareKingdomWith(player, target) or
       player:usedSkillTimes(zhengchi.name, Player.HistoryRound) > 0 or
       player:isKongcheng() then
       return false
     end
+    local card_targets = data.use:getAllTargets()
     return table.find(player.room.alive_players, function(p)
-      return p ~= player and not p:isKongcheng() and not table.contains(data.tos, p)
+      return p ~= player and not p:isKongcheng() and not table.contains(card_targets, p)
     end)
   end,
   on_cost = function(self, event, target, player, data)
+    local card_targets = data.use:getAllTargets()
     local candidates = table.filter(player.room.alive_players, function(p)
-      return p ~= player and not p:isKongcheng() and not table.contains(data.tos, p)
+      return p ~= player and not p:isKongcheng() and not table.contains(card_targets, p)
     end)
     local chosen = player.room:askToChoosePlayers(player, {
       targets = candidates,
@@ -40,7 +43,7 @@ zhengchi:addEffect(fk.TargetSpecified, {
     local winner = result.winner
     if not winner then return end
     local loser = winner == player and opponent or player
-    if not table.contains(data.tos, loser) then
+    if not table.contains(data.use:getAllTargets(), loser) then
       data:addTarget(loser)
       player.room:sendLog{
         type = "#fengsui_heg__zhengchi-target",

@@ -4,50 +4,40 @@ local dexiang = fk.CreateSkill{
   name = "fengsui_heg__dexiang",
 }
 
+local function eligiblePlayers(owner, data)
+  local from = data.from
+  if not from then return {} end
+  local extra_targets = data:getExtraTargets()
+  return table.filter(owner.room.alive_players, function(p)
+    return H.compareKingdomWith(p, owner) and p:distanceTo(from) <= 1 and
+      not table.contains(data.use.tos, p) and H.allGeneralsRevealed(p) and
+      table.contains(extra_targets, p)
+  end)
+end
+
 dexiang:addEffect(fk.TargetSpecified, {
   anim_type = "defensive",
   can_trigger = function(self, event, target, player, data)
-    -- 回应角色必须含有德象，但不一定是他操作，这里需要从“任意同势力”找
-    if not player:hasSkill(dexiang.name) then return false end
-    if data.card.type ~= Card.TypeBasic and not data.card:isCommonTrick() then return false end
-    if #data.tos ~= 1 then return false end
-    
-    local from = data.from
-    local to = data.to
-    
-    -- 使用者附近含有与马伦同势力的角色（距离不大于1）
-    local has_nearby_mate = false
-    for _, p in ipairs(player.room.alive_players) do
-       if H.compareKingdomWith(p, player) and p:distanceTo(from) <= 1 then
-          has_nearby_mate = true
-          break
-       end
-    end
-    
-    if not has_nearby_mate then return false end
-    if player == to then return false end
-    -- 马伦武将牌均明置
-    return H.allGeneralsRevealed(player)
-  end,
-  on_cost = function(self, event, target, player, data)
-     local room = player.room
-     if room:askToSkillInvoke(player, { skill_name = dexiang.name, prompt = "#fengsui_heg__dexiang-invoke::" .. data.card:toLogString() }) then
-        return true
-     end
+    return player:hasSkill(dexiang.name) and
+      (data.card.type == Card.TypeBasic or data.card:isCommonTrick()) and
+      #data.use.tos == 1 and #eligiblePlayers(player, data) > 0
   end,
   on_use = function(self, event, target, player, data)
-     local room = player.room
-     -- 暗置一张自己的武将牌
-     H.doHideGeneral(room, player, player, dexiang.name)
-     -- 成为额外目标
-     data:addTarget(player)
+    local room = player.room
+    local candidates = eligiblePlayers(player, data)
+    room:sortByAction(candidates)
+    for _, p in ipairs(candidates) do
+      if p:isAlive() and not table.contains(data.use.tos, p) and
+        table.contains(data:getExtraTargets(), p) and
+        room:askToSkillInvoke(p, {
+          skill_name = dexiang.name,
+          prompt = "#fengsui_heg__dexiang-invoke:::" .. data.card:toLogString(),
+        }) then
+        H.doHideGeneral(room, p, p, dexiang.name)
+        data:addTarget(p)
+      end
+    end
   end,
 })
-
-Fk:loadTranslationTable{
-  ["fengsui_heg__dexiang"] = "德象",
-  [":fengsui_heg__dexiang"] = "与任意同势力角色距离不大于1的角色使用单体基本牌或普通锦囊牌指定目标后，若其不为目标且武将牌均明置，其可以暗置一张武将牌成为此牌的额外目标。",
-  ["#fengsui_heg__dexiang-invoke"] = "德象：你可以暗置一张武将牌，成为 %arg 的额外目标",
-}
 
 return dexiang

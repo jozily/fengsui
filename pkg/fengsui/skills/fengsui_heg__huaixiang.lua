@@ -4,6 +4,29 @@ local huaixiang = fk.CreateSkill{
   name = "fengsui_heg__huaixiang",
 }
 
+local discarded_types_mark = "fengsui_heg__huaixiang_discarded_types-turn"
+
+huaixiang:addEffect(fk.AfterCardsMove, {
+  global = true,
+  mute = true,
+  can_refresh = function(self, event, target, player, data)
+    return player.room.current == player and table.find(data, function(move)
+      return move.toArea == Card.DiscardPile and #move.moveInfo > 0
+    end) ~= nil
+  end,
+  on_refresh = function(self, event, target, player, data)
+    local types = player:getTableMark(discarded_types_mark)
+    for _, move in ipairs(data) do
+      if move.toArea == Card.DiscardPile then
+        for _, info in ipairs(move.moveInfo) do
+          table.insertIfNeed(types, Fk:getCardById(info.cardId).type)
+        end
+      end
+    end
+    player.room:setPlayerMark(player, discarded_types_mark, types)
+  end,
+})
+
 huaixiang:addEffect("active", {
   anim_type = "support",
   prompt = "#fengsui_heg__huaixiang-active",
@@ -13,19 +36,7 @@ huaixiang:addEffect("active", {
   card_filter = function(self, player, to_select, selected)
     -- 本回合未进入弃牌堆类别的牌
     if #selected > 0 then return false end
-    local current_c = Fk:getCardById(to_select)
-    local tFound = false
-    player.room.logic:getEventsOfScope(GameEvent.MoveCards, 1, function(e)
-       for _, move in ipairs(e.data) do
-          if move.toArea == Card.DiscardPile then
-             for _, info in ipairs(move.moveInfo) do
-                if Fk:getCardById(info.cardId).type == current_c.type then tFound = true return true end
-             end
-          end
-       end
-       return false
-    end, Player.HistoryTurn)
-    return not tFound
+    return not table.contains(player:getTableMark(discarded_types_mark), Fk:getCardById(to_select).type)
   end,
   target_filter = function(self, player, to_select, selected)
     return #selected == 0 and to_select.kingdom ~= "unknown"
