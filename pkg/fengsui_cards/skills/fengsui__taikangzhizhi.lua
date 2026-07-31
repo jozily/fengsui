@@ -67,6 +67,33 @@ taikangzhizhi_skill:addTest(function(room, me)
   lu.assertEquals(me:getHandcardNum(), me.maxHp)
   lu.assertEquals(ally:getHandcardNum(), ally.maxHp)
   lu.assertEquals(outsider:getHandcardNum(), 0)
+
+  if H.hasGeneral(me, true) then
+    local old_main, old_deputy = H.getActualGeneral(me, false), H.getActualGeneral(me, true)
+    FkTest.runInRoom(function()
+      room:setPlayerProperty(me, "kingdom", "unknown")
+      room:setPlayerMark(me, "__heg_kingdom", "jin")
+      room:useCard{
+        from = me,
+        card = Fk:cloneCard("fengsui__taikangzhizhi"),
+        tos = {},
+      }
+    end)
+    lu.assertEquals(H.getActualGeneral(me, false), old_main)
+    lu.assertEquals(H.getActualGeneral(me, true), old_deputy)
+
+    FkTest.setNextReplies(me, {"fengsui__taikangzhizhi_opt2"})
+    FkTest.runInRoom(function()
+      room:setPlayerProperty(me, "kingdom", "jin")
+      room:useCard{
+        from = me,
+        card = Fk:cloneCard("fengsui__taikangzhizhi"),
+        tos = {},
+      }
+    end)
+    lu.assertEquals(H.getActualGeneral(me, false), old_deputy)
+    lu.assertEquals(H.getActualGeneral(me, true), old_main)
+  end
 end)
 
 return taikangzhizhi_skill

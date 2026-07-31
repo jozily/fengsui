@@ -13,9 +13,19 @@ local function hiddenChoices(player)
   return choices
 end
 
-local function revealIgnoringPlace(room, player, is_deputy)
+local function skillGeneralRevealed(player)
+  for _, is_deputy in ipairs({false, true}) do
+    local general = Fk.generals[H.getActualGeneral(player, is_deputy)]
+    if general and table.contains(general:getSkillNameList(true), junwei.name) then
+      return is_deputy and player.deputyGeneral ~= "anjiang" or
+        not is_deputy and player.general ~= "anjiang"
+    end
+  end
+  return false
+end
+
+local function grantIgnoringPlace(room, player, is_deputy)
   local general_name = H.getActualGeneral(player, is_deputy)
-  player:revealGeneral(is_deputy)
   local general = Fk.generals[general_name]
   if not general then return end
   for _, skill_name in ipairs(general:getSkillNameList()) do
@@ -30,7 +40,8 @@ end
 junwei:addEffect(fk.TurnStart, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
-    return player:hasSkill(junwei.name) and target and H.inFormationRelation(target, player)
+    return player:hasSkill(junwei.name) and skillGeneralRevealed(player) and target and
+      H.inFormationRelation(target, player)
   end,
   on_cost = function(self, event, target, player, data)
     local choices = {}
@@ -47,23 +58,25 @@ junwei:addEffect(fk.TurnStart, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     if event:getCostData(self).choice == "fengsui_heg__junwei_hide" then
-      local choices = {"fengsui_heg__junwei_main", "fengsui_heg__junwei_deputy",
-        "fengsui_heg__junwei_both"}
+      local choices = {"fengsui_heg__junwei_main", "fengsui_heg__junwei_deputy"}
       local choice = room:askToChoice(target, {choices = choices, skill_name = junwei.name,
         prompt = "#fengsui_heg__junwei-hide"})
-      local n = choice == "fengsui_heg__junwei_both" and 2 or 1
-      if choice == "fengsui_heg__junwei_main" or choice == "fengsui_heg__junwei_both" then
-        target:hideGeneral(false)
-      end
-      if choice == "fengsui_heg__junwei_deputy" or choice == "fengsui_heg__junwei_both" then
-        target:hideGeneral(true)
-      end
-      H.addHegMark(target, "yinyangfish", n)
+      local hide_deputy = choice == "fengsui_heg__junwei_deputy"
+      target:hideGeneral(hide_deputy)
+      grantIgnoringPlace(room, target, not hide_deputy)
     else
       local choices = hiddenChoices(target)
+      if #choices == 2 then table.insert(choices, "fengsui_heg__junwei_both") end
       local choice = #choices == 1 and choices[1] or room:askToChoice(target, {
         choices = choices, skill_name = junwei.name, prompt = "#fengsui_heg__junwei-reveal"})
-      revealIgnoringPlace(room, target, choice == "fengsui_heg__junwei_deputy")
+      local n = choice == "fengsui_heg__junwei_both" and 2 or 1
+      if choice == "fengsui_heg__junwei_main" or choice == "fengsui_heg__junwei_both" then
+        target:revealGeneral(false)
+      end
+      if choice == "fengsui_heg__junwei_deputy" or choice == "fengsui_heg__junwei_both" then
+        target:revealGeneral(true)
+      end
+      H.addHegMark(target, "yinyangfish", n)
     end
   end,
 })

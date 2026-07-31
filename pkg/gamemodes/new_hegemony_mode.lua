@@ -571,13 +571,14 @@ heg = fk.CreateGameMode{
     "strategic_advantage",
     "tenyear_heg",
     "overseas_heg",
+         "fengsui",
     "lord_ex",
     "offline_heg",
     "zqdl",
     "jyzs",
     "mobile_heg",
     "online_heg",
-
+     "fengsui_cards",
     "lord_cards",
   },
   winner_getter = function(self, victim)
@@ -778,7 +779,8 @@ Fk:loadTranslationTable{
   ["@@alliance-inhand-turn"] = "合",
   ["@seat"] = "",
   ["stack"] = "叠置",
-
+  ["peace_spell_skill"] = "太平要术",
+  ["triblade_skill"] = "方天画戟",
   ["hegemony_additional_rule"] = "国战附加规则",
   ["heg_watch_next_deputy"] = "观看下家副将",
   ["help: heg_watch_next_deputy"] = "游戏开始前观看下家的副将",

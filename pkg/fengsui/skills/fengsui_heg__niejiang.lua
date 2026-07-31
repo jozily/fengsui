@@ -33,34 +33,18 @@ niejiang:addEffect(fk.HpChanged, {
     local triggered = player:getTableMark("fengsui_heg__niejiang-round")
     table.insert(triggered, target.id)
     room:setPlayerMark(player, "fengsui_heg__niejiang-round", triggered)
-    
-    local drawn_id = player:drawCards(1, niejiang.name)[1]
-    if drawn_id then
-      local card = Fk:getCardById(drawn_id)
-      if card.trueName == "slash" then
-        room:showCards({drawn_id}, player)
-        room:askToUseRealCard(player, {
-          pattern = {drawn_id},
-          skill_name = niejiang.name,
-          cancelable = false,
-          prompt = "#fengsui_heg__niejiang-use",
-        })
-      end
-    end
+    player:drawCards(1, niejiang.name)
   end,
 })
 
 niejiang:addEffect("distance", {
   fixed_func = function(self, from, to)
-    if from == to then return 0 end
+    if from == to or not from:hasSkill(niejiang.name) then return end
     local room = Fk:currentRoom()
     if not room then return end
-    if from:hasSkill(niejiang.name) or to:hasSkill(niejiang.name) then
-      local target = from:hasSkill(niejiang.name) and to or from
-      local lowest = list_lowest_hp_players(room)
-      if table.contains(lowest, target.id) then
-        return 1
-      end
+    local lowest = list_lowest_hp_players(room)
+    if table.contains(lowest, to.id) then
+      return 1
     end
   end,
 })

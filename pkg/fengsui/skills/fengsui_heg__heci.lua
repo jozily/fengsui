@@ -5,7 +5,7 @@ local heci = fk.CreateSkill{
   name = "fengsui_heg__heci",
 }
 
-local entered_names_mark = "fengsui_heg__heci_entered_names-round"
+local used_names_mark = "fengsui_heg__heci_used_names-round"
 
 local function getCostNum(player)
   local room = player.room or Fk:currentRoom()
@@ -20,9 +20,15 @@ local function getCostNum(player)
 end
 
 local function getAvailableNames(player)
-  local entered = player:getTableMark(entered_names_mark)
+  local used = {}
+  local room = player.room or Fk:currentRoom()
+  if room then
+    for _, p in ipairs(room.players) do
+      table.insertTableIfNeed(used, p:getTableMark(used_names_mark))
+    end
+  end
   local all_names = table.filter(U.getNationalCardNames({"trick"}), function(name)
-    return not table.contains(entered, name)
+    return not table.contains(used, name)
   end)
   return player:getViewAsCardNames(heci.name, all_names), all_names
 end
@@ -34,24 +40,14 @@ local function canUseHeci(player)
     player:usedSkillTimes(heci.name, Player.HistoryTurn) == 0
 end
 
-heci:addEffect(fk.AfterCardsMove, {
+heci:addEffect(fk.CardUsing, {
   global = true,
   mute = true,
   can_refresh = function(self, event, target, player, data)
-    return table.find(data, function(move)
-      return move.toArea == Card.DiscardPile and #move.moveInfo > 0
-    end) ~= nil
+    return data.card and data.card:isCommonTrick()
   end,
   on_refresh = function(self, event, target, player, data)
-    local names = player:getTableMark(entered_names_mark)
-    for _, move in ipairs(data) do
-      if move.toArea == Card.DiscardPile then
-        for _, info in ipairs(move.moveInfo) do
-          table.insertIfNeed(names, Fk:getCardById(info.cardId).name)
-        end
-      end
-    end
-    player.room:setPlayerMark(player, entered_names_mark, names)
+    target.room:addTableMarkIfNeed(target, used_names_mark, data.card.trueName)
   end,
 })
 

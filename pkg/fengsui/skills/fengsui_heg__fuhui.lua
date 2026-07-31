@@ -7,6 +7,9 @@ local fuhui = fk.CreateSkill{
 
 local function allNames(player)
   local names = U.getNationalCardNames({"basic", "trick"})
+  if Fk.all_card_types["threaten_emperor"] then
+    table.insertIfNeed(names, "threaten_emperor")
+  end
   return player:getViewAsCardNames(fuhui.name, names)
 end
 

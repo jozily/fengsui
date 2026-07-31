@@ -70,6 +70,8 @@ jiyuan:addEffect(fk.EnterDying, {
 
 jiyuan:addEffect(fk.AfterDying, {
   global = true,
+  is_delay_effect = true,
+  mute = true,
   can_trigger = function(self, event, target, player, data)
     return target == player and player:getMark(remove_mark) > 0
   end,
