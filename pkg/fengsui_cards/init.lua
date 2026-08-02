@@ -1,8 +1,8 @@
 local extension = Package:new("fengsui_cards", Package.CardPack)
-extension.extensionName = "hegemony"
-extension.game_modes_whitelist = { "zhonger_heg_mode", "warlords_heg_mode", "jin_heg_mode", "tang_heg_mode" ,"new_heg_mode" }
+extension.extensionName = "fengsui"
+extension.game_modes_whitelist = { "new_heg_mode" }
 
-extension:loadSkillSkelsByPath("./packages/hegemony/pkg/fengsui_cards/skills")
+extension:loadSkillSkelsByPath("./packages/fengsui/pkg/fengsui_cards/skills")
 
 local taikangzhizhi = fk.CreateCard{
   name = "fengsui__taikangzhizhi",
@@ -26,12 +26,6 @@ Fk:loadTranslationTable{
   ["#fengsui__taikangzhizhi-invoke"] = "太康之治：你可以额外选择一项",
   ["fengsui__taikangzhizhi_opt1"] = "暗置变更副将",
   ["fengsui__taikangzhizhi_opt2"] = "主副将易位",
-}
-
-Fk:loadTranslationTable{
-  ["fengsui"] = "烽燧燎原",
-  ["fengsui_cards"] = "烽燧卡牌",
-  
 }
 
 return extension

@@ -1,54 +1,16 @@
-local prefix = "packages.hegemony.pkg."
-local gamemodes = require(prefix .. "gamemodes")
+Fk:loadTranslationTable{
+  ["fengsui"] = "烽燧燎原",
+  ["fengsui_hebi"] = "烽燧燎原-合璧",
+  ["fengsui_yili"] = "烽燧燎原-屹砺",
+  ["fengsui_cards"] = "烽燧卡牌",
+}
 
-local hegemony_standard = require(prefix .. "standard")
-local formation = require(prefix .. "formation")
-local momentum = require(prefix .. "momentum")
-local transformation = require(prefix .. "transformation")
-local power = require(prefix .. "power")
-local ex = require(prefix .. "lord_ex")
-local ziqidonglai = require(prefix .. "zqdl")
-local jinyinzishou = require(prefix .. "jyzs")
-
-local ol = require(prefix .. "online_heg")
-local mobile = require(prefix .. "mobile_heg")
-local tenyear = require(prefix .. "tenyear_heg")
-local overseas = require(prefix .. "overseas_heg")
-local offline = require(prefix .. "offline_heg")
-
-local hegemony_cards = require(prefix .. "standard_cards")
-local strategic_advantage = require(prefix .. "strategic_advantage")
-local lord_cards = require(prefix .. "lord_cards")
-local fengsui = require(prefix .. "fengsui")
-local fengsui_cards = require(prefix .. "fengsui_cards")
-
-
-Fk:loadTranslationTable{ ["hegemony"] = "国战" }
-Fk:loadTranslationTable(require 'packages/hegemony/i18n/en_US', 'en_US')
+local fengsui_hebi = require "packages/fengsui/pkg/fengsui_hebi"
+local fengsui_yili = require "packages/fengsui/pkg/fengsui_yili"
+local fengsui_cards = require "packages/fengsui/pkg/fengsui_cards"
 
 return {
-  gamemodes,
-
-  hegemony_standard,
-  formation,
-  momentum,
-  transformation,
-  power,
-  ex,
-  ziqidonglai,
-  jinyinzishou,
-  fengsui,
-
-  ol,
-  mobile,
-  tenyear,
-  overseas,
-  offline,
-
-  hegemony_cards,
-  strategic_advantage,
-  lord_cards,
+  fengsui_hebi,
+  fengsui_yili,
   fengsui_cards,
-
-
 }
