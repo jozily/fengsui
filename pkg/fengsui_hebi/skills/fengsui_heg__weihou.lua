@@ -1,5 +1,4 @@
-local H = require "packages.hegemony.util"
-local U = require "packages.fengsui.pkg.fengsui_hebi.util"
+local H = require "packages.fengsui.hegemony_util"
 
 local weihou = fk.CreateSkill{
   name = "fengsui_heg__weihou",
@@ -29,16 +28,23 @@ weihou:addEffect(fk.AskForRetrial, {
       cancelable = true,
     })
     if #cards > 0 then
-      event:setCostData(self, { cards = cards })
+      local choice = player.room:askToChoice(player, {
+        choices = {"fengsui_heg__weihou_main", "fengsui_heg__weihou_deputy"},
+        skill_name = weihou.name,
+        prompt = "#fengsui_heg__weihou-hide",
+      })
+      event:setCostData(self, {
+        cards = cards,
+        hide_deputy = choice == "fengsui_heg__weihou_deputy",
+      })
       return true
     end
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local old_card = data.card
-    local new_card = Fk:getCardById(event:getCostData(self).cards[1])
-    U.hideSkillGeneral(player, weihou.name)
-    local same_color = new_card:compareColorWith(old_card)
+    local cost = event:getCostData(self)
+    local new_card = Fk:getCardById(cost.cards[1])
+    player:hideGeneral(cost.hide_deputy)
     room:changeJudge{
       card = new_card,
       player = player,
@@ -46,26 +52,13 @@ weihou:addEffect(fk.AskForRetrial, {
       skillName = weihou.name,
       response = true,
     }
-    if same_color and target:isAlive() then
-      room:addPlayerMark(target, "fengsui_heg__weihou_pending", 1)
-    end
   end,
 })
 
-weihou:addEffect(fk.FinishRetrial, {
-  global = true,
-  can_trigger = function(self, event, target, player, data)
-    return target == player and player:getMark("fengsui_heg__weihou_pending") > 0
-  end,
-  on_use = function(self, event, target, player, data)
-    local room = player.room
-    local count = player:getMark("fengsui_heg__weihou_pending")
-    room:setPlayerMark(player, "fengsui_heg__weihou_pending", 0)
-    for _ = 1, count do
-      if player.dead then return end
-      H.askToHebiOrTransform(room, player, weihou.name, false)
-    end
-  end,
-})
+Fk:loadTranslationTable{
+  ["#fengsui_heg__weihou-hide"] = "维后：选择暗置一张武将牌",
+  ["fengsui_heg__weihou_main"] = "暗置主将",
+  ["fengsui_heg__weihou_deputy"] = "暗置副将",
+}
 
 return weihou

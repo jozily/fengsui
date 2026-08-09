@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.hegemony_util"
 
 local laoyan = fk.CreateSkill{
   name = "fengsui_heg__laoyan",
@@ -8,10 +8,19 @@ local laoyan = fk.CreateSkill{
 laoyan:addEffect(fk.CardUsing, {
   anim_type = "defensive",
   can_trigger = function(self, event, target, player, data)
-    return player:hasSkill(laoyan.name) and target ~= player and data.card and #data.tos > 1 and table.contains(data.tos, player)
+    return player:hasSkill(laoyan.name) and target ~= player and data.card and #data.tos > 1 and
+      table.contains(data.tos, player) and #player:getCardIds("he") >= 2
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
+    room:askToDiscard(player, {
+      min_num = 2,
+      max_num = 2,
+      include_equip = true,
+      skill_name = laoyan.name,
+      cancelable = false,
+      prompt = "#fengsui_heg__laoyan-discard",
+    })
     local team = {}
     for _, p in ipairs(data.tos) do
        if p ~= player and H.compareKingdomWith(p, player) then table.insert(team, p) end
@@ -32,7 +41,7 @@ laoyan:addEffect(fk.CardUseFinished, {
        -- 判断是否没受到伤害
        local hurt = false
        if data.damageDealt and data.damageDealt[player] and data.damageDealt[player] > 0 then hurt = true end
-       return not hurt and target ~= player and not H.compareKingdomWith(target, player)
+       return not hurt and target ~= player
     end
     return false
   end,

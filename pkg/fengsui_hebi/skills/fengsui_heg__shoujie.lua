@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.hegemony_util"
 
 local shoujie = fk.CreateSkill{
   name = "fengsui_heg__shoujie",
@@ -64,9 +64,7 @@ shoujie:addEffect(fk.TargetConfirmed, {
     room:throwCard(cards, shoujie.name, player, player)
     
     if c_len > 0 then
-       local target_mates = table.filter(data:getAllTargets(), function(p)
-         return H.compareKingdomWith(p, player)
-       end)
+       local target_mates = data:getAllTargets()
        local tos = room:askToChoosePlayers(player, {
           targets = target_mates,
           min_num = 1,
@@ -85,12 +83,12 @@ shoujie:addEffect(fk.TargetConfirmed, {
 
 Fk:loadTranslationTable{
   ["fengsui_heg__shoujie"] = "守节",
-  [":fengsui_heg__shoujie"] = "当你或与你势力相同的角色成为多目标锦囊牌的目标后，你可以弃置手牌区或装备区的所有牌，取消其中至多等量名同势力角色的目标。当你成为同势力角色牌的目标后，若你任意一个区域的牌大于其，取消之。",
+  [":fengsui_heg__shoujie"] = "与你势力相同的角色成为多目标锦囊牌的目标后，你可以弃置手牌区或装备区的所有牌，取消其中至多等量名角色的目标。当你成为同势力角色牌的目标后，若你任意一个区域的牌大于其，取消之。",
   ["#fengsui_heg__shoujie-cancel"] = "守节：你的某区域牌多于 %dest，是否取消该牌的目标？",
-  ["#fengsui_heg__shoujie-protect"] = "守节：是否弃置所有手牌或装备区牌，来拯救此锦囊牌下的队友？",
+  ["#fengsui_heg__shoujie-protect"] = "守节：是否弃置所有手牌或装备区牌，取消此锦囊牌的若干目标？",
   ["shoujie_hand"] = "弃置所有手牌",
   ["shoujie_equip"] = "弃置所有装备区牌",
-  ["#fengsui_heg__shoujie-cancel-tos"] = "守节：请选择取消其中几名同势力角色作为该锦囊目标",
+  ["#fengsui_heg__shoujie-cancel-tos"] = "守节：请选择要从此锦囊中取消的目标",
 }
 
 return shoujie

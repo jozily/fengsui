@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local qingsong = fk.CreateSkill{
@@ -35,16 +35,22 @@ qingsong:addEffect(fk.TargetConfirmed, {
     local room = player.room
     local cost = event:getCostData(self)
     local skill_place = U.getSkillPlace(player, qingsong.name)
-    if skill_place ~= nil then player:hideGeneral(not skill_place) end
+    if skill_place ~= nil then player:hideGeneral(skill_place) end
     room:moveCardTo(cost.card, Card.PlayerHand, cost.to, fk.ReasonGive,
       qingsong.name, nil, true, player)
-    if not H.compareKingdomWith(player, cost.to) then
+    local given = Fk:getCardById(cost.card)
+    if not H.compareKingdomWith(player, cost.to) and
+      (given.type == Card.TypeBasic or given:isCommonTrick()) then
       local card_name = Fk:getCardById(cost.card).trueName
       room:addTableMark(player, "fengsui_heg__qingsong_use-turn", card_name)
       room:addTableMarkIfNeed(player, "@fengsui_heg__qingsong-turn", card_name)
     end
   end,
 })
+
+Fk:loadTranslationTable{
+  ["@fengsui_heg__qingsong-turn"] = "青松：",
+}
 
 qingsong:addEffect(fk.TurnEnd, {
   global = true,

@@ -3,19 +3,17 @@ local xionglie = fk.CreateSkill{
   tags = { Skill.Compulsory },
 }
 
-xionglie:addEffect(fk.TargetConfirming, {
+local function sameRevealState(first, second)
+  return first and second and
+    (first.general == "anjiang") == (second.general == "anjiang") and
+    (first.deputyGeneral == "anjiang") == (second.deputyGeneral == "anjiang")
+end
+
+xionglie:addEffect(fk.TargetSpecified, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
-    if not player:hasSkill(xionglie.name) or data.from ~= player or target == player or
-      (target.general ~= "anjiang" and target.deputyGeneral ~= "anjiang") then
-      return false
-    end
-    local use_event = player.room.logic:getCurrentEvent():findParent(GameEvent.UseCard, true)
-    if not use_event then return false end
-    local uses = player.room.logic:getEventsOfScope(GameEvent.UseCard, 2, function(e)
-      return e.data.from == player
-    end, Player.HistoryRound)
-    return #uses == 1 and uses[1].id == use_event.id
+    return target == player and player:hasSkill(xionglie.name) and data.to and
+      sameRevealState(player, data.to)
   end,
   on_use = function(self, event, target, player, data)
     data.disresponsive = true
@@ -25,14 +23,11 @@ xionglie:addEffect(fk.TargetConfirming, {
 xionglie:addEffect(fk.DamageCaused, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(xionglie.name) and
-      player:getMark("fengsui_heg__xionglie_damage-round") == 0
+    return target == player and player:hasSkill(xionglie.name) and data.to and
+      not sameRevealState(player, data.to)
   end,
   on_use = function(self, event, target, player, data)
-    player.room:setPlayerMark(player, "fengsui_heg__xionglie_damage-round", 1)
-    if data.to and data.to.gender == General.Female then
-      data:changeDamage(1)
-    end
+    data:changeDamage(1)
   end,
 })
 

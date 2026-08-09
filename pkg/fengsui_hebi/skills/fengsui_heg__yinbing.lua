@@ -1,46 +1,53 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.hegemony_util"
 
 local yinbing = fk.CreateSkill{
   name = "fengsui_heg__yinbing",
-  tags = { Skill.Compulsory },
+  tags = { Skill.Compulsory, Skill.MainPlace },
 }
 
-local yinbing_trigger = {
-  anim_type = "offensive",
-  can_trigger = function(self, event, target, player, data)
-    return (target == player or data.from == player) and player:hasSkill(yinbing.name) and player:usedSkillTimes(yinbing.name, Player.HistoryRound) == 0
-  end,
-  on_use = function(self, event, target, player, data)
-    local room = player.room
-    local injured = target
-    local source = data.from
-    if not injured or injured.dead or not source or source.dead then return end
+local function uniqueBigKingdom(player)
+  if not H.isBigKingdomPlayer(player) then return false end
+  local kingdom = H.getKingdom(player)
+  for _, p in ipairs(player.room.alive_players) do
+    if p ~= player and H.isBigKingdomPlayer(p) and H.getKingdom(p) ~= kingdom then return false end
+  end
+  return true
+end
 
-    room:useVirtualCard("ice__slash", nil, injured, source, yinbing.name, true)
-  end,
-}
-yinbing:addEffect(fk.Damaged, yinbing_trigger)
-yinbing:addEffect(fk.Damage, yinbing_trigger)
+local function isSmallestKingdom(player)
+  local counts = H.getKingdomPlayersNum(player.room)
+  local mine = counts[H.getKingdom(player)]
+  if not mine then return false end
+  for _, n in pairs(counts) do
+    if n < mine then return false end
+  end
+  return true
+end
 
-yinbing:addEffect(fk.CardUseFinished, {
+local function currentCardUser(room)
+  if not room or not room.logic then return nil end
+  local event = room.logic:getCurrentEvent():findParent(GameEvent.UseCard, true)
+  return event and event.data and event.data.from
+end
+
+yinbing:addEffect("prohibit", {
   global = true,
-  can_trigger = function(self, event, target, player, data)
-    return target == player and data.card.name == "ice__slash" and table.contains(data.card.skillNames, yinbing.name)
-  end,
-  on_use = function(self, event, target, player, data)
-    local do_punish = true
-    if data.damageDealt then
-      for _, p in ipairs(data.tos) do
-        if data.damageDealt[p] and data.damageDealt[p] > 0 then
-          do_punish = false
-          break
+  prohibit_response = function(self, responder, card)
+    local room = responder.room or Fk:currentRoom()
+    if not room then return false end
+    local source = currentCardUser(room)
+    if not source or source == responder then return false end
+    for _, owner in ipairs(room.alive_players) do
+      if owner:hasSkill(yinbing.name) and owner:hasShownSkill(yinbing.name) then
+        if responder == owner and uniqueBigKingdom(owner) and H.compareKingdomWith(source, owner) then
+          return true
+        end
+        if source == owner and isSmallestKingdom(owner) and H.isBigKingdomPlayer(responder) then
+          return true
         end
       end
     end
-    if do_punish and target:isAlive() then
-      target:drawCards(2, yinbing.name)
-      target.room:loseHp(target, 1, yinbing.name)
-    end
+    return false
   end,
 })
 

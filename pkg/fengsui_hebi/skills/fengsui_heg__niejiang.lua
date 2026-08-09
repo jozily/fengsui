@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.hegemony_util"
 
 local niejiang = fk.CreateSkill{
   name = "fengsui_heg__niejiang",
@@ -37,15 +37,4 @@ niejiang:addEffect(fk.HpChanged, {
   end,
 })
 
-niejiang:addEffect("distance", {
-  fixed_func = function(self, from, to)
-    if from == to or not from:hasSkill(niejiang.name) then return end
-    local room = Fk:currentRoom()
-    if not room then return end
-    local lowest = list_lowest_hp_players(room)
-    if table.contains(lowest, to.id) then
-      return 1
-    end
-  end,
-})
 return niejiang

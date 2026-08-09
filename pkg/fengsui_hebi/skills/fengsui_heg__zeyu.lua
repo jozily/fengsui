@@ -1,8 +1,9 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local zeyu = fk.CreateSkill{
   name = "fengsui_heg__zeyu",
+  tags = { Skill.MainPlace },
 }
 
 zeyu:addEffect(fk.Death, {
@@ -10,7 +11,8 @@ zeyu:addEffect(fk.Death, {
   can_trigger = function(self, event, target, player, data)
     local damage = data.damage
     if not damage or not damage.from then return false end
-    return player:hasSkill(zeyu.name) and H.compareKingdomWith(damage.from, player) and
+    return player:hasSkill(zeyu.name) and
+      H.compareKingdomWith(damage.from, player) and
       not H.compareKingdomWith(target, damage.from)
   end,
   on_cost = function(self, event, target, player, data)

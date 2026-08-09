@@ -1,65 +1,90 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.hegemony_util"
 
 local bizun = fk.CreateSkill{
   name = "fengsui_heg__bizun",
 }
 
-local function sameKingdomNum(player)
-  local room = player.room or Fk:currentRoom()
-  if not room then return 0 end
-  return #table.filter(room.alive_players, function(p)
-    return H.compareKingdomWith(p, player)
-  end)
+local function commonAreas(first, second)
+  local areas = {}
+  if not first:isKongcheng() and not second:isKongcheng() then table.insert(areas, "bizun_hand") end
+  if #first:getCardIds("e") > 0 and #second:getCardIds("e") > 0 then table.insert(areas, "bizun_equip") end
+  if #first:getCardIds("j") > 0 and #second:getCardIds("j") > 0 then table.insert(areas, "bizun_judge") end
+  return areas
 end
 
-local function emptiedAreas(move)
-  if not move.from then return false end
-  for _, info in ipairs(move.moveInfo) do
-    if info.fromArea == Card.PlayerHand and move.from:isKongcheng() then return true end
-    if info.fromArea == Card.PlayerEquip and #move.from:getCardIds("e") == 0 then return true end
-    if info.fromArea == Card.PlayerJudge and #move.from:getCardIds("j") == 0 then return true end
-  end
-  return false
-end
+bizun:addEffect("active", {
+  anim_type = "support",
+  prompt = "#fengsui_heg__bizun",
+  card_num = 0,
+  target_num = 2,
+  can_use = function(self, player)
+    return player:usedSkillTimes(bizun.name, Player.HistoryPhase) == 0
+  end,
+  card_filter = Util.FalseFunc,
+  target_filter = function(self, player, to_select, selected)
+    if #selected == 0 then return #to_select:getCardIds("hej") > 0 end
+    return #selected == 1 and to_select ~= selected[1] and #commonAreas(selected[1], to_select) > 0
+  end,
+  on_use = function(self, room, effect)
+    local player = effect.from
+    local first, second = effect.tos[1], effect.tos[2]
+    local areas = commonAreas(first, second)
+    if #areas == 0 then return end
+    local choice = room:askToChoice(player, {
+      choices = areas,
+      skill_name = bizun.name,
+      prompt = "#fengsui_heg__bizun-area",
+    })
+    local flag = ({bizun_hand = "h", bizun_equip = "e", bizun_judge = "j"})[choice]
+    local from_second = room:askToChooseCard(first, {
+      target = second,
+      flag = flag,
+      skill_name = bizun.name,
+      prompt = "#fengsui_heg__bizun-take::" .. second.id,
+    })
+    room:moveCardTo(from_second, Card.PlayerHand, first, fk.ReasonPrey, bizun.name, nil, false, first)
+    if second.dead or first.dead or #first:getCardIds(flag) == 0 then return end
+    local from_first = room:askToChooseCard(second, {
+      target = first,
+      flag = flag,
+      skill_name = bizun.name,
+      prompt = "#fengsui_heg__bizun-take::" .. first.id,
+    })
+    room:moveCardTo(from_first, Card.PlayerHand, second, fk.ReasonPrey, bizun.name, nil, false, second)
 
-bizun:addEffect(fk.AfterCardsMove, {
-  anim_type = "drawcard",
-  times = function(self, player)
-    return sameKingdomNum(player) - player:usedSkillTimes(bizun.name, Player.HistoryTurn)
-  end,
-  can_trigger = function(self, event, target, player, data)
-    if not player:hasSkill(bizun.name) or
-      player:usedSkillTimes(bizun.name, Player.HistoryTurn) >= sameKingdomNum(player) then
-      return false
-    end
-    return table.find(data, function(move)
-      return move.from and H.compareKingdomWith(move.from, player) and emptiedAreas(move)
-    end) ~= nil
-  end,
-  on_cost = function(self, event, target, player, data)
-    local targets = {}
-    for _, move in ipairs(data) do
-      if move.from and H.compareKingdomWith(move.from, player) and emptiedAreas(move) then
-        table.insertIfNeed(targets, move.from)
-      end
-    end
-    local tos = player.room:askToChoosePlayers(player, {
-      targets = targets,
+    local small = table.filter({first, second}, function(p)
+      return p:isAlive() and H.isSmallKingdomPlayer(p)
+    end)
+    if #small == 0 then return end
+    local chosen = room:askToChoosePlayers(player, {
+      targets = small,
       min_num = 1,
       max_num = 1,
       skill_name = bizun.name,
-      prompt = "#fengsui_heg__bizun-invoke",
+      prompt = "#fengsui_heg__bizun-draw",
       cancelable = true,
     })
-    if #tos > 0 then
-      event:setCostData(self, {to = tos[1]})
-      return true
+    if #chosen == 0 then return end
+    local to = chosen[1]
+    to:drawCards(1, bizun.name)
+    if to:isAlive() and H.compareKingdomWith(to, player) and room:askToSkillInvoke(player, {
+      skill_name = bizun.name,
+      prompt = "#fengsui_heg__bizun-change::" .. to.id,
+    }) then
+      H.askToHebiOrTransform(room, to, bizun.name, false)
     end
   end,
-  on_use = function(self, event, target, player, data)
-    local to = event:getCostData(self).to
-    if to:isAlive() then to:drawCards(1, bizun.name) end
-  end,
 })
+
+Fk:loadTranslationTable{
+  ["#fengsui_heg__bizun"] = "迁宫：依次选择两名角色并选择二者均有牌的相同区域",
+  ["#fengsui_heg__bizun-area"] = "迁宫：选择双方均有牌的区域",
+  ["#fengsui_heg__bizun-take"] = "迁宫：获得 %dest 该区域的一张牌",
+  ["#fengsui_heg__bizun-draw"] = "迁宫：你可以令其中一名小势力角色摸一张牌",
+  ["#fengsui_heg__bizun-change"] = "迁宫：你可以令 %dest 合璧或变更副将",
+  ["bizun_hand"] = "手牌区",
+  ["bizun_equip"] = "装备区",
+  ["bizun_judge"] = "判定区",
+}
 
 return bizun

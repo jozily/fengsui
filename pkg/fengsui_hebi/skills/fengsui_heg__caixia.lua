@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.hegemony_util"
 
 local caixia = fk.CreateSkill{
   name = "fengsui_heg__caixia",

@@ -1,6 +1,6 @@
 local extension = Package:new("fengsui_cards", Package.CardPack)
 extension.extensionName = "fengsui"
-extension.game_modes_whitelist = { "new_heg_mode" }
+extension.game_modes_whitelist = { "zhonger_heg_mode", "fengsui_heg__mode" }
 
 extension:loadSkillSkelsByPath("./packages/fengsui/pkg/fengsui_cards/skills")
 

@@ -1,9 +1,9 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local yunxing = fk.CreateSkill{
   name = "fengsui_heg__yunxing",
-  tags = {Skill.Compulsory},
+  tags = { Skill.Compulsory, Skill.MainPlace },
 }
 
 yunxing:addEffect(fk.EventPhaseStart, {

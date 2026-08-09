@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.hegemony_util"
 
 local lianxi = fk.CreateSkill{
   name = "fengsui_heg__lianxi",
@@ -35,9 +35,9 @@ lianxi:addEffect(fk.GeneralHidden, {
     
     -- 2. 对当前回合角色造成1点伤害
     local current = room.current
-    if current and current:isAlive() then
+    if current and current:isAlive() and target:isAlive() then
       room:damage{
-        from = player,
+        from = target,
         to = current,
         damage = 1,
         skillName = lianxi.name,
@@ -62,7 +62,7 @@ lianxi:addEffect(fk.GeneralHidden, {
 })
 
 Fk:loadTranslationTable{
- ["#fengsui_heg__lianxi-invoke"] = "连徙：你可以弃置 %dest 一个区域所有牌并对当前角色造成1点伤害，然后与队友易位！",
+ ["#fengsui_heg__lianxi-invoke"] = "连徙：令 %dest 弃置一个区域所有牌并对当前角色造成1点伤害，然后你与队友副将易位",
   ["#fengsui_heg__lianxi-swap"] = "连徙：请选择一名同势力角色进行副将易位",
   ["lianxi_hand"] = "手牌区",
   ["lianxi_equip"] = "装备区",

@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.hegemony_util"
 
 local junwei = fk.CreateSkill{
   name = "fengsui_heg__junwei",
@@ -65,18 +65,9 @@ junwei:addEffect(fk.TurnStart, {
       target:hideGeneral(hide_deputy)
       grantIgnoringPlace(room, target, not hide_deputy)
     else
-      local choices = hiddenChoices(target)
-      if #choices == 2 then table.insert(choices, "fengsui_heg__junwei_both") end
-      local choice = #choices == 1 and choices[1] or room:askToChoice(target, {
-        choices = choices, skill_name = junwei.name, prompt = "#fengsui_heg__junwei-reveal"})
-      local n = choice == "fengsui_heg__junwei_both" and 2 or 1
-      if choice == "fengsui_heg__junwei_main" or choice == "fengsui_heg__junwei_both" then
-        target:revealGeneral(false)
-      end
-      if choice == "fengsui_heg__junwei_deputy" or choice == "fengsui_heg__junwei_both" then
-        target:revealGeneral(true)
-      end
-      H.addHegMark(target, "yinyangfish", n)
+      if target.general == "anjiang" then target:revealGeneral(false) end
+      if target.deputyGeneral == "anjiang" then target:revealGeneral(true) end
+      H.addHegMark(target, "yinyangfish", 1)
     end
   end,
 })

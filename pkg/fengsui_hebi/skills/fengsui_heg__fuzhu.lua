@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local fuzhu = fk.CreateSkill{
@@ -40,7 +40,7 @@ fuzhu:addEffect(fk.AfterCardTargetDeclared, {
     local room = player.room
     local to = event:getCostData(self).to
     U.hideSkillGeneral(player, fuzhu.name)
-    data.extraUse = true
+    data.use.extraUse = true
     data.nullifiedTargets = data.nullifiedTargets or {}
     table.insertIfNeed(data.nullifiedTargets, to)
     if to.dead then return end
@@ -77,7 +77,7 @@ fuzhu:addEffect(fk.TurnEnd, {
   global = true,
   mute = true,
   can_trigger = function(self, event, target, player, data)
-    return #player:getTableMark(pending_mark) > 0
+    return player:hasSkill(fuzhu.name, true) and #player:getTableMark(pending_mark) > 0
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room

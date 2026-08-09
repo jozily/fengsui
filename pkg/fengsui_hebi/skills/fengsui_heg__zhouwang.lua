@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.hegemony_util"
 
 local zhouwang = fk.CreateSkill{
   name = "fengsui_heg__zhouwang",
@@ -8,11 +8,12 @@ local zhouwang = fk.CreateSkill{
 local function costNum(player)
   local room = player.room or Fk:currentRoom()
   if not room then return 0 end
-  local n = 0
+  local kingdoms = {}
   for _, p in ipairs(room.alive_players) do
-    if H.compareKingdomWith(p, player) then n = n + H.getGeneralsRevealedNum(p) end
+    local kingdom = H.getKingdom(p)
+    if kingdom and kingdom ~= "unknown" then table.insertIfNeed(kingdoms, kingdom) end
   end
-  return n
+  return #kingdoms
 end
 
 zhouwang:addEffect("active", {
@@ -35,12 +36,12 @@ zhouwang:addEffect("active", {
     if draw > 0 then player:drawCards(draw, zhouwang.name) end
     if player.dead or to.dead then return end
     room:useVirtualCard("known_both", nil, player, to, zhouwang.name, true)
-    local names = {}
-    local duplicated = table.find(to:getCardIds("h"), function(id)
-      local name = Fk:getCardById(id).trueName
-      if names[name] then return true end
-      names[name] = true
-      return false
+    local target_names = {}
+    for _, id in ipairs(to:getCardIds("h")) do
+      target_names[Fk:getCardById(id).trueName] = true
+    end
+    local duplicated = table.find(player:getCardIds("h"), function(id)
+      return target_names[Fk:getCardById(id).trueName]
     end)
     if duplicated then room:setPlayerMark(player, "@fengsui_heg__zhouwang-round", 1) end
   end,
