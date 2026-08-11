@@ -1,5 +1,3 @@
-local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
-
 local s = fk.CreateSkill { name = "fengsui_heg__yangming" }
 
 local function kingdomCount(room)
@@ -12,42 +10,14 @@ local function kingdomCount(room)
   return #kingdoms
 end
 
-local function getDiscardCardTypes(data, player, usedCards)
-  usedCards = usedCards or player:getTableMark(s.name .. "_used_cards-turn")
-  local types = {}
-  for _, move in ipairs(data) do
-    if move.toArea == Card.DiscardPile and
-      (move.moveReason == fk.ReasonDiscard and move.from == player or move.moveReason == fk.ReasonUse) then
-      for _, info in ipairs(move.moveInfo) do
-        if move.moveReason == fk.ReasonDiscard or table.contains(usedCards, info.cardId) then
-          table.insertIfNeed(types, Fk:getCardById(info.cardId):getTypeString())
-        end
-      end
-    end
-  end
-  return types
-end
-
-s:addEffect(fk.PreCardUse, {
+s:addEffect(fk.CardUsing, {
   mute = true,
-  can_refresh = function(self, event, target, player, data)
-    return target == player and player:hasSkill(s.name) and #Card:getIdList(data.card) > 0
+  can_trigger = function(self, event, target, player, data)
+    return target == player and player:hasSkill(s.name) and data.card
   end,
-  on_refresh = function(self, event, target, player, data)
-    local ids = player:getTableMark(s.name .. "_used_cards-turn")
-    table.insertTableIfNeed(ids, Card:getIdList(data.card))
-    player.room:setPlayerMark(player, s.name .. "_used_cards-turn", ids)
-  end,
-})
-
-s:addEffect(fk.AfterCardsMove, {
-  mute = true,
-  can_refresh = function(self, event, target, player, data)
-    return player:hasSkill(s.name) and #getDiscardCardTypes(data, player) > 0
-  end,
-  on_refresh = function(self, event, target, player, data)
+  on_use = function(self, event, target, player, data)
     local types = player:getTableMark(s.name .. "-turn")
-    table.insertTableIfNeed(types, getDiscardCardTypes(data, player))
+    table.insertIfNeed(types, data.card:getTypeString())
     player.room:setPlayerMark(player, s.name .. "-turn", types)
   end,
 })
@@ -55,8 +25,7 @@ s:addEffect(fk.AfterCardsMove, {
 s:addEffect(fk.TurnEnd, {
   global = true,
   can_trigger = function(self, event, target, player, data)
-    return target and player:hasSkill(s.name) and H.compareKingdomWith(target, player) and
-      #player:getTableMark(s.name .. "-turn") > 0
+    return player:hasSkill(s.name) and #player:getTableMark(s.name .. "-turn") > 0
   end,
   on_cost = function(self, event, target, player, data)
     return player.room:askToSkillInvoke(player, { skill_name = s.name })
@@ -86,29 +55,5 @@ s:addEffect(fk.TurnEnd, {
     end
   end,
 })
-
-s:addTest(function(room, me)
-  local slash = room:printCard("slash")
-  local duel = room:printCard("duel")
-  local types = getDiscardCardTypes({
-    {
-      from = me,
-      toArea = Card.DiscardPile,
-      moveReason = fk.ReasonDiscard,
-      moveInfo = {
-        { cardId = slash.id, fromArea = Card.PlayerHand },
-      },
-    },
-    {
-      toArea = Card.DiscardPile,
-      moveReason = fk.ReasonUse,
-      moveInfo = {
-        { cardId = duel.id, fromArea = Card.Processing },
-      },
-    },
-  }, me, { duel.id })
-  lu.assertTrue(table.contains(types, "basic"))
-  lu.assertTrue(table.contains(types, "trick"))
-end)
 
 return s

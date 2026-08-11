@@ -1,8 +1,8 @@
-local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
+local H = require "packages.fengsui.hegemony_util"
 
 local liefa = fk.CreateSkill{
   name = "fengsui_heg__liefa",
-  related_skills = {"heg__bingxin", "niaoxiang"},
+  related_skills = {"ld__bingxin","niaoxiang"},
 }
 
 liefa:addEffect("arraysummon", { array_type = "formation" })
@@ -20,15 +20,15 @@ local function refreshBorrowed(room, owner)
     local should = p ~= owner and formation and H.inFormationRelation(owner, p)
     local mark = "fengsui_heg__liefa_bingxin_" .. owner.id
     if should and p:getMark(mark) == 0 then
-      if not p:hasSkill("heg__bingxin") then room:handleAddLoseSkills(p, "heg__bingxin") end
+      if not p:hasSkill("ld__bingxin") then room:handleAddLoseSkills(p, "ld__bingxin") end
       room:setPlayerMark(p, mark, 1)
     elseif not should and p:getMark(mark) > 0 then
       room:setPlayerMark(p, mark, 0)
       local needed = table.find(room.alive_players, function(other)
         return other ~= owner and p:getMark("fengsui_heg__liefa_bingxin_" .. other.id) > 0
       end)
-      if not needed and not H.inGeneralSkills(p, "heg__bingxin") then
-        room:handleAddLoseSkills(p, "-heg__bingxin")
+      if not needed and not H.inGeneralSkills(p, "ld__bingxin") then
+        room:handleAddLoseSkills(p, "-ld__bingxin")
       end
     end
   end

@@ -6,51 +6,43 @@ local function isCurio(card)
   return card and card.type == Card.TypeEquip and card.package and card.package.name == "nine_variations"
 end
 
-local function transformedName(card)
-  if not card then return nil end
-  if card.color == Card.Red then return "nullification" end
-  if card.color == Card.Black then return "rob__jink" end
-end
-
-local function matchesCurrentResponse(card)
-  local name = transformedName(card)
-  if not name then return false end
-  return not Fk.currentResponsePattern or
-    Exppattern:Parse(Fk.currentResponsePattern):match(Fk:cloneCard(name))
-end
-
 dianmo:addEffect("viewas", {
   anim_type = "defensive",
-  pattern = "nullification,jink",
+  pattern = "nullification,rob__jink",
   handly_pile = true,
   card_filter = function(self, player, to_select, selected)
     if #selected > 0 then return false end
     local card = Fk:getCardById(to_select)
     return card and card.type == Card.TypeEquip and
-      matchesCurrentResponse(card)
+      player:getMark("fengsui_heg__dianmo_used-round") == 0
   end,
   view_as = function(self, player, cards)
     if #cards ~= 1 then return end
     local source = Fk:getCardById(cards[1])
-    local name = transformedName(source)
+    local name = source.color == Card.Red and "nullification" or
+      (source.color == Card.Black and "rob__jink" or nil)
     if not name then return end
     local card = Fk:cloneCard(name)
     card.skillName = dianmo.name
     card:addSubcard(cards[1])
     return card
   end,
+  before_use = function(self, player, use)
+    player.room:setPlayerMark(player, "fengsui_heg__dianmo_used-round", 1)
+  end,
   enabled_at_response = function(self, player, response)
     return table.find(player:getCardIds("he"), function(id)
       local card = Fk:getCardById(id)
       return card.type == Card.TypeEquip and
-        matchesCurrentResponse(card)
+        player:getMark("fengsui_heg__dianmo_used-round") == 0
     end) ~= nil
   end,
   enabled_at_nullification = function(self, player, data)
-    return table.find(player:getCardIds("he"), function(id)
-      local card = Fk:getCardById(id)
-      return card.type == Card.TypeEquip and card.color == Card.Red
-    end) ~= nil
+    return player:getMark("fengsui_heg__dianmo_used-round") == 0 and
+      table.find(player:getCardIds("he"), function(id)
+        local card = Fk:getCardById(id)
+        return card.type == Card.TypeEquip and card.color == Card.Red
+      end) ~= nil
   end,
 })
 
@@ -81,24 +73,5 @@ dianmo:addEffect(fk.CardUseFinished, {
     player.room:swapAllCards(player, { player, event:getCostData(self) }, dianmo.name, "e")
   end,
 })
-
-dianmo:addTest(function(room, me)
-  local source = room:printCard("axe", Card.Spade, 1)
-  local redSource = room:printCard("axe", Card.Heart, 1)
-  local skill = Fk.skills[dianmo.name]
-  local card = skill:viewAs(me, { source.id })
-  local previousPattern = Fk.currentResponsePattern
-  Fk.currentResponsePattern = "jink"
-  local blackMatchesJink = matchesCurrentResponse(source)
-  local redMatchesJink = matchesCurrentResponse(redSource)
-  Fk.currentResponsePattern = previousPattern
-
-  lu.assertEquals(skill.pattern, "nullification,jink")
-  lu.assertEquals(card.name, "rob__jink")
-  lu.assertEquals(card.trueName, "jink")
-  lu.assertTrue(Exppattern:Parse("jink"):match(card))
-  lu.assertTrue(blackMatchesJink)
-  lu.assertFalse(redMatchesJink)
-end)
 
 return dianmo

@@ -29,7 +29,7 @@ local function findImperialOrder(room)
   end
 end
 
-local function useRealCard(room, player, ids, prompt, countTimes)
+local function useRealCard(room, player, ids, prompt)
   if not ids then return end
   if type(ids) ~= "table" then ids = { ids } end
   if #ids == 0 then return end
@@ -40,21 +40,10 @@ local function useRealCard(room, player, ids, prompt, countTimes)
     cancelable = false,
     skip = true,
     expand_pile = ids,
-    extra_data = {
-      bypass_times = countTimes ~= true,
-      bypass_distances = true,
-      not_passive = false,
-    },
+    extra_data = { bypass_times = true, bypass_distances = true, not_passive = false },
   })
   if use then
-    local countsTimes = countTimes == true or table.contains({ "slash", "analeptic" }, use.card.trueName)
-    if countsTimes then
-      use.extraUse = nil
-      use.extra_data = use.extra_data or {}
-      use.extra_data.bypass_times = false
-    else
-      use.extraUse = true
-    end
+    use.extraUse = true
     room:useCard(use)
   end
   return use
@@ -92,71 +81,38 @@ cangjuan:addEffect(fk.GeneralRevealed, {
   end,
 })
 
-local function responsePattern()
-  return type(Fk.currentResponsePattern) == "string" and Fk.currentResponsePattern ~= "" and
-    Fk.currentResponsePattern or nil
-end
-
-local function availableZhaos(player, pattern)
-  return table.filter(player:getPile(zhao_pile), function(id)
-    local card = Fk:getCardById(id)
-    return card and card.name ~= "heg_zhaoshu" and (not pattern or card:matchPattern(pattern))
-  end)
-end
-
-cangjuan:addEffect("viewas", {
-  pattern = ".",
-  prompt = function()
-    return responsePattern() and "#fengsui_heg__cangjuan-response" or "#fengsui_heg__cangjuan"
+cangjuan:addEffect("active", {
+  anim_type = "control",
+  card_num = 0,
+  target_num = 0,
+  prompt = "#fengsui_heg__cangjuan",
+  can_use = function(self, player)
+    return player:usedSkillTimes(cangjuan.name, Player.HistoryTurn) == 0 and
+      table.find(player:getPile(zhao_pile), function(id)
+        return Fk:getCardById(id).name ~= "heg_zhaoshu"
+      end) ~= nil
   end,
-  expand_pile = zhao_pile,
-  card_filter = function(self, player, to_select, selected)
-    if #selected > 0 or player:getPileNameOfId(to_select) ~= zhao_pile then return false end
-    local card = Fk:getCardById(to_select)
-    local pattern = responsePattern()
-    return card and card.name ~= "heg_zhaoshu" and (not pattern or card:matchPattern(pattern))
-  end,
-  view_as = function(self, player, cards)
-    if #cards ~= 1 then return end
-    local card = Fk:cloneCard(Fk:getCardById(cards[1]).name)
-    card:addSubcard(cards[1])
-    card.skillName = cangjuan.name
-    return card
-  end,
-  after_use = function(self, player, use)
-    local card = use.card
-    if player.dead or not card then return end
+  on_use = function(self, room, effect)
+    local player = effect.from
+    local zhaos = table.filter(player:getPile(zhao_pile), function(id)
+      return Fk:getCardById(id).name ~= "heg_zhaoshu"
+    end)
+    local use = useRealCard(room, player, zhaos, "#fengsui_heg__cangjuan-use")
+    if not use or player.dead then return end
+    local suit = use.card.suit
     local cards = table.filter(player:getCardIds("he"), function(id)
-      return Fk:getCardById(id).suit ~= card.suit
+      return Fk:getCardById(id).suit ~= suit
     end)
     if #cards == 0 then return end
-    local chosen = player.room:askToCards(player, {
+    local chosen = room:askToCards(player, {
       min_num = 1,
       max_num = 1,
       pattern = tostring(Exppattern{ id = cards }),
       skill_name = cangjuan.name,
-      prompt = "#fengsui_heg__cangjuan-put:::" .. Fk:translate(Card.getSuitString(card, true)),
+      prompt = "#fengsui_heg__cangjuan-put:::" .. Fk:translate(Card.getSuitString(use.card, true)),
       cancelable = false,
     })
     if #chosen > 0 then player:addToPile(zhao_pile, chosen, true, cangjuan.name) end
-  end,
-  enabled_at_play = function(self, player)
-    return player:usedSkillTimes(cangjuan.name, Player.HistoryTurn) == 0 and #availableZhaos(player) > 0
-  end,
-  enabled_at_response = function(self, player)
-    local pattern = responsePattern()
-    return player:usedSkillTimes(cangjuan.name, Player.HistoryTurn) == 0 and
-      pattern and #availableZhaos(player, pattern) > 0
-  end,
-})
-
-cangjuan:addEffect("targetmod", {
-  bypass_times = function(self, player, skill, scope, card)
-    return card and table.contains(card.skillNames, cangjuan.name) and
-      not table.contains({ "slash", "analeptic" }, card.trueName)
-  end,
-  bypass_distances = function(self, player, skill, card)
-    return card and table.contains(card.skillNames, cangjuan.name)
   end,
 })
 

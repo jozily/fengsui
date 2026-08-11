@@ -1,4 +1,4 @@
-local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
+local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local jiyuan = fk.CreateSkill{

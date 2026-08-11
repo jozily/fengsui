@@ -1,4 +1,4 @@
-local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
+local H = require "packages.fengsui.hegemony_util"
 
 local yinbing = fk.CreateSkill{
   name = "fengsui_heg__yinbingRemake",

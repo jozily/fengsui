@@ -1,3 +1,5 @@
+local H = require "packages.fengsui.hegemony_util"
+
 -- 检测在"未明确势力视为形成阵形"逻辑下，p1, p2, p3是否构成围攻（p1,p3为围攻，p2被围攻）
 local function isKunshiSiege(attacker, victim, support)
   if not attacker or not victim or not support or attacker == victim or attacker == support or victim == support then

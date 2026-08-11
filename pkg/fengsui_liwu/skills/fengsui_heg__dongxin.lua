@@ -2,10 +2,6 @@ local dongxin = fk.CreateSkill{
   name = "fengsui_heg__dongxin",
 }
 
-local function discardLimit(damage, cardNum)
-  return math.min(damage or 1, cardNum)
-end
-
 dongxin:addEffect(fk.Damage, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
@@ -23,7 +19,7 @@ dongxin:addEffect(fk.Damage, {
     if player.dead or #player:getCardIds("he") == 0 then return end
     local cards = room:askToCards(player, {
       min_num = 1,
-      max_num = discardLimit(data.damage, #player:getCardIds("he")),
+      max_num = #player:getCardIds("he"),
       pattern = ".",
       skill_name = dongxin.name,
       prompt = "#fengsui_heg__dongxin-discard",
@@ -32,7 +28,7 @@ dongxin:addEffect(fk.Damage, {
     })
     if #cards == 0 then return end
     local slashes = table.filter(cards, function(id) return Fk:getCardById(id).trueName == "slash" end)
-    room:recastCard(cards, player, dongxin.name)
+    room:throwCard(cards, dongxin.name, player, player)
     for _, id in ipairs(slashes) do
       if player.dead then break end
       if room:getCardArea(id) == Card.DiscardPile then
@@ -53,10 +49,5 @@ dongxin:addEffect(fk.Damage, {
     end
   end,
 })
-
-dongxin:addTest(function(room, me)
-  lu.assertEquals(discardLimit(2, 5), 2)
-  lu.assertEquals(discardLimit(3, 1), 1)
-end)
 
 return dongxin

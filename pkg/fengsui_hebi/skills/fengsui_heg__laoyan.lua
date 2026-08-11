@@ -1,4 +1,4 @@
-local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
+local H = require "packages.fengsui.hegemony_util"
 
 local laoyan = fk.CreateSkill{
   name = "fengsui_heg__laoyan",
@@ -28,13 +28,10 @@ laoyan:addEffect(fk.CardUsing, {
       cancelable = false,
       prompt = "#fengsui_heg__laoyan-discard",
     })
-    data.extra_data = data.extra_data or {}
-    data.extra_data.fengsui_heg__laoyan_triggers = data.extra_data.fengsui_heg__laoyan_triggers or {}
-    table.insertIfNeed(data.extra_data.fengsui_heg__laoyan_triggers, player.id)
-
-    local team = table.filter(data.tos, function(p)
-      return p ~= player and H.compareKingdomWith(p, player)
-    end)
+    local team = {}
+    for _, p in ipairs(data.tos) do
+       if p ~= player and H.compareKingdomWith(p, player) then table.insert(team, p) end
+    end
     if #team > 0 then
       data.nullifiedTargets = data.nullifiedTargets or {}
       table.insertTableIfNeed(data.nullifiedTargets, team)
@@ -45,8 +42,13 @@ laoyan:addEffect(fk.CardUsing, {
 laoyan:addEffect(fk.CardUseFinished, {
   anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)
-    local triggers = (data.extra_data or {}).fengsui_heg__laoyan_triggers
-    return type(triggers) == "table" and table.contains(triggers, player.id) and noTargetDamaged(data)
+    if data.extra_data and data.extra_data.laoyan_trigger == player.id then
+       -- 判断是否没受到伤害
+       local hurt = false
+       if data.damageDealt and data.damageDealt[player] and data.damageDealt[player] > 0 then hurt = true end
+       return not hurt and target ~= player
+    end
+    return false
   end,
   on_use = function(self, event, target, player, data)
     player:drawCards(2, laoyan.name)

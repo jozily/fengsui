@@ -1,5 +1,5 @@
 local H = require "packages.hegemony.util"
-local s = fk.CreateSkill { name = "fengsui_heg__yinyu",  related_skills = {"fengsui_heg__zhue","fengsui_heg__fuzhu_xs"}, tags = { Skill.Compulsory, Skill.MainPlace } }
+local s = fk.CreateSkill { name = "fengsui_heg__yinyu", tags = { Skill.Compulsory, Skill.MainPlace } }
 
 s:addEffect(fk.GeneralShown, {
   can_trigger = function(self, event, target, player, data)

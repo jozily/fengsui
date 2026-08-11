@@ -1,4 +1,4 @@
-local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
+local H = require "packages.fengsui.hegemony_util"
 
 local yinbing = fk.CreateSkill{
   name = "fengsui_heg__yinbing",
@@ -10,6 +10,16 @@ local function uniqueBigKingdom(player)
   local kingdom = H.getKingdom(player)
   for _, p in ipairs(player.room.alive_players) do
     if p ~= player and H.isBigKingdomPlayer(p) and H.getKingdom(p) ~= kingdom then return false end
+  end
+  return true
+end
+
+local function isSmallestKingdom(player)
+  local counts = H.getKingdomPlayersNum(player.room)
+  local mine = counts[H.getKingdom(player)]
+  if not mine then return false end
+  for _, n in pairs(counts) do
+    if n < mine then return false end
   end
   return true
 end
@@ -32,7 +42,7 @@ yinbing:addEffect("prohibit", {
         if responder == owner and uniqueBigKingdom(owner) and H.compareKingdomWith(source, owner) then
           return true
         end
-        if source == owner and H.isSmallKingdomPlayer(owner) and H.isBigKingdomPlayer(responder) then
+        if source == owner and isSmallestKingdom(owner) and H.isBigKingdomPlayer(responder) then
           return true
         end
       end
