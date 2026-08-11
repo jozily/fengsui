@@ -1,80 +1,80 @@
-local fengsui_heg__zenhui = fk.CreateSkill {
+local zenhui = fk.CreateSkill {
   name = "fengsui_heg__zenhui",
 }
 
 Fk:loadTranslationTable{
   ["fengsui_heg__zenhui"] = "谮毁",
-  [":fengsui_heg__zenhui"] = "你的出牌阶段内限一次，当你使用【杀】或黑色普通锦囊牌指定唯一目标时，你令可以成为此牌目标的另一名其他角色选择一项："..
-  "1.交给你一张牌并成为此牌的使用者；2.成为此牌的额外目标。",
+  [":fengsui_heg__zenhui"] = "出牌阶段限一次，当你使用【杀】或黑色普通锦囊牌指定一名角色为唯一目标时，你可以选择另一名能成为此牌合法目标的角色，并选择：1.获得该角色的一张牌，然后其代替你成为此牌的使用者；2.令其也成为此牌的目标。",
 
-  ["#fengsui_heg__zenhui-choose"] = "谮毁：令一名角色选择：交给你一张牌并成为%arg的使用者；或成为此牌的额外目标",
-  ["#fengsui_heg__zenhui-give"] = "谮毁：交给 %dest 一张牌以成为此牌使用者，否则你成为此牌额外目标",
+  ["#fengsui_heg__zenhui-choose"] = "谮毁：选择一名能成为%arg的目标的角色",
+  ["@fengsui_heg__zenhui-choice"] = "谮毁：选择一项令%dest执行",
+  ["fengsui_heg__zenhui_becomeuser"] = "获得其一张牌并令其成为使用者",
+  ["fengsui_heg__zenhui_becometarget"] = "令其也成为此牌的目标",
 
-  ["$fengsui_heg__zenhui1"] = "你也休想置身事外！",
-  ["$fengsui_heg__zenhui2"] = "你可别不识抬举！"
+  ["$fengsui_heg__zenhui1"] = "我的好妹妹，来世莫要生于帝王家。",
+  ["$fengsui_heg__zenhui2"] = "至尊有诏，不从长公主旨，斩！",
 }
 
-fengsui_heg__zenhui:addEffect(fk.TargetSpecifying, {
-  anim_type = "control",
+zenhui:addEffect(fk.TargetSpecifying, {
+  mute = true,
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(fengsui_heg__zenhui.name) and
-      player.phase == Player.Play and player:usedSkillTimes(fengsui_heg__zenhui.name, Player.HistoryPhase) == 0 and
+    return data.from == player and player:hasSkill(zenhui.name) and
+      player:usedSkillTimes(self.name, Player.HistoryPhase) < 1 and
       (data.card.trueName == "slash" or (data.card.color == Card.Black and data.card:isCommonTrick())) and
-      #data.use.tos == 1 and
-      #data:getExtraTargets({bypass_times = true}) > 0
+      data.firstTarget and #data.use.tos == 1 and #data:getExtraTargets({bypass_times = true}) > 0
   end,
   on_cost = function(self, event, target, player, data)
     local room = player.room
-    local to = room:askToChoosePlayers(player, {
-      skill_name = fengsui_heg__zenhui.name,
+    local tos = room:askToChoosePlayers(player, {
       targets = data:getExtraTargets({bypass_times = true}),
       min_num = 1,
       max_num = 1,
       prompt = "#fengsui_heg__zenhui-choose:::"..data.card:toLogString(),
+      skill_name = zenhui.name,
       cancelable = true,
+      no_indicate = true,
     })
-    if #to > 0 then
-      event:setCostData(self, {tos = to})
-      return true
+    if #tos == 0 then return false end
+    local to = tos[1]
+    local choices = {"fengsui_heg__zenhui_becometarget::"..to.id, "Cancel"}
+    if not to:isNude() then
+      table.insert(choices, "fengsui_heg__zenhui_becomeuser::"..to.id)
     end
+    local choice = room:askToChoice(player, {
+      choices = choices,
+      skill_name = zenhui.name,
+      prompt = "@fengsui_heg__zenhui-choice::"..to.id,
+      all_choices = {
+        "fengsui_heg__zenhui_becomeuser::"..to.id,
+        "fengsui_heg__zenhui_becometarget::"..to.id,
+        "Cancel",
+      },
+    })
+    if choice == "Cancel" then return false end
+    event:setCostData(self, {tos = tos, choice = choice:split(":")[1]})
+    return true
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local to = event:getCostData(self).tos[1]
-    if to:isNude() then
-      data:addTarget(to)
-      room:sendLog{
-        type = "#AddTargetsBySkill",
-        from = player.id,
-        to = {to.id},
-        arg = fengsui_heg__zenhui.name,
-        arg2 = data.card:toLogString(),
-      }
-      return
-    end
-    local card = room:askToCards(to, {
-      skill_name = fengsui_heg__zenhui.name,
-      include_equip = true,
-      min_num = 1,
-      max_num = 1,
-      prompt = "#fengsui_heg__zenhui-give::"..player.id,
-      cancelable = true,
-    })
-    if #card > 0 then
-      room:obtainCard(player, card, false, fk.ReasonGive, to, fengsui_heg__zenhui.name)
+    local cost = event:getCostData(self)
+    local to = cost.tos[1]
+    if cost.choice:startsWith("fengsui_heg__zenhui_becomeuser") then
+      room:notifySkillInvoked(player, zenhui.name, "control", {to.id})
+      player:broadcastSkillInvoke(zenhui.name, 1)
+      local card = room:askToChooseCard(player, {
+        target = to,
+        flag = "he",
+        skill_name = zenhui.name,
+      })
+      room:obtainCard(player, card, false, fk.ReasonPrey, player, zenhui.name)
       data.from = to
-      --room.logic:trigger(fk.PreCardUse, to, data)
+      target = to
     else
+      room:notifySkillInvoked(player, zenhui.name, "offensive", {to.id})
+      player:broadcastSkillInvoke(zenhui.name, 2)
       data:addTarget(to)
-      room:sendLog{
-        type = "#AddTargetsBySkill",
-        from = player.id,
-        to = {to.id},
-        arg = fengsui_heg__zenhui.name,
-        arg2 = data.card:toLogString(),
-      }
     end
   end,
 })
 
-return fengsui_heg__zenhui
+return zenhui

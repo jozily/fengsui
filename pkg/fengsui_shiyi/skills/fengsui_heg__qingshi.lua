@@ -1,66 +1,80 @@
-local fengsui_heg__qingshi = fk.CreateSkill {
+local qingshi = fk.CreateSkill {
   name = "fengsui_heg__qingshi",
 }
 
 Fk:loadTranslationTable{
   ["fengsui_heg__qingshi"] = "清识",
-  [":fengsui_heg__qingshi"] = "当你受到伤害后，你可以选择一名角色，若你与其阵营：相同，你与其各摸一张牌；不同，你弃置你与其各一张牌。",
+  [":fengsui_heg__qingshi"] = "出牌阶段限一次，你可以展示一张手牌，并展示一名手牌数大于体力值的其他角色X张手牌（X为其手牌数和体力值之差）。"..
+  "若其以此法展示的牌与你展示的牌中：有颜色相同，你摸一张牌或弃置其一张牌；有点数相同，本回合此技能改为“出牌阶段限两次”；"..
+  "均不同且你手牌上限大于0，你的手牌上限-1。",
 
-  ["#fengsui_heg__qingshi-invoke"] = "清识：选择一名角色，若与其阵营相同则各摸一张牌，否则你弃置双方各一张牌",
+  ["#fengsui_heg__qingshi"] = "清识：展示一张手牌，并展示一名角色超过其体力值张数的手牌",
+  ["#fengsui_heg__qingshi-choice"] = "清识：弃置 %dest 一张牌，或点“取消”摸一张牌",
 
-  ["$fengsui_heg__qingshi1"] = "会在事纵恣，非持久处下之道。",
-  ["$fengsui_heg__qingshi2"] = "智多而肆，吾畏其有他志。",
+  ["$fengsui_heg__qingshi1"] = "行路八千里，方可辨忠奸。",
+  ["$fengsui_heg__qingshi2"] = "观其行，明其志，而后知心。",
 }
 
-fengsui_heg__qingshi:addEffect(fk.Damaged, {
-  anim_type = "masochism",
-  can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(fengsui_heg__qingshi.name)
+qingshi:addEffect("active", {
+  anim_type = "control",
+  prompt = "#fengsui_heg__qingshi",
+  card_num = 1,
+  target_num = 1,
+  can_use = function(self, player)
+    return player:usedSkillTimes(qingshi.name, Player.HistoryPhase) <
+      (1 + player:getMark("fengsui_heg__qingshi_times-turn"))
   end,
-  on_cost = function(self, event, target, player, data)
-    local room = player.room
-    local to = room:askToChoosePlayers(player, {
-      min_num = 1,
-      max_num = 1,
-      targets = room.alive_players,
-      prompt = "#fengsui_heg__qingshi-invoke",
-      skill_name = fengsui_heg__qingshi.name,
+  card_filter = function(self, player, to_select, selected)
+    return #selected == 0 and table.contains(player:getCardIds("h"), to_select)
+  end,
+  target_filter = function(self, player, to_select, selected, selected_cards)
+    return #selected == 0 and to_select ~= player and #selected_cards == 1 and
+      to_select:getHandcardNum() > to_select.hp
+  end,
+  on_use = function(self, room, effect)
+    local player = effect.from
+    local target = effect.tos[1]
+    player:showCards(effect.cards)
+    local n = target:getHandcardNum() - target.hp
+    if player.dead or target.dead or n < 1 then return end
+    local cards = room:askToChooseCards(player, {
+      target = target,
+      min = n,
+      max = n,
+      flag = "h",
+      skill_name = qingshi.name,
     })
-    if #to > 0 then
-      event:setCostData(self, {tos = to})
-      return true
+    target:showCards(cards)
+    if player.dead then return end
+    local matched = false
+    if table.find(cards, function(id)
+      return Fk:getCardById(id).number == Fk:getCardById(effect.cards[1]).number
+    end) then
+      matched = true
+      room:setPlayerMark(player, "fengsui_heg__qingshi_times-turn", 1)
+    end
+    if table.find(cards, function(id)
+      return Fk:getCardById(id).color == Fk:getCardById(effect.cards[1]).color
+    end) then
+      matched = true
+      if target.dead or target:isNude() or not room:askToSkillInvoke(player, {
+        skill_name = qingshi.name,
+        prompt = "#fengsui_heg__qingshi-choice::"..target.id,
+      }) then
+        player:drawCards(1, qingshi.name)
+      else
+        local id = room:askToChooseCard(player, {
+          target = target,
+          flag = "he",
+          skill_name = qingshi.name,
+        })
+        room:throwCard(id, qingshi.name, target, player)
+      end
+    end
+    if not matched and player:getMaxCards() > 0 and not player.dead then
+      room:addPlayerMark(player, MarkEnum.MinusMaxCards, 1)
     end
   end,
-  on_use = function(self, event, target, player, data)
-    local room = player.room
-    local to = event:getCostData(self).tos[1]
-    if player:isFriend(to) then
-      player:drawCards(1, fengsui_heg__qingshi.name)
-      if not to.dead then
-        to:drawCards(1, fengsui_heg__qingshi.name)
-      end
-    else
-      room:askToDiscard(player, {
-        min_num = 1,
-        max_num = 1,
-        include_equip = true,
-        skill_name = fengsui_heg__qingshi.name,
-        cancelable = false,
-      })
-      if to:isAlive() and not to:isNude() then
-        local id = room:askToChooseCard(
-          player,
-          {
-            target = to,
-            flag = "he",
-            skill_name = fengsui_heg__qingshi.name,
-          }
-        )
-
-        room:throwCard(id, fengsui_heg__qingshi.name, to, player)
-      end
-    end
-  end
 })
 
-return fengsui_heg__qingshi
+return qingshi

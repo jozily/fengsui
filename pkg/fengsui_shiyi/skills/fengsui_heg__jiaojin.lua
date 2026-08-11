@@ -1,44 +1,43 @@
-local fengsui_heg__jiaojin = fk.CreateSkill {
+local jiaojin = fk.CreateSkill {
   name = "fengsui_heg__jiaojin",
 }
 
 Fk:loadTranslationTable{
   ["fengsui_heg__jiaojin"] = "骄矜",
-  [":fengsui_heg__jiaojin"] = "当你受到男性角色造成的伤害时，你可以弃置一张装备牌，令此伤害-1。",
+  [":fengsui_heg__jiaojin"] = "当你受到男性角色造成的伤害时，你可以弃置一张装备牌，防止此伤害。",
 
-  ["#fengsui_heg__jiaojin-invoke"] = "骄矜：你可以弃置一张装备牌，令你受到的伤害-1",
+  ["#fengsui_heg__jiaojin-discard"] = "骄矜：你可以弃置一张装备牌，防止此伤害",
 
-  ["$fengsui_heg__jiaojin1"] = "就凭你，还想算计于我？",
-  ["$fengsui_heg__jiaojin2"] = "是谁借给你的胆子？"
+  ["$fengsui_heg__jiaojin1"] = "恩情惩刑，皆是本公主的赏赐。",
+  ["$fengsui_heg__jiaojin2"] = "本公主要做何事，还需你们说教？",
 }
 
-fengsui_heg__jiaojin:addEffect(fk.DamageInflicted, {
+jiaojin:addEffect(fk.DetermineDamageInflicted, {
   anim_type = "defensive",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(fengsui_heg__jiaojin.name) and
-      data.from and data.from:isMale() and not player:isNude()
+    return target == player and player:hasSkill(jiaojin.name) and data.from and
+      data.from:isMale() and not player:isNude()
   end,
   on_cost = function(self, event, target, player, data)
-    local room = player.room
-    local card = room:askToDiscard(player, {
-      skill_name = fengsui_heg__jiaojin.name,
-      include_equip = true,
+    local cards = player.room:askToDiscard(player, {
       min_num = 1,
       max_num = 1,
+      include_equip = true,
+      skill_name = jiaojin.name,
       cancelable = true,
       pattern = ".|.|.|.|.|equip",
-      prompt = "#fengsui_heg__jiaojin-invoke",
+      prompt = "#fengsui_heg__jiaojin-discard",
       skip = true,
-      })
-    if #card > 0 then
-      event:setCostData(self, {cards = card})
+    })
+    if #cards > 0 then
+      event:setCostData(self, {cards = cards})
       return true
     end
   end,
   on_use = function(self, event, target, player, data)
-    data:changeDamage(-1)
-    player.room:throwCard(event:getCostData(self).cards, fengsui_heg__jiaojin.name, player, player)
+    player.room:throwCard(event:getCostData(self).cards, self.name, player)
+    data:preventDamage()
   end,
 })
 
-return fengsui_heg__jiaojin
+return jiaojin
