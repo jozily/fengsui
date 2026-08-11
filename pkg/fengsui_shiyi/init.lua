@@ -3,7 +3,7 @@ extension.extensionName = "fengsui"
 extension.game_modes_whitelist = { "new_heg_mode", "fengsui_heg__mode" }
 
 extension:loadSkillSkelsByPath("./packages/fengsui/pkg/fengsui_shiyi/skills")
-assert(#extension.skill_skels == 10, "fengsui_shiyi must load exactly 10 skill skeletons")
+assert(#extension.skill_skels == 11, "fengsui_shiyi must load exactly 11 skill skeletons")
 
 local xinxianying = General:new(extension, "fengsui_heg__xinxianying", "wei", 3, 3, General.Female)
 xinxianying:addSkills { "fengsui_heg__qingshi", "fengsui_heg__jiejie" }
