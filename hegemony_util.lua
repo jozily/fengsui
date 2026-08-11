@@ -44,14 +44,14 @@ function compat.askToHebiOrTransform(room, player, skillName, cancelable)
     return modern.transformGeneral(room, player, false, false, 1, skillName)
   end
 
-  local choices = { "fengsui_hebi", "fengsui_transform" }
+  local choices = { "fengsui_hebi_choice", "fengsui_transform" }
   if cancelable then table.insert(choices, "Cancel") end
   local choice = room:askToChoice(player, {
     choices = choices,
     skill_name = skillName,
     prompt = "#fengsui-hebi-or-transform",
   })
-  if choice ~= "fengsui_hebi" then
+  if choice ~= "fengsui_hebi_choice" then
     room:returnToGeneralPile(companions)
     if choice == "Cancel" then return false end
     return modern.transformGeneral(room, player, false, false, 1, skillName)

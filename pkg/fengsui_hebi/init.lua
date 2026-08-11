@@ -8,7 +8,8 @@ assert(#extension.skill_skels == 151, "fengsui_hebi must load exactly 151 offici
 local zhanghua = General:new(extension, "fengsui_heg__zhanghua", "jin", 4)
 zhanghua.mainMaxHpAdjustedValue = -1
 zhanghua.subkingdom = "wei"
-zhanghua:addCompanions("heg__yanghu", "ty_heg__yanghu")
+zhanghua:addCompanions("heg__yanghu")
+zhanghua:addCompanions("ty_heg__yanghu")
 zhanghua:addSkills { "fengsui_heg__cangjuan", "fengsui_heg__yinbing" }
 
 Fk:loadTranslationTable{

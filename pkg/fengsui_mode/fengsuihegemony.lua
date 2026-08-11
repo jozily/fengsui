@@ -589,6 +589,7 @@ local notice = "此模式为<b><font color='red'>烽燧燎原专属扩展国战�
 Fk:loadTranslationTable{
   ["fengsui_heg__mode"] = "燎原之战",
   [":fengsui_heg__mode"] = heg_description,
+  ["zeheg_rule"] = "亮将",
   ["fengsuiheg_rule"] = "国战规则",
   ["revealAll"] = "全部明置",
   ["@heg_bankingdom"] = "禁用势力  ",

@@ -12,7 +12,8 @@ local translations = {
   ["hide"] = "暗置",
   ["use"] = "使用",
 
-  ["fengsui_hebi"] = "合璧",
+  ["fengsui_hebi"] = "烽燧燎原-合璧",
+  ["fengsui_hebi_choice"] = "合璧",
   ["fengsui_transform"] = "变更副将",
   ["#fengsui_heg__yangming-give"] = "扬名：选择一张手牌和一名与此前目标势力不同的角色",
   ["#fengsui_heg__dexiang-invoke"] = "德襄：你可以发动此技能",

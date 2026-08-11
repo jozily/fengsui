@@ -87,7 +87,8 @@ Fk:loadTranslationTable{
 shenqing:addTest(function(room, me)
   lu.assertEquals(type(H.askToHebiOrTransform), "function")
   lu.assertEquals(Fk:translate("give"), "交给")
-  lu.assertEquals(Fk:translate("fengsui_hebi"), "合璧")
+  lu.assertEquals(Fk:translate("fengsui_hebi"), "烽燧燎原-合璧")
+  lu.assertEquals(Fk:translate("fengsui_hebi_choice"), "合璧")
   lu.assertEquals(Fk:translate("fengsui_transform"), "变更副将")
 end)
 
