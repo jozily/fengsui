@@ -14,16 +14,6 @@ local function uniqueBigKingdom(player)
   return true
 end
 
-local function isSmallestKingdom(player)
-  local counts = H.getKingdomPlayersNum(player.room)
-  local mine = counts[H.getKingdom(player)]
-  if not mine then return false end
-  for _, n in pairs(counts) do
-    if n < mine then return false end
-  end
-  return true
-end
-
 local function currentCardUser(room)
   if not room or not room.logic then return nil end
   local event = room.logic:getCurrentEvent():findParent(GameEvent.UseCard, true)
@@ -42,7 +32,7 @@ yinbing:addEffect("prohibit", {
         if responder == owner and uniqueBigKingdom(owner) and H.compareKingdomWith(source, owner) then
           return true
         end
-        if source == owner and isSmallestKingdom(owner) and H.isBigKingdomPlayer(responder) then
+        if source == owner and H.isSmallKingdomPlayer(owner) and H.isBigKingdomPlayer(responder) then
           return true
         end
       end

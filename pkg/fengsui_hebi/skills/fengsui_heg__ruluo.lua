@@ -2,7 +2,7 @@ local H = require "packages.fengsui.hegemony_util"
 
 local ruluo = fk.CreateSkill{
   name = "fengsui_heg__ruluo",
-  related_skills = {"ld__xiace", "ld__qice"},
+  related_skills = {"heg__xiace", "ld__qice"},
 }
 
 local gained_mark = "fengsui_heg__ruluo_gained"
@@ -27,7 +27,7 @@ ruluo:addEffect(fk.EventPhaseStart, {
     local basic = #table.filter(hand, function(id) return Fk:getCardById(id).type == Card.TypeBasic end)
     local trick = #table.filter(hand, function(id) return Fk:getCardById(id).type == Card.TypeTrick end)
     local skill_name
-    if basic > trick then skill_name = "ld__xiace" end
+    if basic > trick then skill_name = "heg__xiace" end
     if basic < trick then skill_name = "ld__qice" end
     if skill_name then
       room:handleAddLoseSkills(player, skill_name)

@@ -3,7 +3,7 @@ local Compat = {}
 local installed = false
 local neutralKingdom = "fengsui_neutral"
 local neutralAllKingdom = "fengsui_neutralall"
-local baseKingdoms = { "wei", "shu", "wu", "qun", "jinh" }
+local baseKingdoms = { "wei", "shu", "wu", "qun", "jin" }
 
 local function generalKingdoms(general)
   local kingdoms = {}
@@ -25,6 +25,16 @@ local function canPair(general, deputy)
   if general.kingdom == neutralAllKingdom and deputy.kingdom == neutralAllKingdom then return false end
   if general.kingdom == neutralAllKingdom and deputy.kingdom == "wild" then return false end
   if deputy.kingdom == neutralAllKingdom and general.kingdom == "wild" then return false end
+  if general.kingdom == neutralAllKingdom then
+    return deputy.kingdom ~= neutralKingdom and table.find(generalKingdoms(deputy), function(kingdom)
+      return table.contains(baseKingdoms, kingdom)
+    end) ~= nil
+  end
+  if deputy.kingdom == neutralAllKingdom then
+    return general.kingdom ~= neutralKingdom and table.find(generalKingdoms(general), function(kingdom)
+      return table.contains(baseKingdoms, kingdom)
+    end) ~= nil
+  end
   if general.kingdom == "wild" then
     return deputy.kingdom ~= "wild" and deputy.kingdom ~= neutralKingdom and deputy.kingdom ~= neutralAllKingdom
   end
@@ -132,10 +142,6 @@ local function chooseGenerals(self)
         table.remove(room.general_pile, i)
       end
     end
-    room:doSuperLightBox("packages/fengsui/pkg/fengsui_effect/qml/Bankingdoms.qml", {
-      kingdoms = unused[1],
-    })
-    room:delay(3600)
     allKingdoms = kingdoms
   end
   table.sort(allKingdoms)
@@ -245,32 +251,13 @@ function Compat.install()
     Fk._fengsuiNeutralAllWrapped = true
   end
   local mode = require "packages.hegemony.pkg.gamemodes.new_hegemony_mode"
-  table.insertTableIfNeed(mode.whitelist, {
-    "fengsui_hebi", "fengsui_liwu", "fengsui_cards", "fengsui_effect", "fengsui_mode",
-  })
+  table.insertTableIfNeed(mode.whitelist, { "fengsui_hebi", "fengsui_liwu", "fengsui_cards", "fengsui_effect" })
   installChooseRule()
   local originalLogic = mode.logic
   mode.logic = function()
     installChooseRule()
     local logic = originalLogic()
     logic.chooseGenerals = chooseGenerals
-    local originalBroadcastGeneral = logic.broadcastGeneral
-    logic.broadcastGeneral = function(self, ...)
-      local result = originalBroadcastGeneral(self, ...)
-      for _, player in ipairs(self.room.players) do
-        self.room:setPlayerMark(player, "HalfMaxHpLeft", player:getMark("HalfMaxHpLeft"))
-        self.room:setPlayerMark(player, "CompanionEffect", player:getMark("CompanionEffect"))
-      end
-      return result
-    end
-    local originalAttachSkillToPlayers = logic.attachSkillToPlayers
-    logic.attachSkillToPlayers = function(self, ...)
-      local result = originalAttachSkillToPlayers(self, ...)
-      for _, player in ipairs(self.room.players) do
-        self.room:setPlayerMark(player, "@seat", "seat#" .. tostring(player.seat))
-      end
-      return result
-    end
     return logic
   end
 end

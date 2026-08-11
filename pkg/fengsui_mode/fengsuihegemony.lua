@@ -116,7 +116,7 @@ function HegLogic:chooseGenerals()
   ["shu"]="<b><font color='red'>蜀</font>",
   ["wu"]="<b><font color='green'>吴</font>",
   ["qun"]="<b><font color='grey'>群</font>",
-  ["jinh"]="<b><font color='purple'>晋</font>",
+  ["jin"]="<b><font color='purple'>晋</font>",
 }
 
   local allKingdoms = {} ---@type string[]
@@ -477,7 +477,7 @@ heg = fk.CreateGameMode{
       end))
       room:sortByAction(players)
       local function wildChooseKingdom(player, generalName)
-        local allKingdoms ={"wei", "shu", "wu", "qun", "jinh", "unknown", "hidden"}
+        local allKingdoms ={"wei", "shu", "wu", "qun", "jin", "unknown", "hidden"}
 
         local choice
         local all_choices = table.clone(H.wildKingdoms)

@@ -1,5 +1,5 @@
-local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
-local U = require "packages.fengsui.pkg.fengsui_hebi.util"
+local H = require "packages.fengsui.hegemony_util"
+local U = require "packages.fengsui.pkg.fengsui_liwu.util"
 
 local fuzai = fk.CreateSkill{
   name = "fengsui_heg__fuzaiRemake",

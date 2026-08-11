@@ -14,6 +14,13 @@ local function isFirstCardThisTurn(player)
   return #events == 1
 end
 
+local function noDamageDealt(data)
+  for _, damage in pairs(data.damageDealt or {}) do
+    if damage and damage > 0 then return false end
+  end
+  return true
+end
+
 yuyuan:addEffect(fk.PreCardUse, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
@@ -59,14 +66,20 @@ yuyuan:addEffect(fk.CardUseFinished, {
     if target ~= player or not player:hasSkill(yuyuan.name) then return false end
     local ids = (data.extra_data or {}).fengsui_heg__yuyuan_targets
     if type(ids) ~= "table" or #ids == 0 or H.getGeneralsRevealedNum(player) < 2 then return false end
-    return not table.find(ids, function(id)
-      return data.damageDealt and data.damageDealt[id]
-    end)
+    return noDamageDealt(data)
+  end,
+  on_cost = function()
+    return true
   end,
   on_use = function(self, event, target, player, data)
     U.hideSkillGeneral(player, yuyuan.name)
   end,
 })
+
+yuyuan:addTest(function(room, me)
+  lu.assertTrue(noDamageDealt({ damageDealt = {} }))
+  lu.assertFalse(noDamageDealt({ damageDealt = { [me.id] = 1 } }))
+end)
 
 Fk:loadTranslationTable{
   ["#fengsui_heg__yuyuan-extra"] = "逾垣：你可以额外指定任意名未确定势力角色为目标",

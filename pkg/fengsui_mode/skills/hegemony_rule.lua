@@ -58,7 +58,7 @@ local function wildChooseKingdom(room, player, generalName)
     else
       choice = room:askToChoice(player, {choices = choices, skill_name = hegRule.name, prompt = "#wild-choose", cancelable = false, all_choices = all_choices})
     end
-  elseif table.contains({"wei", "shu", "wu", "qun", "jinh", "jinv", "unknown", "hidden", "wild"}, player.role) then --jinh是官正晋 jinv是应变晋 --让野人也能选
+  elseif table.contains({"wei", "shu", "wu", "qun", "jin", "unknown", "hidden", "wild"}, player.role) then
     choice = room:askToChoice(player, {choices = choices, skill_name = hegRule.name, prompt = "#wild-choose", cancelable = false, all_choices = all_choices})
   end
   if choice then

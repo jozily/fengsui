@@ -39,6 +39,9 @@ neutralRule:addEffect(fk.GeneralShown, {
   can_trigger = function(self, event, target, player, data)
     return target == player and Liwu.getNeutralPlace(player) ~= nil
   end,
+  on_cost = function()
+    return true
+  end,
   on_use = function(self, event, target, player, data)
     local room = player and player.room
     if not room then return end
@@ -80,6 +83,9 @@ neutralRule:addEffect(fk.RoundStart, {
   can_trigger = function(self, event, target, player, data)
     local shownRound = player:getMark("fengsui_neutral_reveal_round")
     return player.room ~= nil and shownRound > 0 and (player.room:getBanner("RoundCount") or 0) > shownRound
+  end,
+  on_cost = function()
+    return true
   end,
   on_use = function(self, event, target, player, data)
     local room = player and player.room

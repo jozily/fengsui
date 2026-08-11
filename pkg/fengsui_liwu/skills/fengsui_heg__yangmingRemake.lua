@@ -15,6 +15,9 @@ s:addEffect(fk.CardUsing, {
   can_trigger = function(self, event, target, player, data)
     return target == player and player:hasSkill(s.name) and data.card
   end,
+  on_cost = function()
+    return true
+  end,
   on_use = function(self, event, target, player, data)
     local types = player:getTableMark(s.name .. "-turn")
     table.insertIfNeed(types, data.card:getTypeString())

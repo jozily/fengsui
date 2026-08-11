@@ -1,115 +1,14 @@
 local extension = Package:new("fengsui_hebi")
-local H = require "packages.fengsui.hegemony_util"
 extension.extensionName = "fengsui"
 extension.game_modes_whitelist = { "new_heg_mode", "fengsui_heg__mode" }
 
 extension:loadSkillSkelsByPath("./packages/fengsui/pkg/fengsui_hebi/skills")
+assert(#extension.skill_skels == 151, "fengsui_hebi must load exactly 151 official skill skeletons")
 
-assert(#extension.skill_skels == 153, "fengsui_hebi must load exactly 153 skill skeletons")
-for _, skel in ipairs(extension.skill_skels) do
-  local skill_name = skel.name
-  skel:addTest(function(room, me)
-    lu.assertNotNil(Fk.skills[skill_name])
-    FkTest.runInRoom(function()
-      room:handleAddLoseSkills(me, skill_name)
-      lu.assertTrue(me:hasSkill(skill_name, true))
-      room:handleAddLoseSkills(me, "-" .. skill_name)
-      lu.assertFalse(me:hasSkill(skill_name, true))
-    end)
-  end)
-end
-
--- “沉绩”与“骤望”从规则层放宽阵法关系，确保其他国战包的阵法技也生效。
-if not H._fengsuiOriginalInFormationRelation then
-  H._fengsuiOriginalInFormationRelation = H.inFormationRelation
-  H.inFormationRelation = function(player, target)
-    if H._fengsuiOriginalInFormationRelation(player, target) then return true end
-    local room = (player and player.room) or (target and target.room) or Fk:currentRoom()
-    if not room or not player or not target or not H.compareKingdomWith(player, target) then return false end
-    if player:getMark("@fengsui_heg__zhouwang-round") > 0 or
-      target:getMark("@fengsui_heg__zhouwang-round") > 0 then return true end
-    return table.find(room.alive_players, function(p)
-      return p:hasSkill("fengsui_heg__chenji") and H.compareKingdomWith(p, player)
-    end) ~= nil
-  end
-end
-
--- ==================== 合璧及变更副将联合提示函数 ====================
-
---- @param room Room @ 游戏房间
---- @param player ServerPlayer @ 触发合璧或者变更的玩家
---- @param skill_name string @ 技能名称
---- @param isHidden boolean @ 变更或者合璧后的武将是否必须保持暗置
-function H.askToHebiOrTransform(room, player, skill_name, isHidden)
-  if player.dead then return end
-  local choices = {"transformDeputy", "Cancel"}
-
-  -- 识别该玩家主将是谁，且有没有珠联璧合对象在当前的将池(牌堆)中
-  local main_gen = H.getActualGeneral(player, false)
-  local mg = Fk.generals[main_gen]
-  local comp_gen = nil
-  for _, name in ipairs(room.general_pile or room.generalPile or {}) do
-    local candidate = Fk.generals[name]
-    if mg and candidate and
-      (mg:isCompanionWith(candidate) or candidate:isCompanionWith(mg)) then
-      comp_gen = name
-      break
-    end
-  end
-
-  -- 只要牌堆中存在主将的珠联璧合搭档，就提供合璧选项。
-  if comp_gen then
-    table.insert(choices, 1, "heg__hebi_choice")
-  end
-
-  local choice = room:askToChoice(player, {
-    choices = choices,
-    skill_name = skill_name,
-  })
-
-  if choice == "transformDeputy" then
-    H.transformGeneral(room, player, false, isHidden)
-  elseif choice == "heg__hebi_choice" then
-    -- If the old deputy is hidden, changeHero only sees "anjiang" and
-    -- cannot remove the real deputy's skills. Reveal it without triggering
-    -- its reveal effects so the normal deputy replacement cleanup applies.
-    if player.deputyGeneral == "anjiang" then
-      player:revealGeneral(true, true)
-    end
-
-    -- 从武将牌堆抽出珠联璧合对象
-    table.removeOne(room.general_pile, comp_gen)
-    -- 原副将塞回武将底
-    local orig = player.deputyGeneral == "anjiang" and player:getMark("__heg_deputy") or player.deputyGeneral
-    table.insert(room.general_pile, orig)
-
-    -- 更换为指定的副将
-    room:changeHero(player, comp_gen, false, true, not isHidden, false, false)
-    if isHidden then
-      player:hideGeneral(true)
-      room:sendLog{
-        type = "#ChangeHiddenGeneral",
-        from = player.id,
-        arg = "deputyGeneral",
-        toast = true,
-      }
-    end
-    -- 处理底层标记，确保判定系统运转正常
-    room:setPlayerMark(player, "__heg_deputy", comp_gen)
-
-    -- 获得一枚珠联璧合标记
-    H.addHegMark(player, "companion")
-  end
-end
-
-Fk:loadTranslationTable{
-  ["heg__hebi_choice"] = "进行合璧",
-}
-
-local zhanghua = General:new(extension, "fengsui_heg__zhanghua", "jinh", 4)
+local zhanghua = General:new(extension, "fengsui_heg__zhanghua", "jin", 4)
 zhanghua.mainMaxHpAdjustedValue = -1
 zhanghua.subkingdom = "wei"
-zhanghua:addCompanions("jy_heg__yanghuz", "zhbh_heg__yanghu")
+zhanghua:addCompanions("heg__yanghu", "ty_heg__yanghu")
 zhanghua:addSkills { "fengsui_heg__cangjuan", "fengsui_heg__yinbing" }
 
 Fk:loadTranslationTable{
@@ -129,10 +28,10 @@ Fk:loadTranslationTable{
   ["#fengsui_heg__cangjuan"] = "藏卷：使用一张“诏”，然后将一张花色不同的牌置为“诏”",
   ["#fengsui_heg__cangjuan-imperial"] = "藏卷：请使用【敕令】",
   ["#fengsui_heg__cangjuan-zhaoshu"] = "藏卷：请使用【诏书】",
-  ["#fengsui_heg__cangjuan-use"] = "藏卷：请选择一张“诏”使用",
+  ["#fengsui_heg__cangjuan-response"] = "藏卷：请响应使用一张“诏”",
   ["#fengsui_heg__cangjuan-put"] = "藏卷：请将一张与%arg花色不同的牌置为“诏”",
   ["fengsui_heg__yinbing"] = "饮冰",
-  [":fengsui_heg__yinbing"] = "主将技，锁定技，此武将牌上的阴阳鱼单独-1。若你的势力为唯一大势力，你无法响应其他同势力角色的牌。若你所处势力人数为全场最少，大势力角色无法响应你的牌。",
+  [":fengsui_heg__yinbing"] = "主将技，锁定技，此武将牌上的阴阳鱼单独-1。若你的势力为唯一大势力，你无法响应其他同势力角色的牌。若你为小势力角色，大势力角色无法响应你的牌。",
   ["$fengsui_heg__juanzhi1"] = "此剑光芒艳发，非凡物也，当以华阴赤土拭之。",
   ["$fengsui_heg__juanzhi2"] = "斗牛间常有紫气，其兆如何，还请阁下解之。",
   ["$fengsui_heg__cangjuan1"] = "此剑光芒艳发，非凡物也，当以华阴赤土拭之。",
@@ -142,7 +41,7 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__zhanghua"] = "式乾之议，臣谏事具存，非不谏也……",
 }
 
-local shantao = General:new(extension, "fengsui_heg__shantao", "jinh", 3)
+local shantao = General:new(extension, "fengsui_heg__shantao", "jin", 3)
 shantao.subkingdom = "wei"
 shantao:addSkills { "fengsui_heg__linzhe", "fengsui_heg__yamai" }
 
@@ -171,7 +70,7 @@ Fk:loadTranslationTable{
 }
 
 -- 蜀-晋
-local qiaozhou = General:new(extension, "fengsui_heg__qiaozhou", "jinh", 3)
+local qiaozhou = General:new(extension, "fengsui_heg__qiaozhou", "jin", 3)
 qiaozhou.subkingdom = "shu"
 qiaozhou:addCompanions("fengsui_heg__limi", "fengsui_heg__chenshou")
 qiaozhou:addSkills { "fengsui_heg__baoguo", "fengsui_heg__yuandao", "fengsui_heg__yunxing" }
@@ -183,7 +82,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__qiaozhou"] = "公冶长风",
   ["cv:fengsui_heg__qiaozhou"] = "暂无",
   ["fengsui_heg__baoguo"] = "保国",
-  [":fengsui_heg__baoguo"] = "限定技，当有同势力角色进入濒死状态时，若你为小势力角色，你可以依次令同势力角色选择一项：1.移除副将或将X张牌交给任意一名大势力角色，然后恢复一点体力值；2.摸X张牌（X为当前大势力角色数）。",
+  [":fengsui_heg__baoguo"] = "限定技，当有同势力角色进入濒死状态时，若你为小势力角色，你可以依次令所有同势力角色选择一项：1.将X张牌交给任意一名大势力角色，然后恢复一点体力；2.变更副将（X为当前大势力角色数）。",
   ["#fengsui_heg__baoguo-invoke"] = "保国：是否对 %dest 发动？",
   ["#fengsui_heg__baoguo-choice"] = "保国：请选择一项",
   ["fengsui_heg__baoguo_give"] = "交给大势力角色X张牌，然后恢复1点体力",
@@ -218,7 +117,7 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__qiaozhou"] = "俯首而视仇，非居正道也。",
 }
 
-local huoyi = General:new(extension, "fengsui_heg__huoyi", "jinh", 4)
+local huoyi = General:new(extension, "fengsui_heg__huoyi", "jin", 4)
 huoyi.subkingdom = "shu"
 huoyi:addSkills { "fengsui_heg__liefa" }
 
@@ -239,7 +138,7 @@ Fk:loadTranslationTable{
 }
 
 -- 吴-晋
-local lujii = General:new(extension, "fengsui_heg__lujii", "jinh", 3)
+local lujii = General:new(extension, "fengsui_heg__lujii", "jin", 3)
 lujii.subkingdom = "wu"
 lujii:addCompanions("ld__lukang")
 lujii:addSkills { "fengsui_heg__lingzhi", "fengsui_heg__ruluo" }
@@ -275,7 +174,7 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__lujii"] = "华亭鹤唳，可复闻乎？",
 }
 
-local zhouchu = General:new(extension, "fengsui_heg__zhouchu", "jinh", 4)
+local zhouchu = General:new(extension, "fengsui_heg__zhouchu", "jin", 4)
 zhouchu.mainMaxHpAdjustedValue = -1
 zhouchu.subkingdom = "wu"
 zhouchu:addSkills { "fengsui_heg__tuanfeng", "fengsui_heg__xuanhe" }
@@ -306,7 +205,7 @@ Fk:loadTranslationTable{
 }
 
 -- 群-晋
-local peixiu = General:new(extension, "fengsui_heg__peixiu", "jinh", 3)
+local peixiu = General:new(extension, "fengsui_heg__peixiu", "jin", 3)
 peixiu.subkingdom = "qun"
 peixiu:addSkills { "fengsui_heg__juezhi", "fengsui_heg__yunie" }
 
@@ -332,7 +231,7 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__peixiu"] = "服罢寒食散，蹉跎又一年。",
 }
 
-local zhugejing = General:new(extension, "fengsui_heg__zhugejing", "jinh", 3)
+local zhugejing = General:new(extension, "fengsui_heg__zhugejing", "jin", 3)
 zhugejing.mainMaxHpAdjustedValue = -1
 zhugejing.subkingdom = "qun"
 zhugejing:addSkills { "fengsui_heg__heyi", "fengsui_heg__pijian", "fengsui_heg__zeyu" }
@@ -493,7 +392,7 @@ Fk:loadTranslationTable{
   [":fengsui_heg__lixi"] = "锁定技，当你进入濒死状态时，你令所有角色的非锁定技失效直至本回合结束。",
   ["#fengsui_heg__lixi-invalid"] = "离徙：所有角色的非锁定技失效直至本回合结束",
   ["fengsui_heg__juansui"] = "狷谇",
-  [":fengsui_heg__juansui"] = "锁定技，当你的体力值变为1时，你摸两张牌并复原你的武将牌，然后你视为使用一张本局未以此法切仅可指定当前回合角色势力角色为目标的普通锦囊牌。",
+  [":fengsui_heg__juansui"] = "锁定技，当你的体力值变为1时，你摸两张牌并复原你的武将牌，然后你视为使用一张本局未以此法且仅可指定当前回合角色势力角色为目标的普通锦囊牌。",
   ["#fengsui_heg__juansui-use"] = "狷谇：请使用一张本局未以此法使用过的普通锦囊牌",
   ["$fengsui_heg__lixi1"] = "青砖浸透红颜泪，朱墙难困腊梅香。",
   ["$fengsui_heg__lixi2"] = "素衣何惧霜雪重？俯仰无愧，不须低眉！",
@@ -594,7 +493,7 @@ Fk:loadTranslationTable{
 
 local wuxian = General:new(extension, "fengsui_heg__wuxian", "shu", 3, 3, General.Female)
 wuxian:addCompanions("hs__liubei")
-wuxian:addCompanions("SP_heg__wuyi")
+wuxian:addCompanions("ol_heg__wuyi")
 wuxian:addSkills { "fengsui_heg__guixiang", "fengsui_heg__fumian" }
 
 Fk:loadTranslationTable{
@@ -678,7 +577,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__lixian"] = "佚名",
   ["cv:fengsui_heg__lixian"] = "暂无",
   ["fengsui_heg__xunyun"] = "勋殒",
-  [":fengsui_heg__xunyun"] = "锁定技，当你首次进入濒死状态时，你令伤害来源选择一项：1.移除副将；2.暗置所有武将牌且本轮无法明置，然后你可以令一名其他同势力角色<a href='heg__hebi'>合璧</a>或变更副将。",
+  [":fengsui_heg__xunyun"] = "<b>锁定技，</b>当你首次进入濒死状态时，你令伤害来源移除副将且本局无法再次变更，然后你可以令一名其他同势力角色<b>合璧</b>或变更副将。",
   ["fengsui_heg__zhengchi"] = "正斥",
   [":fengsui_heg__zhengchi"] = "当有同势力角色使用基本牌或普通锦囊牌指定目标后，若你武将牌均明置，你可暗置此武将牌并与另一名非此牌目标其他角色拼点，胜者成为此牌使用者，若其与你势力相同，你可明置此武将牌且此牌点数为其拼点点数。",
   ["#fengsui_heg__zhengchi-invoke"] = "正斥：你可以与一名非此牌目标角色拼点",
@@ -732,7 +631,9 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__limi"] = "佚名",
   ["cv:fengsui_heg__limi"] = "暂无",
   ["fengsui_heg__ciying"] = "辞应",
-  [":fengsui_heg__ciying"] = "当你于回合外需要使用或打出一张基本牌或普通锦囊牌时，若当前回合角色未确定势力或为大势力，你可以视为使用或打出之并选择一项：1.交给其X张牌；2.摸X张牌，然后移除此武将牌（X为本技能本局发动次数）。",
+  ["fengsui_heg__ciying_deputy"] = "辞应",
+  [":fengsui_heg__ciying"] = "当你于回合外需要使用或打出一张基本牌或普通锦囊牌时，若当前回合角色未确定势力或为大势力，你可以视为使用或打出之并选择一项：1.交给其X张牌；2.变更副将，然后此技能变为副将技（X为本局游戏此技能发动次数）。",
+  [":fengsui_heg__ciying_deputy"] = "副将技，当你于回合外需要使用或打出一张基本牌或普通锦囊牌时，若当前回合角色未确定势力或为大势力，你可以视为使用或打出之并选择一项：1.交给其X张牌；2.变更副将（X为本局游戏此技能发动次数）。",
   ["#fengsui_heg__ciying-active"] = "辞应：你可以视为使用或打出需要的基本牌或普通锦囊牌",
   ["#fengsui_heg__ciying-choice"] = "辞应：请选择一项（本局第 %arg 次发动）",
   ["#fengsui_heg__ciying-give"] = "辞应：请交给当前回合角色 %arg 张牌",
@@ -746,15 +647,25 @@ Fk:loadTranslationTable{
   ["fengsui_heg__ciyingRemake_give"] = "交给当前回合角色X张牌",
   ["fengsui_heg__ciyingRemake_draw"] = "摸X张牌，然后移除此武将牌",
   ["fengsui_heg__chendu"] = "陈笃",
-  [":fengsui_heg__chendu"] = "限定技，当场上有角色移除武将牌时，你可以令其依次执行任意项：1.主副将<a href='heg__yiwei'>易位</a>；2.与一名同势力角色主将或副将<a href='heg__yiwei'>易位</a>；3.变更副将。",
-  ["#fengsui_heg__chendu-invoke"] = "陈笃：选择令 %dest 依次执行的任意项",
+  [":fengsui_heg__chendu"] = "当场上有同势力角色变更副将后，你可以令其选择一项：1.主副将<a href='heg__yiwei'>易位</a>；2.与一名同势力角色主将或副将<a href='heg__yiwei'>易位</a>。",
+  ["#fengsui_heg__chendu-invoke"] = "陈笃：是否令 %dest 选择一项？",
+  ["#fengsui_heg__chendu-choice"] = "陈笃：请选择一项",
   ["#fengsui_heg__chendu-swap"] = "陈笃：请选择一名同势力角色进行易位",
   ["#fengsui_heg__chendu-position"] = "陈笃：选择与 %dest 易位的武将牌位置",
   ["fengsui_heg__chendu_self"] = "主副将易位",
   ["fengsui_heg__chendu_other"] = "与同势力角色易位",
-  ["fengsui_heg__chendu_transform"] = "变更副将",
   ["fengsui_heg__chendu_main"] = "主将",
   ["fengsui_heg__chendu_deputy"] = "副将",
+  ["fengsui_heg__chenduRemake"] = "陈笃·旧",
+  [":fengsui_heg__chenduRemake"] = "限定技，当场上有角色移除武将牌时，你可以令其依次执行任意项：1.主副将<a href='heg__yiwei'>易位</a>；2.与一名同势力角色主将或副将<a href='heg__yiwei'>易位</a>；3.变更副将。",
+  ["#fengsui_heg__chenduRemake-invoke"] = "陈笃·旧：选择令 %dest 依次执行的任意项",
+  ["#fengsui_heg__chenduRemake-swap"] = "陈笃·旧：请选择一名同势力角色进行易位",
+  ["#fengsui_heg__chenduRemake-position"] = "陈笃·旧：选择与 %dest 易位的武将牌位置",
+  ["fengsui_heg__chenduRemake_self"] = "主副将易位",
+  ["fengsui_heg__chenduRemake_other"] = "与同势力角色易位",
+  ["fengsui_heg__chenduRemake_transform"] = "变更副将",
+  ["fengsui_heg__chenduRemake_main"] = "主将",
+  ["fengsui_heg__chenduRemake_deputy"] = "副将",
   ["$fengsui_heg__ciying1"] = "今蒙恩诏，寸心难表，然念祖母，诚难上道。",
   ["$fengsui_heg__ciying2"] = "是臣尽节于陛下之日长，报养刘之日短也。",
     ["$fengsui_heg__ciying3"] = "臣亡国贱虏，蒙陛下累征不弃，敢不陨首以报。",
@@ -807,7 +718,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__heji"] = "公冶长风",
   ["cv:fengsui_heg__heji"] = "暂无",
   ["fengsui_heg__guru"] = "孤茹",
-  [":fengsui_heg__guru"] = "锁定技，当你仅明置此武将牌时，你摸牌阶段摸牌数+X；当你武将牌均明置且X小于场上势力数时，你与其他角色、其他角色与你的距离+X（X为同势力角色数）。",
+  [":fengsui_heg__guru"] = "锁定技，当你仅明置此武将牌时，你摸牌阶段摸牌数+X；当你武将牌均明置且X小于场上势力数时，你与其他角色、其他角色与你的距离+X（X为同势力角色数且至多为2）。",
   ["@fengsui_heg__guru_distance"] = "孤茹距离",
   ["fengsui_heg__weihou"] = "维后",
   [":fengsui_heg__weihou"] = "当同势力角色的判定牌即将生效时，若你的武将牌均明置，你可以暗置一张武将牌并用装备区的一张牌替代之。",
@@ -869,7 +780,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__zhanghuai"] = "公冶长风",
   ["cv:fengsui_heg__zhanghuai"] = "暂无",
   ["fengsui_heg__laoyan"] = "劳燕",
-  [":fengsui_heg__laoyan"] = "锁定技，当其他角色使用一张牌指定目标后，若此牌目标数大于1且你为目标之一，你弃置两张牌令此牌对其他同势力角色无效。若你未受到伤害，你摸两张牌。",
+  [":fengsui_heg__laoyan"] = "锁定技，当其他角色使用牌指定目标后，若此牌目标数大于1且你为目标之一，你弃置两张牌令此牌对其他同势力角色无效。若此牌所有目标均未受到伤害，你摸两张牌。",
   ["#fengsui_heg__laoyan-discard"] = "劳燕：请弃置两张牌，令此牌对其他同势力角色无效",
   ["fengsui_heg__jueyan"] = "诀言",
   [":fengsui_heg__jueyan"] = "当你使用单体牌指定其他角色后，若你的武将牌均明置，你可以暗置此武将牌并摸一张牌或与目标拼点，赢的角色对没赢的角色造成1点伤害。",
@@ -885,7 +796,7 @@ Fk:loadTranslationTable{
 }
 
 local fengsui_heg__zhangbai = General:new(extension, "fengsui_heg__zhangbai", "wu", 3)
-fengsui_heg__zhangbai:addCompanions("zhbh_heg__luyusheng")
+fengsui_heg__zhangbai:addCompanions("ty_heg__luyusheng")
 fengsui_heg__zhangbai:addSkill("fengsui_heg__jincai")
 fengsui_heg__zhangbai:addSkill("fengsui_heg__lianxi")
 
@@ -963,7 +874,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__shenqing"] = "申情",
   [":fengsui_heg__shenqing"] = "限定技，出牌阶段，你可以选择场上两张武将牌，若其中有满足【珠联璧合】的武将牌，则其所属角色各获得一枚【珠联璧合】标记；若均不满足，你可以令其中一位所属角色<a href='heg__hebi'>合璧</a> 或变更副将。",
   ["fengsui_heg__juangu"] = "眷故",
-  [":fengsui_heg__juangu"] = "当一名拥有珠联璧合武将牌的角色于回合内首次使用的牌指定另一名拥有与其配对之珠联璧合武将牌的角色为目标后，若此两张武将牌：不属于同一名角色，你可以令其各摸一张牌；属于同一名角色，你可以令此牌额外执行一次。",
+  [":fengsui_heg__juangu"] = "当一名拥有珠联璧合武将牌的角色于回合内首次使用基本牌或普通锦囊牌指定另一名拥有与其配对之珠联璧合武将牌的角色为目标后，若此两张武将牌：不属于同一名角色，你可以令其各摸一张牌；属于同一名角色，你可以令此牌额外执行一次。",
   ["$fengsui_heg__shenqing1"] = "字字啼血成赋，句句唤故人归...",
   ["$fengsui_heg__shenqing2"] = "昔年同窗烛今燃，可照前路？",
     ["$fengsui_heg__shenqing3"] = "父亲，阿姊，若在泉下闻此诵，应展颜...",
@@ -1003,7 +914,7 @@ Fk:loadTranslationTable{
 }
 
 local gongsunxiu = General:new(extension, "fengsui_heg__gongsunxiu", "qun", 4)
-gongsunxiu:addCompanions("ye_heg__gongsunyuan")
+gongsunxiu:addCompanions("ld__gongsunyuan")
 gongsunxiu:addSkills { "fengsui_heg__kuizhen", "fengsui_heg__niejiang" }
 
 Fk:loadTranslationTable{
@@ -1096,7 +1007,7 @@ Fk:loadTranslationTable{
 
 -- 晋
 -- 晋（纯晋势力）
-local hulie = General:new(extension, "fengsui_heg__hulie", "jinh", 4)
+local hulie = General:new(extension, "fengsui_heg__hulie", "jin", 4)
 hulie:addSkills { "fengsui_heg__kunshi", "fengsui_heg__fudao" }
 
 Fk:loadTranslationTable{
@@ -1120,7 +1031,7 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__hulie"] = "不曾想，竟死在蛮夷刀下！",
 }
 
-local zuti = General:new(extension, "fengsui_heg__zuti", "jinh", 4)
+local zuti = General:new(extension, "fengsui_heg__zuti", "jin", 4)
 zuti:addSkills { "fengsui_heg__kangying", "fengsui_heg__jietu" }
 
 Fk:loadTranslationTable{
@@ -1145,7 +1056,7 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__zuti"] = "中流击楫，誓言犹在耳畔……奈何，大业未成……身先死……",
 }
 
-local hejiao = General:new(extension, "fengsui_heg__hejiao", "jinh", 3)
+local hejiao = General:new(extension, "fengsui_heg__hejiao", "jin", 3)
 hejiao:addSkills { "fengsui_heg__jiezhi", "fengsui_heg__qingsong" }
 
 Fk:loadTranslationTable{
@@ -1172,7 +1083,7 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__hejiao"] = "松倾国殇……臣节……尽于此矣……",
 }
 
-local yangzhi = General:new(extension, "fengsui_heg__yangzhi", "jinh", 3, 3, General.Female)
+local yangzhi = General:new(extension, "fengsui_heg__yangzhi", "jin", 3, 3, General.Female)
 yangzhi:addCompanions("fengsui_heg__yangyan")
 yangzhi:addCompanions("fengsui_heg__yangjun")
 yangzhi:addCompanions("heg__yangjun")
@@ -1201,7 +1112,7 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__yangzhi"] = "姊妹继宠，福极灾生。。",
 }
 
-local yangyan = General:new(extension, "fengsui_heg__yangyan", "jinh", 3, 3, General.Female)
+local yangyan = General:new(extension, "fengsui_heg__yangyan", "jin", 3, 3, General.Female)
 yangyan:addCompanions("fengsui_heg__yangzhi")
 yangyan:addSkills { "fengsui_heg__xuanbei", "fengsui_heg__jiyuan" }
 
@@ -1234,36 +1145,8 @@ Fk:loadTranslationTable{
 }
 
 
-local jiananfeng = General:new(extension, "fengsui_heg__jiananfeng", "jinh", 3, 3, General.Female)
-jiananfeng:addCompanions("jin_heg__jiachong")
-jiananfeng:addCompanions("zf_heg__jiananfeng")
-jiananfeng:addSkills { "fengsui_heg__xugu", "fengsui_heg__xionglie" }
-
-Fk:loadTranslationTable{
-  ["fengsui_heg__jiananfeng"] = "贾南风",
-  ["#fengsui_heg__jiananfeng"] = "凤啸峻峕",
-  ["designer:fengsui_heg__jiananfeng"] = "公冶长风",
-  ["illustrator:fengsui_heg__jiananfeng"] = "小罗没想好",
-  ["cv:fengsui_heg__jiananfeng"] = "暂无",
-  ["fengsui_heg__xugu"] = "虚淈",
-  [":fengsui_heg__xugu"] = "出牌阶段限一次，你可以暗置一张武将牌，选择一个军令并令所有势力各一名角色（除你以外）依次选择一项：1.执行此军令并明置一张武将牌；2.摸已明置武将牌数张牌并受到来自你的一点伤害。",
-  ["xugu_show_hide"] = "若武将牌均明置，展示一张手牌并暗置所有武将牌",
-  ["xugu_do_command"] = "执行该军令",
-  ["#fengsui_heg__xugu-choice"] = "虚淈：请选择一项",
-  ["#fengsui_heg__xugu"] = "虚淈：选择参与的角色",
-  ["#fengsui_heg__xugu-show"] = "虚淈：请选择要展示的手牌",
-  ["#fengsui_heg__xugu-use"] = "虚淈：请使用一张仍在手牌区的展示牌",
-  ["#fengsui_heg__xugu-damage"] = "虚淈：选择一名距离最近的角色造成1点伤害",
-  ["fengsui_heg__xionglie"] = "凶烈",
-  [":fengsui_heg__xionglie"] = "锁定技，你对与你武将牌明置状态不同的角色造成的伤害+1；武将牌明置状态与你相同的角色无法响应你的牌。",
-  ["$fengsui_heg__xionglie1"] = "不论汝用何法，本后只要死的。",
-  ["$fengsui_heg__xionglie2"] = "好个贱婢，看来留不得你。",
-  ["$fengsui_heg__xugu1"] = "诏命皆从我出，诸君当知谁为这一国之主。",
-  ["$fengsui_heg__xugu2"] = "尔等罪证，可俱在本宫手中。",
-  ["~fengsui_heg__jiananfeng"] = "只恨未早下杀手，致有今日险境。",
-}
-local xuwen = General:new(extension, "fengsui_heg__xuwen", "jinh", 3, 3, General.Female)
-xuwen:addCompanions("jin_heg__wangjun")
+local xuwen = General:new(extension, "fengsui_heg__xuwen", "jin", 3, 3, General.Female)
+xuwen:addCompanions("heg__wangjun")
 xuwen:addSkills { "fengsui_heg__fuhui", "fengsui_heg__mohua" }
 
 Fk:loadTranslationTable{
@@ -1286,7 +1169,7 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__xuwen"] = "丹青从不败，白头总佳人。",
 }
 
-local jiawu = General:new(extension, "fengsui_heg__jiawu", "jinh", 3, 3, General.Female)
+local jiawu = General:new(extension, "fengsui_heg__jiawu", "jin", 3, 3, General.Female)
 jiawu:addCompanions( "fengsui_heg__hanshou")
 jiawu:addSkills { "fengsui_heg__huaixiang", "fengsui_heg__liusu" }
 
@@ -1322,7 +1205,7 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__jiawu"] = "此生得一知己...纵使情深不寿...亦无悔也......",
 }
 
-local hanshou = General(extension, "fengsui_heg__hanshou", "jinh", 3)
+local hanshou = General(extension, "fengsui_heg__hanshou", "jin", 3)
 hanshou:addCompanions("fengsui_heg__jiawu")
 hanshou:addSkills { "fengsui_heg__yuyuan", "fengsui_heg__ruxiang" }
 
@@ -1350,8 +1233,8 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__hanshou"] = "香消...玉殒...此情...来生再续.....",
 }
 
-local kuaishi = General:new(extension, "fengsui_heg__kuaishi", "jinh", 3, 3, General.Female)
-kuaishi:addCompanions("jy_heg__sunxiu")
+local kuaishi = General:new(extension, "fengsui_heg__kuaishi", "jin", 3, 3, General.Female)
+kuaishi:addCompanions("heg__sunxiuj")
 
 kuaishi:addSkills { "fengsui_heg__hejue", "fengsui_heg__hexi" }
 
@@ -1385,7 +1268,7 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__kuaishi"] = "玉已碎，人已亡……勿复相思……",
 }
 
-local fengsui_heg__wangrong = General:new(extension, "fengsui_heg__wangrong", "jinh", 3)
+local fengsui_heg__wangrong = General:new(extension, "fengsui_heg__wangrong", "jin", 3)
 fengsui_heg__wangrong:addCompanions("fengsui_heg__shantao")
 fengsui_heg__wangrong:addCompanions("fengsui_heg__hejiao")
 fengsui_heg__wangrong:addSkill("fengsui_heg__fumiao")
@@ -1415,7 +1298,7 @@ Fk:loadTranslationTable{
   ["$fengsui_heg__ruwu4"] = "岁月流转，得一二知音足矣；其余权名如烟消散也罢。",
 }
 
-local fengsui_heg__xiejiu = General:new(extension, "fengsui_heg__xiejiu", "jinh", 3)
+local fengsui_heg__xiejiu = General:new(extension, "fengsui_heg__xiejiu", "jin", 3)
 fengsui_heg__xiejiu.gender = General.Female
 fengsui_heg__xiejiu:addSkill("fengsui_heg__yuchen")
 fengsui_heg__xiejiu:addSkill("fengsui_heg__guitu")
@@ -1449,13 +1332,12 @@ Fk:loadTranslationTable{
 
 Fk:loadTranslationTable{
   ["fengsui_heg"] = "烽燧燎原",
-  ["fengsui"] = "烽燧燎原",
   ["heg__hebi"] = "合璧：变更副将的子集。玩家主将需有对应珠联璧合武将牌方可进行合璧；玩家选择合璧后将副将变更为主将对应的珠联璧合武将牌，然后获得一枚珠联璧合标记。<br>",
 }
 
-local jiabao = General:new(extension, "fengsui_heg__jiabao", "jinh", 3, 3, General.Female)
+local jiabao = General:new(extension, "fengsui_heg__jiabao", "jin", 3, 3, General.Female)
 jiabao:addSkills { "fengsui_heg__gaofan", "fengsui_heg__canyun" }
-jiabao:addCompanions("zf_heg__simajiong")
+jiabao:addCompanions("heg__simajiong")
 Fk:loadTranslationTable{
   ["fengsui_heg__jiabao"] = "贾褒",
   ["#fengsui_heg__jiabao"] = "临川之蛊",
@@ -1512,5 +1394,9 @@ Fk:loadTranslationTable{
   ["fengsui_heg__xinmai_damage"] = "受到1点雷电伤害",
   ["fengsui_heg__xinmai_hide"] = "暗置一张武将牌",
 }
+
+assert(#extension.generals == 46, "fengsui_hebi must register exactly 46 official generals")
+require "packages.fengsui.pkg.fengsui_hebi.option_translations"
+require "packages.fengsui.pkg.fengsui_hebi.voice_lines"
 
 return extension

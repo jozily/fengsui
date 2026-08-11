@@ -8,7 +8,7 @@ local original_kingdom_mark = "fengsui_heg__huaixiang_original_kingdom-turn"
 
 local function getEligibleCards(room, data)
   local discarded_types = {}
-  local current_event = room.logic:getCurrentEvent():findParent(GameEvent.MoveCards)
+  local current_event = room.logic:getCurrentEvent():findParent(GameEvent.MoveCards, true)
   room.logic:getEventsOfScope(GameEvent.MoveCards, 1, function(event)
     if not current_event or event.id ~= current_event.id then
       for _, move in ipairs(event.data) do

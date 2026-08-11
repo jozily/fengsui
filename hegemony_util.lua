@@ -1,26 +1,93 @@
--- Keep Fengsui usable with both the newer hegemony package and the
--- ol_hegemony implementation bundled by older FreeKill 0.5.20 builds.
-local ok, modern = pcall(require, "packages.hegemony.util")
-if ok then
-  return modern
+local modern = require "packages.hegemony.util"
+
+local compat = setmetatable({}, { __index = modern })
+
+local function returnGenerals(room, generals, chosen, original)
+  table.removeOne(generals, chosen)
+  if original and original ~= "" and original ~= "anjiang" and not original:startsWith("blank_") then
+    table.insertIfNeed(generals, original)
+  end
+  if #generals > 0 then room:returnToGeneralPile(generals) end
 end
 
-local legacy = require "packages.ol_hegemony.util"
-local compat = setmetatable({}, { __index = legacy })
-
--- New hegemony derives the room from the player; ol_hegemony expects it.
-function compat.addHegMark(player, mark_name, number)
-  return legacy.addHegMark(player.room, player, mark_name, number)
+local function changeGeneral(room, player, general, isMain, isHidden, data)
+  room:changeHero(player, general, false, not isMain, not isHidden, false, false)
+  if isHidden then
+    player:hideGeneral(not isMain)
+    room:sendLog{
+      type = "#ChangeHiddenGeneral",
+      from = player.id,
+      arg = isMain and "mainGeneral" or "deputyGeneral",
+      toast = true,
+    }
+  end
+  room:setPlayerMark(player, isMain and "__heg_general" or "__heg_deputy", general)
+  room.logic:trigger(modern.GeneralTransformed, player, data)
 end
 
--- New hegemony accepts room as its first argument; ol_hegemony does not.
-function compat.transformGeneral(room, player, is_main, is_hidden, number)
-  return legacy.transformGeneral(player, is_main, is_hidden, number)
+function compat.askToHebiOrTransform(room, player, skillName, cancelable)
+  if not room or not player or player.dead then return false end
+  local main = Fk.generals[modern.getActualGeneral(player, false)]
+  if not main then return modern.transformGeneral(room, player, false, false, 1, skillName) end
+  if main.kingdom == "wild" or main.subkingdom == "wild" then
+    return modern.transformGeneral(room, player, false, false, 1, skillName)
+  end
+
+  local companions = room:findGenerals(function(name)
+    local general = Fk.generals[name]
+    return general and general.kingdom ~= "wild" and general.subkingdom ~= "wild" and
+      (main:isCompanionWith(general) or general:isCompanionWith(main))
+  end, #(room.general_pile or {}))
+
+  -- A careerist companion cannot form Hebi; replace the deputy directly instead.
+  if #companions == 0 then
+    return modern.transformGeneral(room, player, false, false, 1, skillName)
+  end
+
+  local choices = { "fengsui_hebi", "fengsui_transform" }
+  if cancelable then table.insert(choices, "Cancel") end
+  local choice = room:askToChoice(player, {
+    choices = choices,
+    skill_name = skillName,
+    prompt = "#fengsui-hebi-or-transform",
+  })
+  if choice ~= "fengsui_hebi" then
+    room:returnToGeneralPile(companions)
+    if choice == "Cancel" then return false end
+    return modern.transformGeneral(room, player, false, false, 1, skillName)
+  end
+
+  local original = modern.getActualGeneral(player, true)
+  local data = modern.GeneralTransformedData:new{
+    isMain = false,
+    isHidden = false,
+    num = #companions,
+    origName = original,
+    skillName = skillName,
+  }
+  if room.logic:trigger(modern.GeneralTransforming, player, data) then
+    room:returnToGeneralPile(companions)
+    return false
+  end
+  if player.deputyGeneral == "anjiang" then player:revealGeneral(true, true) end
+
+  local general = #companions == 1 and companions[1] or room:askToChooseGeneral(player, {
+    generals = companions,
+    n = 1,
+    no_convert = true,
+  })
+  if not general or general == "" then
+    room:returnToGeneralPile(companions)
+    return false
+  end
+  returnGenerals(room, companions, general, original)
+  changeGeneral(room, player, general, false, false, data)
+  modern.addHegMark(player, "companion", 1)
+  return true
 end
 
--- This operation was renamed when hegemony was split from ol_hegemony.
-function compat.swapDeputy(room, player, target)
-  return legacy.SwapTwoPlayersDeputy(room, player, target)
-end
+Fk:loadTranslationTable{
+  ["#fengsui-hebi-or-transform"] = "请选择合璧或变更副将",
+}
 
 return compat

@@ -1,22 +1,24 @@
 local H = require "packages.fengsui.hegemony_util"
-local U = require "packages.fengsui.pkg.fengsui_hebi.util"
+local U = require "packages.fengsui.pkg.fengsui_liwu.util"
 
 local jiemeng = fk.CreateSkill{
   name = "fengsui_heg__jiemeng",
 }
 
+local function availableTargets(player)
+  return table.filter(player.room.alive_players, function(p)
+    return H.getKingdom(p) ~= "unknown" and player:canUseTo(Fk:cloneCard("overbearing"), p)
+  end)
+end
+
 jiemeng:addEffect(fk.Damaged, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(jiemeng.name) and
-      table.find(player.room:getOtherPlayers(player, false), function(p)
-        return H.getKingdom(p) ~= "unknown" and player:canUseTo(Fk:cloneCard("overbearing"), p)
-      end) ~= nil
+    return target == player and player:getMark("fengsui_heg__jiemeng_using") == 0 and
+      player:hasShownSkill(jiemeng.name) and #availableTargets(player) > 0
   end,
   on_cost = function(self, event, target, player, data)
-    local targets = table.map(table.filter(player.room:getOtherPlayers(player, false), function(p)
-      return H.getKingdom(p) ~= "unknown" and player:canUseTo(Fk:cloneCard("overbearing"), p)
-    end), Util.IdMapper)
+    local targets = table.map(availableTargets(player), Util.IdMapper)
     local use = player.room:askToUseVirtualCard(player, {
       name = "overbearing",
       skill_name = jiemeng.name,
@@ -32,11 +34,16 @@ jiemeng:addEffect(fk.Damaged, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
+    local use = event:getCostData(self)
+    local selfTarget = use.tos and use.tos[1] == player
     room:setPlayerMark(player, "fengsui_heg__jiemeng_using", 1)
     room:setPlayerMark(player, "fengsui_heg__jiemeng_hit", 0)
-    room:useCard(event:getCostData(self))
+    if selfTarget and H.allGeneralsRevealed(player) then
+      U.hideSkillGeneral(player, jiemeng.name)
+    end
+    room:useCard(use)
     room:setPlayerMark(player, "fengsui_heg__jiemeng_using", 0)
-    if player:getMark("fengsui_heg__jiemeng_hit") > 0 and H.allGeneralsRevealed(player) then
+    if not selfTarget and player:getMark("fengsui_heg__jiemeng_hit") > 0 and H.allGeneralsRevealed(player) then
       U.hideSkillGeneral(player, jiemeng.name)
     end
     room:setPlayerMark(player, "fengsui_heg__jiemeng_hit", 0)

@@ -11,8 +11,10 @@ local function isCompanion(player)
 end
 
 local function timesNum(player)
+  local room = player.room or Fk:currentRoom()
+  if not room then return 0 end
   local kingdoms, shown = {}, 0
-  for _, p in ipairs(player.room.alive_players) do
+  for _, p in ipairs(room.alive_players) do
     local kingdom = H.getKingdom(p)
     if kingdom ~= "unknown" then table.insertIfNeed(kingdoms, kingdom) end
     if H.compareKingdomWith(p, player) then shown = shown + H.getGeneralsRevealedNum(p) end
@@ -34,9 +36,10 @@ xuanbei:addEffect("active", {
   on_use = function(self, room, effect)
     local player, to = effect.from, effect.tos[1]
     local formed = isCompanion(to)
-    for _ = 1, timesNum(player) do
+    local times = timesNum(player)
+    for _ = 1, times do
       if to.dead then break end
-      H.transformGeneral(room, to, false, false)
+      H.transformGeneral(room, to, false, false, 1, xuanbei.name)
       formed = formed or isCompanion(to)
     end
     if formed then
