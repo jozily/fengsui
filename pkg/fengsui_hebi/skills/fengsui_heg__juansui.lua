@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 
 local juansui = fk.CreateSkill{
   name = "fengsui_heg__juansui",
@@ -14,7 +14,7 @@ juansui:addEffect(fk.HpChanged, {
     local room = player.room
     player:drawCards(2, juansui.name)
     player:reset()
-    
+
     local used = player:getTableMark("fengsui_heg__juansui_used_tricks")
     local tricks = {}
     for _, name in ipairs(require("packages.fengsui.pkg.fengsui_hebi.util").getNationalCardNames({"trick"})) do
@@ -23,7 +23,7 @@ juansui:addEffect(fk.HpChanged, {
         table.insertIfNeed(tricks, name)
       end
     end
-    
+
     local current = room.current
     if #tricks > 0 and current then
       local targets = table.map(table.filter(room.alive_players, function(p)

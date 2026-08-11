@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local fumiao = fk.CreateSkill{
@@ -6,17 +6,21 @@ local fumiao = fk.CreateSkill{
 }
 
 local function getUnusedBasicNames(player)
-  local names = U.getNationalCardNames({"basic"})
+  local names = Fk:getAllCardNames("b")
+  if Fk.all_card_types["rob__jink"] then table.insertIfNeed(names, "rob__jink") end
+  local used = {}
   local room = player.room or Fk:currentRoom()
   -- Skill availability is also evaluated by the client, where player.room is absent.
   if not room or not room.logic then return names end
   room.logic:getEventsOfScope(GameEvent.UseCard, 999, function(e)
     if e.data.card.type == Card.TypeBasic then
-      table.removeOne(names, e.data.card.trueName)
+      used[e.data.card.trueName] = true
     end
     return false
   end, Player.HistoryTurn)
-  return names
+  return table.filter(names, function(name)
+    return not used[Fk:cloneCard(name).trueName]
+  end)
 end
 
 fumiao:addEffect("viewas", {
@@ -79,5 +83,14 @@ fumiao:addEffect("viewas", {
       H.allGeneralsRevealed(player) and not player:isKongcheng() and #getUnusedBasicNames(player) > 0
   end,
 })
+
+fumiao:addTest(function(room, me)
+  local names = getUnusedBasicNames(me)
+  local pattern = Exppattern:Parse(Fk.skills[fumiao.name].pattern)
+  lu.assertTrue(table.contains(names, "analeptic"))
+  lu.assertTrue(table.contains(names, "rob__jink"))
+  lu.assertTrue(pattern:match(Fk:cloneCard("analeptic")))
+  lu.assertTrue(pattern:match(Fk:cloneCard("rob__jink")))
+end)
 
 return fumiao

@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 
 local kuizhen = fk.CreateSkill{
   name = "fengsui_heg__kuizhen",
@@ -29,9 +29,9 @@ kuizhen:addEffect("active", {
   on_use = function(self, room, effect)
     local player = effect.from
     local target = effect.tos[1]
-    
+
     room:throwCard(effect.cards, kuizhen.name, player, player)
-    
+
     local use = room:useVirtualCard("duel", nil, target, player, kuizhen.name, true)
     if use and use.damageDealt and use.damageDealt[player] and target:isAlive() then
       local handcards = target:getCardIds("h")

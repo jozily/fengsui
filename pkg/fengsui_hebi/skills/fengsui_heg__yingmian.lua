@@ -1,4 +1,5 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
+local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local yingmian = fk.CreateSkill{
   name = "fengsui_heg__yingmian",
@@ -7,8 +8,8 @@ local yingmian = fk.CreateSkill{
 yingmian:addEffect(fk.Damaged, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(yingmian.name) and
-      H.allGeneralsRevealed(player)
+    return target == player and player:hasSkill(yingmian.name, true) and
+      not H.allGeneralsRevealed(player)
   end,
   on_cost = function(self, event, target, player, data)
     local tos = player.room:askToChoosePlayers(player, {
@@ -27,7 +28,7 @@ yingmian:addEffect(fk.Damaged, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     local to = event:getCostData(self).to
-    H.doHideGeneral(room, player, player, yingmian.name)
+    U.revealOneGeneral(player)
     if player.dead or to.dead then return end
 
     local command = H.askToStartCommand(player, { skill_name = yingmian.name })

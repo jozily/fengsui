@@ -26,11 +26,11 @@ qiaosi:addEffect(fk.AfterCardsMove, {
   end,
 })
 
-qiaosi:addEffect(fk.EventPhaseStart, {
+qiaosi:addEffect(fk.EventPhaseEnd, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
     return target == player and player:hasSkill(qiaosi.name) and
-      player.phase == Player.Finish and table.find(player:getTableMark(discarded_mark), function(id)
+      player.phase == Player.Discard and table.find(player:getTableMark(discarded_mark), function(id)
         return player.room:getCardArea(id) == Card.DiscardPile
       end)
   end,

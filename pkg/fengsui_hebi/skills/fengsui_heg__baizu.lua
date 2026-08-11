@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 
 local baizu = fk.CreateSkill{
   name = "fengsui_heg__baizu",
@@ -101,7 +101,7 @@ baizu:addEffect(fk.EventPhaseStart, {
     for pid, ctype in pairs(discards) do
       type_count[ctype] = (type_count[ctype] or 0) + 1
     end
-    
+
     local to_lose_hp = {}
     for pid, ctype in pairs(discards) do
       if type_count[ctype] > 1 then
@@ -110,7 +110,7 @@ baizu:addEffect(fk.EventPhaseStart, {
         table.insert(to_lose_hp, { target = t, k = H.getKingdom(t) })
       end
     end
-    
+
     local dead_info = {}
     for _, info in ipairs(to_lose_hp) do
       local t = info.target
@@ -121,7 +121,7 @@ baizu:addEffect(fk.EventPhaseStart, {
         end
       end
     end
-    
+
     for _, dk in ipairs(dead_info) do
       if dk == H.getKingdom(player) then
         local deputy = player.deputyGeneral == "anjiang" and player:getMark("__heg_deputy") or player.deputyGeneral
@@ -137,7 +137,7 @@ baizu:addEffect(fk.EventPhaseStart, {
         end
       end
     end
-    
+
   end,
 })
 

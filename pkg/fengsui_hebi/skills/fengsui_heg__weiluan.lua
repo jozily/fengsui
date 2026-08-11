@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 
 local weiluan = fk.CreateSkill{
   name = "fengsui_heg__weiluan",
@@ -20,8 +20,8 @@ weiluan:addEffect(fk.TargetConfirmed, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     H.doHideGeneral(room, target, target, weiluan.name)
-    
-    target:drawCards(1, weiluan.name)
+
+    target:drawCards(2, weiluan.name)
     if target:isAlive() and not target:isKongcheng() then
       local card = room:askToChooseCard(target, {
         target = target,

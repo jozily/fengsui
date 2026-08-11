@@ -1,9 +1,9 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local yunxing = fk.CreateSkill{
   name = "fengsui_heg__yunxing",
-  tags = {Skill.Compulsory},
+  tags = { Skill.Compulsory, Skill.MainPlace },
 }
 
 yunxing:addEffect(fk.EventPhaseStart, {
@@ -41,7 +41,7 @@ yunxing:addEffect(fk.FinishRetrial, {
     for _, p in ipairs(player.room.alive_players) do
       if H.compareKingdomWith(p, player) then sum = sum + p.hp end
     end
-    
+
     local suit = data.card.number >= sum and Card.Heart or Card.Spade
     local card = Fk:cloneCard(data.card.name, suit, data.card.number)
     if data.card.id then card:addSubcard(data.card.id) end

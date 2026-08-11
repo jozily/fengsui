@@ -2,6 +2,7 @@ local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local pijian = fk.CreateSkill{
   name = "fengsui_heg__pijian",
+  tags = { Skill.DeputyPlace },
 }
 
 local function getDiscardTypes(room)

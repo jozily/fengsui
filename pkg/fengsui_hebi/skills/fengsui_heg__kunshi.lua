@@ -1,29 +1,27 @@
-local H = require "packages.hegemony.util"
-
 -- 检测在"未明确势力视为形成阵形"逻辑下，p1, p2, p3是否构成围攻（p1,p3为围攻，p2被围攻）
-local function isKunshiSiege(p1, p2, p3)
-   local k1, k2, k3 = p1.kingdom, p2.kingdom, p3.kingdom
-   local siegeSide = {}
-   if k1 ~= "unknown" then table.insertIfNeed(siegeSide, k1) end
-   if k3 ~= "unknown" then table.insertIfNeed(siegeSide, k3) end
-   if #siegeSide > 1 then return false end
-   local s_k = siegeSide[1]
-   if s_k and k2 ~= "unknown" and s_k == k2 then return false end
-   return true
+local function isKunshiSiege(attacker, victim, support)
+  if not attacker or not victim or not support or attacker == victim or attacker == support or victim == support then
+    return false
+  end
+  local attackerKingdom, victimKingdom, supportKingdom = attacker.kingdom, victim.kingdom, support.kingdom
+  return attackerKingdom ~= "unknown" and victimKingdom ~= "unknown" and
+    attackerKingdom ~= victimKingdom and
+    (supportKingdom == attackerKingdom or supportKingdom == "unknown")
 end
 
 local function checkKunshiSiegeByHuLie(hulie, target, victim)
    if hulie == target then
       local n1 = hulie:getNextAlive()
       local n2 = hulie:getNextAlive(false, 2)
-      if n1 == victim and isKunshiSiege(hulie, n1, n2) then return true end
+      if n1 == victim and isKunshiSiege(hulie, victim, n2) then return true end
       local l1 = hulie:getLastAlive()
       local l2 = hulie:getLastAlive(false, 2)
-      if l1 == victim and isKunshiSiege(l2, l1, hulie) then return true end
+      if l1 == victim and isKunshiSiege(hulie, victim, l2) then return true end
    elseif hulie == victim then
       local n1 = hulie:getNextAlive()
       local l1 = hulie:getLastAlive()
-      if isKunshiSiege(l1, hulie, n1) then return true end
+      if target == n1 and isKunshiSiege(target, hulie, l1) then return true end
+      if target == l1 and isKunshiSiege(target, hulie, n1) then return true end
    end
    return false
 end
@@ -53,6 +51,20 @@ kunshi:addEffect(fk.DamageInflicted, {
     data:changeDamage(1)
   end,
 })
+
+kunshi:addTest(function(room, me)
+  local attacker = { kingdom = "jin" }
+  local victim = { kingdom = "wei" }
+  local support = { kingdom = "unknown" }
+  lu.assertTrue(isKunshiSiege(attacker, victim, support))
+  support.kingdom = "jin"
+  lu.assertTrue(isKunshiSiege(attacker, victim, support))
+  support.kingdom = "shu"
+  lu.assertFalse(isKunshiSiege(attacker, victim, support))
+  victim.kingdom = "unknown"
+  support.kingdom = "unknown"
+  lu.assertFalse(isKunshiSiege(attacker, victim, support))
+end)
 
 Fk:loadTranslationTable{
   ["fengsui_heg__kunshi"] = "困势",

@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local tuanfeng = fk.CreateSkill{
@@ -8,66 +8,42 @@ local tuanfeng = fk.CreateSkill{
 tuanfeng:addEffect(fk.EventPhaseStart, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(tuanfeng.name) and
-      player.phase == Player.Start and not player:isNude()
+    return target == player and player:hasSkill(tuanfeng.name) and player.phase == Player.Play and
+      not player:isNude() and #player.room.alive_players > 1
   end,
   on_cost = function(self, event, target, player, data)
-    local cards = U.chooseCardsFromList(player.room, player, player:getCardIds("he"), 1, 1,
+    local max_num = math.min(#player:getCardIds("he"), #player.room.alive_players)
+    local cards = U.chooseCardsFromList(player.room, player, player:getCardIds("he"), 1, max_num,
       "#fengsui_heg__tuanfeng-recast", tuanfeng.name, true)
-    if #cards > 0 then
-      event:setCostData(self, {cards = cards})
-      return true
-    end
+    if #cards == 0 then return false end
+    local targets = player.room:askToChoosePlayers(player, {
+      targets = player.room.alive_players, min_num = #cards, max_num = #cards,
+      skill_name = tuanfeng.name, prompt = "#fengsui_heg__tuanfeng-targets:::" .. #cards,
+      cancelable = true,
+    })
+    if #targets == #cards then event:setCostData(self, { cards = cards, tos = targets }); return true end
   end,
   on_use = function(self, event, target, player, data)
-    local id = event:getCostData(self).cards[1]
-    local card = Fk:getCardById(id)
-    local card_type = card.type
-    player.room:recastCard(id, player, tuanfeng.name)
-    player.room:setPlayerMark(player, "fengsui_heg__tuanfeng_type_" .. card_type .. "-round", 1)
-    player.room:addTableMarkIfNeed(player, "@fengsui_heg__tuanfeng-round", card.trueName)
-  end,
-})
+    local room = player.room
+    local cost = event:getCostData(self)
+    room:recastCard(cost.cards, player, tuanfeng.name)
+    local original = {}
+    for _, p in ipairs(cost.tos) do
+      original[p.id] = p.kingdom
+      room:setPlayerProperty(p, "kingdom", H.getKingdom(player))
+    end
 
-local function canModify(player, card)
-  if not card or player.phase ~= Player.Play or
-    player:getMark("fengsui_heg__tuanfeng_used_" .. card.type .. "-turn") > 0 then return false end
-  local room = Fk:currentRoom()
-  return room and table.find(room.alive_players, function(owner)
-    return owner:hasSkill(tuanfeng.name) and H.compareKingdomWith(owner, player) and
-      owner:getMark("fengsui_heg__tuanfeng_type_" .. card.type .. "-round") > 0
-  end) ~= nil
-end
-
-tuanfeng:addEffect(fk.PreCardUse, {
-  global = true,
-  mute = true,
-  can_refresh = function(self, event, target, player, data)
-    return target == player and canModify(player, data.card)
-  end,
-  on_refresh = function(self, event, target, player, data)
-    data.extraUse = true
-  end,
-})
-
-tuanfeng:addEffect("targetmod", {
-  bypass_times = function(self, player, skill, scope, card)
-    return canModify(player, card)
-  end,
-  bypass_distances = function(self, player, skill, card)
-    return canModify(player, card)
-  end,
-})
-
-tuanfeng:addEffect(fk.CardUseFinished, {
-  global = true,
-  mute = true,
-  can_refresh = function(self, event, target, player, data)
-    return target == player and canModify(player, data.card)
-  end,
-  on_refresh = function(self, event, target, player, data)
-    player.room:setPlayerMark(player,
-      "fengsui_heg__tuanfeng_used_" .. data.card.type .. "-turn", 1)
+    local draw = {}
+    for _, p in ipairs(room.alive_players) do
+      if H.inFormationRelation(p, p) then table.insertIfNeed(draw, p) end
+    end
+    room:sortByAction(draw)
+    for _, p in ipairs(draw) do
+      if p:isAlive() then p:drawCards(1, tuanfeng.name) end
+    end
+    for _, p in ipairs(cost.tos) do
+      room:setPlayerProperty(p, "kingdom", original[p.id])
+    end
   end,
 })
 

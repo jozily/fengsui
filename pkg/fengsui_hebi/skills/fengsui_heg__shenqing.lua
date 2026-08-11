@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 local U = require "packages.utility.utility"
 
 local shenqing = fk.CreateSkill{
@@ -16,22 +16,22 @@ shenqing:addEffect("active", {
   end,
   on_use = function(self, room, effect)
     local player = effect.from
-    
+
     local all_gens = {}
     local gen2player = {}
     for _, p in ipairs(room.alive_players) do
-       if p.general ~= "anjiang" and not p.general:startsWith("blank_") then 
-          table.insert(all_gens, p.general) 
+       if p.general ~= "anjiang" and not p.general:startsWith("blank_") then
+          table.insert(all_gens, p.general)
           gen2player[p.general] = p
        end
-       if p.deputyGeneral ~= "anjiang" and not p.deputyGeneral:startsWith("blank_") then 
-          table.insert(all_gens, p.deputyGeneral) 
+       if p.deputyGeneral ~= "anjiang" and not p.deputyGeneral:startsWith("blank_") then
+          table.insert(all_gens, p.deputyGeneral)
           gen2player[p.deputyGeneral] = p
        end
     end
-    
+
     if #all_gens < 2 then return end
-    
+
     local choices = U.askToChooseGeneralsAndChoice(player, {
       skill_name = shenqing.name,
       generals = all_gens,
@@ -39,17 +39,17 @@ shenqing:addEffect("active", {
       min_num = 2,
       max_num = 2,
     })
-    
+
     if #choices == 2 then
        local gen1, gen2 = choices[1], choices[2]
        local p1, p2 = gen2player[gen1], gen2player[gen2]
-       
+
        -- 参考【离梦】：从武将原数据的 relatives["companion"] 获取真正的珠联璧合判定表
        local g1_info = Fk.generals[gen1]
        local g2_info = Fk.generals[gen2]
        local is_companion = g1_info and g2_info and
          (g1_info:isCompanionWith(g2_info) or g2_info:isCompanionWith(g1_info))
-       
+
        if is_companion then
           if p1 and p1:isAlive() then H.addHegMark(p1, "companion") end
           if p2 and p2:isAlive() and p1 ~= p2 then H.addHegMark(p2, "companion") end
@@ -83,5 +83,12 @@ Fk:loadTranslationTable{
   ["#fengsui_heg__shenqing-hebi"] = "申情：未构成珠联璧合，选择一名角色令其合璧或变更副将",
   ["shenqing_hebi"] = "令 %src 合璧或变更副将",
 }
+
+shenqing:addTest(function(room, me)
+  lu.assertEquals(type(H.askToHebiOrTransform), "function")
+  lu.assertEquals(Fk:translate("give"), "交给")
+  lu.assertEquals(Fk:translate("fengsui_hebi"), "合璧")
+  lu.assertEquals(Fk:translate("fengsui_transform"), "变更副将")
+end)
 
 return shenqing

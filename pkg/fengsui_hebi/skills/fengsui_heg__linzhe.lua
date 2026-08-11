@@ -1,15 +1,14 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local linzhe = fk.CreateSkill{
   name = "fengsui_heg__linzhe",
-  tags = {Skill.Limited},
 }
 
 linzhe:addEffect("active", {
   prompt = "#fengsui_heg__linzhe",
   can_use = function(self, player)
-    return player:usedSkillTimes(linzhe.name, Player.HistoryGame) == 0
+    return player:usedSkillTimes(linzhe.name, Player.HistoryPhase) == 0
   end,
   on_use = function(self, room, effect)
     local player = effect.from
@@ -17,7 +16,7 @@ linzhe:addEffect("active", {
       return H.compareKingdomWith(p, player)
     end)
     room:sortByAction(targets)
-    
+
     for _, p in ipairs(targets) do
       if p:isAlive() then
         local tricks = table.filter(p:getCardIds("h"), function(id)
@@ -52,23 +51,8 @@ linzhe:addEffect("active", {
         end
       end
     end
-  end,
-})
-
-linzhe:addEffect(fk.EventPhaseEnd, {
-  global = true,
-  can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(linzhe.name) and target.phase == Player.Finish and player:usedSkillTimes(linzhe.name, Player.HistoryGame) > 0
-  end,
-  on_use = function(self, event, target, player, data)
-    local room = player.room
-    local is_sole_major = false
-    local majors = U.getMajorKingdoms(room)
-    if #majors == 1 and majors[1] == H.getKingdom(player) then
-      is_sole_major = true
-    end
-    if is_sole_major then
-      player:setSkillUseHistory(linzhe.name, 0, Player.HistoryGame)
+    if player:isAlive() and not H.isBigKingdomPlayer(player) then
+      room:handleAddLoseSkills(player, "-" .. linzhe.name)
     end
   end,
 })

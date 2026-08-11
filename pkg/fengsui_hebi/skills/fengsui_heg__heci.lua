@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local heci = fk.CreateSkill{
@@ -13,7 +13,8 @@ local function getCostNum(player)
   local n = 0
   for _, p in ipairs(room.alive_players) do
     if H.compareKingdomWith(p, player) then
-      n = n + H.getGeneralsRevealedNum(p)
+      local general_num = p.deputyGeneral and p.deputyGeneral ~= "" and 2 or 1
+      n = n + general_num - H.getGeneralsRevealedNum(p)
     end
   end
   return n

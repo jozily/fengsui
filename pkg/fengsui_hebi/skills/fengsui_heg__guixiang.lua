@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 
 local guixiang = fk.CreateSkill{
   name = "fengsui_heg__guixiang",
@@ -14,15 +14,15 @@ guixiang:addEffect(fk.EventPhaseChanging, {
       return false
     end
     if data.skipped or data.phase == Player.Start or data.phase == Player.Finish then return false end
-    
+
     local same_count = 0
     for _, p in ipairs(player.room.alive_players) do
        if H.compareKingdomWith(p, player) then same_count = same_count + 1 end
     end
-    
+
     local phase_count = target:getMark("fengsui_heg__guixiang_phase-turn") + 1
     target.room:setPlayerMark(target, "fengsui_heg__guixiang_phase-turn", phase_count)
-    
+
     return phase_count == same_count
   end,
   on_cost = function(self, event, target, player, data)
@@ -44,7 +44,7 @@ guixiang:addEffect(fk.EventPhaseChanging, {
       prompt = "#fengsui_heg__guixiang-choice",
       skill_name = guixiang.name,
     })
-    
+
     local mapping = {
       fengsui_heg__guixiang_judge = Player.Judge,
       fengsui_heg__guixiang_draw = Player.Draw,

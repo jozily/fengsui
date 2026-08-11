@@ -2,13 +2,13 @@ local jiezhi = fk.CreateSkill{
   name = "fengsui_heg__jiezhi",
 }
 
-local function getLastDifferentDiscard(room, card_type)
+local function getFirstDifferentDiscard(room, card_type)
   local result
   room.logic:getEventsOfScope(GameEvent.MoveCards, 1, function(e)
-    for move_index = #e.data, 1, -1 do
+    for move_index = 1, #e.data do
       local move = e.data[move_index]
       if move.toArea == Card.DiscardPile then
-        for info_index = #move.moveInfo, 1, -1 do
+        for info_index = 1, #move.moveInfo do
           local id = move.moveInfo[info_index].cardId
           if table.contains(room.discard_pile, id) and Fk:getCardById(id).type ~= card_type then
             result = id
@@ -30,7 +30,7 @@ jiezhi:addEffect(fk.AfterCardsMove, {
       if move.from == player and move.to and move.to ~= player and move.toArea == Card.PlayerHand then
         for _, info in ipairs(move.moveInfo) do
           if info.fromArea == Card.PlayerHand then
-            local discard = getLastDifferentDiscard(player.room, Fk:getCardById(info.cardId).type)
+            local discard = getFirstDifferentDiscard(player.room, Fk:getCardById(info.cardId).type)
             if discard then
               event:setCostData(self, {to = move.to, given = info.cardId, discard = discard})
               return true

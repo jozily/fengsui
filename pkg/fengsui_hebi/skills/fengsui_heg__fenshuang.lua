@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 
 local fenshuang = fk.CreateSkill{
   name = "fengsui_heg__fenshuang",
@@ -10,14 +10,17 @@ fenshuang:addEffect("active", {
   target_num = 1,
   prompt = "#fengsui_heg__fenshuang-invoke",
   can_use = function(self, player)
-    return player:usedSkillTimes(fenshuang.name, Player.HistoryPhase) == 0
+    return player:usedSkillTimes(fenshuang.name, Player.HistoryPhase) == 0 and
+      H.allGeneralsRevealed(player)
   end,
   target_filter = function(self, player, to_select, selected)
     return #selected == 0 and to_select ~= player and to_select:inMyAttackRange(player)
   end,
   on_use = function(self, room, effect)
     local player, target = effect.from, effect.tos[1]
-    local mark_name = "fengsui_heg__fenshuang_proxy-round"
+    H.doHideGeneral(room, player, player, fenshuang.name)
+    if player.dead or target.dead then return end
+    local mark_name = "@fengsui_heg__fenshuang_proxy-round"
     room:addTableMark(player, mark_name, target.id)
     local damaged = room:damage{
       from = target,
@@ -33,20 +36,24 @@ fenshuang:addEffect("active", {
   end,
 })
 
+Fk:loadTranslationTable{
+  ["@fengsui_heg__fenshuang_proxy-round"] = "纷霜：",
+}
+
 fenshuang:addEffect(H.CommandExecuting, {
   global = true,
   priority = 10,
   can_trigger = function(self, event, target, player, data)
     return target == player and
-      #player:getTableMark("fengsui_heg__fenshuang_proxy-round") > 0
+      #player:getTableMark("@fengsui_heg__fenshuang_proxy-round") > 0
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local proxies = player:getTableMark("fengsui_heg__fenshuang_proxy-round")
+    local proxies = player:getTableMark("@fengsui_heg__fenshuang_proxy-round")
     local new_to = room:getPlayerById(proxies[1])
     table.remove(proxies, 1)
-    room:setPlayerMark(player, "fengsui_heg__fenshuang_proxy-round",
+    room:setPlayerMark(player, "@fengsui_heg__fenshuang_proxy-round",
       #proxies > 0 and proxies or 0)
     if new_to and new_to:isAlive() then
       room:sendLog{

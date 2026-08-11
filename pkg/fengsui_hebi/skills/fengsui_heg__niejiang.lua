@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 
 local niejiang = fk.CreateSkill{
   name = "fengsui_heg__niejiang",
@@ -21,10 +21,10 @@ niejiang:addEffect(fk.HpChanged, {
   anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)
     if not player:hasSkill(niejiang.name) then return false end
-    
+
     local triggered = player:getTableMark("fengsui_heg__niejiang-round")
     if table.contains(triggered, target.id) then return false end
-    
+
     local lowest = list_lowest_hp_players(player.room)
     return table.contains(lowest, target.id)
   end,
@@ -37,15 +37,4 @@ niejiang:addEffect(fk.HpChanged, {
   end,
 })
 
-niejiang:addEffect("distance", {
-  fixed_func = function(self, from, to)
-    if from == to or not from:hasSkill(niejiang.name) then return end
-    local room = Fk:currentRoom()
-    if not room then return end
-    local lowest = list_lowest_hp_players(room)
-    if table.contains(lowest, to.id) then
-      return 1
-    end
-  end,
-})
 return niejiang

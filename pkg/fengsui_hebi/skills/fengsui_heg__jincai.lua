@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 
 local jincai = fk.CreateSkill{
   name = "fengsui_heg__jincai",
@@ -45,9 +45,13 @@ jincai:addEffect(fk.CardUseFinished, {
     if choice == "fengsui_heg__jincai_draw" then
       to:drawCards(2, jincai.name)
       if to:isAlive() then
-        H.doHideGeneral(room, to, to, jincai.name)
+        local hidden_place = H.doHideGeneral(room, to, to, jincai.name)
+        local record = to:getTableMark(MarkEnum.RevealProhibited .. "-turn")
+        table.insertIfNeed(record, hidden_place and "d" or "m")
+        room:setPlayerMark(to, MarkEnum.RevealProhibited .. "-turn", record)
       end
       room:addTableMarkIfNeed(player, damage_sources_mark, to.id)
+      room:setPlayerMark(to, "@fengsui_heg__jincai-round", player.id)
     else
       room:setPlayerMark(to, "fengsui_heg__jincai_red-turn", 1)
     end
@@ -66,6 +70,9 @@ jincai:addEffect(fk.DamageInflicted, {
     local sources = player:getTableMark(damage_sources_mark)
     table.removeOne(sources, data.from.id)
     player.room:setPlayerMark(player, damage_sources_mark, #sources > 0 and sources or 0)
+    if data.from:getMark("@fengsui_heg__jincai-round") == player.id then
+      player.room:setPlayerMark(data.from, "@fengsui_heg__jincai-round", 0)
+    end
   end,
 })
 
@@ -76,5 +83,9 @@ jincai:addEffect("prohibit", {
       card and card.color == Card.Red
   end,
 })
+
+Fk:loadTranslationTable{
+  ["@fengsui_heg__jincai-round"] = "矜才：",
+}
 
 return jincai

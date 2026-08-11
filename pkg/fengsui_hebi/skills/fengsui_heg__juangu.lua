@@ -1,10 +1,14 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 
 local juangu = fk.CreateSkill{
   name = "fengsui_heg__juangu",
 }
 
 local used_mark = "fengsui_heg__juangu_used-turn"
+
+local function isEligibleCard(card)
+  return card and (card.type == Card.TypeBasic or card:isCommonTrick())
+end
 
 local function hasCompanionAcross(from, to)
   local from_generals = {H.getActualGeneral(from, false), H.getActualGeneral(from, true)}
@@ -26,7 +30,7 @@ end
 juangu:addEffect(fk.TargetSpecified, {
   anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)
-    if not target or not data.card or not data.to or not player:hasSkill(juangu.name) or
+    if not target or not isEligibleCard(data.card) or not data.to or not player:hasSkill(juangu.name) or
       target.room.current ~= target or
       table.contains(player:getTableMark(used_mark), target.id) or
       #data:getAllTargets() ~= 1 then
@@ -50,5 +54,12 @@ juangu:addEffect(fk.TargetSpecified, {
     end
   end,
 })
+
+juangu:addTest(function(room, me)
+  lu.assertTrue(isEligibleCard(Fk:cloneCard("slash")))
+  lu.assertTrue(isEligibleCard(Fk:cloneCard("duel")))
+  lu.assertFalse(isEligibleCard(Fk:cloneCard("crossbow")))
+  lu.assertFalse(isEligibleCard(Fk:cloneCard("indulgence")))
+end)
 
 return juangu

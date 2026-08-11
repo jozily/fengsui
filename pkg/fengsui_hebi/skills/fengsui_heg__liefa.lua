@@ -1,64 +1,78 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 
 local liefa = fk.CreateSkill{
   name = "fengsui_heg__liefa",
+  related_skills = {"heg__bingxin", "niaoxiang"},
 }
 
-local basic_names = {"slash", "jink", "peach", "analeptic"}
+liefa:addEffect("arraysummon", { array_type = "formation" })
 
-liefa:addEffect("viewas", {
-  pattern = ".",
-  prompt = "#fengsui_heg__liefa-invoke",
-  interaction = function(self, player)
-    local unused = table.filter(basic_names, function(name)
-      return player:usedSkillTimes(liefa.name .. "_" .. name, Player.HistoryTurn) == 0
-    end)
-    local names = player:getViewAsCardNames(liefa.name, unused)
-    if #names == 0 then return end
-    return UI.CardNameBox{choices = names, all_choices = basic_names}
-  end,
-  card_filter = Util.FalseFunc,
-  view_as = function(self, player, cards)
-    if #cards > 0 or not self.interaction.data then return end
-    local card = Fk:cloneCard(self.interaction.data)
-    card.skillName = liefa.name
-    return card
-  end,
-  before_use = function(self, player, use)
-    player:addSkillUseHistory(liefa.name .. "_" .. use.card.name)
-  end,
-  after_use = function(self, player, use)
-    local room = player.room
-    if table.contains(use.tos or {}, player) then
-      local num = math.min(2, #player:getCardIds("he"))
-      if num > 0 then
-        room:askToDiscard(player, {
-          min_num = num,
-          max_num = num,
-          include_equip = true,
-          skill_name = liefa.name,
-          prompt = "#fengsui_heg__liefa-discard:::" .. num,
-          cancelable = false,
-        })
+local function formsSiege(player)
+  for _, victim in ipairs(player.room.alive_players) do
+    if victim ~= player and H.inSiegeRelation(player, player, victim) then return true end
+  end
+  return false
+end
+
+local function refreshBorrowed(room, owner)
+  local formation = H.inFormationRelation(owner, owner)
+  for _, p in ipairs(room.alive_players) do
+    local should = p ~= owner and formation and H.inFormationRelation(owner, p)
+    local mark = "fengsui_heg__liefa_bingxin_" .. owner.id
+    if should and p:getMark(mark) == 0 then
+      if not p:hasSkill("heg__bingxin") then room:handleAddLoseSkills(p, "heg__bingxin") end
+      room:setPlayerMark(p, mark, 1)
+    elseif not should and p:getMark(mark) > 0 then
+      room:setPlayerMark(p, mark, 0)
+      local needed = table.find(room.alive_players, function(other)
+        return other ~= owner and p:getMark("fengsui_heg__liefa_bingxin_" .. other.id) > 0
+      end)
+      if not needed and not H.inGeneralSkills(p, "heg__bingxin") then
+        room:handleAddLoseSkills(p, "-heg__bingxin")
       end
-    elseif player:isAlive() then
-      room:loseHp(player, 1, liefa.name)
     end
+  end
 
-    local current = room.current
-    if current and current:isAlive() and H.compareKingdomWith(current, player) then
-      current:drawCards(1, liefa.name)
-    end
+  local siege = formsSiege(owner)
+  if siege and owner:getMark("fengsui_heg__liefa_niaoxiang") == 0 then
+    if not owner:hasSkill("niaoxiang") then room:handleAddLoseSkills(owner, "niaoxiang") end
+    room:setPlayerMark(owner, "fengsui_heg__liefa_niaoxiang", 1)
+  elseif not siege and owner:getMark("fengsui_heg__liefa_niaoxiang") > 0 then
+    room:setPlayerMark(owner, "fengsui_heg__liefa_niaoxiang", 0)
+    if not H.inGeneralSkills(owner, "niaoxiang") then room:handleAddLoseSkills(owner, "-niaoxiang") end
+  end
+end
+
+local refresh = {
+  global = true,
+  mute = true,
+  can_refresh = function(self, event, target, player, data)
+    return player:hasSkill(liefa.name, true, true)
   end,
-  enabled_at_play = function(self, player)
-    return table.find(basic_names, function(name)
-      return player:usedSkillTimes(liefa.name .. "_" .. name, Player.HistoryTurn) == 0
-    end) ~= nil
+  on_refresh = function(self, event, target, player, data)
+    refreshBorrowed(player.room, player)
   end,
-  enabled_at_response = function(self, player, response)
-    return not response and table.find(basic_names, function(name)
-      return player:usedSkillTimes(liefa.name .. "_" .. name, Player.HistoryTurn) == 0
-    end) ~= nil
+}
+
+liefa:addEffect(fk.TurnStart, refresh)
+liefa:addEffect(fk.GeneralRevealed, refresh)
+liefa:addEffect(fk.GeneralHidden, refresh)
+liefa:addEffect(fk.AfterPropertyChange, refresh)
+
+liefa:addEffect(fk.GeneralRevealed, {
+  global = true,
+  anim_type = "support",
+  can_trigger = function(self, event, target, player, data)
+    if not target or not player:hasSkill(liefa.name) or not H.compareKingdomWith(target, player) then return false end
+    return H.inFormationRelation(player, player) == formsSiege(player)
+  end,
+  on_cost = function(self, event, target, player, data)
+    return player.room:askToSkillInvoke(player, {
+      skill_name = liefa.name, prompt = "#fengsui_heg__liefa-transform::" .. target.id,
+    })
+  end,
+  on_use = function(self, event, target, player, data)
+    H.transformGeneral(player.room, target, false, false)
   end,
 })
 

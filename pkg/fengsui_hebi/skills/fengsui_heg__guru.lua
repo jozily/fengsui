@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 
 local guru = fk.CreateSkill{
   name = "fengsui_heg__guru",
@@ -7,16 +7,22 @@ local guru = fk.CreateSkill{
 
 local distance_mark = "@fengsui_heg__guru_distance"
 
+local function getX(player)
+  local room = player.room or Fk:currentRoom()
+  if not room then return 0 end
+  return math.min(2, H.getSameKingdomPlayersNum(room, player))
+end
+
 local function getDistanceX(player)
   if not player:hasSkill(guru.name) or not H.allGeneralsRevealed(player) then return 0 end
   local room = player.room or Fk:currentRoom()
   if not room then return 0 end
-  local same = H.getSameKingdomPlayersNum(room, player)
+  local x = getX(player)
   local kingdoms = 0
   for _, count in pairs(H.getKingdomPlayersNum(room)) do
     if count > 0 then kingdoms = kingdoms + 1 end
   end
-  return same < kingdoms and same or 0
+  return x < kingdoms and x or 0
 end
 
 guru:addEffect(fk.DrawNCards, {
@@ -26,7 +32,7 @@ guru:addEffect(fk.DrawNCards, {
       player:hasShownSkill(guru.name) and H.getGeneralsRevealedNum(player) == 1
   end,
   on_use = function(self, event, target, player, data)
-    data.n = data.n + H.getSameKingdomPlayersNum(player.room, player)
+    data.n = data.n + getX(player)
   end,
 })
 

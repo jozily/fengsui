@@ -1,75 +1,108 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 
 local huaixiang = fk.CreateSkill{
   name = "fengsui_heg__huaixiang",
 }
 
-local discarded_types_mark = "fengsui_heg__huaixiang_discarded_types-turn"
+local original_kingdom_mark = "fengsui_heg__huaixiang_original_kingdom-turn"
 
-huaixiang:addEffect(fk.AfterCardsMove, {
-  global = true,
-  mute = true,
-  can_refresh = function(self, event, target, player, data)
-    return player.room.current == player and table.find(data, function(move)
-      return move.toArea == Card.DiscardPile and #move.moveInfo > 0
-    end) ~= nil
-  end,
-  on_refresh = function(self, event, target, player, data)
-    local types = player:getTableMark(discarded_types_mark)
-    for _, move in ipairs(data) do
-      if move.toArea == Card.DiscardPile then
-        for _, info in ipairs(move.moveInfo) do
-          table.insertIfNeed(types, Fk:getCardById(info.cardId).type)
+local function getEligibleCards(room, data)
+  local discarded_types = {}
+  local current_event = room.logic:getCurrentEvent():findParent(GameEvent.MoveCards, true)
+  room.logic:getEventsOfScope(GameEvent.MoveCards, 1, function(event)
+    if not current_event or event.id ~= current_event.id then
+      for _, move in ipairs(event.data) do
+        if move.toArea == Card.DiscardPile and move.moveReason == fk.ReasonDiscard then
+          for _, info in ipairs(move.moveInfo) do
+            discarded_types[Fk:getCardById(info.cardId).type] = true
+          end
         end
       end
     end
-    player.room:setPlayerMark(player, discarded_types_mark, types)
-  end,
-})
+  end, Player.HistoryPhase)
 
-huaixiang:addEffect("active", {
-  anim_type = "support",
-  prompt = "#fengsui_heg__huaixiang-active",
-  card_num = 1,
-  target_num = 1,
-  can_use = Util.TrueFunc,
-  card_filter = function(self, player, to_select, selected)
-    -- 本回合未进入弃牌堆类别的牌
-    if #selected > 0 then return false end
-    return not table.contains(player:getTableMark(discarded_types_mark), Fk:getCardById(to_select).type)
-  end,
-  target_filter = function(self, player, to_select, selected)
-    return #selected == 0 and to_select.kingdom ~= "unknown"
-  end,
-  on_use = function(self, room, effect)
-     room:recastCard(effect.cards, effect.from, huaixiang.name)
-     room:addPlayerMark(effect.tos[1], "fengsui_heg__huaixiang_unknown-turn", 1)
-     room:setPlayerProperty(effect.tos[1], "kingdom", "unknown")
+  local ids = {}
+  for _, move in ipairs(data) do
+    if move.toArea == Card.DiscardPile and move.moveReason == fk.ReasonDiscard then
+      for _, info in ipairs(move.moveInfo) do
+        local card = Fk:getCardById(info.cardId)
+        if not discarded_types[card.type] and room:getCardArea(info.cardId) == Card.DiscardPile then
+          table.insertIfNeed(ids, info.cardId)
+        end
+      end
+    end
   end
-})
+  return ids
+end
 
-huaixiang:addEffect(fk.EventPhaseStart, {
-  global = true,
-  can_refresh = function(self, event, target, player, data)
-    return target == player and player.phase == Player.Finish
+huaixiang:addEffect(fk.AfterCardsMove, {
+  anim_type = "support",
+  can_trigger = function(self, event, target, player, data)
+    local current = player.room.current
+    return player:hasSkill(huaixiang.name) and current and current.phase == Player.Play and
+      H.compareKingdomWith(current, player) and #getEligibleCards(player.room, data) > 0 and
+      table.find(player.room.alive_players, function(p) return p.kingdom ~= "unknown" end) ~= nil
   end,
-  on_refresh = function(self, event, target, player, data)
+  on_cost = function(self, event, target, player, data)
     local room = player.room
-    for _, p in ipairs(room.alive_players) do
-       if p:getMark("fengsui_heg__huaixiang_unknown-turn") > 0 then
-          room:setPlayerMark(p, "fengsui_heg__huaixiang_unknown-turn", 0)
-          local kingdom = p:getMark("__heg_kingdom")
-          if kingdom == "wild" then kingdom = p:getMark("__heg_init_kingdom") end
-          room:setPlayerProperty(p, "kingdom", kingdom)
-       end
+    local ids = getEligibleCards(room, data)
+    local cards = room:askToCards(player, {
+      min_num = 1,
+      max_num = 1,
+      skill_name = huaixiang.name,
+      pattern = tostring(Exppattern{ id = ids }),
+      prompt = "#fengsui_heg__huaixiang-card",
+      expand_pile = ids,
+      cancelable = true,
+    })
+    if #cards == 0 then return false end
+    local tos = room:askToChoosePlayers(player, {
+      min_num = 1,
+      max_num = 1,
+      targets = table.filter(room.alive_players, function(p) return p.kingdom ~= "unknown" end),
+      skill_name = huaixiang.name,
+      prompt = "#fengsui_heg__huaixiang-target",
+      cancelable = true,
+    })
+    if #tos > 0 then
+      event:setCostData(self, {cards = cards, tos = tos})
+      return true
+    end
+  end,
+  on_use = function(self, event, target, player, data)
+    local room = player.room
+    local cost = event:getCostData(self)
+    local to = cost.tos[1]
+    if room:getCardArea(cost.cards[1]) == Card.DiscardPile then
+      room:obtainCard(player, cost.cards[1], true, fk.ReasonPrey, player, huaixiang.name)
+    end
+    if to:isAlive() and to.kingdom ~= "unknown" then
+      room:setPlayerMark(to, original_kingdom_mark, to.kingdom)
+      room:setPlayerMark(to, "@fengsui_heg__huaixiang-turn", 1)
+      room:setPlayerProperty(to, "kingdom", "unknown")
     end
   end,
 })
 
-Fk:loadTranslationTable{
-  ["fengsui_heg__huaixiang"] = "怀香",
-  [":fengsui_heg__huaixiang"] = "出牌阶段，你可以重铸一张本回合未进入弃牌堆类别的牌并选择一名确定势力的角色，其本回合视为未确定势力。",
-  ["#fengsui_heg__huaixiang-active"] = "怀香：重铸一张合规手牌，令一名确定势力的角色暂时变为未确定势力",
-}
+huaixiang:addEffect(fk.TurnEnd, {
+  global = true,
+  mute = true,
+  can_refresh = function(self, event, target, player, data)
+    return table.find(player.room.players, function(p)
+      return p:getMark(original_kingdom_mark) ~= 0
+    end) ~= nil
+  end,
+  on_refresh = function(self, event, target, player, data)
+    local room = player.room
+    for _, p in ipairs(room.players) do
+      local kingdom = p:getMark(original_kingdom_mark)
+      if kingdom ~= 0 then
+        room:setPlayerProperty(p, "kingdom", kingdom)
+        room:setPlayerMark(p, original_kingdom_mark, 0)
+        room:setPlayerMark(p, "@fengsui_heg__huaixiang-turn", 0)
+      end
+    end
+  end,
+})
 
 return huaixiang

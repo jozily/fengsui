@@ -1,11 +1,11 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 
 local xuanhe = fk.CreateSkill{
   name = "fengsui_heg__xuanhe",
-  tags = {Skill.Compulsory},
+  tags = { Skill.Compulsory, Skill.MainPlace },
 }
 
-local used_types_mark = "fengsui_heg__xuanhe_used_types-turn"
+local used_mark = "fengsui_heg__xuanhe_used-turn"
 
 xuanhe:addEffect(fk.CardUsing, {
   global = true,
@@ -14,7 +14,7 @@ xuanhe:addEffect(fk.CardUsing, {
     return target == player and data.card ~= nil
   end,
   on_refresh = function(self, event, target, player, data)
-    player.room:addTableMarkIfNeed(player, used_types_mark, data.card.type)
+    player.room:setPlayerMark(player, used_mark, 1)
   end,
 })
 
@@ -66,7 +66,7 @@ xuanhe:addEffect("prohibit", {
   is_prohibited = function(self, from, to, card)
     if not (from and to and card and from ~= to and to:hasSkill(xuanhe.name) and
       H.compareKingdomWith(from, to)) then return false end
-    return not table.contains(from:getTableMark(used_types_mark), card.type)
+    return from:getMark(used_mark) == 0
   end,
 })
 

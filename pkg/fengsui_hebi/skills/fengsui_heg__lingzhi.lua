@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local lingzhi = fk.CreateSkill{
@@ -16,7 +16,7 @@ local lingzhi_trigger = {
     local room = player.room
     local opp = (target == player) and data.from or target
     if not opp or opp.dead or player:isNude() then return false end
-    
+
     local cids = U.chooseCardsFromList(room, player, player:getCardIds("he"), 1, 1,
       "#fengsui_heg__lingzhi", lingzhi.name, true)
     if #cids > 0 then
@@ -29,17 +29,17 @@ local lingzhi_trigger = {
     local opp = event:getCostData(self).opp
     local cid = event:getCostData(self).cid
     room:showCards({cid}, player)
-    
+
     local cType = Fk:getCardById(cid).type
     local diff_cards = table.filter(opp:getCardIds("he"), function(id) return Fk:getCardById(id).type ~= cType end)
     local choice = "fengsui_heg__lingzhi_damage"
-    
+
     if #diff_cards > 0 then
        choice = room:askToChoice(opp, {
          choices = {"fengsui_heg__lingzhi_give", "fengsui_heg__lingzhi_damage"},
        })
     end
-    
+
     if choice == "fengsui_heg__lingzhi_give" then
        local gcid = U.chooseCardsFromList(room, opp, diff_cards, 1, 1,
          "#fengsui_heg__lingzhi-give", lingzhi.name, false)

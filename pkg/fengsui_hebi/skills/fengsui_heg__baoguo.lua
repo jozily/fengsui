@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local baoguo = fk.CreateSkill{
@@ -27,61 +27,30 @@ baoguo:addEffect(fk.EnterDying, {
       return table.contains(majors, H.getKingdom(p))
     end)
     local X = #major_players
-    
+
     local friends = table.filter(room.alive_players, function(p)
       return H.compareKingdomWith(p, player)
     end)
     room:sortByAction(friends)
     for _, p in ipairs(friends) do
       if p:isAlive() then
-        local can_remove = H.hasGeneral(p, true)
-        local can_give = X > 0 and #major_players > 0 and #p:getCardIds("he") >= X
-        local choices = {"fengsui_heg__baoguo_opt2"}
-        if can_remove or can_give then
-          table.insert(choices, 1, "fengsui_heg__baoguo_opt1")
+        local choices = {}
+        if X > 0 and #major_players > 0 and #p:getCardIds("he") >= X then
+          table.insert(choices, "fengsui_heg__baoguo_give")
         end
-        local choice = room:askToChoice(p, {
-          choices = choices,
-          prompt = "#fengsui_heg__baoguo-choice",
-          skill_name = baoguo.name,
-        })
-        if choice == "fengsui_heg__baoguo_opt1" then
-          local sub_choices = {}
-          if can_remove then table.insert(sub_choices, "fengsui_heg__baoguo_remove") end
-          if can_give then table.insert(sub_choices, "fengsui_heg__baoguo_give") end
-          local sub_choice = room:askToChoice(p, {
-            choices = sub_choices,
-            prompt = "#fengsui_heg__baoguo-subchoice::" .. X,
-            skill_name = baoguo.name,
-          })
-          if sub_choice == "fengsui_heg__baoguo_remove" then
-            H.removeGeneral(p, true)
+        if H.hasGeneral(p, true) and #(room.general_pile or room.generalPile or {}) > 0 then
+          table.insert(choices, "fengsui_heg__baoguo_transform")
+        end
+        if #choices > 0 then
+          local choice = #choices == 1 and choices[1] or room:askToChoice(p, { choices = choices, prompt = "#fengsui_heg__baoguo-choice", skill_name = baoguo.name })
+          if choice == "fengsui_heg__baoguo_give" then
+            local cards = U.chooseCardsFromList(room, p, p:getCardIds("he"), X, X, "#fengsui_heg__baoguo-cards::" .. X, baoguo.name, false)
+            local tos = room:askToChoosePlayers(p, { targets = major_players, min_num = 1, max_num = 1, prompt = "#fengsui_heg__baoguo-major::" .. X, skill_name = baoguo.name, cancelable = false })
+            room:moveCards{ ids = cards, from = p, to = tos[1], toArea = Card.PlayerHand, moveReason = fk.ReasonGive, proposer = p, skillName = baoguo.name }
+            if p:isAlive() and p:isWounded() then room:recover{ who = p, num = 1, recoverBy = player, skillName = baoguo.name } end
           else
-            local cards = U.chooseCardsFromList(room, p, p:getCardIds("he"), X, X,
-              "#fengsui_heg__baoguo-cards::" .. X, baoguo.name, false)
-            local tos = room:askToChoosePlayers(p, {
-              targets = major_players,
-              min_num = 1,
-              max_num = 1,
-              prompt = "#fengsui_heg__baoguo-major::" .. X,
-              skill_name = baoguo.name,
-              cancelable = false,
-            })
-            room:moveCards{
-              ids = cards,
-              from = p,
-              to = tos[1],
-              toArea = Card.PlayerHand,
-              moveReason = fk.ReasonGive,
-              proposer = p,
-              skillName = baoguo.name,
-            }
+            H.transformGeneral(room, p, false, false, 3, baoguo.name)
           end
-          if p:isAlive() and p:isWounded() then
-            room:recover{who = p, num = 1, recoverBy = player, skillName = baoguo.name}
-          end
-        else
-          p:drawCards(X, baoguo.name)
         end
       end
     end

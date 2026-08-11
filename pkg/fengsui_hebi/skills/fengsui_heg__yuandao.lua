@@ -1,8 +1,9 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local yuandao = fk.CreateSkill{
   name = "fengsui_heg__yuandao",
+  tags = { Skill.DeputyPlace },
 }
 
 yuandao:addEffect(fk.CardUseFinished, {

@@ -1,4 +1,4 @@
-local H = require "packages.hegemony.util"
+local H = require "packages.fengsui.pkg.fengsui_hebi.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local qingshang = fk.CreateSkill{
@@ -12,7 +12,6 @@ qingshang:addEffect(fk.DamageInflicted, {
     return target == player and player:hasSkill(qingshang.name) and
       data.from and data.from ~= player and
       U.hasGeneralName(player, "fengsui_heg__caoshi") and
-      player:usedSkillTimes(qingshang.name, Player.HistoryGame) == 0 and
       data.damage >= player.hp + player.shield
   end,
   on_use = function(self, event, target, player, data)
@@ -21,7 +20,7 @@ qingshang:addEffect(fk.DamageInflicted, {
     data:preventDamage()
 
     if data.from and data.from:isAlive() and player:isAlive() then
-      room:useVirtualCard("ice__slash", nil, data.from, player, qingshang.name, true, {
+      room:useVirtualCard("fire__slash", nil, data.from, player, qingshang.name, true, {
         bypass_distances = true,
         bypass_times = true,
       })
