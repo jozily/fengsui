@@ -255,7 +255,9 @@ function Compat.install()
     Fk._fengsuiNeutralAllWrapped = true
   end
   local mode = require "packages.hegemony.pkg.gamemodes.new_hegemony_mode"
-  table.insertTableIfNeed(mode.whitelist, { "fengsui_hebi", "fengsui_liwu", "fengsui_cards", "fengsui_effect" })
+  table.insertTableIfNeed(mode.whitelist, {
+    "fengsui_hebi", "fengsui_liwu", "fengsui_shiyi", "fengsui_cards", "fengsui_effect",
+  })
   installChooseRule()
   local originalLogic = mode.logic
   mode.logic = function()

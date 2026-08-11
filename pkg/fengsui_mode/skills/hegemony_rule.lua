@@ -461,7 +461,7 @@ hegRule:addTest(function()
 
   local officialDisabled = Fk.game_mode_disabled["new_heg_mode"] or {}
   for _, packageName in ipairs({
-    "fengsui_hebi", "fengsui_cards", "fengsui_liwu", "fengsui_effect",
+    "fengsui_hebi", "fengsui_cards", "fengsui_liwu", "fengsui_shiyi", "fengsui_effect",
   }) do
     lu.assertFalse(table.contains(officialDisabled, packageName), packageName)
   end

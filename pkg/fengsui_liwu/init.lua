@@ -3,7 +3,7 @@ extension.extensionName = "fengsui"
 extension.game_modes_whitelist = { "new_heg_mode", "fengsui_heg__mode" }
 
 extension:loadSkillSkelsByPath("./packages/fengsui/pkg/fengsui_liwu/skills")
-assert(#extension.skill_skels == 26, "fengsui_liwu must load exactly 26 official skill skeletons")
+assert(#extension.skill_skels == 24, "fengsui_liwu must load exactly 24 official skill skeletons")
 
 local zhouxuan = General:new(extension, "fengsui_heg__zhouxuan", "wei", 3)
 zhouxuan:addSkills { "fengsui_heg__wumei", "fengsui_heg__jiemeng" }
@@ -124,25 +124,6 @@ Fk:loadTranslationTable{
   ["$fengsui_heg__dilie3"] = "刀兵虽厉，难夺我守志之心。",
   ["$fengsui_heg__dilie4"] = "我皇太子妇，司徒公之女，胡羌小丑，敢欲干我乎？",
   ["~fengsui_heg__wanghuifeng"] = "宗族倾覆，妾亦不独生……",
-}
-
-local simayou = General:new(extension, "SP_heg__simayou", "jin", 3)
-simayou:addSkills { "heg__fuzheng", "heg__yunde" }
-simayou:addCompanions("fengsui_heg__jiabao")
-Fk:loadTranslationTable{
-  ["SP_heg__simayou"] = "司马攸",
-    ["SP_heg"] = "SP系列",
-  ["#SP_heg__simayou"] = "舞阳侯",
-  ["designer:SP_heg__simayou"] = "时时六&雪人学长",
-  ["$heg__fuzheng1"] = "承景王之嗣，当佐宗室以安社稷。",
-  ["$heg__fuzheng2"] = "宗亲有难，攸岂可袖手旁观。",
-  ["$heg__fuzheng3"] = "辅弼朝纲，所念唯国，不计私门。",
-  ["$heg__fuzheng4"] = "愿移此位，换宗室一脉得安。",
-  ["$heg__yunde1"] = "德不独善，当分惠于宗亲。",
-  ["$heg__yunde2"] = "知人而后任之，量才而后授之。",
-  ["$heg__yunde3"] = "兄弟同心，何必以储位相疑。",
-  ["$heg__yunde4"] = "进不争权，退不避责，此为臣节。",
-  ["~SP_heg__simayou"] = "臣弟别无他志，陛下何以疑我至此……",
 }
 
 Fk:appendKingdomMap("fengsui_neutral", { "wei", "shu", "wu", "qun", "jin" })
@@ -317,7 +298,7 @@ Fk:loadTranslationTable{
   ["#KingdomFiltered"] = "本局移除 %arg，使用 %arg2 四个势力。",
 }
 
-assert(#extension.generals == 11, "fengsui_liwu must register exactly 11 official generals")
+assert(#extension.generals == 10, "fengsui_liwu must register exactly 10 official generals")
 require "packages.fengsui.pkg.fengsui_liwu.option_translations"
 
 return extension

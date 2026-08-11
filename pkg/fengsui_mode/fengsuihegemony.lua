@@ -369,9 +369,10 @@ heg = fk.CreateGameMode{
     "jyzs_cards",
     "kanncards",
 
-      "fengsui_hebi",
-  "fengsui_cards",
-  "fengsui_liwu",
+    "fengsui_hebi",
+    "fengsui_cards",
+    "fengsui_liwu",
+    "fengsui_shiyi",
   },
   winner_getter = function(self, victim)
     local room = victim.room

@@ -28,7 +28,7 @@ for _, package in ipairs(officialPackages) do
 end
 
 local fengsuiPackages = {
-  "fengsui_hebi", "fengsui_cards", "fengsui_liwu", "fengsui_effect", "fengsui_mode",
+  "fengsui_hebi", "fengsui_cards", "fengsui_liwu", "fengsui_shiyi", "fengsui_effect", "fengsui_mode",
 }
 mode.whitelist = {}
 table.insertTableIfNeed(mode.whitelist, officialWhitelist)
