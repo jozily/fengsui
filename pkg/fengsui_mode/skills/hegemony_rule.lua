@@ -129,6 +129,7 @@ local can_trigger = function(self, event, target, player, data)
 end
 
 hegRule:addEffect(fk.BeforeTurnStart, {
+    mute = true,
     priority = 0.001,
     can_trigger = can_trigger,
     on_trigger = function(self, event, target, player, data)
@@ -150,6 +151,7 @@ hegRule:addEffect(fk.BeforeTurnStart, {
     })
 
 hegRule:addEffect(fk.TurnStart, {
+      mute = true,
       priority = 100,
       can_trigger = can_trigger,
       on_trigger = function(self, event, target, player, data)
@@ -167,6 +169,7 @@ hegRule:addEffect(fk.TurnStart, {
 })
 
 hegRule:addEffect(fk.GameOverJudge, {
+    mute = true,
     priority = 0.001,
     can_trigger = can_trigger,
     on_trigger = function(self, event, target, player, data)
@@ -237,6 +240,7 @@ hegRule:addEffect(fk.GameOverJudge, {
 })
 
 hegRule:addEffect(fk.GeneralRevealed, {
+    mute = true,
     priority = 0.001,
     can_trigger = can_trigger,
     on_trigger = function(self, event, target, player, data)
@@ -269,6 +273,7 @@ hegRule:addEffect(fk.GeneralRevealed, {
 })
 
 hegRule:addEffect(fk.EventPhaseStart, {
+    mute = true,
     priority = 0.001,
     can_trigger = function(self, event, target, player, data)
       return target == player and player.phase == Player.Play and not player:hasSkill("alliance&")
@@ -279,6 +284,7 @@ hegRule:addEffect(fk.EventPhaseStart, {
   })
 
 hegRule:addEffect(fk.EventPhaseEnd, {
+    mute = true,
     priority = 0.001,
     can_trigger = function(self, event, target, player, data)
       return target == player and player.phase == Player.Play
@@ -289,6 +295,7 @@ hegRule:addEffect(fk.EventPhaseEnd, {
   })
 
 hegRule:addEffect(fk.GeneralShown, {
+    mute = true,
     priority = 0.001,
     can_trigger = can_trigger,
     on_trigger = function(self, event, target, player, data)
@@ -388,6 +395,7 @@ hegRule:addEffect(fk.GeneralShown, {
     })
 
 hegRule:addEffect(fk.GameStart, {
+    mute = true,
     priority = 0.001,
     can_trigger = can_trigger,
     on_trigger = function(self, event, target, player, data)
@@ -409,6 +417,7 @@ hegRule:addEffect(fk.GameStart, {
 
 --洗牌鏖战
 hegRule:addEffect(fk.AfterDrawPileShuffle, {
+  mute = true,
   priority = 0,
   can_trigger = function(self, event, target, player, data)
     return not player.room:getTag("BattleRoyalMode") and player.room:getSettings("enterBattleRoyalOnFirstShuffle")

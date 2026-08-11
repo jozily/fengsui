@@ -9,7 +9,8 @@ effectRule:addEffect(fk.GeneralRevealed, {
   mute = true,
   priority = 1,
   can_trigger = function(self, event, target, player, data)
-    return not Fk._fengsuiNativeHegemonyRevealEffects and target == player
+    return not Fk._fengsuiNativeHegemonyRevealEffects and
+      player.room:getSettings("gameMode") ~= "fengsui_heg__mode" and target == player
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
