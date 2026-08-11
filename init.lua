@@ -86,7 +86,7 @@ Fk:loadTranslationTable{
   ["$ld__qice_fengsui_heg__lujii1"] = "笼天地于形内，挫万物于笔端。",
   ["$ld__qice_fengsui_heg__lujii2"] = "入洛非为虚名，当以奇谋匡济时艰。",
   ["~fengsui_heg__lujii"] = "华亭鹤唳，可复闻乎？",
-  ["$heg__bingxin_fengsui_heg__huoyi1"] = "南疆霜重，未曾冷却报国丹心。",
+  ["$heg__bingxin_fengsui_heg__huoyi1"] = "南疆霜众，报国丹心未曾冷却；",
   ["$heg__bingxin_fengsui_heg__huoyi2"] = "心如寒玉，纵易旌旗，不易臣节。",
   ["$niaoxiang_fengsui_heg__huoyi1"] = "诸军分翼而进，合围勿纵！",
   ["$niaoxiang_fengsui_heg__huoyi2"] = "断其归路，一击定南疆！",
