@@ -538,7 +538,7 @@ heg = fk.CreateGameMode{
 heg.ui_settings = {
   --君主替换
    W.PreferenceGroup {
-    title = "Hegemony Special Rule",
+    title = "hegemony_special_rule",
 
     W.SwitchRow {
       _settingsKey = "heg__lordconvert",
@@ -558,22 +558,22 @@ heg.ui_settings = {
 
   --查看下家副将
   W.PreferenceGroup {
-    title = "Hegemony Additional Rule",
+    title = "hegemony_additional_rule",
 
     --鏖战版本
     W.SwitchRow {
       _settingsKey = "oldBattleRoyal",
-      title = "heg_oldbattleroyal",
+      title = "heg_old_battle_royal",
     },
 
     W.SwitchRow {
       _settingsKey = "heg__watchDeputy",
-      title = "heg_settings__watchDeputy",
+      title = "heg_watch_next_deputy",
    },
     --洗牌鏖战
     W.SwitchRow {
       _settingsKey = "enterBattleRoyalOnFirstShuffle",
-      title = "Enter battle royal on first shuffle",
+      title = "heg_enter_battle_royal_on_first_shuffle",
     },
 
     --首死下局一号位
@@ -593,6 +593,20 @@ Fk:loadTranslationTable{
   ["revealAll"] = "全部明置",
   ["@heg_bankingdom"] = "禁用势力  ",
   ["#KingdomFiltered"] = "本局禁用势力为: %arg",
+
+  ["hegemony_special_rule"] = "特殊规则",
+  ["heg_settings__lordconvert"] = "君主替换",
+  ["help: heg_settings__lordconvert"] = "满足条件时可将同名普通武将替换为君主武将",
+  ["heg__showseat"] = "公布座次时机",
+  ["heg_afterchoosegenerals"] = "选将后公布座次",
+  ["heg_beforechoosegenerals"] = "选将前公布座次",
+  ["hegemony_additional_rule"] = "国战附加规则",
+  ["heg_old_battle_royal"] = "19版鏖战",
+  ["help: heg_old_battle_royal"] = "进入鏖战后，牌堆中的【桃】视为【杀】或【闪】",
+  ["heg_watch_next_deputy"] = "观看下家副将",
+  ["help: heg_watch_next_deputy"] = "游戏开始前观看下家的副将",
+  ["heg_enter_battle_royal_on_first_shuffle"] = "第一次洗牌进入鏖战",
+  ["heg__firstdeadnextseat1"] = "首死玩家下局成为一号位",
 
   ["#fengsuihegInitialNotices"] = notice
 }

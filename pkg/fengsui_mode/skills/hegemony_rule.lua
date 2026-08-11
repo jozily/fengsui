@@ -36,7 +36,7 @@ local enterBattleRoyalMode = function(room)
     room:handleAddLoseSkills(p, name, nil, false)
   end
   if not isold then
-    room:addSkill("#battle_royal_new_event&")
+    room:addSkill("#new_battle_royal_event&")
   end
   room.logic:trigger(H.EnterBattleRoyalMode, room.current, nil)
 end
