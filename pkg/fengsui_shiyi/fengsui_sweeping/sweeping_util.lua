@@ -2,13 +2,23 @@ local H = require "packages.hegemony.util"
 
 local M = {}
 
+local function getRoom(value)
+  if value and value.alive_players then return value end
+  if value and value.room then return value.room end
+  return Fk:currentRoom()
+end
+
 function M.sameKingdomCount(player)
-  return #table.filter(player.room.alive_players, function(p)
+  local room = getRoom(player)
+  if not room or not room.alive_players then return 0 end
+  return #table.filter(room.alive_players, function(p)
     return H.compareKingdomWith(player, p)
   end)
 end
 
 function M.kingdomCount(room)
+  room = getRoom(room)
+  if not room or not room.alive_players then return 0 end
   local kingdoms = {}
   for _, p in ipairs(room.alive_players) do
     local kingdom = H.getKingdom(p)

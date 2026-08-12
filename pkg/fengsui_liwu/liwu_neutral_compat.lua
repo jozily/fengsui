@@ -24,6 +24,13 @@ end
 local function canPair(general, deputy)
   if not general or not deputy or general == deputy then return false end
   if general.name == "fengsui_limited_heg__xunyu" then return false end
+  if deputy.name == "fengsui_limited_heg__xunyu" then
+    return general.kingdom ~= neutralKingdom and general.kingdom ~= neutralAllKingdom and
+      general.kingdom ~= "wild" and general.kingdom ~= sweepingKingdom and
+      table.find(generalKingdoms(general), function(kingdom)
+        return table.contains(baseKingdoms, kingdom)
+      end) ~= nil
+  end
   if general.kingdom == sweepingKingdom or deputy.kingdom == sweepingKingdom then return true end
   if general.kingdom == neutralAllKingdom and deputy.kingdom == neutralAllKingdom then return false end
   if general.kingdom == neutralAllKingdom and deputy.kingdom == "wild" then return false end
@@ -278,6 +285,17 @@ function Compat.install()
     end
     Fk.canMatchInHegemony = function(self, general, deputy, enabledKingdoms)
       if general == "fengsui_limited_heg__xunyu" then return false end
+      if deputy == "fengsui_limited_heg__xunyu" then
+        local main = self.generals[general]
+        if not main or main.kingdom == neutralKingdom or main.kingdom == neutralAllKingdom or
+          main.kingdom == "wild" or main.kingdom == sweepingKingdom then
+          return false
+        end
+        return table.find(generalKingdoms(main), function(k)
+          return table.contains(baseKingdoms, k) and
+            (not enabledKingdoms or #enabledKingdoms == 0 or table.contains(enabledKingdoms, k))
+        end) ~= nil
+      end
       local sweeping = sweepingPairKingdoms(self.generals[general], self.generals[deputy], enabledKingdoms)
       if sweeping ~= nil then return #sweeping > 0 end
       local kingdoms = neutralPairKingdoms(self.generals[general], self.generals[deputy], enabledKingdoms)
