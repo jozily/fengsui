@@ -3,6 +3,7 @@ local Compat = {}
 local installed = false
 local neutralKingdom = "fengsui_neutral"
 local neutralAllKingdom = "fengsui_neutralall"
+local sweepingKingdom = "fengsui_sweeping"
 local baseKingdoms = { "wei", "shu", "wu", "qun", "jin" }
 
 local function generalKingdoms(general)
@@ -22,6 +23,8 @@ end
 
 local function canPair(general, deputy)
   if not general or not deputy or general == deputy then return false end
+  if general.name == "fengsui_limited_heg__xunyu" then return false end
+  if general.kingdom == sweepingKingdom or deputy.kingdom == sweepingKingdom then return true end
   if general.kingdom == neutralAllKingdom and deputy.kingdom == neutralAllKingdom then return false end
   if general.kingdom == neutralAllKingdom and deputy.kingdom == "wild" then return false end
   if deputy.kingdom == neutralAllKingdom and general.kingdom == "wild" then return false end
@@ -43,6 +46,25 @@ local function canPair(general, deputy)
   return table.find(generalKingdoms(general), function(kingdom)
     return table.contains(generalKingdoms(deputy), kingdom)
   end) ~= nil
+end
+
+local function sweepingPairKingdoms(general, deputy, enabledKingdoms)
+  if not general or not deputy or general == deputy then return nil end
+  local other
+  if general.kingdom == sweepingKingdom then other = deputy
+  elseif deputy.kingdom == sweepingKingdom then other = general
+  else return nil end
+  local choices
+  local otherKingdoms = generalKingdoms(other)
+  if other.kingdom == sweepingKingdom or other.kingdom == neutralKingdom or
+    other.kingdom == neutralAllKingdom or other.kingdom == "wild" then
+    choices = table.clone(baseKingdoms)
+  else
+    choices = table.filter(otherKingdoms, function(k) return table.contains(baseKingdoms, k) end)
+  end
+  return table.filter(choices, function(k)
+    return not enabledKingdoms or #enabledKingdoms == 0 or table.contains(enabledKingdoms, k)
+  end)
 end
 
 local function neutralPairKingdoms(general, deputy, enabledKingdoms)
@@ -122,6 +144,7 @@ local function chooseGenerals(self)
     table.insertTableIfNeed(allKingdoms, generalKingdoms(Fk.generals[name]))
   end)
   table.removeOne(allKingdoms, "wild")
+  table.removeOne(allKingdoms, sweepingKingdom)
   if #allKingdoms > 4 and not room:getSettings("notBanToFourKingdoms") then
     local kingdoms = table.random(allKingdoms, 4)
     local unused = table.filter(allKingdoms, function(kingdom)
@@ -139,7 +162,7 @@ local function chooseGenerals(self)
     }
     for i = #room.general_pile, 1, -1 do
       local general = Fk.generals[room.general_pile[i]]
-      if general.kingdom ~= neutralKingdom and general.kingdom ~= neutralAllKingdom and
+      if general.kingdom ~= neutralKingdom and general.kingdom ~= neutralAllKingdom and general.kingdom ~= sweepingKingdom and
         not table.find(generalKingdoms(general), function(kingdom)
           return table.contains(kingdoms, kingdom)
         end) then
@@ -199,7 +222,11 @@ local function chooseGenerals(self)
     local general = Fk.generals[player:getMark("__heg_general")]
     local deputy = Fk.generals[player:getMark("__heg_deputy")]
     local kingdoms
-    if general.kingdom == "wild" then
+    local sweeping = sweepingPairKingdoms(general, deputy, allKingdoms)
+    if sweeping ~= nil then
+      kingdoms = sweeping
+      if general.kingdom == "wild" then room:setPlayerMark(player, "__heg_wild", 1) end
+    elseif general.kingdom == "wild" then
       kingdoms = generalKingdoms(deputy)
       room:setPlayerMark(player, "__heg_wild", 1)
     elseif general.kingdom == neutralAllKingdom then
@@ -243,11 +270,16 @@ function Compat.install()
     local originalGetKingdomInHegemony = Fk.getKingdomInHegemony
     local originalCanMatchInHegemony = Fk.canMatchInHegemony
     Fk.getKingdomInHegemony = function(self, general, deputy, enabledKingdoms)
+      local sweeping = sweepingPairKingdoms(self.generals[general], self.generals[deputy or ""], enabledKingdoms)
+      if sweeping ~= nil then return sweeping end
       local kingdoms = neutralPairKingdoms(self.generals[general], self.generals[deputy or ""], enabledKingdoms)
       if kingdoms ~= nil then return kingdoms end
       return originalGetKingdomInHegemony(self, general, deputy, enabledKingdoms)
     end
     Fk.canMatchInHegemony = function(self, general, deputy, enabledKingdoms)
+      if general == "fengsui_limited_heg__xunyu" then return false end
+      local sweeping = sweepingPairKingdoms(self.generals[general], self.generals[deputy], enabledKingdoms)
+      if sweeping ~= nil then return #sweeping > 0 end
       local kingdoms = neutralPairKingdoms(self.generals[general], self.generals[deputy], enabledKingdoms)
       if kingdoms ~= nil then return #kingdoms > 0 end
       return originalCanMatchInHegemony(self, general, deputy, enabledKingdoms)
@@ -255,6 +287,19 @@ function Compat.install()
     Fk._fengsuiNeutralAllWrapped = true
   end
   local mode = require "packages.hegemony.pkg.gamemodes.new_hegemony_mode"
+  if not mode._fengsuiDuoshouWrapped then
+    local originalReward = mode.deathRewardAndPunish
+    mode.deathRewardAndPunish = function(self, victim, killer)
+      local reward = victim:getMark("fengsui_limited_heg__duoshou_reward")
+      if killer and reward > 0 then
+        if not killer.dead then killer:drawCards(reward, "fengsui_limited_heg__duoshou") end
+        victim.room:setPlayerMark(victim, "fengsui_limited_heg__duoshou_reward", 0)
+        return
+      end
+      return originalReward(self, victim, killer)
+    end
+    mode._fengsuiDuoshouWrapped = true
+  end
   table.insertTableIfNeed(mode.whitelist, {
     "fengsui_hebi", "fengsui_liwu", "fengsui_shiyi", "fengsui_cards", "fengsui_effect",
   })

@@ -3,7 +3,8 @@ extension.extensionName = "fengsui"
 extension.game_modes_whitelist = { "new_heg_mode", "fengsui_heg__mode" }
 
 extension:loadSkillSkelsByPath("./packages/fengsui/pkg/fengsui_shiyi/skills")
-assert(#extension.skill_skels == 18, "fengsui_shiyi must load exactly 18 skill skeletons")
+require("packages.fengsui.pkg.fengsui_shiyi.fengsui_sweeping.init")(extension)
+assert(#extension.skill_skels == 29, "fengsui_shiyi must load exactly 29 skill skeletons")
 
 local xinxianying = General:new(extension, "fengsui_heg__xinxianying", "wei", 3, 3, General.Female)
 xinxianying:addSkills { "fengsui_heg__qingshi", "fengsui_heg__jiejie" }
@@ -93,6 +94,6 @@ Fk:loadTranslationTable{
   ["fengsui_limited_heg__shirai"] = "白井黑子",
 }
 
-assert(#extension.generals == 9, "fengsui_shiyi must register exactly 9 generals")
+assert(#extension.generals == 14, "fengsui_shiyi must register exactly 14 generals")
 
 return extension

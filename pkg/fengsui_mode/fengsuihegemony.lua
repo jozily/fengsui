@@ -125,6 +125,7 @@ function HegLogic:chooseGenerals()
   end)
   table.removeOne(allKingdoms, "fengsui_neutral")
   table.removeOne(allKingdoms, "fengsui_neutralall")
+  table.removeOne(allKingdoms, "fengsui_sweeping")
   table.removeOne(allKingdoms, "wild")
   if #allKingdoms >= 4 then --如果势力大于4个，则ban一个
     local kingdoms = table.random(allKingdoms, 4)
@@ -137,7 +138,8 @@ function HegLogic:chooseGenerals()
     end
      for i = #room.general_pile, 1, -1 do
       local g = Fk.generals[room.general_pile[i]]
-      if table.contains(unused, g.kingdom) or table.contains(unused, g.subkingdom) then
+      if g.kingdom ~= "fengsui_sweeping" and
+        (table.contains(unused, g.kingdom) or table.contains(unused, g.subkingdom)) then
         table.remove(room.general_pile, i)
       end
     end
@@ -454,6 +456,12 @@ heg = fk.CreateGameMode{
   end,
   reward_punish = function (self, victim, killer)
     local room = victim.room
+    local duoshouReward = victim:getMark("fengsui_limited_heg__duoshou_reward")
+    if killer and duoshouReward > 0 then
+      if not killer.dead then killer:drawCards(duoshouReward, "fengsui_limited_heg__duoshou") end
+      room:setPlayerMark(victim, "fengsui_limited_heg__duoshou_reward", 0)
+      return
+    end
     if killer then
       if killer.kingdom ~= "unknown" and not killer.dead then
         local times = 1
