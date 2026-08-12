@@ -4,7 +4,7 @@ local sweeping = fk.CreateSkill { name = "fengsui_limited_heg__sweeping", tags =
 
 Fk:loadTranslationTable {
   ["fengsui_limited_heg__sweeping"] = "扫荡",
-  [":fengsui_limited_heg__sweeping"] = "限定技，出牌阶段，若你的势力仅剩你一名角色，你可以变为野心家并发动一次“谋离间”，然后你可以对其中一位受到伤害的角色拉拢人心。若你已为野心家，你改为摸两张牌。",
+  [":fengsui_limited_heg__sweeping"] = "限定技，出牌阶段，若你的势力仅剩你一名角色，你可以变为野心家（若你已为野心家，则改为摸两张牌），然后发动一次“谋离间”，再可以对其中一位受到伤害的角色拉拢人心。",
   ["#fengsui_limited_heg__sweeping-lijian"] = "扫荡：请发动一次“谋离间”",
   ["#fengsui_limited_heg__sweeping-recruit"] = "扫荡：你可以选择一名受到“谋离间”伤害的角色拉拢人心",
 }

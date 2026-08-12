@@ -2,7 +2,7 @@ local H = require "packages.hegemony.util"
 local yanzhen = fk.CreateSkill { name = "fengsui_limited_heg__yanzhen" }
 
 Fk:loadTranslationTable {
-  ["fengsui_limited_heg__yanzhen"] = "严阵",
+  ["fengsui_limited_heg__yanzhen"] = "孤胆",
   [":fengsui_limited_heg__yanzhen"] = "当你明置此武将牌后或每轮首次受到伤害后，你可以令当前回合角色执行一个军令。若其不执行，你获得一张【杀】，此【杀】无距离限制且不计入次数；若其执行，你暗置此武将牌。",
 }
 

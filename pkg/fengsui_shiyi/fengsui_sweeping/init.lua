@@ -3,9 +3,9 @@ extension:loadSkillSkelsByPath("./packages/fengsui/pkg/fengsui_shiyi/fengsui_swe
 
 Fk:appendKingdomMap("fengsui_sweeping", { "wei", "shu", "wu", "qun", "jin" })
 
-local no1 = General:new(extension, "fengsui_limited_heg__sweeperno1", "fengsui_sweeping", 3)
+local no1 = General:new(extension, "fengsui_limited_heg__sweeperno1", "fengsui_sweeping", 8, 8, General.Female)
 no1:addSkills { "fengsui_limited_heg__sweeping", "fengsui_limited_heg__ailiu", "fengsui_limited_heg__tanghou" }
-local no2 = General:new(extension, "fengsui_limited_heg__sweeperno2", "fengsui_sweeping", 4)
+local no2 = General:new(extension, "fengsui_limited_heg__sweeperno2", "fengsui_sweeping", 8, 8, General.Female)
 no2:addSkills { "fengsui_limited_heg__sweeping", "fengsui_limited_heg__meimo" }
 no1:addCompanions(no2.name)
 no2:addCompanions(no1.name)
@@ -15,6 +15,7 @@ qinshi:addSkills { "fengsui_limited_heg__yangzhi", "fengsui_limited_heg__zhenmin
 local zhanjiang = General:new(extension, "fengsui_limited_heg__zhanjiangmd", "fengsui_neutral", 4)
 zhanjiang:addSkills { "fengsui_limited_heg__duoshou", "fengsui_limited_heg__yanzhen" }
 local xunyu = General:new(extension, "fengsui_limited_heg__xunyu", "fengsui_neutral", 4)
+xunyu:addCompanions("hs__xunyu")
 xunyu:addSkills { "fengsui_limited_heg__wangzuo", "fengsui_limited_heg__shendu" }
 
 Fk:loadTranslationTable {
@@ -23,7 +24,7 @@ Fk:loadTranslationTable {
   ["fengsui_limited_heg__sweeperno2"] = "恩泽",
   ["fengsui_limited_heg__qinshimd"] = "绝命琴师",
   ["fengsui_limited_heg__zhanjiangmd"] = "斩将者",
-  ["fengsui_limited_heg__xunyu"] = "中立荀彧",
+  ["fengsui_limited_heg__xunyu"] = "荀彧",
   ["designer:fengsui_limited_heg__sweeperno1"] = "Mayday",
   ["designer:fengsui_limited_heg__sweeperno2"] = "Mayday",
   ["designer:fengsui_limited_heg__qinshimd"] = "Mayday",

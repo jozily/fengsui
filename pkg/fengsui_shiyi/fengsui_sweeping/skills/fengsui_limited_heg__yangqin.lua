@@ -3,7 +3,7 @@ local yangqin = fk.CreateSkill { name = "fengsui_limited_heg__yangqin", tags = {
 
 Fk:loadTranslationTable {
   ["fengsui_limited_heg__yangqin"] = "扬琴",
-  [":fengsui_limited_heg__yangqin"] = "锁定技，当你的体力值发生变化后，若为3，你获得一枚“阴阳鱼”；若为2，你获得一枚“先驱”；若为1，若你没有国战标记则摸一张牌，否则视为对一名其他角色使用一张雷【杀】。",
+  [":fengsui_limited_heg__yangqin"] = "锁定技，当你的体力值发生变化后，若你没有国战标记，你摸一张牌；若你的体力值为3，你获得一枚“阴阳鱼”；若为2，你获得一枚“先驱”；若为1，你视为对一名其他角色使用一张雷【杀】。",
   ["#fengsui_limited_heg__yangqin-slash"] = "扬琴：选择一名角色，视为对其使用雷【杀】",
 }
 
@@ -18,10 +18,10 @@ yangqin:addEffect(fk.HpChanged, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
+    if not hasHegMark(player) then player:drawCards(1, yangqin.name) end
     if player.hp == 3 then H.addHegMark(player, "yinyangfish")
     elseif player.hp == 2 then H.addHegMark(player, "vanguard")
-    elseif not hasHegMark(player) then player:drawCards(1, yangqin.name)
-    else
+    elseif player.hp == 1 then
       local slash = Fk:cloneCard("thunder__slash")
       local targets = table.filter(room:getOtherPlayers(player), function(p)
         return player:canUseTo(slash, p, { bypass_times = true, bypass_distances = true })
