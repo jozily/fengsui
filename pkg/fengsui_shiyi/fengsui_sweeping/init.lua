@@ -11,7 +11,7 @@ local xunyu = General:new(extension, "fengsui_limited_heg__xunyu", "fengsui_neut
 xunyu:addCompanions("hs__xunyu")
 xunyu:addSkills { "fengsui_limited_heg__wangzuo", "fengsui_limited_heg__shendu" }
 
-local no1 = General:new(extension, "fengsui_limited_heg__sweeperno1", "fengsui_sweeping", 3, 6, General.Female)
+local no1 = General:new(extension, "fengsui_limited_heg__sweeperno1", "fengsui_sweeping", 3, 3, General.Female)
 no1:addSkills { "fengsui_limited_heg__sweeping", "fengsui_limited_heg__ailiu", "fengsui_limited_heg__tanghou" }
 local no2 = General:new(extension, "fengsui_limited_heg__sweeperno2", "fengsui_sweeping", 4, 4, General.Female)
 no2:addSkills { "fengsui_limited_heg__sweeping", "fengsui_limited_heg__meimo" }
