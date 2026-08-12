@@ -3,8 +3,6 @@ extension.extensionName = "fengsui"
 extension.game_modes_whitelist = { "new_heg_mode", "fengsui_heg__mode" }
 
 extension:loadSkillSkelsByPath("./packages/fengsui/pkg/fengsui_shiyi/skills")
-require("packages.fengsui.pkg.fengsui_shiyi.fengsui_sweeping.init")(extension)
-assert(#extension.skill_skels == 29, "fengsui_shiyi must load exactly 29 skill skeletons")
 
 local xinxianying = General:new(extension, "fengsui_heg__xinxianying", "wei", 3, 3, General.Female)
 xinxianying:addSkills { "fengsui_heg__qingshi", "fengsui_heg__jiejie" }
@@ -33,6 +31,10 @@ misaka:addSkills { "fengsui_limited_heg__cipao", "fengsui_limited_heg__junshi" }
 
 local shirai = General:new(extension, "fengsui_limited_heg__shirai", "fengsui_neutral", 3, 3, General.Female)
 shirai:addSkills { "fengsui_limited_heg__shunyi", "fengsui_limited_heg__fengji" }
+
+-- Keep the Mayday-designed sweeping series at the end of the Shiyi roster.
+require("packages.fengsui.pkg.fengsui_shiyi.fengsui_sweeping.init")(extension)
+assert(#extension.skill_skels == 29, "fengsui_shiyi must load exactly 29 skill skeletons")
 
 Fk:loadTranslationTable{
   ["fengsui_shiyi"] = "烽燧燎原-拾遗",
