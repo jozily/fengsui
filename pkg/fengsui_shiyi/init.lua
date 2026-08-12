@@ -65,7 +65,7 @@ Fk:loadTranslationTable{
 
   ["fengsui_heg__wangyi"] = "王异",
   ["#fengsui_heg__wangyi"] = "决意的巾帼",
-  ["illustrator:fengsui_heg__wangyi"] = "佚名",
+  ["illustrator:fengsui_heg__wangyi"] = "zoo",
   ["$fengsui_heg__zhenlie1"] = "素颜风吹胭脂折，巾帼红妆贞烈战！",
   ["$fengsui_heg__zhenlie2"] = "贞洁烈志，与城共守。",
   ["$fengsui_heg__miji1"] = "共勉卒勋，不可顺逆转之意。",
