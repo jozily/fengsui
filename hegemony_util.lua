@@ -2,6 +2,18 @@ local modern = require "packages.hegemony.util"
 
 local compat = setmetatable({}, { __index = modern })
 
+-- Fengsui's hegemony rule passes room explicitly; the 0.5.20 helper only needs player.
+function compat.addHegMark(roomOrPlayer, playerOrMark, markOrNumber, number)
+  if type(playerOrMark) == "string" then
+    return modern.addHegMark(roomOrPlayer, playerOrMark, markOrNumber)
+  end
+  return modern.addHegMark(playerOrMark, markOrNumber, number)
+end
+
+function compat.removeHegMark(room, player, markName, number)
+  return modern.removeHegMark(room, player, markName, number)
+end
+
 local function returnGenerals(room, generals, chosen, original)
   table.removeOne(generals, chosen)
   if original and original ~= "" and original ~= "anjiang" and not original:startsWith("blank_") then
