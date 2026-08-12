@@ -3,7 +3,7 @@ extension.extensionName = "fengsui"
 extension.game_modes_whitelist = { "new_heg_mode", "fengsui_heg__mode" }
 
 extension:loadSkillSkelsByPath("./packages/fengsui/pkg/fengsui_shiyi/skills")
-assert(#extension.skill_skels == 11, "fengsui_shiyi must load exactly 11 skill skeletons")
+assert(#extension.skill_skels == 18, "fengsui_shiyi must load exactly 18 skill skeletons")
 
 local xinxianying = General:new(extension, "fengsui_heg__xinxianying", "wei", 3, 3, General.Female)
 xinxianying:addSkills { "fengsui_heg__qingshi", "fengsui_heg__jiejie" }
@@ -20,6 +20,18 @@ wangyi:addSkills { "fengsui_heg__zhenlie", "fengsui_heg__miji" }
 local simayou = General:new(extension, "SP_heg__simayou", "jin", 3)
 simayou:addSkills { "heg__fuzheng", "heg__yunde" }
 simayou:addCompanions("fengsui_heg__jiabao")
+
+local frenda = General:new(extension, "fengsui_limited_heg__frenda", "fengsui_neutral", 3, 3, General.Female)
+frenda:addSkills { "fengsui_limited_heg__yinxian" }
+
+local shokuhou = General:new(extension, "fengsui_limited_heg__shokuhou", "fengsui_neutral", 3, 3, General.Female)
+shokuhou:addSkills { "fengsui_limited_heg__duxin", "fengsui_limited_heg__piruan" }
+
+local misaka = General:new(extension, "fengsui_limited_heg__misaka", "fengsui_neutral", 4, 4, General.Female)
+misaka:addSkills { "fengsui_limited_heg__cipao", "fengsui_limited_heg__junshi" }
+
+local shirai = General:new(extension, "fengsui_limited_heg__shirai", "fengsui_neutral", 3, 3, General.Female)
+shirai:addSkills { "fengsui_limited_heg__shunyi", "fengsui_limited_heg__fengji" }
 
 Fk:loadTranslationTable{
   ["fengsui_shiyi"] = "烽燧燎原-拾遗",
@@ -73,8 +85,14 @@ Fk:loadTranslationTable{
   ["$heg__yunde_SP_heg__simayou3"] = "兄弟同心，何必以储位相疑。",
   ["$heg__yunde_SP_heg__simayou4"] = "进不争权，退不避责，此为臣节。",
   ["~SP_heg__simayou"] = "臣弟别无他志，陛下何以疑我至此……",
+
+  ["fengsui_limited_heg"] = "限时武将",
+  ["fengsui_limited_heg__frenda"] = "芙兰达",
+  ["fengsui_limited_heg__shokuhou"] = "食蜂操祈",
+  ["fengsui_limited_heg__misaka"] = "御坂美琴",
+  ["fengsui_limited_heg__shirai"] = "白井黑子",
 }
 
-assert(#extension.generals == 5, "fengsui_shiyi must register exactly 5 generals")
+assert(#extension.generals == 9, "fengsui_shiyi must register exactly 9 generals")
 
 return extension
