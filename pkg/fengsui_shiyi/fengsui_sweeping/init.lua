@@ -3,9 +3,9 @@ extension:loadSkillSkelsByPath("./packages/fengsui/pkg/fengsui_shiyi/fengsui_swe
 
 Fk:appendKingdomMap("fengsui_sweeping", { "wei", "shu", "wu", "qun", "jin" })
 
-local no1 = General:new(extension, "fengsui_limited_heg__sweeperno1", "fengsui_sweeping", 8, 8, General.Female)
+local no1 = General:new(extension, "fengsui_limited_heg__sweeperno1", "fengsui_sweeping", 4, 4, General.Female)
 no1:addSkills { "fengsui_limited_heg__sweeping", "fengsui_limited_heg__ailiu", "fengsui_limited_heg__tanghou" }
-local no2 = General:new(extension, "fengsui_limited_heg__sweeperno2", "fengsui_sweeping", 8, 8, General.Female)
+local no2 = General:new(extension, "fengsui_limited_heg__sweeperno2", "fengsui_sweeping", 4, 4, General.Female)
 no2:addSkills { "fengsui_limited_heg__sweeping", "fengsui_limited_heg__meimo" }
 no1:addCompanions(no2.name)
 no2:addCompanions(no1.name)
