@@ -11,9 +11,11 @@ Fk:loadTranslationTable {
 }
 
 local function available(player)
+  local room = player.room or Fk:currentRoom()
+  if not room then return {} end
   return table.filter(marks, function(pair)
-    return table.find(player.room.players, function(p) return p:getMark(pair[1]) > 0 end) ~= nil or
-      table.contains(player.room:getBanner("fengsui_heg_marks_used") or {}, pair[2])
+    return table.find(room.players, function(p) return p:getMark(pair[1]) > 0 end) ~= nil or
+      table.contains(room:getBanner("fengsui_heg_marks_used") or {}, pair[2])
   end)
 end
 

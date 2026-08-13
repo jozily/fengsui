@@ -8,7 +8,7 @@ Fk:loadTranslationTable {
 }
 
 local function hasHegMark(player)
-  return table.find({ "@!!vanguard", "@!!yinyangfish", "@!!companion", "@!!wild", "@fengsui_heg_ascend", "@fengsui_heg__descend" },
+  return table.find({ "@!!vanguard", "@!!yinyangfish", "@!!companion", "@!!wild", "@!!fengsui_heg_ascend", "@!!fengsui_heg__descend" },
     function(mark) return player:getMark(mark) > 0 end) ~= nil
 end
 

@@ -34,7 +34,7 @@ shirai:addSkills { "fengsui_limited_heg__shunyi", "fengsui_limited_heg__fengji" 
 
 -- Keep the Mayday-designed sweeping series at the end of the Shiyi roster.
 require("packages.fengsui.pkg.fengsui_shiyi.fengsui_sweeping.init")(extension)
-assert(#extension.skill_skels == 29, "fengsui_shiyi must load exactly 29 skill skeletons")
+assert(#extension.skill_skels == 31, "fengsui_shiyi must load exactly 31 skill skeletons")
 
 Fk:loadTranslationTable{
   ["fengsui_shiyi"] = "烽燧燎原-拾遗",
