@@ -17,6 +17,27 @@ Item {
     property string kingdoms
     // 动画目标帧（根据kingdoms动态计算）
     property int targetFrame: 0
+    property bool initialized: false
+
+    function initializeAnimation() {
+        switch (kingdoms) {
+            case "wei": targetFrame = 0; break
+            case "shu": targetFrame = 1; break
+            case "wu": targetFrame = 2; break
+            case "qun": targetFrame = 3; break
+            default: targetFrame = 4
+        }
+        kingdom.curr = 0
+        bg.curr = 0
+        bg.opacity = 0
+        root.opacity = 1
+        mainAnimation.restart()
+    }
+
+    Component.onCompleted: {
+        initialized = true
+        initializeAnimation()
+    }
 
     // 王国图片（居中，层级在上）
     Image {
@@ -44,27 +65,13 @@ Item {
 
     // 监听王国变化，触发动画初始化
     onKingdomsChanged: {
-        // 根据王国类型设置目标帧（0~4对应不同势力）
-        switch (kingdoms) {
-            case "wei": targetFrame = 0; break
-            case "shu": targetFrame = 1; break
-            case "wu": targetFrame = 2; break
-            case "qun": targetFrame = 3; break
-            default: targetFrame = 4  // 其他情况默认帧
-        }
-
-        // 重置当前帧为0，确保动画从头开始
-        kingdom.curr = 0
-        bg.curr = 0
-
-        // 重启主动画（同时播放背景和王国动画）
-        mainAnimation.restart()
+        if (initialized) initializeAnimation()
     }
 
     // 主序列动画：分两阶段执行
        SequentialAnimation {
            id:  mainAnimation
-           running: true  // 自动启动
+           running: false
 
            // 第一阶段：kingdom单独从0~4帧循环3次
            SequentialAnimation {
@@ -124,5 +131,6 @@ Item {
     // 加载外部数据（示例）
     function loadData(data) {
         kingdoms = data.kingdoms
+        initializeAnimation()
     }
 }
