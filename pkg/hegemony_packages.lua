@@ -11,7 +11,6 @@ return {
   require(prefix .. "jin_zqdl"),
   require(prefix .. "jin_jyzs"),
   require(prefix .. "jin_zfxp"),
-  require(prefix .. "hegemony_effect"),
   require(prefix .. "online_heg"),
   require(prefix .. "mobile_heg"),
   require(prefix .. "tenyear_heg"),
