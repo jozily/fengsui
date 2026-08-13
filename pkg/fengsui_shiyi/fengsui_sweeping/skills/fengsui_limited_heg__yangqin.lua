@@ -18,6 +18,9 @@ yangqin:addEffect(fk.HpChanged, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
+    if player.hp >= 1 and player.hp <= 3 then
+      room:broadcastPlaySound("./packages/fengsui/audio/skill/fengsui_limited_heg__yangqin" .. player.hp)
+    end
     if not hasHegMark(player) then player:drawCards(1, yangqin.name) end
     if player.hp == 3 then H.addHegMark(player, "yinyangfish")
     elseif player.hp == 2 then H.addHegMark(player, "vanguard")

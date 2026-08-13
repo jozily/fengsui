@@ -48,6 +48,10 @@ local zhaoshu = fk.CreateCard{
 
 extension:addCardSpec("fengsui__taikangzhizhi", Card.Heart, 8)
 extension:addCardSpec("heg_zhaoshu", Card.Club, 3)
+extension:addCardSpec("heg_rule_the_world", Card.Spade, 12)
+extension:addCardSpec("heg_conquering", Card.Diamond, 1)
+extension:addCardSpec("heg_consolidate_country", Card.Heart, 1)
+extension:addCardSpec("heg_chaos", Card.Club, 12)
 
 extension:loadCardSkels{
   taikangzhizhi,

@@ -26,6 +26,7 @@ yangzhi:addEffect(fk.GeneralRevealed, {
     room:handleAddLoseSkills(player, "fengsui_heg_ascend_skill&")
     room:addPlayerMark(player, "@!!fengsui_heg__descend")
     room:handleAddLoseSkills(player, "fengsui_heg__descend_skill&")
+    room:broadcastPlaySound("./packages/fengsui/audio/skill/fengsui_limited_heg__yangzhi")
   end,
 })
 

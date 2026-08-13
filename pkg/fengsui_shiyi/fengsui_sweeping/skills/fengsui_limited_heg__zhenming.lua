@@ -30,6 +30,7 @@ zhenming:addEffect("active", {
     if pair then
       H.addHegMark(player, pair[2])
       room:setPlayerMark(player, "fengsui_limited_heg__zhenming_invalid", 1)
+      room:broadcastPlaySound("./packages/fengsui/audio/skill/fengsui_limited_heg__zhenming")
     end
   end,
 })

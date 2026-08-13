@@ -10,7 +10,7 @@ local overlayGenerals = {
   "heg__yangjun",
 }
 
-local nineVariationsAudio = {
+local nineVariationsCards = {
   overbearing = true,
   part_ways = true,
   reveal_intention = true,
@@ -38,7 +38,7 @@ local function findGeneral(packages, name)
   end
 end
 
-return function(packages)
+return function(packages, cardOverlayPackage)
   local applied = 0
   for _, name in ipairs(overlayGenerals) do
     local general = findGeneral(packages, name)
@@ -52,12 +52,17 @@ return function(packages)
 
   assert(applied == #overlayGenerals, "fengsui audio overlay must bind all official hegemony generals")
 
-  if not Fk._fengsuiCardPreviewAudioRedirected then
-    local originalCardExtension = GetCardExtensionByName
-    GetCardExtensionByName = function(cardName)
-      if nineVariationsAudio[cardName] then return "fengsui" end
-      return originalCardExtension(cardName)
+  local cardSkels = {}
+  for _, package in ipairs(packages or {}) do
+    for index = #(package.card_skels or {}), 1, -1 do
+      local skel = package.card_skels[index]
+      if nineVariationsCards[skel.spec.name] then
+        table.insert(cardSkels, skel)
+        table.remove(package.card_skels, index)
+      end
     end
-    Fk._fengsuiCardPreviewAudioRedirected = true
   end
+
+  assert(#cardSkels == 5, "fengsui audio overlay must bind all five Nine Variations cards")
+  cardOverlayPackage:loadCardSkels(cardSkels)
 end

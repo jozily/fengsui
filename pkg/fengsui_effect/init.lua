@@ -4,13 +4,6 @@ extension.game_modes_whitelist = { "new_heg_mode", "fengsui_heg__mode" }
 
 local effectRoot = "packages/fengsui/pkg/fengsui_effect/"
 local oldEffectRoot = "packages/hegemony/pkg/hegemony_effect/"
-local nineVariationsAudio = {
-  overbearing = true,
-  part_ways = true,
-  reveal_intention = true,
-  tricky_heist = true,
-  unworthy_continuation = true,
-}
 
 local function redirect(path)
   if type(path) ~= "string" then return path end
@@ -32,19 +25,6 @@ if Room and not Room._fengsuiEffectRedirected then
     return originalPlaySound(self, redirect(path), ...)
   end
   Room._fengsuiEffectRedirected = true
-end
-
-if Room and not Room._fengsuiCardAudioRedirected then
-  local originalCardSound = Room.playCardEmotionAndSound
-  Room.playCardEmotionAndSound = function(self, player, card)
-    if card and card.type ~= Card.TypeEquip and nineVariationsAudio[card.name] then
-      local gender = player.gender == General.Male and "male/" or "female/"
-      self:broadcastPlaySound("./packages/fengsui/audio/card/" .. gender .. card.name)
-      return
-    end
-    return originalCardSound(self, player, card)
-  end
-  Room._fengsuiCardAudioRedirected = true
 end
 
 local function fileContains(path, needle)

@@ -167,9 +167,7 @@ local function chooseGenerals(self)
     local unused = table.filter(allKingdoms, function(kingdom)
       return not table.contains(kingdoms, kingdom)
     end)
-    room:doSuperLightBox("packages/fengsui/pkg/fengsui_effect/qml/Bankingdoms.qml", {
-      kingdoms = unused[1],
-    })
+    room:doSuperLightBox("packages/fengsui/pkg/fengsui_effect/qml/Bankingdoms_" .. unused[1] .. ".qml")
     room:delay(3600)
     room:sendLog{
       type = "#KingdomFiltered",
