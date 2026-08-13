@@ -2,7 +2,7 @@ local extension = Package:new("fengsui_mode", Package.SpecialPack)
 extension.extensionName = "fengsui"
 extension.game_modes_whitelist = { "fengsui_heg__mode" }
 
-local officialPackages = require "packages/hegemony"
+local officialPackages = require "packages/fengsui/pkg/hegemony_packages"
 local officialMode
 for _, package in ipairs(officialPackages) do
   for _, mode in ipairs(package.game_modes or {}) do

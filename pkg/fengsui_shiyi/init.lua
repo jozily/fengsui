@@ -20,16 +20,16 @@ local simayou = General:new(extension, "SP_heg__simayou", "jin", 3)
 simayou:addSkills { "heg__fuzheng", "heg__yunde" }
 simayou:addCompanions("fengsui_heg__jiabao")
 
-local frenda = General:new(extension, "fengsui_limited_heg__frenda", "fengsui_neutral", 3, 3, General.Female)
+local frenda = General:new(extension, "fengsui_limited_heg__frenda", "fengsui_neutralall", 3, 3, General.Female)
 frenda:addSkills { "fengsui_limited_heg__yinxian" }
 
-local shokuhou = General:new(extension, "fengsui_limited_heg__shokuhou", "fengsui_neutral", 3, 3, General.Female)
+local shokuhou = General:new(extension, "fengsui_limited_heg__shokuhou", "fengsui_neutralall", 3, 3, General.Female)
 shokuhou:addSkills { "fengsui_limited_heg__duxin", "fengsui_limited_heg__piruan" }
 
-local misaka = General:new(extension, "fengsui_limited_heg__misaka", "fengsui_neutral", 4, 4, General.Female)
+local misaka = General:new(extension, "fengsui_limited_heg__misaka", "fengsui_neutralall", 4, 4, General.Female)
 misaka:addSkills { "fengsui_limited_heg__cipao", "fengsui_limited_heg__junshi" }
 
-local shirai = General:new(extension, "fengsui_limited_heg__shirai", "fengsui_neutral", 3, 3, General.Female)
+local shirai = General:new(extension, "fengsui_limited_heg__shirai", "fengsui_neutralall", 3, 3, General.Female)
 shirai:addSkills { "fengsui_limited_heg__shunyi", "fengsui_limited_heg__fengji" }
 
 -- Keep the Mayday-designed sweeping series at the end of the Shiyi roster.

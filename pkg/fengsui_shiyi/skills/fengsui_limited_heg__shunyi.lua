@@ -15,8 +15,9 @@ shunyi:addEffect("active", {
   card_num = 0,
   target_num = 0,
   can_use = function(self, player)
+    local room = player.room or Fk:currentRoom()
     return player:usedSkillTimes(shunyi.name, Player.HistoryPhase) == 0 and
-      player:getMark("@fengsui_limited_heg__shunyi") == 0 and #player.room:canMoveCardInBoard() > 0
+      player:getMark("@fengsui_limited_heg__shunyi") == 0 and room and #room:canMoveCardInBoard() > 0
   end,
   on_use = function(self, room, effect)
     local player = effect.from

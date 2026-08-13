@@ -5,6 +5,8 @@ local yuandao = fk.CreateSkill{
   name = "fengsui_heg__yuandaoRemake",
 }
 
+yuandao:addEffect("arraysummon", { array_type = "formation" })
+
 yuandao:addEffect(fk.CardUseFinished, {
   global = true,
   mute = true,

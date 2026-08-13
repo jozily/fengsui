@@ -5,9 +5,9 @@ Fk:appendKingdomMap("fengsui_sweeping", { "wei", "shu", "wu", "qun", "jin" })
 
 local qinshi = General:new(extension, "fengsui_limited_heg__qinshimd", "wild", 3)
 qinshi:addSkills { "fengsui_limited_heg__yangzhi", "fengsui_limited_heg__zhenming", "fengsui_limited_heg__yangqin" }
-local zhanjiang = General:new(extension, "fengsui_limited_heg__zhanjiangmd", "fengsui_neutral", 4)
+local zhanjiang = General:new(extension, "fengsui_limited_heg__zhanjiangmd", "fengsui_neutralall", 4)
 zhanjiang:addSkills { "fengsui_limited_heg__duoshou", "fengsui_limited_heg__yanzhen" }
-local xunyu = General:new(extension, "fengsui_limited_heg__xunyu", "fengsui_neutral", 4)
+local xunyu = General:new(extension, "fengsui_limited_heg__xunyu", "fengsui_neutralall", 4)
 xunyu:addCompanions("hs__xunyu")
 xunyu:addSkills { "fengsui_limited_heg__wangzuo", "fengsui_limited_heg__shendu" }
 

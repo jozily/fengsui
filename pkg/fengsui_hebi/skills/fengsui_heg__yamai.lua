@@ -4,6 +4,8 @@ local yamai = fk.CreateSkill{
   name = "fengsui_heg__yamai",
 }
 
+yamai:addEffect("arraysummon", { array_type = "formation" })
+
 yamai:addEffect(fk.AfterCardsMove, {
   global = true,
   mute = true,

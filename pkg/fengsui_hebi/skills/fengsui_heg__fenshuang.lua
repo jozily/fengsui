@@ -20,7 +20,8 @@ fenshuang:addEffect("active", {
     local player, target = effect.from, effect.tos[1]
     H.doHideGeneral(room, player, player, fenshuang.name)
     if player.dead or target.dead then return end
-    local mark_name = "@fengsui_heg__fenshuang_proxy-round"
+    -- Numeric target ids are internal state, not a client-visible mark.
+    local mark_name = "fengsui_heg__fenshuang_proxy-round"
     room:addTableMark(player, mark_name, target.id)
     local damaged = room:damage{
       from = target,
@@ -36,24 +37,20 @@ fenshuang:addEffect("active", {
   end,
 })
 
-Fk:loadTranslationTable{
-  ["@fengsui_heg__fenshuang_proxy-round"] = "纷霜：",
-}
-
 fenshuang:addEffect(H.CommandExecuting, {
   global = true,
   priority = 10,
   can_trigger = function(self, event, target, player, data)
     return target == player and
-      #player:getTableMark("@fengsui_heg__fenshuang_proxy-round") > 0
+      #player:getTableMark("fengsui_heg__fenshuang_proxy-round") > 0
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local proxies = player:getTableMark("@fengsui_heg__fenshuang_proxy-round")
+    local proxies = player:getTableMark("fengsui_heg__fenshuang_proxy-round")
     local new_to = room:getPlayerById(proxies[1])
     table.remove(proxies, 1)
-    room:setPlayerMark(player, "@fengsui_heg__fenshuang_proxy-round",
+    room:setPlayerMark(player, "fengsui_heg__fenshuang_proxy-round",
       #proxies > 0 and proxies or 0)
     if new_to and new_to:isAlive() then
       room:sendLog{

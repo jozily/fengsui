@@ -70,7 +70,7 @@ chenmeng:addEffect("active", {
     local room = player.room or Fk:currentRoom()
     if not room then return false end
     local owner = table.find(room.alive_players, function(p)
-      return p:hasSkill(chenmeng.name) and H.compareKingdomWith(p, player)
+      return p:hasSkill(chenmeng.name) and H.inFormationRelation(p, player)
     end)
     return owner ~= nil and player:usedSkillTimes(chenmeng.name, Player.HistoryPhase) == 0 and
       (canDiscard(player) or canExchange(player))

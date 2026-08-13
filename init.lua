@@ -1,4 +1,7 @@
-local hegemonyPackages = require "packages/hegemony"
+-- The upstream hegemony package now bundles an older Fengsui package. Load
+-- the official packages explicitly so the standalone current Fengsui package
+-- is the only one registering Fengsui generals and cards.
+local hegemonyPackages = require "packages/fengsui/pkg/hegemony_packages"
 
 Fk:loadTranslationTable{
   ["fengsui"] = "烽燧燎原",

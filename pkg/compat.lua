@@ -106,12 +106,14 @@ if not H._fengsuiOriginalInFormationRelation then
     if H._fengsuiOriginalInFormationRelation(player, target) then return true end
     local room = (player and player.room) or (target and target.room) or Fk:currentRoom()
     if not room or not player or not target or not H.compareKingdomWith(player, target) then return false end
-    if player:getMark("@fengsui_heg__zhouwang-round") > 0 or
-        target:getMark("@fengsui_heg__zhouwang-round") > 0 then
-      return true
-    end
-    return table.find(room.alive_players, function(p)
+    local ignoresRelation = player:getMark("@fengsui_heg__zhouwang-round") > 0 or
+      target:getMark("@fengsui_heg__zhouwang-round") > 0 or table.find(room.alive_players, function(p)
       return p:hasSkill("fengsui_heg__chenji") and H.compareKingdomWith(p, player)
+    end) ~= nil
+    if not ignoresRelation then return false end
+    if player ~= target then return true end
+    return table.find(room.alive_players, function(p)
+      return p ~= player and H.compareKingdomWith(p, player)
     end) ~= nil
   end
 end

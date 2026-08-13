@@ -6,6 +6,8 @@ local yuandao = fk.CreateSkill{
   tags = { Skill.DeputyPlace },
 }
 
+yuandao:addEffect("arraysummon", { array_type = "formation" })
+
 yuandao:addEffect(fk.CardUseFinished, {
   global = true,
   mute = true,

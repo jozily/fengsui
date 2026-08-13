@@ -9,7 +9,8 @@ jietu:addEffect("active", {
   card_num = 0,
   target_num = 0,
   can_use = function(self, player)
-    return player:usedSkillTimes(jietu.name, Player.HistoryPhase) == 0
+    return player:usedSkillTimes(jietu.name, Player.HistoryPhase) == 0 and
+      H.inFormationRelation(player, player)
   end,
   on_use = function(self, room, effect)
     local player = effect.from
