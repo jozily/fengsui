@@ -2,8 +2,9 @@ local Liwu = {}
 
 local H = require "packages.hegemony.util"
 
-Liwu.kingdom = "fengsui_neutralall"
-Liwu.legacyKingdom = "fengsui_neutral"
+Liwu.kingdom = "fengsui_neutral"
+Liwu.compatKingdom = "fengsui_neutralall"
+Liwu.legacyKingdom = Liwu.kingdom
 
 Liwu.generals = {
   "fengsui_heg__jiaxu",
@@ -20,7 +21,8 @@ Liwu.generals = {
 Liwu.neutralSkills = {}
 
 function Liwu.isNeutralGeneral(generalName)
-  return table.contains(Liwu.generals, generalName)
+  local general = Fk.generals[generalName]
+  return general ~= nil and general.kingdom == Liwu.kingdom
 end
 
 function Liwu.getNeutralPlace(player)
@@ -35,7 +37,8 @@ function Liwu.isNeutralShown(player)
 end
 
 function Liwu.isKingdomDetermined(player)
-  return player.kingdom ~= "unknown" and player.kingdom ~= Liwu.kingdom and player.kingdom ~= Liwu.legacyKingdom
+  return player.kingdom ~= "unknown" and player.kingdom ~= Liwu.kingdom and
+    player.kingdom ~= Liwu.compatKingdom
 end
 
 if not H._fengsuiNeutralWrapped then

@@ -159,8 +159,11 @@ xushao:addSkill("fengsui_heg__yingmen")
 xushao:addSkill("fengsui_heg__pingjian")
 
 Fk:loadTranslationTable{
+  ["fengsui_neutral"] = "中立",
   ["fengsui_neutralall"] = "中立者",
-  ["heg__zhongliji"] = "中立技：确定势力后失去的技能。<br>中立者：单独亮明中立者时按单独势力计算，但属于未确定势力角色，可搭配任意势力武将牌。最终势力和获胜条件随有势力的武将牌一方；若一方为双势力角色则亮明该武将牌时需声明所属势力；中立者无法与野心家或另一中立者组合。中立者若阵亡时仍未确定势力，则按照单独势力处理奖惩。需先亮明中立者武将牌一轮后或受到伤害后才可亮明另一张武将牌（部分技能可无视该条件）。<br>",
+  ["heg__zhongliji"] = "中立技：确定势力后失去的技能。<br>",
+  ["fengsui_neutral_desc"] = "中立：单独亮明时不显示势力，暂时不能亮明另一张武将牌；受到伤害或下一轮开始后解除限制，亮明另一张武将牌后确定势力。不可与野心家或另一名中立组合。<br>",
+  ["fengsui_neutralall_desc"] = "中立者：可与任意正常势力武将牌组合；组合后势力随搭档和选将阶段确定。不可与野心家或另一名中立者组合。<br>",
 
   ["fengsui_heg__jiaxu"] = "贾诩",
   ["#fengsui_heg__jiaxu"] = "踱步逆世",

@@ -4,6 +4,9 @@ local neutralRule = fk.CreateSkill {
   name = "#fengsui_neutral_rule",
 }
 
+local neutralKingdom = "fengsui_neutral"
+local neutralAllKingdom = "fengsui_neutralall"
+
 local function otherPlace(place)
   return place == "m" and "d" or "m"
 end
@@ -21,6 +24,12 @@ local function loseNeutralSkills(room, player)
   if #skills > 0 then
     room:handleAddLoseSkills(player, "-" .. table.concat(skills, "|-"), nil, false, true)
   end
+end
+
+local function shownGeneralKingdom(player, data)
+  local generalName = data.m or data.d
+  local general = generalName and Fk.generals[generalName]
+  return general and general.kingdom
 end
 
 
@@ -61,6 +70,26 @@ neutralRule:addEffect(fk.GeneralShown, {
       room:setPlayerMark(player, "@fengsui_neutral", 0)
       determineKingdom(room, player)
     end
+  end,
+})
+
+neutralRule:addEffect(fk.GeneralShown, {
+  global = true,
+  priority = 21,
+  can_trigger = function(self, event, target, player, data)
+    if target ~= player or shownGeneralKingdom(player, data) ~= neutralAllKingdom then return false end
+    local kingdom = player:getMark("__heg_kingdom")
+    return player.kingdom == "unknown" and type(kingdom) == "string" and kingdom ~= "" and
+      kingdom ~= neutralKingdom and kingdom ~= neutralAllKingdom
+  end,
+  on_cost = function()
+    return true
+  end,
+  on_use = function(self, event, target, player, data)
+    local room = player.room
+    local kingdom = player:getMark("__heg_kingdom")
+    room:setPlayerProperty(player, "kingdom", kingdom)
+    room:setPlayerProperty(player, "role", kingdom)
   end,
 })
 
