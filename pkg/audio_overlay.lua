@@ -10,6 +10,14 @@ local overlayGenerals = {
   "heg__yangjun",
 }
 
+local nineVariationsAudio = {
+  overbearing = true,
+  part_ways = true,
+  reveal_intention = true,
+  tricky_heist = true,
+  unworthy_continuation = true,
+}
+
 local function fengsuiPackageProxy(original)
   local proxy = {}
   for key, value in pairs(original) do
@@ -43,4 +51,13 @@ return function(packages)
   end
 
   assert(applied == #overlayGenerals, "fengsui audio overlay must bind all official hegemony generals")
+
+  if not Fk._fengsuiCardPreviewAudioRedirected then
+    local originalCardExtension = GetCardExtensionByName
+    GetCardExtensionByName = function(cardName)
+      if nineVariationsAudio[cardName] then return "fengsui" end
+      return originalCardExtension(cardName)
+    end
+    Fk._fengsuiCardPreviewAudioRedirected = true
+  end
 end

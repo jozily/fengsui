@@ -11,6 +11,8 @@ local taikangzhizhi = fk.CreateCard{
   skill = "fengsui__taikangzhizhi_skill",
 }
 
+-- These four faction tricks are derived card types for Zhaoshu. The leading
+-- ampersand marks them as derived, and no card specs are added for them.
 local rule_the_world = fk.CreateCard{
   name = "&heg_rule_the_world",
   type = Card.TypeTrick,

@@ -146,7 +146,9 @@ function HegLogic:chooseGenerals()
   -- 然后把武将牌堆弄好
     allKingdoms = kingdoms
     --禁势力动画，再公布结果
-    room:doSuperLightBox("packages/fengsui/pkg/fengsui_effect/qml/Bankingdoms_" .. unused[1] .. ".qml")
+    room:doSuperLightBox("packages/fengsui/pkg/fengsui_effect/qml/Bankingdoms.qml", {
+      kingdoms = unused[1],
+    })
     --空读条挡座位
     room:delay(3600)
     room:sendLog{

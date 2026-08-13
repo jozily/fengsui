@@ -160,12 +160,16 @@ local function chooseGenerals(self)
   end)
   table.removeOne(allKingdoms, "wild")
   table.removeOne(allKingdoms, sweepingKingdom)
+  table.removeOne(allKingdoms, neutralKingdom)
+  table.removeOne(allKingdoms, neutralAllKingdom)
   if #allKingdoms > 4 and not room:getSettings("notBanToFourKingdoms") then
     local kingdoms = table.random(allKingdoms, 4)
     local unused = table.filter(allKingdoms, function(kingdom)
       return not table.contains(kingdoms, kingdom)
     end)
-    room:doSuperLightBox("packages/fengsui/pkg/fengsui_effect/qml/Bankingdoms_" .. unused[1] .. ".qml")
+    room:doSuperLightBox("packages/fengsui/pkg/fengsui_effect/qml/Bankingdoms.qml", {
+      kingdoms = unused[1],
+    })
     room:delay(3600)
     room:sendLog{
       type = "#KingdomFiltered",
