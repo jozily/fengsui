@@ -232,7 +232,8 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__peixiu"] = "服罢寒食散，蹉跎又一年。",
 }
 
-local zhugejing = General:new(extension, "fengsui_heg__zhugejing", "jin", 2)
+local zhugejing = General:new(extension, "fengsui_heg__zhugejing", "jin", 4)
+zhugejing.mainMaxHpAdjustedValue = -1
 zhugejing.subkingdom = "qun"
 zhugejing:addSkills { "fengsui_heg__heyi", "fengsui_heg__pijian", "fengsui_heg__zeyu" }
 
