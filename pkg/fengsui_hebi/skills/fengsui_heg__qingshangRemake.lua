@@ -17,7 +17,12 @@ qingshang:addEffect(fk.DamageInflicted, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    U.removeGeneralByName(player, "fengsui_heg__caoshi")
+    local isDeputy = U.getGeneralPlace(player, "fengsui_heg__caoshi")
+    if isDeputy then
+      H.transformGeneral(room, player, false, false, 3, qingshang.name)
+    else
+      U.removeGeneralByName(player, "fengsui_heg__caoshi")
+    end
     data:preventDamage()
 
     if data.from and data.from:isAlive() and player:isAlive() then
