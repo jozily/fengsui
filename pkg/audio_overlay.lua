@@ -10,6 +10,17 @@ local overlayGenerals = {
   "heg__yangjun",
 }
 
+local function fengsuiPackageProxy(original)
+  local proxy = {}
+  for key, value in pairs(original) do
+    proxy[key] = value
+  end
+  proxy.extensionName = "fengsui"
+  proxy._fengsuiOriginalPackage = original
+  setmetatable(proxy, getmetatable(original))
+  return proxy
+end
+
 local function findGeneral(packages, name)
   if Fk.generals[name] then return Fk.generals[name] end
   for _, package in ipairs(packages or {}) do
@@ -24,15 +35,7 @@ return function(packages)
   for _, name in ipairs(overlayGenerals) do
     local general = findGeneral(packages, name)
     if general and general.package and general.package.extensionName ~= "fengsui" then
-      local original = general.package
-      local proxy = {}
-      for key, value in pairs(original) do
-        proxy[key] = value
-      end
-      proxy.extensionName = "fengsui"
-      proxy._fengsuiOriginalPackage = original
-      setmetatable(proxy, getmetatable(original))
-      general.package = proxy
+      general.package = fengsuiPackageProxy(general.package)
       applied = applied + 1
     elseif general and general.package and general.package.extensionName == "fengsui" then
       applied = applied + 1

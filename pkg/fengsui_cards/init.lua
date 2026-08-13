@@ -11,11 +11,49 @@ local taikangzhizhi = fk.CreateCard{
   skill = "fengsui__taikangzhizhi_skill",
 }
 
+local rule_the_world = fk.CreateCard{
+  name = "&heg_rule_the_world",
+  type = Card.TypeTrick,
+  skill = "rule_the_world_skill",
+}
+
+local conquering = fk.CreateCard{
+  name = "&heg_conquering",
+  type = Card.TypeTrick,
+  skill = "heg_conquering_skill",
+}
+
+local consolidate_country = fk.CreateCard{
+  name = "&heg_consolidate_country",
+  type = Card.TypeTrick,
+  skill = "heg_consolidate_country_skill",
+}
+
+local chaos = fk.CreateCard{
+  name = "&heg_chaos",
+  type = Card.TypeTrick,
+  multiple_targets = true,
+  skill = "heg_chaos_skill",
+}
+
+local zhaoshu = fk.CreateCard{
+  name = "&heg_zhaoshu",
+  type = Card.TypeEquip,
+  sub_type = Card.SubtypeTreasure,
+  skill = "heg_zhaoshu_skill",
+}
+
 
 extension:addCardSpec("fengsui__taikangzhizhi", Card.Heart, 8)
+extension:addCardSpec("heg_zhaoshu", Card.Club, 3)
 
 extension:loadCardSkels{
   taikangzhizhi,
+  rule_the_world,
+  conquering,
+  consolidate_country,
+  chaos,
+  zhaoshu,
 }
 
 Fk:loadTranslationTable{
