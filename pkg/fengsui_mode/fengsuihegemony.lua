@@ -127,7 +127,7 @@ function HegLogic:chooseGenerals()
   table.removeOne(allKingdoms, "fengsui_neutralall")
   table.removeOne(allKingdoms, "fengsui_sweeping")
   table.removeOne(allKingdoms, "wild")
-  if #allKingdoms >= 4 then --如果势力大于4个，则ban一个
+  if #allKingdoms > 4 and not room:getSettings("notBanToFourKingdoms") then
     local kingdoms = table.random(allKingdoms, 4)
     local unused = table.filter(allKingdoms, function(k)
       return not table.contains(kingdoms, k)
@@ -146,9 +146,7 @@ function HegLogic:chooseGenerals()
   -- 然后把武将牌堆弄好
     allKingdoms = kingdoms
     --禁势力动画，再公布结果
-    room:doSuperLightBox("packages/fengsui/pkg/fengsui_effect/qml/Bankingdoms.qml",{
-      kingdoms = unused[1],
-    })
+    room:doSuperLightBox("packages/fengsui/pkg/fengsui_effect/qml/Bankingdoms_" .. unused[1] .. ".qml")
     --空读条挡座位
     room:delay(3600)
     room:sendLog{
