@@ -11,6 +11,13 @@ local function otherPlace(place)
   return place == "m" and "d" or "m"
 end
 
+local function getLegacyNeutralPlace(player)
+  local main = Fk.generals[player:getMark("__heg_general")]
+  if main and main.kingdom == Liwu.legacyKingdom then return "m" end
+  local deputy = Fk.generals[player:getMark("__heg_deputy")]
+  if deputy and deputy.kingdom == Liwu.legacyKingdom then return "d" end
+end
+
 local function clearRevealProhibition(room, player)
   room:setPlayerMark(player, "fengsui_neutral_reveal_place", 0)
   room:setPlayerMark(player, "fengsui_neutral_reveal_round", 0)
@@ -35,7 +42,7 @@ end
 
 local function determineKingdom(room, player)
   local kingdom = player:getMark("__heg_kingdom")
-  if type(kingdom) ~= "string" or kingdom == "" or kingdom == Liwu.kingdom then return end
+  if type(kingdom) ~= "string" or kingdom == "" or kingdom == Liwu.legacyKingdom then return end
   room:setPlayerProperty(player, "kingdom", kingdom)
   room:setPlayerProperty(player, "role", kingdom)
   clearRevealProhibition(room, player)
@@ -46,7 +53,7 @@ neutralRule:addEffect(fk.GeneralShown, {
   global = true,
   priority = 20,
   can_trigger = function(self, event, target, player, data)
-    return target == player and Liwu.getNeutralPlace(player) ~= nil
+    return target == player and getLegacyNeutralPlace(player) ~= nil
   end,
   on_cost = function()
     return true
@@ -54,7 +61,7 @@ neutralRule:addEffect(fk.GeneralShown, {
   on_use = function(self, event, target, player, data)
     local room = player and player.room
     if not room then return end
-    local neutralPlace = Liwu.getNeutralPlace(player)
+    local neutralPlace = getLegacyNeutralPlace(player)
     local shownPlace = data.m and "m" or "d"
     local otherShown = neutralPlace == "m" and player.deputyGeneral ~= "anjiang" or
       neutralPlace == "d" and player.general ~= "anjiang"

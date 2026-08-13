@@ -2,9 +2,9 @@ local Liwu = {}
 
 local H = require "packages.hegemony.util"
 
-Liwu.kingdom = "fengsui_neutral"
-Liwu.compatKingdom = "fengsui_neutralall"
-Liwu.legacyKingdom = Liwu.kingdom
+Liwu.kingdom = "fengsui_neutralall"
+Liwu.compatKingdom = Liwu.kingdom
+Liwu.legacyKingdom = "fengsui_neutral"
 
 Liwu.generals = {
   "fengsui_heg__jiaxu",
@@ -45,7 +45,7 @@ if not H._fengsuiNeutralWrapped then
   local originalGetKingdom = H.getKingdom
   H.getKingdom = function(player)
     if player.kingdom == "unknown" and player:getMark("@fengsui_neutral") > 0 then
-      return Liwu.kingdom .. "_" .. player.id
+      return Liwu.legacyKingdom .. "_" .. player.id
     end
     return originalGetKingdom(player)
   end
