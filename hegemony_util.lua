@@ -14,8 +14,14 @@ function compat.removeHegMark(room, player, markName, number)
   return modern.removeHegMark(room, player, markName, number)
 end
 
--- Fengsui replacements are random and retire the replaced general for this game.
+-- The official helper is already random when it receives one candidate. For
+-- Fengsui callers that request a multi-candidate choice, keep the same pool
+-- and event contract but select one candidate directly.
 function compat.transformGeneral(room, player, isMain, isHidden, num, skillName)
+  if (num or 1) <= 1 then
+    return modern.transformGeneral(room, player, isMain, isHidden, num, skillName)
+  end
+
   local data = modern.GeneralTransformedData:new{
     isMain = isMain,
     isHidden = isHidden,
@@ -34,18 +40,14 @@ function compat.transformGeneral(room, player, isMain, isHidden, num, skillName)
   end
 
   local kingdom = player:getMark("__heg_kingdom")
-  local generals
-  if kingdom == "wild" then
-    generals = room:findGenerals(function(name)
-      local general = Fk.generals[name]
-      return general and general.kingdom ~= "wild" and general.subkingdom ~= "wild"
-    end, 1)
-  else
-    generals = room:findGenerals(function(name)
-      local general = Fk.generals[name]
-      return general and (general.kingdom == kingdom or general.subkingdom == kingdom)
-    end, 1)
-  end
+  local generals = room:findGenerals(function(name)
+    local general = Fk.generals[name]
+    if not general then return false end
+    if kingdom == "wild" then
+      return general.kingdom ~= "wild" and general.subkingdom ~= "wild"
+    end
+    return general.kingdom == kingdom or general.subkingdom == kingdom
+  end, 1)
   local general = generals[1]
   if not general then return false end
 
