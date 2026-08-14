@@ -23,6 +23,7 @@ local fengsui_effect = require "packages/fengsui/pkg/fengsui_effect"
 local fengsui_mode = require "packages/fengsui/pkg/fengsui_mode"
 
 require("packages/fengsui/pkg/audio_overlay")(hegemonyPackages, fengsui_cards)
+require "packages/fengsui/pkg/runtime_translations"
 
 -- Voice overrides are loaded last so official packages cannot replace them.
 Fk:loadTranslationTable{
