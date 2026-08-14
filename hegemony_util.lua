@@ -14,6 +14,56 @@ function compat.removeHegMark(room, player, markName, number)
   return modern.removeHegMark(room, player, markName, number)
 end
 
+-- Fengsui replacements are random and retire the replaced general for this game.
+function compat.transformGeneral(room, player, isMain, isHidden, num, skillName)
+  local data = modern.GeneralTransformedData:new{
+    isMain = isMain,
+    isHidden = isHidden,
+    num = num,
+    skillName = skillName,
+  }
+  if room.logic:trigger(modern.GeneralTransforming, player, data) then return false end
+  isMain, isHidden = data.isMain, data.isHidden
+  local original = isMain and player.general or player.deputyGeneral
+  data.origName = original
+  if not original then return false end
+  if original == "anjiang" then
+    player:revealGeneral(not isMain, true)
+    original = isMain and player.general or player.deputyGeneral
+    data.origName = original
+  end
+
+  local kingdom = player:getMark("__heg_kingdom")
+  local generals
+  if kingdom == "wild" then
+    generals = room:findGenerals(function(name)
+      local general = Fk.generals[name]
+      return general and general.kingdom ~= "wild" and general.subkingdom ~= "wild"
+    end, 1)
+  else
+    generals = room:findGenerals(function(name)
+      local general = Fk.generals[name]
+      return general and (general.kingdom == kingdom or general.subkingdom == kingdom)
+    end, 1)
+  end
+  local general = generals[1]
+  if not general then return false end
+
+  room:changeHero(player, general, false, not isMain, not isHidden, false, false)
+  if isHidden then
+    player:hideGeneral(not isMain)
+    room:sendLog{
+      type = "#ChangeHiddenGeneral",
+      from = player.id,
+      arg = isMain and "mainGeneral" or "deputyGeneral",
+      toast = true,
+    }
+  end
+  room:setPlayerMark(player, isMain and "__heg_general" or "__heg_deputy", general)
+  room.logic:trigger(modern.GeneralTransformed, player, data)
+  return true
+end
+
 local function returnGenerals(room, generals, chosen)
   table.removeOne(generals, chosen)
   if #generals > 0 then room:returnToGeneralPile(generals) end
@@ -37,9 +87,9 @@ end
 function compat.askToHebiOrTransform(room, player, skillName, cancelable)
   if not room or not player or player.dead then return false end
   local main = Fk.generals[modern.getActualGeneral(player, false)]
-  if not main then return modern.transformGeneral(room, player, false, false, 1, skillName) end
+  if not main then return compat.transformGeneral(room, player, false, false, 1, skillName) end
   if main.kingdom == "wild" or main.subkingdom == "wild" then
-    return modern.transformGeneral(room, player, false, false, 1, skillName)
+    return compat.transformGeneral(room, player, false, false, 1, skillName)
   end
 
   local companions = room:findGenerals(function(name)
@@ -50,7 +100,7 @@ function compat.askToHebiOrTransform(room, player, skillName, cancelable)
 
   -- A careerist companion cannot form Hebi; replace the deputy directly instead.
   if #companions == 0 then
-    return modern.transformGeneral(room, player, false, false, 1, skillName)
+    return compat.transformGeneral(room, player, false, false, 1, skillName)
   end
 
   local choices = { "fengsui_hebi_choice", "fengsui_transform" }
@@ -63,7 +113,7 @@ function compat.askToHebiOrTransform(room, player, skillName, cancelable)
   if choice ~= "fengsui_hebi_choice" then
     room:returnToGeneralPile(companions)
     if choice == "Cancel" then return false end
-    return modern.transformGeneral(room, player, false, false, 1, skillName)
+    return compat.transformGeneral(room, player, false, false, 1, skillName)
   end
 
   local original = modern.getActualGeneral(player, true)
