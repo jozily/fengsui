@@ -39,7 +39,8 @@ huaixiang:addEffect(fk.AfterCardsMove, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
     local current = player.room.current
-    return player:hasSkill(huaixiang.name) and current and current.phase == Player.Play and
+    return player:hasSkill(huaixiang.name) and current and
+      (current.phase == Player.Play or current.phase == Player.Discard) and
       H.compareKingdomWith(current, player) and #getEligibleCards(player.room, data) > 0 and
       table.find(player.room.alive_players, function(p) return p.kingdom ~= "unknown" end) ~= nil
   end,

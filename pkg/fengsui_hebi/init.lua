@@ -1181,7 +1181,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__jiawu"] = "公冶长风",
   ["cv:fengsui_heg__jiawu"] = "暂无",
   ["fengsui_heg__huaixiang"] = "怀香",
-  [":fengsui_heg__huaixiang"] = "同势力角色的出牌阶段，若每种类别首次有牌因弃置进入弃牌堆，你可获得其中一张并令一名确定势力的角色本回合视为未确定势力。",
+  [":fengsui_heg__huaixiang"] = "同势力角色的出牌阶段或弃牌阶段，若每种类别首次有牌因弃置进入弃牌堆，你可获得其中一张并令一名确定势力的角色本回合视为未确定势力。",
   ["#fengsui_heg__huaixiang-card"] = "怀香：你可以获得本阶段首次因弃置进入弃牌堆的一张类别牌",
   ["#fengsui_heg__huaixiang-target"] = "怀香：令一名确定势力的角色本回合视为未确定势力",
   ["@fengsui_heg__huaixiang-turn"] = "怀香：视为未确定势力",
