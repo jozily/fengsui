@@ -1,8 +1,47 @@
+local function translated_skill_name(skill_name)
+  local translated = Fk:translate(skill_name)
+  if translated == skill_name then
+    local base_name = skill_name:gsub("Remake%d*", "")
+    translated = Fk:translate(base_name)
+  end
+  return translated == skill_name and "技能" or translated
+end
+
 local function skill_prompt(skill_name, action)
-  return Fk:translate(skill_name) .. "：" .. action
+  return translated_skill_name(skill_name) .. "：" .. action
 end
 
 Fk:loadTranslationTable {
+  ["fengsui_heg__aobiRemake"] = translated_skill_name("fengsui_heg__aobiRemake"),
+  ["fengsui_heg__bizunRemake"] = translated_skill_name("fengsui_heg__bizunRemake"),
+  ["fengsui_heg__chenmengRemake"] = translated_skill_name("fengsui_heg__chenmengRemake"),
+  ["fengsui_heg__dishangRemake"] = translated_skill_name("fengsui_heg__dishangRemake"),
+  ["fengsui_heg__fenshuangRemake"] = translated_skill_name("fengsui_heg__fenshuangRemake"),
+  ["fengsui_heg__fudaoRemake"] = translated_skill_name("fengsui_heg__fudaoRemake"),
+  ["fengsui_heg__fumianRemake"] = translated_skill_name("fengsui_heg__fumianRemake"),
+  ["fengsui_heg__fumianRemake2"] = translated_skill_name("fengsui_heg__fumianRemake2"),
+  ["fengsui_heg__fuzhuRemake"] = translated_skill_name("fengsui_heg__fuzhuRemake"),
+  ["fengsui_heg__guishangRemake"] = translated_skill_name("fengsui_heg__guishangRemake"),
+  ["fengsui_heg__hexiRemake"] = translated_skill_name("fengsui_heg__hexiRemake"),
+  ["fengsui_heg__jiezhiRemake"] = translated_skill_name("fengsui_heg__jiezhiRemake"),
+  ["fengsui_heg__jincaiRemake"] = translated_skill_name("fengsui_heg__jincaiRemake"),
+  ["fengsui_heg__jiyuanRemake"] = translated_skill_name("fengsui_heg__jiyuanRemake"),
+  ["fengsui_heg__juanzhiRemake"] = translated_skill_name("fengsui_heg__juanzhiRemake"),
+  ["fengsui_heg__junweiRemake"] = translated_skill_name("fengsui_heg__junweiRemake"),
+  ["fengsui_heg__liefaRemake"] = translated_skill_name("fengsui_heg__liefaRemake"),
+  ["fengsui_heg__linzheRemake"] = translated_skill_name("fengsui_heg__linzheRemake"),
+  ["fengsui_heg__qiangongRemake"] = translated_skill_name("fengsui_heg__qiangongRemake"),
+  ["fengsui_heg__qiaosiRemake"] = translated_skill_name("fengsui_heg__qiaosiRemake"),
+  ["fengsui_heg__qingsongRemake"] = translated_skill_name("fengsui_heg__qingsongRemake"),
+  ["fengsui_heg__weihouRemake"] = translated_skill_name("fengsui_heg__weihouRemake"),
+  ["fengsui_heg__weiluanRemake"] = translated_skill_name("fengsui_heg__weiluanRemake"),
+  ["fengsui_heg__yanzuoRemake"] = translated_skill_name("fengsui_heg__yanzuoRemake"),
+  ["fengsui_heg__yingmianRemake"] = translated_skill_name("fengsui_heg__yingmianRemake"),
+  ["fengsui_heg__yisangRemake"] = translated_skill_name("fengsui_heg__yisangRemake"),
+  ["fengsui_heg__zeyuRemake"] = translated_skill_name("fengsui_heg__zeyuRemake"),
+  ["fengsui_heg__zhengchiRemake"] = translated_skill_name("fengsui_heg__zhengchiRemake"),
+  ["fengsui_heg__zhouwangRemake"] = translated_skill_name("fengsui_heg__zhouwangRemake"),
+
   ["#battle_royal&"] = "鏖战：请选择一名角色",
   ["#fengsui_heg__aobiRemake-choice"] = skill_prompt("fengsui_heg__aobiRemake", "请选择一项"),
   ["#fengsui_heg__bizunRemake-invoke"] = skill_prompt("fengsui_heg__bizunRemake", "你可以发动此技能"),
@@ -61,20 +100,20 @@ Fk:loadTranslationTable {
   ["#fengsui_heg__zhengchiRemake-invoke"] = skill_prompt("fengsui_heg__zhengchiRemake", "你可以发动此技能"),
   ["#fengsui_heg__zhouwangRemake"] = skill_prompt("fengsui_heg__zhouwangRemake", "请选择一名角色"),
 
-  ["@fengsui_heg__fumian"] = Fk:translate("fengsui_heg__fumian"),
-  ["@fengsui_heg__fumianRemake"] = Fk:translate("fengsui_heg__fumianRemake"),
-  ["@fengsui_heg__fumianRemake2"] = Fk:translate("fengsui_heg__fumianRemake2"),
-  ["@fengsui_heg__fuyin_bottom"] = Fk:translate("fengsui_heg__fuyin") .. "（牌堆底）",
-  ["@fengsui_heg__fuyin_top"] = Fk:translate("fengsui_heg__fuyin") .. "（牌堆顶）",
-  ["@fengsui_heg__guitu"] = Fk:translate("fengsui_heg__guitu"),
-  ["@fengsui_heg__huaixiang"] = Fk:translate("fengsui_heg__huaixiang"),
-  ["@fengsui_heg__jincai"] = Fk:translate("fengsui_heg__jincai"),
-  ["@fengsui_heg__junwei"] = Fk:translate("fengsui_heg__junwei"),
-  ["@fengsui_heg__junweiRemake"] = Fk:translate("fengsui_heg__junweiRemake"),
-  ["@fengsui_heg__ruluo"] = Fk:translate("fengsui_heg__ruluo"),
-  ["@fengsui_heg__zhouwang"] = Fk:translate("fengsui_heg__zhouwang"),
-  ["@fengsui_heg__zhouwangRemake"] = Fk:translate("fengsui_heg__zhouwangRemake"),
-  ["@fengsui_limited_heg__tanghou"] = Fk:translate("fengsui_limited_heg__tanghou"),
+  ["@fengsui_heg__fumian"] = translated_skill_name("fengsui_heg__fumian"),
+  ["@fengsui_heg__fumianRemake"] = translated_skill_name("fengsui_heg__fumianRemake"),
+  ["@fengsui_heg__fumianRemake2"] = translated_skill_name("fengsui_heg__fumianRemake2"),
+  ["@fengsui_heg__fuyin_bottom"] = translated_skill_name("fengsui_heg__fuyin") .. "（牌堆底）",
+  ["@fengsui_heg__fuyin_top"] = translated_skill_name("fengsui_heg__fuyin") .. "（牌堆顶）",
+  ["@fengsui_heg__guitu"] = translated_skill_name("fengsui_heg__guitu"),
+  ["@fengsui_heg__huaixiang"] = translated_skill_name("fengsui_heg__huaixiang"),
+  ["@fengsui_heg__jincai"] = translated_skill_name("fengsui_heg__jincai"),
+  ["@fengsui_heg__junwei"] = translated_skill_name("fengsui_heg__junwei"),
+  ["@fengsui_heg__junweiRemake"] = translated_skill_name("fengsui_heg__junweiRemake"),
+  ["@fengsui_heg__ruluo"] = translated_skill_name("fengsui_heg__ruluo"),
+  ["@fengsui_heg__zhouwang"] = translated_skill_name("fengsui_heg__zhouwang"),
+  ["@fengsui_heg__zhouwangRemake"] = translated_skill_name("fengsui_heg__zhouwangRemake"),
+  ["@fengsui_limited_heg__tanghou"] = translated_skill_name("fengsui_limited_heg__tanghou"),
 }
 
 return true
