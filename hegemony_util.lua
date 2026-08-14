@@ -19,7 +19,14 @@ end
 -- and event contract but select one candidate directly.
 function compat.transformGeneral(room, player, isMain, isHidden, num, skillName)
   if (num or 1) <= 1 then
-    return modern.transformGeneral(room, player, isMain, isHidden, num, skillName)
+    local original = modern.getActualGeneral(player, not isMain)
+    local result = modern.transformGeneral(room, player, isMain, isHidden, num, skillName)
+    local current = modern.getActualGeneral(player, not isMain)
+    if original and original ~= current and original ~= "" and original ~= "anjiang" and
+        not original:startsWith("blank_") then
+      room:findGenerals(function(name) return name == original end, 1)
+    end
+    return result
   end
 
   local data = modern.GeneralTransformedData:new{
