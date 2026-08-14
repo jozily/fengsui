@@ -1,5 +1,6 @@
 local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
+local CardNameUI = require "packages.fengsui.pkg.card_name_ui"
 
 local xianwan = fk.CreateSkill{
   name = "fengsui_heg__xianwan",
@@ -15,11 +16,7 @@ xianwan:addEffect("viewas", {
   prompt = "#fengsui_heg__xianwan",
   interaction = function(self, player)
     local names = availableNames(player)
-    if #names == 0 then return end
-    return UI.CardNameBox {
-      choices = names,
-      all_choices = { "slash", "jink" },
-    }
+    return CardNameUI.create(xianwan.name, names, { "slash", "jink" })
   end,
   card_filter = Util.FalseFunc,
   view_as = function(self, player, cards)

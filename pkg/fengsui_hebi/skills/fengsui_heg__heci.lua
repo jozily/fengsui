@@ -1,5 +1,6 @@
 local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
+local CardNameUI = require "packages.fengsui.pkg.card_name_ui"
 
 local heci = fk.CreateSkill{
   name = "fengsui_heg__heci",
@@ -60,9 +61,7 @@ heci:addEffect("viewas", {
   end,
   interaction = function(self, player)
     local names, all_names = getAvailableNames(player)
-    if #names > 0 then
-      return UI.CardNameBox { choices = names, all_choices = all_names }
-    end
+    return CardNameUI.create(heci.name, names, all_names)
   end,
   card_filter = function(self, player, to_select, selected)
     return #selected < getCostNum(player)

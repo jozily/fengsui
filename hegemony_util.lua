@@ -14,11 +14,8 @@ function compat.removeHegMark(room, player, markName, number)
   return modern.removeHegMark(room, player, markName, number)
 end
 
-local function returnGenerals(room, generals, chosen, original)
+local function returnGenerals(room, generals, chosen)
   table.removeOne(generals, chosen)
-  if original and original ~= "" and original ~= "anjiang" and not original:startsWith("blank_") then
-    table.insertIfNeed(generals, original)
-  end
   if #generals > 0 then room:returnToGeneralPile(generals) end
 end
 
@@ -83,16 +80,12 @@ function compat.askToHebiOrTransform(room, player, skillName, cancelable)
   end
   if player.deputyGeneral == "anjiang" then player:revealGeneral(true, true) end
 
-  local general = #companions == 1 and companions[1] or room:askToChooseGeneral(player, {
-    generals = companions,
-    n = 1,
-    no_convert = true,
-  })
+  local general = room:tableRandomPick(companions, 1)[1]
   if not general or general == "" then
     room:returnToGeneralPile(companions)
     return false
   end
-  returnGenerals(room, companions, general, original)
+  returnGenerals(room, companions, general)
   changeGeneral(room, player, general, false, false, data)
   modern.addHegMark(player, "companion", 1)
   return true

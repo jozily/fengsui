@@ -1,5 +1,6 @@
 local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
+local CardNameUI = require "packages.fengsui.pkg.card_name_ui"
 
 local ciying = fk.CreateSkill{
   name = "fengsui_heg__ciying",
@@ -15,8 +16,7 @@ ciying:addEffect("viewas", {
   interaction = function(self, player)
     local all_names = allCardNames()
     local names = player:getViewAsCardNames(ciying.name, all_names)
-    if #names == 0 then return end
-    return UI.CardNameBox { choices = names, all_choices = all_names }
+    return CardNameUI.create(ciying.name, names, all_names)
   end,
   filter_pattern = {
     min_num = 0,
@@ -67,8 +67,9 @@ local function resolveCiying(player)
       "#fengsui_heg__ciying-give:::" .. count, ciying.name, false)
     room:moveCardTo(cards, Card.PlayerHand, current, fk.ReasonGive, ciying.name, nil, false, player)
   else
-    H.transformGeneral(room, player, false, false, 3, ciying.name)
-    room:handleAddLoseSkills(player, "-" .. ciying.name .. "|fengsui_heg__ciying_deputy", nil, false, true)
+    if H.transformGeneral(room, player, false, false, 3, ciying.name) then
+      room:handleAddLoseSkills(player, "-" .. ciying.name .. "|fengsui_heg__ciying_deputy", nil, false, true)
+    end
   end
 end
 

@@ -26,30 +26,19 @@ function H.transformGeneral(room, player, isMain, isHidden, num, skillName)
     generals = room:findGenerals(function(name)
       local general = Fk.generals[name]
       return general and general.kingdom ~= "wild" and general.subkingdom ~= "wild"
-    end, num)
+    end, 1)
   else
     generals = room:findGenerals(function(name)
       local general = Fk.generals[name]
       return general and (general.kingdom == kingdom or general.subkingdom == kingdom)
-    end, num)
+    end, 1)
   end
   if #generals == 0 then return false end
 
-  local general = #generals == 1 and generals[1] or room:askToChooseGeneral(player, {
-    generals = generals,
-    n = 1,
-    no_convert = true,
-  })
-  if not general or general == "" then
-    room:returnToGeneralPile(generals)
-    return false
-  end
+  local general = generals[1]
 
   table.removeOne(generals, general)
-  if orig ~= "" and orig ~= "anjiang" and not orig:startsWith("blank_") then
-    table.insertIfNeed(generals, orig)
-  end
-  room:returnToGeneralPile(generals)
+  if #generals > 0 then room:returnToGeneralPile(generals) end
   room:changeHero(player, general, false, not isMain, not isHidden, false, false)
   if isHidden then
     player:hideGeneral(not isMain)

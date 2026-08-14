@@ -1,4 +1,5 @@
 local H = require "packages.fengsui.hegemony_util"
+local CardNameUI = require "packages.fengsui.pkg.card_name_ui"
 
 local liefa = fk.CreateSkill{
   name = "fengsui_heg__liefaRemake",
@@ -14,8 +15,7 @@ liefa:addEffect("viewas", {
       return player:usedSkillTimes(liefa.name .. "_" .. name, Player.HistoryTurn) == 0
     end)
     local names = player:getViewAsCardNames(liefa.name, unused)
-    if #names == 0 then return end
-    return UI.CardNameBox{choices = names, all_choices = basic_names}
+    return CardNameUI.create(liefa.name, names, basic_names)
   end,
   card_filter = Util.FalseFunc,
   view_as = function(self, player, cards)

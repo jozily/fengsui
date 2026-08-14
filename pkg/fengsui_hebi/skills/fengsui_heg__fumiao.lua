@@ -1,5 +1,6 @@
 local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
+local CardNameUI = require "packages.fengsui.pkg.card_name_ui"
 
 local fumiao = fk.CreateSkill{
   name = "fengsui_heg__fumiao",
@@ -31,9 +32,7 @@ fumiao:addEffect("viewas", {
     if not H.allGeneralsRevealed(player) then return end
     local all_names = getUnusedBasicNames(player)
     local names = player:getViewAsCardNames(fumiao.name, all_names)
-    if #names > 0 then
-      return UI.CardNameBox{choices = names, all_choices = all_names}
-    end
+    return CardNameUI.create(fumiao.name, names, all_names)
   end,
   card_filter = Util.FalseFunc,
   view_as = function(self, player, cards)

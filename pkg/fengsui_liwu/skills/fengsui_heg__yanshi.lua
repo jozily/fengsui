@@ -1,4 +1,5 @@
 local s = fk.CreateSkill { name = "fengsui_heg__yanshi" }
+local CardNameUI = require "packages.fengsui.pkg.card_name_ui"
 
 local function damageCard(id)
   local card = Fk:getCardById(id)
@@ -45,7 +46,7 @@ s:addEffect("viewas", {
       return card.type == Card.TypeBasic or card.is_common_trick
     end)
     local names = player:getViewAsCardNames(s.name, allNames)
-    if #names > 0 then return UI.CardNameBox { choices = names, all_choices = allNames } end
+    return CardNameUI.create(s.name, names, allNames)
   end,
   card_filter = function(self, player, to_select, selected)
     if #selected > 0 or not self.interaction.data or player:getMark(s.name .. "_convert-turn") ~= 0 or
