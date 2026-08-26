@@ -3,7 +3,7 @@ local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local yuandao = fk.CreateSkill{
   name = "fengsui_heg__yuandao",
-  tags = { Skill.DeputyPlace },
+  tags = { Skill.MainPlace },
 }
 
 yuandao:addEffect("arraysummon", { array_type = "formation" })

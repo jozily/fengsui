@@ -53,7 +53,24 @@ gaofanResponse:addEffect("viewas", {
   after_use = function(self, player, use)
     local room = player.room
     local source = room:getPlayerById(use.card:getMark("fengsui_heg__gaofan_source"))
-    if source and source:isAlive() and player:isAlive() then
+    if not source or source.dead then return end
+    local choices = {}
+    if H.hasGeneral(source, true) then
+      table.insert(choices, "fengsui_heg__gaofan_transform")
+    end
+    if player:isAlive() then
+      table.insert(choices, "fengsui_heg__gaofan_damage")
+    end
+    if #choices == 0 then return end
+    local choice = #choices == 1 and choices[1] or room:askToChoice(source, {
+      choices = choices,
+      skill_name = "fengsui_heg__gaofan",
+      prompt = "#fengsui_heg__gaofan-choice::" .. player.id,
+    })
+    if choice == "fengsui_heg__gaofan_transform" then
+      if H.transformGeneral(room, source, false, false, 1, "fengsui_heg__gaofan") then return end
+    end
+    if player:isAlive() then
       room:damage{
         from = source,
         to = player,

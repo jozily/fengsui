@@ -3,7 +3,7 @@ local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local yunxing = fk.CreateSkill{
   name = "fengsui_heg__yunxing",
-  tags = { Skill.Compulsory, Skill.MainPlace },
+  tags = { Skill.Compulsory, Skill.DeputyPlace },
 }
 
 yunxing:addEffect(fk.EventPhaseStart, {
@@ -47,6 +47,28 @@ yunxing:addEffect(fk.FinishRetrial, {
     if data.card.id then card:addSubcard(data.card.id) end
     card.skillName = yunxing.name
     data.card = card
+  end,
+})
+
+yunxing:addEffect(fk.FinishJudge, {
+  anim_type = "drawcard",
+  can_trigger = function(self, event, target, player, data)
+    return target == player and player:hasSkill(yunxing.name) and data.card and
+      (data.card.suit == Card.Heart or data.card.suit == Card.Spade)
+  end,
+  on_use = function(self, event, target, player, data)
+    if data.card.suit == Card.Heart then
+      player:drawCards(1, yunxing.name)
+    elseif not player:isNude() then
+      player.room:askToDiscard(player, {
+        min_num = 1,
+        max_num = 1,
+        include_equip = true,
+        skill_name = yunxing.name,
+        cancelable = false,
+        prompt = "#fengsui_heg__yunxing-discard",
+      })
+    end
   end,
 })
 

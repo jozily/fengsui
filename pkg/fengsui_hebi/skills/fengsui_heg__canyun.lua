@@ -33,7 +33,6 @@ canyun:addEffect(fk.Death, {
         if choice == "fengsui_heg__canyun_damage" then
           room:setPlayerMark(p, "@fengsui_heg__canyun_damage", kingdom)
         else
-          p:drawCards(3, canyun.name)
           if p:isAlive() and H.hasGeneral(p, true) then H.removeGeneral(p, true) end
           room:setPlayerMark(p, "@fengsui_heg__canyun_nochange", 1)
         end
@@ -66,7 +65,7 @@ canyun:addEffect(H.GeneralTransforming, {
 Fk:loadTranslationTable{
   ["#fengsui_heg__canyun-choice"] = "残愠：请选择一项",
   ["fengsui_heg__canyun_damage"] = "贾褒同势力角色对你造成的伤害+1",
-  ["fengsui_heg__canyun_remove"] = "摸三张牌，移除副将且无法再变更",
+  ["fengsui_heg__canyun_remove"] = "移除副将且无法再变更",
   ["@fengsui_heg__canyun_damage"] = "残愠：伤害+1",
   ["@fengsui_heg__canyun_nochange"] = "残愠：无法变更副将",
 }

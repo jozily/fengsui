@@ -5,44 +5,64 @@ local tuanfeng = fk.CreateSkill{
   name = "fengsui_heg__tuanfeng",
 }
 
-tuanfeng:addEffect(fk.EventPhaseStart, {
-  anim_type = "support",
+local dying_flag = "fengsui_heg__tuanfeng_entered_dying"
+
+tuanfeng:addEffect(fk.EnterDying, {
+  global = true,
+  mute = true,
+  can_refresh = function(self, event, target, player, data)
+    return true
+  end,
+  on_refresh = function(self, event, target, player, data)
+    local use_event = player.room.logic:getCurrentEvent():findParent(GameEvent.UseCard, true)
+    if use_event then
+      use_event.data.extra_data = use_event.data.extra_data or {}
+      use_event.data.extra_data[dying_flag] = true
+    end
+  end,
+})
+
+local function discardPileIds(room, card)
+  return table.filter(Card:getIdList(card), function(id)
+    return room:getCardArea(id) == Card.DiscardPile
+  end)
+end
+
+tuanfeng:addEffect(fk.CardUseFinished, {
+  global = true,
+  anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(tuanfeng.name) and player.phase == Player.Play and
-      not player:isNude() and #player.room.alive_players > 1
+    if not (target and player:hasSkill(tuanfeng.name) and H.compareKingdomWith(player, target) and
+      H.allGeneralsRevealed(player) and data.card and
+      (data.card.type == Card.TypeBasic or data.card:isCommonTrick()) and
+      player:getMark(tuanfeng.name .. "_type_" .. data.card.type .. "-round") == 0) then
+      return false
+    end
+    if data.extra_data and data.extra_data[dying_flag] then return false end
+    return #discardPileIds(player.room, data.card) > 0
   end,
   on_cost = function(self, event, target, player, data)
-    local max_num = math.min(#player:getCardIds("he"), #player.room.alive_players)
-    local cards = U.chooseCardsFromList(player.room, player, player:getCardIds("he"), 1, max_num,
-      "#fengsui_heg__tuanfeng-recast", tuanfeng.name, true)
-    if #cards == 0 then return false end
-    local targets = player.room:askToChoosePlayers(player, {
-      targets = player.room.alive_players, min_num = #cards, max_num = #cards,
-      skill_name = tuanfeng.name, prompt = "#fengsui_heg__tuanfeng-targets:::" .. #cards,
-      cancelable = true,
-    })
-    if #targets == #cards then event:setCostData(self, { cards = cards, tos = targets }); return true end
+    if player.room:askToSkillInvoke(player, {
+      skill_name = tuanfeng.name,
+      prompt = "#fengsui_heg__tuanfeng-invoke::" .. target.id .. ":" .. data.card:toLogString(),
+    }) then
+      event:setCostData(self, { cards = discardPileIds(player.room, data.card) })
+      return true
+    end
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local cost = event:getCostData(self)
-    room:recastCard(cost.cards, player, tuanfeng.name)
-    local original = {}
-    for _, p in ipairs(cost.tos) do
-      original[p.id] = p.kingdom
-      room:setPlayerProperty(p, "kingdom", H.getKingdom(player))
+    room:setPlayerMark(player, tuanfeng.name .. "_type_" .. data.card.type .. "-round", 1)
+    U.hideSkillGeneral(player, tuanfeng.name)
+    local ids = table.filter(event:getCostData(self).cards, function(id)
+      return room:getCardArea(id) == Card.DiscardPile
+    end)
+    if #ids > 0 then
+      room:obtainCard(player, ids, true, fk.ReasonPrey, target, tuanfeng.name)
     end
-
-    local draw = {}
-    for _, p in ipairs(room.alive_players) do
-      if H.inFormationRelation(p, p) then table.insertIfNeed(draw, p) end
-    end
-    room:sortByAction(draw)
-    for _, p in ipairs(draw) do
-      if p:isAlive() then p:drawCards(1, tuanfeng.name) end
-    end
-    for _, p in ipairs(cost.tos) do
-      room:setPlayerProperty(p, "kingdom", original[p.id])
+    if not data.extraUse then
+      target:addCardUseHistory(data.card.trueName, -1)
+      data.extraUse = true
     end
   end,
 })

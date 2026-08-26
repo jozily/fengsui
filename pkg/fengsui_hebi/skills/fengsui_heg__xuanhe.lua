@@ -1,22 +1,9 @@
-local H = require "packages.fengsui.hegemony_util"
-
 local xuanhe = fk.CreateSkill{
   name = "fengsui_heg__xuanhe",
   tags = { Skill.Compulsory, Skill.MainPlace },
 }
 
-local used_mark = "fengsui_heg__xuanhe_used-turn"
-
-xuanhe:addEffect(fk.CardUsing, {
-  global = true,
-  mute = true,
-  can_refresh = function(self, event, target, player, data)
-    return target == player and data.card ~= nil
-  end,
-  on_refresh = function(self, event, target, player, data)
-    player.room:setPlayerMark(player, used_mark, 1)
-  end,
-})
+local type_mark = "fengsui_heg__xuanhe_types-turn"
 
 xuanhe:addEffect(fk.CardUseFinished, {
   anim_type = "control",
@@ -28,45 +15,39 @@ xuanhe:addEffect(fk.CardUseFinished, {
   on_use = function(self, event, target, player, data)
     for _, to in ipairs(data.tos) do
       if to:isAlive() then
-        player.room:setPlayerMark(to, "fengsui_heg__xuanhe_type-turn", data.card.type)
+        player.room:addTableMarkIfNeed(to, type_mark, data.card.type)
       end
     end
   end,
 })
 
-local function clearTypeMark(event, target, player, data)
-  return target == player and player:getMark("fengsui_heg__xuanhe_type-turn") > 0 and
-    data.card.type ~= player:getMark("fengsui_heg__xuanhe_type-turn")
-end
-
-xuanhe:addEffect(fk.PreCardUse, {
+xuanhe:addEffect(fk.TargetConfirming, {
   global = true,
-  can_refresh = clearTypeMark,
-  on_refresh = function(self, event, target, player, data)
-    player.room:setPlayerMark(player, "fengsui_heg__xuanhe_type-turn", 0)
+  anim_type = "defensive",
+  can_trigger = function(self, event, target, player, data)
+    if not (target == player and player:hasSkill(xuanhe.name) and data.from and data.from ~= player) then
+      return false
+    end
+    local use_event = player.room.logic:getCurrentEvent():findParent(GameEvent.UseCard, true)
+    if not use_event then return false end
+    local events = player.room.logic:getEventsOfScope(GameEvent.UseCard, 1, function(e)
+      return e.data.from == data.from
+    end, Player.HistoryTurn)
+    return #events == 1 and events[1].id == use_event.id
   end,
-})
-
-xuanhe:addEffect(fk.CardResponding, {
-  global = true,
-  can_refresh = clearTypeMark,
-  on_refresh = function(self, event, target, player, data)
-    player.room:setPlayerMark(player, "fengsui_heg__xuanhe_type-turn", 0)
+  on_cost = Util.TrueFunc,
+  on_use = function(self, event, target, player, data)
+    data:cancelTarget(player)
   end,
 })
 
 xuanhe:addEffect("prohibit", {
   global = true,
   prohibit_use = function(self, player, card)
-    return player:getMark("fengsui_heg__xuanhe_type-turn") == card.type
+    return table.contains(player:getTableMark(type_mark), card.type)
   end,
   prohibit_response = function(self, player, card)
-    return player:getMark("fengsui_heg__xuanhe_type-turn") == card.type
-  end,
-  is_prohibited = function(self, from, to, card)
-    if not (from and to and card and from ~= to and to:hasSkill(xuanhe.name) and
-      H.compareKingdomWith(from, to)) then return false end
-    return from:getMark(used_mark) == 0
+    return table.contains(player:getTableMark(type_mark), card.type)
   end,
 })
 
