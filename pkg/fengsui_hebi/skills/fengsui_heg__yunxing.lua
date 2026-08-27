@@ -1,4 +1,3 @@
-local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local yunxing = fk.CreateSkill{
@@ -29,24 +28,6 @@ yunxing:addEffect(fk.EventPhaseStart, {
         })
       end
     end
-  end,
-})
-
-yunxing:addEffect(fk.FinishRetrial, {
-  can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(yunxing.name)
-  end,
-  on_use = function(self, event, target, player, data)
-    local sum = 0
-    for _, p in ipairs(player.room.alive_players) do
-      if H.compareKingdomWith(p, player) then sum = sum + p.hp end
-    end
-
-    local suit = data.card.number >= sum and Card.Heart or Card.Spade
-    local card = Fk:cloneCard(data.card.name, suit, data.card.number)
-    if data.card.id then card:addSubcard(data.card.id) end
-    card.skillName = yunxing.name
-    data.card = card
   end,
 })
 
