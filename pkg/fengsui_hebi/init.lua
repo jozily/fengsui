@@ -449,29 +449,6 @@ Fk:loadTranslationTable{
   ["$fengsui_heg__yongfan2"] = "昔始皇筑城以御北，今我身为城。",
 }
 
--- 蜀
-local xiahoushi = General:new(extension, "fengsui_heg__xiahoushi", "shu", 3, 3, General.Female)
-xiahoushi.hidden = true
-xiahoushi:addCompanions("hs__zhangfei")
-xiahoushi:addSkills { "fengsui_heg__qiaoshi", "fengsui_heg__xinmai" }
-
-Fk:loadTranslationTable{
-  ["fengsui_heg__xiahoushi"] = "夏侯涓",
-  ["#fengsui_heg__xiahoushi"] = "柴结缘起",
-  ["designer:fengsui_heg__xiahoushi"] = "公冶长风",
-  ["illustrator:fengsui_heg__xiahoushi"] = "公冶长风",
-  ["cv:fengsui_heg__xiahoushi"] = "暂无",
-  ["fengsui_heg__qiaoshi"] = "樵拾",
-  [":fengsui_heg__qiaoshi"] = "当有角色受到属性伤害后，你可以与其各摸一张牌，若为同势力角色，你可令其<a href='heg__hebi'>合璧</a>或变更副将。",
-  ["fengsui_heg__xinmai"] = "薪脉",
-  [":fengsui_heg__xinmai"] = "出牌阶段限一次，你可以令一名角色获得本回合进入弃牌堆的所有【杀】，然后令其选择一项：1.受到来自你的一点雷属性伤害；2.若其武将牌均明置，暗置一张武将牌。",
-  ["$fengsui_heg__qiaoshi1"] = "采樵南山下，拾君一片心。",
-  ["$fengsui_heg__qiaoshi2"] = "山有木兮木成樵，心悦君兮君可知。",
-  ["$fengsui_heg__xinmai1"] = "夏燕不羡黄金屋，只栖君家檐下巢。",
-  ["$fengsui_heg__xinmai2"] = "红袖不解相思意，凭燕传语慰君心。",
-  ["~fengsui_heg__xiahoushi"] = "可怜城头白发妪，至死不见征夫还。",
-}
-
 local mamiao = General:new(extension, "fengsui_heg__mamiao", "shu", 4)
 mamiao:addCompanions("fengsui_heg__lixian")
 mamiao:addSkill("fengsui_heg__zhangguan")
@@ -1450,7 +1427,7 @@ Fk:loadTranslationTable{
   ["~heg__jiananfeng"] = "贾氏竟败于尔等鼠辈……本宫不服！",
 }
 
-assert(#extension.generals == 46, "fengsui_hebi must register exactly 46 official generals")
+assert(#extension.generals == 45, "fengsui_hebi must register exactly 45 official generals")
 require "packages.fengsui.pkg.fengsui_hebi.option_translations"
 
 return extension

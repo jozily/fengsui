@@ -16,6 +16,11 @@ sunluban:addSkills { "fengsui_heg__zenhui", "fengsui_heg__jiaojin" }
 local wangyi = General:new(extension, "fengsui_heg__wangyi", "wei", 3, 3, General.Female)
 wangyi:addSkills { "fengsui_heg__zhenlie", "fengsui_heg__miji" }
 
+local xiahoushi = General:new(extension, "fengsui_heg__xiahoushi", "shu", 3, 3, General.Female)
+xiahoushi.hidden = true
+xiahoushi:addCompanions("hs__zhangfei")
+xiahoushi:addSkills { "fengsui_heg__qiaoshi", "fengsui_heg__xinmai" }
+
 local simayou = General:new(extension, "SP_heg__simayou", "jin", 3)
 simayou:addSkills { "heg__fuzheng", "heg__yunde" }
 simayou:addCompanions("fengsui_heg__jiabao")
@@ -40,6 +45,20 @@ Fk:loadTranslationTable{
   ["fengsui_shiyi"] = "烽燧燎原-拾遗",
 
   ["fengsui_heg__xinxianying"] = "辛宪英",
+  ["fengsui_heg__xiahoushi"] = "夏侯涓",
+  ["#fengsui_heg__xiahoushi"] = "柴结缘起",
+  ["designer:fengsui_heg__xiahoushi"] = "公冶长风",
+  ["illustrator:fengsui_heg__xiahoushi"] = "公冶长风",
+  ["cv:fengsui_heg__xiahoushi"] = "暂无",
+  ["fengsui_heg__qiaoshi"] = "樵拾",
+  [":fengsui_heg__qiaoshi"] = "当有角色受到属性伤害后，你可以与其各摸一张牌，若为同势力角色，你可令其<a href='heg__hebi'>合璧</a>或变更副将。",
+  ["fengsui_heg__xinmai"] = "薪脉",
+  [":fengsui_heg__xinmai"] = "出牌阶段限一次，你可以令一名角色获得本回合进入弃牌堆的所有【杀】，然后令其选择一项：1.受到来自你的一点雷属性伤害；2.若其武将牌均明置，暗置一张武将牌。",
+  ["$fengsui_heg__qiaoshi1"] = "采樵南山下，拾君一片心。",
+  ["$fengsui_heg__qiaoshi2"] = "山有木兮木成樵，心悦君兮君可知。",
+  ["$fengsui_heg__xinmai1"] = "夏燕不羡黄金屋，只栖君家檐下巢。",
+  ["$fengsui_heg__xinmai2"] = "红袖不解相思意，凭燕传语慰君心。",
+  ["~fengsui_heg__xiahoushi"] = "可怜城头白发妪，至死不见征夫还。",
   ["#fengsui_heg__xinxianying"] = "明鉴惠识",
   ["illustrator:fengsui_heg__xinxianying"] = "佚名",
   ["$fengsui_heg__qingshi1"] = "行路八千里，方可辨忠奸。",
@@ -96,6 +115,6 @@ Fk:loadTranslationTable{
   ["fengsui_limited_heg__shirai"] = "白井黑子",
 }
 
-assert(#extension.generals == 14, "fengsui_shiyi must register exactly 14 generals")
+assert(#extension.generals == 15, "fengsui_shiyi must register exactly 15 generals")
 
 return extension
