@@ -194,7 +194,7 @@ Fk:loadTranslationTable{
 
   ["fengsui_heg__lusu"] = "鲁肃",
   ["#fengsui_heg__lusu"] = "善施者",
-  ["~fengsui_heg__lusu"] = "江流九曲，终归沧海。",
+  ["~fengsui_heg__lusu"] = "受命得昌，天势也，跨有荆扬，地势也，待时而动，时势也。",
   ["designer:fengsui_heg__lusu"] = "公冶天纵",
   ["illustrator:fengsui_heg__lusu"] = "佚名",
   ["cv:fengsui_heg__lusu"] = "暂无",
@@ -209,7 +209,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__suoli"] = "索立",
   [":fengsui_heg__suoli"] = "中立者确定势力后失去的技能。",
   ["$fengsui_heg__xiangkui1"] = "虎卧高岗，鹿守危崖，天下风云非人力不可造。",
-  ["$fengsui_heg__xiangkui2"] = "受命得昌，天势也，跨有荆扬，地势也，待时而动，时势也。",
+  ["$fengsui_heg__xiangkui2"] = "江流九曲，终归沧海。",
   ["$fengsui_heg__yangmingRemake1"] = "汉室倾危，江东当鼎足而立。",
   ["$fengsui_heg__yangmingRemake2"] = "先据江东，再剿黄祖，而后进伐刘表。",
 
