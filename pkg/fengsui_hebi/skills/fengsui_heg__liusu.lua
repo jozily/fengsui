@@ -3,6 +3,7 @@ local liusu = fk.CreateSkill{
 }
 
 local unknown_num_mark = "fengsui_heg__liusu_unknown-turn"
+local visible_mark = "@fengsui_heg__liusu_unknown-turn"
 
 local function getUnknownTargets(player, card)
   if player:prohibitUse(card) or not player:canUse(card) then return {} end
@@ -28,7 +29,10 @@ liusu:addEffect("active", {
     local card = Fk:getCardById(effect.cards[1])
     local x = #getUnknownTargets(player, card)
     room:recastCard(effect.cards, player, liusu.name)
-    if x > 0 then room:setPlayerMark(player, unknown_num_mark, x) end
+    if x > 0 then
+      room:setPlayerMark(player, unknown_num_mark, x)
+      room:setPlayerMark(player, visible_mark, x)
+    end
   end,
 })
 
@@ -54,6 +58,7 @@ liusu:addEffect(fk.TurnEnd, {
   end,
   on_use = function(self, event, target, player, data)
     player.room:setPlayerMark(player, unknown_num_mark, 0)
+    player.room:setPlayerMark(player, visible_mark, 0)
     for _, p in ipairs(event:getCostData(self).tos) do
       if p:isAlive() then
         local n = p.maxHp - p:getHandcardNum()

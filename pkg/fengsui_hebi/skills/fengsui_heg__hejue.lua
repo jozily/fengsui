@@ -43,7 +43,7 @@ local function handleHejue(room, player)
          end
       end
       if #owners == 1 and owners[1]:isAlive() then
-         H.askToHebiOrTransform(room, owners[1], hejue.name, false)
+         H.askToHebiOrTransform(room, owners[1], hejue.name, true)
       end
    end
 end
