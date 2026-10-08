@@ -16,6 +16,7 @@ Fk:loadTranslationTable{
 require "packages/fengsui/pkg/compat"
 
 local fengsui_hebi = require "packages/fengsui/pkg/fengsui_hebi"
+
 local fengsui_cards = require "packages/fengsui/pkg/fengsui_cards"
 local fengsui_liwu = require "packages/fengsui/pkg/fengsui_liwu"
 local fengsui_shiyi = require "packages/fengsui/pkg/fengsui_shiyi"
@@ -138,6 +139,7 @@ Fk:loadTranslationTable{
   ["$niaoxiang_fengsui_heg__huoyi2"] = "断其归路，一击定南疆！",
 }
 
+
 return {
   fengsui_hebi,
   fengsui_cards,
@@ -146,3 +148,6 @@ return {
   fengsui_effect,
   fengsui_mode,
 }
+
+
+

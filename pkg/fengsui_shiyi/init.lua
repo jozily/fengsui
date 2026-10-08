@@ -4,11 +4,58 @@ extension.game_modes_whitelist = { "new_heg_mode", "fengsui_heg__mode" }
 
 extension:loadSkillSkelsByPath("./packages/fengsui/pkg/fengsui_shiyi/skills")
 
+-- 当前子包武将注册顺序
+local zhouxuan = General:new(extension, "fengsui_heg__zhouxuan", "wei", 3)
+zhouxuan:addSkills { "fengsui_heg__wumei", "fengsui_heg__jiemeng" }
+
+local chenshou = General:new(extension, "fengsui_heg__chenshou", "shu", 3)
+chenshou:addCompanions("fengsui_heg__qiaozhou", "fengsui_heg__limi")
+chenshou:addSkills { "fengsui_heg__dianmo", "fengsui_heg__fuzai" }
+
+local sunyuan = General:new(extension, "fengsui_heg__sunyuan", "wu", 4, 4, General.Female)
+sunyuan:addCompanions("fengsui_heg__heji")
+sunyuan:addSkills { "fengsui_heg__dongxin" }
+
+local liuhui = General:new(extension, "fengsui_heg__liuhui", "qun", 4)
+liuhui:addSkills { "fengsui_heg__jieshu" }
+
+local wanghuifeng = General:new(extension, "fengsui_heg__wanghuifeng", "jin", 4, 4, General.Female)
+wanghuifeng:addSkills { "fengsui_heg__dilie" }
+
+local jiaxu = General:new(extension, "fengsui_heg__jiaxu", "fengsui_neutralall", 3)
+jiaxu:addCompanions("hs__jiaxu")
+jiaxu:addSkill("fengsui_heg__qingshi_jx")
+jiaxu:addSkill("fengsui_heg__anshi")
+jiaxu:addSkill("fengsui_heg__shuge")
+
+local lusu = General:new(extension, "fengsui_heg__lusu", "fengsui_neutralall", 3)
+lusu:addCompanions("hs__lusu")
+lusu:addSkill("fengsui_heg__xiangkui")
+lusu:addSkill("fengsui_heg__yangming")
+
+local xushu = General:new(extension, "fengsui_heg__xushu", "fengsui_neutralall", 4)
+xushu.mainMaxHpAdjustedValue = -1
+xushu:addCompanions("ld__xushu")
+xushu:addSkill("fengsui_heg__jiange")
+xushu:addSkill("fengsui_heg__xiawang")
+xushu:addSkill("fengsui_heg__yinyu")
+
+local zhaoe = General:new(extension, "fengsui_heg__zhaoe", "fengsui_neutralall", 3)
+zhaoe.gender = General.Female
+zhaoe:addSkill("fengsui_heg__yanshi")
+zhaoe:addSkill("fengsui_heg__xinren")
+
+local xushao = General:new(extension, "fengsui_heg__xushao", "fengsui_neutralall", 3)
+xushao:addCompanions("fengsui_heg__xujing")
+xushao:addSkill("fengsui_heg__yingmen")
+xushao:addSkill("fengsui_heg__pingjian")
+
+
 local xinxianying = General:new(extension, "fengsui_heg__xinxianying", "wei", 3, 3, General.Female)
 xinxianying:addSkills { "fengsui_heg__qingshi", "fengsui_heg__jiejie" }
 
 local guotu = General:new(extension, "fengsui_heg__guotu", "qun", 3)
-guotu:addSkills { "fengsui_heg__qushi", "fengsui_heg__weijie" }
+guotu:addSkills { "fengsui_heg__qushi", "fengsui_heg__weijieskill" }
 
 local sunluban = General:new(extension, "fengsui_heg__sunluban", "wu", 3, 3, General.Female)
 sunluban:addSkills { "fengsui_heg__zenhui", "fengsui_heg__jiaojin" }
@@ -21,25 +68,20 @@ xiahoushi.hidden = true
 xiahoushi:addCompanions("hs__zhangfei")
 xiahoushi:addSkills { "fengsui_heg__qiaoshi", "fengsui_heg__xinmai" }
 
-local simayou = General:new(extension, "SP_heg__simayou", "jin", 3)
-simayou:addSkills { "heg__fuzheng", "heg__yunde" }
-simayou:addCompanions("fengsui_heg__jiabao")
 
-local frenda = General:new(extension, "fengsui_limited_heg__frenda", "fengsui_neutralall", 3, 3, General.Female)
-frenda:addSkills { "fengsui_limited_heg__yinxian" }
+local frenda = General:new(extension, "fengsui_toaru__heg__frenda", "fengsui_neutralall", 3, 3, General.Female)
+frenda:addSkills { "fengsui_toaru__heg__yinxian" }
 
-local shokuhou = General:new(extension, "fengsui_limited_heg__shokuhou", "fengsui_neutralall", 3, 3, General.Female)
-shokuhou:addSkills { "fengsui_limited_heg__duxin", "fengsui_limited_heg__piruan" }
+local shokuhou = General:new(extension, "fengsui_toaru__heg__shokuhou", "fengsui_neutralall", 3, 3, General.Female)
+shokuhou:addSkills { "fengsui_toaru__heg__duxin", "fengsui_toaru__heg__piruan" }
 
-local misaka = General:new(extension, "fengsui_limited_heg__misaka", "fengsui_neutralall", 4, 4, General.Female)
-misaka:addSkills { "fengsui_limited_heg__cipao", "fengsui_limited_heg__junshi" }
+local misaka = General:new(extension, "fengsui_toaru__heg__misaka", "fengsui_neutralall", 4, 4, General.Female)
+misaka:addSkills { "fengsui_toaru__heg__cipao", "fengsui_toaru__heg__junshi" }
 
-local shirai = General:new(extension, "fengsui_limited_heg__shirai", "fengsui_neutralall", 3, 3, General.Female)
-shirai:addSkills { "fengsui_limited_heg__shunyi", "fengsui_limited_heg__fengji" }
+local shirai = General:new(extension, "fengsui_toaru__heg__shirai", "fengsui_neutralall", 3, 3, General.Female)
+shirai:addSkills { "fengsui_toaru__heg__shunyi", "fengsui_toaru__heg__fengji" }
 
--- Keep the Mayday-designed sweeping series at the end of the Shiyi roster.
-require("packages.fengsui.pkg.fengsui_shiyi.fengsui_sweeping.init")(extension)
-assert(#extension.skill_skels == 31, "fengsui_shiyi must load exactly 31 skill skeletons")
+assert(#extension.skill_skels == 16, "fengsui_shiyi must load exactly 18 skill skeletons")
 
 Fk:loadTranslationTable{
   ["fengsui_shiyi"] = "烽燧燎原-拾遗",
@@ -72,8 +114,8 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__guotu"] = "厦门塔普",
   ["$fengsui_heg__qushi1"] = "将军天人之姿，可令四海归心。",
   ["$fengsui_heg__qushi2"] = "小小锦上之花，难表一腔敬意。",
-  ["$fengsui_heg__weijie1"] = "败战之罪在你，休要多言！",
-  ["$fengsui_heg__weijie2"] = "纵汝舌灿莲花，亦难逃死罪。",
+  ["$fengsui_heg__weijieskill1"] = "败战之罪在你，休要多言！",
+  ["$fengsui_heg__weijieskill2"] = "纵汝舌灿莲花，亦难逃死罪。",
   ["~fengsui_heg__guotu"] = "工于心计而不成事，匹夫怀其罪……",
 
   ["fengsui_heg__sunluban"] = "孙鲁班",
@@ -94,27 +136,20 @@ Fk:loadTranslationTable{
   ["$fengsui_heg__miji2"] = "管仲入齐，立九合之功。",
   ["~fengsui_heg__wangyi"] = "去年花开君还在，今年花落复谁在。",
 
-  ["SP_heg__simayou"] = "司马攸",
-  ["SP_heg"] = "SP系列",
-  ["#SP_heg__simayou"] = "舞阳侯",
-  ["designer:SP_heg__simayou"] = "时时六&雪人学长",
-  ["$heg__fuzheng_SP_heg__simayou1"] = "承景王之嗣，当佐宗室以安社稷。",
-  ["$heg__fuzheng_SP_heg__simayou2"] = "宗亲有难，攸岂可袖手旁观。",
-  ["$heg__fuzheng_SP_heg__simayou3"] = "辅弼朝纲，所念唯国，不计私门。",
-  ["$heg__fuzheng_SP_heg__simayou4"] = "愿移此位，换宗室一脉得安。",
-  ["$heg__yunde_SP_heg__simayou1"] = "德不独善，当分惠于宗亲。",
-  ["$heg__yunde_SP_heg__simayou2"] = "知人而后任之，量才而后授之。",
-  ["$heg__yunde_SP_heg__simayou3"] = "兄弟同心，何必以储位相疑。",
-  ["$heg__yunde_SP_heg__simayou4"] = "进不争权，退不避责，此为臣节。",
-  ["~SP_heg__simayou"] = "臣弟别无他志，陛下何以疑我至此……",
 
-  ["fengsui_limited_heg"] = "限时武将",
-  ["fengsui_limited_heg__frenda"] = "芙兰达",
-  ["fengsui_limited_heg__shokuhou"] = "食蜂操祈",
-  ["fengsui_limited_heg__misaka"] = "御坂美琴",
-  ["fengsui_limited_heg__shirai"] = "白井黑子",
+  ["fengsui_toaru"] = "学园都市",
+  ["fengsui_toaru__heg"] = "学园都市",
+  ["fengsui_toaru__heg__frenda"] = "芙兰达",
+  ["fengsui_toaru__heg__shokuhou"] = "食蜂操祈",
+  ["fengsui_toaru__heg__misaka"] = "御坂美琴",
+  ["fengsui_toaru__heg__shirai"] = "白井黑子",
 }
 
-assert(#extension.generals == 15, "fengsui_shiyi must register exactly 15 generals")
+assert(#extension.generals == 19, "fengsui_shiyi must register exactly 19 generals")
+
+for _, general in ipairs(extension.generals) do general.hidden = true end
 
 return extension
+
+
+

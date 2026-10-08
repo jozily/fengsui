@@ -454,10 +454,20 @@ heg = fk.CreateGameMode{
   end,
   reward_punish = function (self, victim, killer)
     local room = victim.room
-    local duoshouReward = victim:getMark("fengsui_limited_heg__duoshou_reward")
+    local shangmuReward = victim:getMark("fengsui_heg__shangmu_reward")
+    if killer and shangmuReward > 0 then
+      if not killer.dead then
+        killer:drawCards(shangmuReward, "fengsui_heg__shangmu")
+        if killer.deputyGeneral ~= "anjiang" then killer:hideGeneral(true) end
+        H.transformGeneral(room, killer, false, false, 1, "fengsui_heg__shangmu")
+      end
+      room:setPlayerMark(victim, "fengsui_heg__shangmu_reward", 0)
+      return
+    end
+    local duoshouReward = victim:getMark("fengsui_toaru__heg__duoshou_reward")
     if killer and duoshouReward > 0 then
-      if not killer.dead then killer:drawCards(duoshouReward, "fengsui_limited_heg__duoshou") end
-      room:setPlayerMark(victim, "fengsui_limited_heg__duoshou_reward", 0)
+      if not killer.dead then killer:drawCards(duoshouReward, "fengsui_toaru__heg__duoshou") end
+      room:setPlayerMark(victim, "fengsui_toaru__heg__duoshou_reward", 0)
       return
     end
     if killer then

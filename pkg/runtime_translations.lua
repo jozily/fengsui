@@ -113,7 +113,7 @@ Fk:loadTranslationTable {
   ["@fengsui_heg__ruluo"] = translated_skill_name("fengsui_heg__ruluo"),
   ["@fengsui_heg__zhouwang"] = translated_skill_name("fengsui_heg__zhouwang"),
   ["@fengsui_heg__zhouwangRemake"] = translated_skill_name("fengsui_heg__zhouwangRemake"),
-  ["@fengsui_limited_heg__tanghou"] = translated_skill_name("fengsui_limited_heg__tanghou"),
+  ["@fengsui_toaru__heg__tanghou"] = translated_skill_name("fengsui_toaru__heg__tanghou"),
 }
 
 return true

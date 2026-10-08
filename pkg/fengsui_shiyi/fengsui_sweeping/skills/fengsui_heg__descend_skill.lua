@@ -17,14 +17,15 @@ descend:addEffect("active", {
       room:handleAddLoseSkills(player, "-fengsui_heg__descend_skill&")
     end
     room:broadcastPlaySound("./packages/fengsui/audio/skill/fengsui_heg__descend")
-    room:loseHp(player, 1, descend.name)
+    room:damage { from = nil, to = player, damage = 1, skillName = descend.name }
   end,
 })
 
 Fk:loadTranslationTable {
   ["fengsui_heg__descend_skill&"] = "降",
-  ["#fengsui_heg__descend_skill&"] = "你可弃一枚“降”，失去1点体力",
-  [":fengsui_heg__descend_skill&"] = "出牌阶段，你可弃一枚“降”，失去1点体力。",
+  ["#fengsui_heg__descend_skill&"] = "你可弃一枚“降”，受到1点无来源伤害",
+  [":fengsui_heg__descend_skill&"] = "出牌阶段，你可弃一枚“降”，受到1点无来源伤害。",
 }
 
 return descend
+

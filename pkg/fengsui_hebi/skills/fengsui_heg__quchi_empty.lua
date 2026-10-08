@@ -1,0 +1,3 @@
+local quchi_empty = fk.CreateSkill { name = "fengsui_heg__quchi_empty" }
+quchi_empty:addEffect(fk.AfterCardsMove,{global=true,can_trigger=function(self,_,target,player,data) return player:hasSkill("fengsui_heg__quchi") and player:getMark("fengsui_heg__quchi_empty-turn")==0 and data and table.find(data,function(m) return m.from==player and #m.moveInfo>0 and #player:getCardIds("hej")==0 end)~=nil end,on_use=function(self,_,_,player) player.room:setPlayerMark(player,"fengsui_heg__quchi_empty-turn",1); local pile=player.room.draw_pile; local id=pile[#pile]; if id then player.room:obtainCard(player,id,true,fk.ReasonPrey,player,self.name) end end})
+return quchi_empty

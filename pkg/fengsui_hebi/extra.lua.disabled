@@ -1,0 +1,70 @@
+local fk = fk
+local H = require "packages.fengsui.hegemony_util"
+
+local function simple(name, event, cond, effect)
+  local s = fk.CreateSkill{ name = name }
+  s:addEffect(event, { global = true, can_trigger = function(self, e, target, player, data) return player:hasSkill(self.name) and (not cond or cond(player, target, data)) end, on_use = function(self,e,target,player,data) effect(player,target,data) end })
+  return s
+end
+
+return function(extension)
+  local skills = {}
+  local function add(s) table.insert(skills,s) end
+  add(simple("fengsui_heg__yaxi", fk.AfterSkillEffect, function(p,t) return t == p and p:usedSkillTimes("fengsui_heg__yaxi", Player.HistoryRound) == 0 end, function(p,t) p.room:drawCards(p,1,"fengsui_heg__yaxi") end))
+  add(simple("fengsui_heg__xiarong", fk.Damaged, function(p,t) return H.compareKingdomWith(p,t) and p ~= t and p.general ~= "anjiang" and p.deputyGeneral ~= "anjiang" end, function(p,t) p.room:recover{who=t,num=1,recoverBy=p,skillName="fengsui_heg__xiarong"} end))
+  add(simple("fengsui_heg__shenyi", fk.TurnEnd, nil, function(p,t) if t == p and p:getMark("fengsui_heg__shenyi-turn") > 0 then p.room:drawCards(p,1,"fengsui_heg__shenyi") end end))
+  add(simple("fengsui_heg__siji", fk.Damaged, nil, function(p,t) if t==p then p.room:drawCards(p,1,"fengsui_heg__siji") end end))
+  add(simple("fengsui_heg__daoli", fk.Damage, function(p,t) return p==t end, function(p,t) p.room:drawCards(p,1,"fengsui_heg__daoli") end))
+  add(simple("fengsui_heg__kuangtao", fk.Damaged, nil, function(p,t) if t==p and p:isWounded() then p.room:recover{who=p,num=1,recoverBy=p,skillName="fengsui_heg__kuangtao"} end end))
+  add(simple("fengsui_heg__jueli", fk.Death, function(p,t) return t~=p and H.compareKingdomWith(p,t) end, function(p,t) p.room:drawCards(p,2,"fengsui_heg__jueli") end))
+  add(simple("fengsui_heg__beige", fk.CardUseFinished, function(p,t) return t==p end, function(p,t) p.room:drawCards(p,1,"fengsui_heg__beige") end))
+  add(simple("fengsui_heg__xuanmu", fk.Damaged, nil, function(p,t) if t==p then p.room:drawCards(p,1,"fengsui_heg__xuanmu") end end))
+  add(simple("fengsui_heg__qingguan", fk.CardUseFinished, function(p,t) return t~=p and H.compareKingdomWith(p,t) end, function(p,t) p.room:drawCards(p,1,"fengsui_heg__qingguan") end))
+  add(simple("fengsui_heg__bingyao", fk.TargetSpecified, function(p,t) return p==t end, function(p,t) p.room:drawCards(p,1,"fengsui_heg__bingyao") end))
+  add(simple("fengsui_heg__chuguang", fk.AfterSkillEffect, function(p,t) return t==p end, function(p,t) p.room:drawCards(p,1,"fengsui_heg__chuguang") end))
+  add(simple("fengsui_heg__zhuiming", fk.Death, function(p,t) return t~=p and H.compareKingdomWith(p,t) end, function(p,t) p.room:drawCards(p,2,"fengsui_heg__zhuiming") end))
+  add(simple("fengsui_heg__kuohu", fk.AfterCardsMove, function(p,t) return t~=p end, function(p,t) if p:getMark("fengsui_heg__kuohu-round") == 0 then p.room:drawCards(p,1,"fengsui_heg__kuohu") end end))
+  add(simple("fengsui_heg__qiongbu", fk.AfterSkillEffect, function(p,t) return t~=p end, function(p,t) p.room:drawCards(p,1,"fengsui_heg__qiongbu") end))
+  add(simple("fengsui_heg__juanyi", fk.AfterCardsMove, function(p,t) return t~=p end, function(p,t) p.room:drawCards(p,1,"fengsui_heg__juanyi") end))
+  add(simple("fengsui_heg__lishi", fk.CardUseFinished, function(p,t) return t~=p and H.compareKingdomWith(p,t) end, function(p,t) p.room:drawCards(p,1,"fengsui_heg__lishi") end))
+  add(simple("fengsui_heg__pinliu", fk.AfterCardsMove, nil, function(p,t) if t~=p then p.room:drawCards(p,1,"fengsui_heg__pinliu") end end))
+  add(simple("fengsui_heg__bingyao2", fk.TargetSpecified, function(p,t) return p==t end, function(p,t) p.room:drawCards(p,1,"fengsui_heg__bingyao2") end))
+  add(simple("fengsui_heg__qusheng", fk.CardUseFinished, function(p,t) return t==p end, function(p,t) p.room:drawCards(p,1,"fengsui_heg__qusheng") end))
+  add(simple("fengsui_heg__nishi", fk.GeneralShown, function(p,t) return t==p end, function(p,t) p.room:drawCards(p,1,"fengsui_heg__nishi") end))
+  add(simple("fengsui_heg__nibu", fk.Damaged, nil, function(p,t) if t==p then p.room:drawCards(p,1,"fengsui_heg__nibu") end end))
+  extension:loadSkillSkels(skills)
+  local defs = {
+   {"wangqian","jin",3,"fengsui_heg__yaxi","fengsui_heg__xiarong"},{"weijie","jin",3,"fengsui_heg__shenyi","fengsui_heg__siji"},{"panyue","jin",3,"fengsui_heg__daoli","fengsui_heg__kuangtao"},{"shanxia","jin",4,"fengsui_heg__jueli","fengsui_heg__beige"},{"lemin","jin",3,"fengsui_heg__xuanmu","fengsui_heg__qingguan"},{"songyi","jin",2,"fengsui_heg__bingyao","fengsui_heg__chuguang"},{"jin_yueguang","jin",2,"fengsui_heg__zhuiming","fengsui_heg__kuohu"},{"biyu","jin",4,"fengsui_heg__qiongbu","fengsui_heg__juanyi"},{"xixuan","jin",2,"fengsui_heg__lishi","fengsui_heg__pinliu"},{"wangxizhi","jin",4,"fengsui_heg__qusheng","fengsui_heg__nishi"},{"wenqiao","jin",4,"fengsui_heg__nibu","fengsui_heg__bingyao2"},
+  }
+  for _,d in ipairs(defs) do local g=General:new(extension,"fengsui_heg__"..d[1],d[2],d[3]); g:addSkills{d[4],d[5]} end
+  Fk:loadTranslationTable{
+   ["fengsui_heg__wangqian"]="王倩",["fengsui_heg__weijie"]="卫玠",["fengsui_heg__panyue"]="潘岳",["fengsui_heg__shanxia"]="山遐",["fengsui_heg__lemin"]="乐敏",["fengsui_heg__songyi"]="宋祎",["fengsui_heg__jin_yueguang"]="靳月光&靳月华",["fengsui_heg__biyu"]="碧玉",["fengsui_heg__xixuan"]="郗璿",["fengsui_heg__wangxizhi"]="王羲之",["fengsui_heg__wenqiao"]="温峤",
+   ["fengsui_heg__yaxi"]="揠息",[":fengsui_heg__yaxi"]="每轮限一次，当一名角色重复发动技能且其武将牌均明置时，你令其摸一张牌并暗置该武将牌。",
+   ["fengsui_heg__xiarong"]="遐容",[":fengsui_heg__xiarong"]="当同势力角色受到伤害后，你可以暗置双方武将牌并令其恢复一点体力。",
+   ["fengsui_heg__shenyi"]="神毓",[":fengsui_heg__shenyi"]="每回合结束后，若本回合角色弃牌数大于其体力值，你可以令其手牌数调整至体力值。",
+   ["fengsui_heg__siji"]="思疾",[":fengsui_heg__siji"]="当你受到或造成伤害后，你可以令当前回合角色手牌上限改变。",
+   ["fengsui_heg__daoli"]="悼离",[":fengsui_heg__daoli"]="限定技，同势力角色死亡后，你可以获得其牌并执行额外出牌阶段。",
+   ["fengsui_heg__kuangtao"]="悲秋",[":fengsui_heg__kuangtao"]="锁定技，角色明置或变更武将牌时，你根据其势力摸牌或弃牌。",
+   ["fengsui_heg__jueli"]="括户",[":fengsui_heg__jueli"]="出牌阶段限一次，令一名角色明置或暗置武将牌并获得其牌。",
+   ["fengsui_heg__beige"]="穷逋",[":fengsui_heg__beige"]="当其他角色暗置武将牌后，你可以对其发动一次括户。",
+   ["fengsui_heg__xuanmu"]="眷易",[":fengsui_heg__xuanmu"]="同势力角色一次性获得至少两张牌后，你可以令其交牌并摸一张牌。",
+   ["fengsui_heg__qingguan"]="离室",[":fengsui_heg__qingguan"]="同势力角色一次性失去至少两张牌后，你可以交牌并弃置当前回合角色一张牌。",
+   ["fengsui_heg__bingyao"]="清商",[":fengsui_heg__bingyao"]="同势力角色使用牌结算后，你可以与其对应武将牌易位并各摸一张牌。",
+   ["fengsui_heg__chuguang"]="品流",[":fengsui_heg__chuguang"]="武将牌易位后，双方展示手牌并由点数较大者选择效果。",
+   ["fengsui_heg__zhuiming"]="并曜",[":fengsui_heg__zhuiming"]="同势力角色成为单目标牌目标时，你可以易位并取消目标；使用者摸一张牌。",
+   ["fengsui_heg__kuohu"]="黜光",[":fengsui_heg__kuohu"]="一轮内发动并曜达到条件后，你暗置此武将牌并令同势力角色摸牌。",
+   ["fengsui_heg__qiongbu"]="取声",[":fengsui_heg__qiongbu"]="弃牌堆中出现同名异色牌时，你可以获得其中一张并将另一张置于牌堆顶。",
+   ["fengsui_heg__juanyi"]="噤誓",[":fengsui_heg__juanyi"]="另一张武将牌明置、移除或变更后，你暗置此武将牌并失去一点体力。",
+   ["fengsui_heg__lishi"]="拟字",[":fengsui_heg__lishi"]="同势力角色使用非转化牌结算后，你可以暗置此武将牌并视为使用此牌。",
+   ["fengsui_heg__pinliu"]="不隔",[":fengsui_heg__pinliu"]="锁定技，你明置武将牌或受到伤害后随机获得国战标记。",
+   ["fengsui_heg__qusheng"]="俯仰",[":fengsui_heg__qusheng"]="锁定技，首次明置后获得‘升’和‘降’标记。",
+   ["fengsui_heg__nishi"]="追迹",[":fengsui_heg__nishi"]="出牌阶段，你可以获得上次使用过的国战标记，直到累计受到或造成指定伤害。",
+   ["fengsui_heg__nibu"]="体势",[":fengsui_heg__nibu"]="锁定技，体力值首次变为3、2、1时分别获得标记或使用雷杀。",
+   ["fengsui_heg__bingyao2"]="赏募",[":fengsui_heg__bingyao2"]="其他势力角色将因伤害进入濒死时，你可以明置此武将牌并修改击杀奖励。",
+  }
+end
+
+
+
+
+

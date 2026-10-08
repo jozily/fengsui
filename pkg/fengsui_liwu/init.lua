@@ -3,10 +3,109 @@ extension.extensionName = "fengsui"
 extension.game_modes_whitelist = { "new_heg_mode", "fengsui_heg__mode" }
 
 extension:loadSkillSkelsByPath("./packages/fengsui/pkg/fengsui_liwu/skills")
+
+-- 当前子包武将注册顺序
+local renwan = General:new(extension, "fengsui_heg__renwan", "wei", 3, 3, General.Female)
+renwan:addSkills { "fengsui_heg__lixi", "fengsui_heg__juansui" }
+
+local yanrou = General:new(extension, "fengsui_heg__yanrou", "wei", 4)
+yanrou:addCompanions("hs__caocao")
+yanrou:addSkills { "fengsui_heg__choutao", "fengsui_heg__yongfan" }
+
+local mamiao = General:new(extension, "fengsui_heg__mamiao", "shu", 4)
+mamiao:addCompanions("fengsui_heg__lixian")
+mamiao:addSkill("fengsui_heg__zhangguan")
+
+local zhugezhan = General:new(extension, "fengsui_heg__zhugezhan", "shu", 4)
+zhugezhan.mainMaxHpAdjustedValue = -1
+zhugezhan:addCompanions("hs__zhugeliang")
+zhugezhan:addSkills { "fengsui_heg__dishang", "fengsui_heg__fuyin" }
+
+local lixian = General:new(extension, "fengsui_heg__lixian", "shu", 3, 3, General.Female)
+lixian:addCompanions("fengsui_heg__mamiao")
+lixian:addSkills { "fengsui_heg__xunyun", "fengsui_heg__zhengchi" }
+
+local fengsui_heg__xujing = General:new(extension, "fengsui_heg__xujing", "shu", 3)
+fengsui_heg__xujing:addCompanions("ld__fazheng")
+fengsui_heg__xujing:addSkill("fengsui_heg__yuanyi")
+fengsui_heg__xujing:addSkill("fengsui_heg__caixia")
+
+local fengsui_heg__limi = General:new(extension, "fengsui_heg__limi", "shu", 3)
+fengsui_heg__limi:addCompanions("fengsui_heg__qiaozhou", "fengsui_heg__chenshou")
+fengsui_heg__limi:addSkill("fengsui_heg__ciying")
+fengsui_heg__limi:addSkill("fengsui_heg__chendu")
+
+local xushi = General:new(extension, "fengsui_heg__xushi", "wu", 3, 3, General.Female)
+xushi:addSkill("fengsui_heg__fuzhu")
+xushi:addSkill("fengsui_heg__chenmeng")
+
+local heqi = General:new(extension, "fengsui_heg__heqi", "wu", 4)
+heqi:addSkills { "fengsui_heg__junwei", "fengsui_heg__chenji", "fengsui_heg__zhouwang" }
+
+local gongsunxiu = General:new(extension, "fengsui_heg__gongsunxiu", "qun", 4)
+gongsunxiu:addCompanions("ld__gongsunyuan")
+gongsunxiu:addSkills { "fengsui_heg__kuizhen", "fengsui_heg__niejiang" }
+
+local yuantan = General:new(extension, "fengsui_heg__yuantan", "qun", 4)
+yuantan:addCompanions("hs__yuanshao")
+yuantan:addSkills { "fengsui_heg__qiaosi", "fengsui_heg__baizu" }
+
+local fengsui_heg__fuhuanghou = General:new(extension, "fengsui_heg__fuhuanghou", "qun", 3)
+fengsui_heg__fuhuanghou.gender = General.Female
+fengsui_heg__fuhuanghou:addSkill("fengsui_heg__qujian")
+fengsui_heg__fuhuanghou:addSkill("fengsui_heg__weiluan")
+
+local hulie = General:new(extension, "fengsui_heg__hulie", "jin", 4)
+hulie:addSkills { "fengsui_heg__kunshi", "fengsui_heg__fudao" }
+
+local zuti = General:new(extension, "fengsui_heg__zuti", "jin", 4)
+zuti:addSkills { "fengsui_heg__kangying", "fengsui_heg__jietu" }
+
+local zhanghua = General:new(extension, "fengsui_heg__zhanghua", "jin", 4)
+zhanghua.mainMaxHpAdjustedValue = -1
+zhanghua.subkingdom = "wei"
+zhanghua:addCompanions("heg__yanghu")
+zhanghua:addCompanions("ty_heg__yanghu")
+zhanghua:addSkills { "fengsui_heg__cangjuan", "fengsui_heg__yinbing" }
+
+local shantao = General:new(extension, "fengsui_heg__shantao", "jin", 3)
+shantao.subkingdom = "wei"
+shantao:addSkills { "fengsui_heg__linzhe", "fengsui_heg__yamai" }
+
+local qiaozhou = General:new(extension, "fengsui_heg__qiaozhou", "jin", 3)
+qiaozhou.subkingdom = "shu"
+qiaozhou:addCompanions("fengsui_heg__limi", "fengsui_heg__chenshou")
+qiaozhou:addSkills { "fengsui_heg__baoguo", "fengsui_heg__yuandao", "fengsui_heg__yunxing" }
+
+local huoyi = General:new(extension, "fengsui_heg__huoyi", "jin", 4)
+huoyi.subkingdom = "shu"
+huoyi:addSkills { "fengsui_heg__liefa" }
+
+local lujii = General:new(extension, "fengsui_heg__lujii", "jin", 3)
+lujii.subkingdom = "wu"
+lujii:addCompanions("ld__lukang")
+lujii:addSkills { "fengsui_heg__lingzhi", "fengsui_heg__ruluo" }
+
+local zhouchu = General:new(extension, "fengsui_heg__zhouchu", "jin", 4)
+zhouchu.mainMaxHpAdjustedValue = -1
+zhouchu.subkingdom = "wu"
+zhouchu:addSkills { "fengsui_heg__tuanfeng", "fengsui_heg__xuanhe" }
+
+local peixiu = General:new(extension, "fengsui_heg__peixiu", "jin", 3)
+peixiu.subkingdom = "qun"
+peixiu:addSkills { "fengsui_heg__juezhi", "fengsui_heg__yunie" }
+
+local zhugejing = General:new(extension, "fengsui_heg__zhugejing", "jin", 4)
+zhugejing.mainMaxHpAdjustedValue = -1
+zhugejing.subkingdom = "qun"
+zhugejing:addSkills { "fengsui_heg__heyi", "fengsui_heg__pijian", "fengsui_heg__zeyu" }
+
+local yangjun = General:new(extension, "fengsui_heg__yangjun", "wild", 4)
+yangjun:addCompanions("fengsui_heg__yangzhi", "fengsui_heg__yangyan")
+yangjun:addSkills { "fengsui_heg__guishang", "fengsui_heg__aobi" }
+
 assert(#extension.skill_skels == 24, "fengsui_liwu must load exactly 24 official skill skeletons")
 
-local zhouxuan = General:new(extension, "fengsui_heg__zhouxuan", "wei", 3)
-zhouxuan:addSkills { "fengsui_heg__wumei", "fengsui_heg__jiemeng" }
 
 Fk:loadTranslationTable{
   ["fengsui_heg__zhouxuan"] = "周宣",
@@ -31,9 +130,6 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__zhouxuan"] = "雪漫青山处，不见夜归人。",
 }
 
-local chenshou = General:new(extension, "fengsui_heg__chenshou", "shu", 3)
-chenshou:addCompanions("fengsui_heg__qiaozhou", "fengsui_heg__limi")
-chenshou:addSkills { "fengsui_heg__dianmo", "fengsui_heg__fuzai" }
 
 Fk:loadTranslationTable{
   ["fengsui_heg__chenshou"] = "陈寿",
@@ -62,9 +158,6 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__chenshou"] = "著述未竟，唯愿后人续之……",
 }
 
-local sunyuan = General:new(extension, "fengsui_heg__sunyuan", "wu", 4, 4, General.Female)
-sunyuan:addCompanions("fengsui_heg__heji")
-sunyuan:addSkills { "fengsui_heg__dongxin" }
 
 Fk:loadTranslationTable{
   ["fengsui_heg__sunyuan"] = "孙鸢",
@@ -83,8 +176,6 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__sunyuan"] = "此月曾照闺中……",
 }
 
-local liuhui = General:new(extension, "fengsui_heg__liuhui", "qun", 4)
-liuhui:addSkills { "fengsui_heg__jieshu" }
 
 Fk:loadTranslationTable{
   ["fengsui_heg__liuhui"] = "刘徽",
@@ -103,8 +194,6 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__liuhui"] = "算学如海，穷我一生，只得杯水。",
 }
 
-local wanghuifeng = General:new(extension, "fengsui_heg__wanghuifeng", "jin", 4, 4, General.Female)
-wanghuifeng:addSkills { "fengsui_heg__dilie" }
 
 Fk:loadTranslationTable{
   ["fengsui_heg__wanghuifeng"] = "王惠风",
@@ -130,33 +219,10 @@ Fk:appendKingdomMap("fengsui_neutral", { "wei", "shu", "wu", "qun", "jin" })
 Fk:appendKingdomMap("fengsui_neutralall", { "wei", "shu", "wu", "qun", "jin" })
 require("packages.fengsui.pkg.fengsui_liwu.liwu_neutral_compat").install()
 
-local jiaxu = General:new(extension, "fengsui_heg__jiaxu", "fengsui_neutralall", 3)
-jiaxu:addCompanions("hs__jiaxu")
-jiaxu:addSkill("fengsui_heg__qingshi_jx")
-jiaxu:addSkill("fengsui_heg__anshi")
-jiaxu:addSkill("fengsui_heg__shuge")
 
-local lusu = General:new(extension, "fengsui_heg__lusu", "fengsui_neutralall", 3)
-lusu:addCompanions("hs__lusu")
-lusu:addSkill("fengsui_heg__xiangkui")
-lusu:addSkill("fengsui_heg__yangming")
 
-local xushu = General:new(extension, "fengsui_heg__xushu", "fengsui_neutralall", 4)
-xushu.mainMaxHpAdjustedValue = -1
-xushu:addCompanions("ld__xushu")
-xushu:addSkill("fengsui_heg__jiange")
-xushu:addSkill("fengsui_heg__xiawang")
-xushu:addSkill("fengsui_heg__yinyu")
 
-local zhaoe = General:new(extension, "fengsui_heg__zhaoe", "fengsui_neutralall", 3)
-zhaoe.gender = General.Female
-zhaoe:addSkill("fengsui_heg__yanshi")
-zhaoe:addSkill("fengsui_heg__xinren")
 
-local xushao = General:new(extension, "fengsui_heg__xushao", "fengsui_neutralall", 3)
-xushao:addCompanions("fengsui_heg__xujing")
-xushao:addSkill("fengsui_heg__yingmen")
-xushao:addSkill("fengsui_heg__pingjian")
 
 Fk:loadTranslationTable{
   ["fengsui_neutral"] = "中立",
@@ -283,7 +349,7 @@ Fk:loadTranslationTable{
   [":fengsui_heg__yingmen"] = "锁定技，当你首次明置此武将牌后，你将X张势力不同的武将牌置于你的武将牌上，称为“访客”。回合开始时或你受到伤害后，若你的“访客”数少于X张，则你将“访客”补至X张（X为场上势力数）。",
   ["fengsui_heg__pingjian"] = "评鉴",
   ["#fengsui_heg__pingjian-remove"] = "评鉴：请选择结算后移去的访客",
-  [":fengsui_heg__pingjian"] = "你可以发动“访客”武将牌上的一个非限定技、锁定技或阵法技的技能（合法发动时机且主副将技能需与你位置一致），然后你移去该“访客”并摸一张牌，若“访客”与你势力相同，你摸两张牌。",
+  [":fengsui_heg__pingjian"] = "你可以发动“访客”武将牌上的一个非限定技、锁定技或阵法技的技能（合法发动时机且主副将技需与此武将牌对应位置一致），然后你移去该“访客”并摸一张牌，若“访客”与你势力相同，你摸两张牌。",
   ["$fengsui_heg__yingmen1"] = "德高者，须以礼待之！",
   ["$fengsui_heg__yingmen2"] = "吾好核论乡党，长于明析臧否。",
   ["$fengsui_heg__pingjian1"] = "君清平之奸贼，乱世之英雄。",
@@ -301,7 +367,7 @@ Fk:loadTranslationTable{
   ["#KingdomFiltered"] = "本局移除 %arg，使用 %arg2 四个势力。",
 }
 
-assert(#extension.generals == 10, "fengsui_liwu must register exactly 10 official generals")
+assert(#extension.generals == 23, "fengsui_liwu must register exactly 23 generals")
 require "packages.fengsui.pkg.fengsui_liwu.option_translations"
 
 return extension

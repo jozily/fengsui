@@ -23,9 +23,9 @@ end
 
 local function canPair(general, deputy)
   if not general or not deputy or general == deputy then return false end
-  if general.name == "fengsui_limited_heg__xunyu" then return false end
+  if general.name == "fengsui_toaru__heg__xunyu" then return false end
   if deputy.kingdom == "wild" then return false end
-  if deputy.name == "fengsui_limited_heg__xunyu" then
+  if deputy.name == "fengsui_toaru__heg__xunyu" then
     return general.kingdom ~= neutralKingdom and general.kingdom ~= neutralAllKingdom and
       general.kingdom ~= "wild" and general.kingdom ~= sweepingKingdom and
       table.find(generalKingdoms(general), function(kingdom)
@@ -94,7 +94,7 @@ local function neutralPairKingdoms(general, deputy, enabledKingdoms)
 end
 
 local function xunyuDeputyKingdoms(general, deputy, enabledKingdoms)
-  if not general or not deputy or deputy.name ~= "fengsui_limited_heg__xunyu" then return nil end
+  if not general or not deputy or deputy.name ~= "fengsui_toaru__heg__xunyu" then return nil end
   return table.filter(generalKingdoms(general), function(kingdom)
     return table.contains(baseKingdoms, kingdom) and
       (not enabledKingdoms or #enabledKingdoms == 0 or table.contains(enabledKingdoms, kingdom))
@@ -297,9 +297,9 @@ function Compat.install()
       return originalGetKingdomInHegemony(self, general, deputy, enabledKingdoms)
     end
     Fk.canMatchInHegemony = function(self, general, deputy, enabledKingdoms)
-      if general == "fengsui_limited_heg__xunyu" then return false end
+      if general == "fengsui_toaru__heg__xunyu" then return false end
       if self.generals[deputy] and self.generals[deputy].kingdom == "wild" then return false end
-      if deputy == "fengsui_limited_heg__xunyu" then
+      if deputy == "fengsui_toaru__heg__xunyu" then
         local main = self.generals[general]
         if not main or main.kingdom == neutralKingdom or main.kingdom == neutralAllKingdom or
           main.kingdom == "wild" or main.kingdom == sweepingKingdom then
@@ -322,10 +322,10 @@ function Compat.install()
   if not mode._fengsuiDuoshouWrapped then
     local originalReward = mode.deathRewardAndPunish
     mode.deathRewardAndPunish = function(self, victim, killer)
-      local reward = victim:getMark("fengsui_limited_heg__duoshou_reward")
+      local reward = victim:getMark("fengsui_toaru__heg__duoshou_reward")
       if killer and reward > 0 then
-        if not killer.dead then killer:drawCards(reward, "fengsui_limited_heg__duoshou") end
-        victim.room:setPlayerMark(victim, "fengsui_limited_heg__duoshou_reward", 0)
+        if not killer.dead then killer:drawCards(reward, "fengsui_toaru__heg__duoshou") end
+        victim.room:setPlayerMark(victim, "fengsui_toaru__heg__duoshou_reward", 0)
         return
       end
       return originalReward(self, victim, killer)

@@ -68,17 +68,17 @@ function M.useMouLijian(player, skillName)
   local room = player.room
   local mou = Fk.skills["mou__lijian"]
   if not mou then return {} end
-  room:setPlayerMark(player, "fengsui_limited_heg__sweeping_resolving", 1)
-  room:setPlayerMark(player, "fengsui_limited_heg__sweeping_damaged", 0)
+  room:setPlayerMark(player, "fengsui_toaru__heg__sweeping_resolving", 1)
+  room:setPlayerMark(player, "fengsui_toaru__heg__sweeping_damaged", 0)
   local success, result = room:askToUseActiveSkill(player, {
     skill_name = "mou__lijian",
-    prompt = "#fengsui_limited_heg__sweeping-lijian",
+    prompt = "#fengsui_toaru__heg__sweeping-lijian",
     cancelable = false,
     no_indicate = false,
   })
-  room:setPlayerMark(player, "fengsui_limited_heg__sweeping_resolving", 0)
-  local ids = player:getTableMark("fengsui_limited_heg__sweeping_damaged")
-  room:setPlayerMark(player, "fengsui_limited_heg__sweeping_damaged", 0)
+  room:setPlayerMark(player, "fengsui_toaru__heg__sweeping_resolving", 0)
+  local ids = player:getTableMark("fengsui_toaru__heg__sweeping_damaged")
+  room:setPlayerMark(player, "fengsui_toaru__heg__sweeping_damaged", 0)
   return table.filter(table.map(ids, function(id) return room:getPlayerById(id) end), function(p)
     return p and p:isAlive() and p ~= player
   end)
