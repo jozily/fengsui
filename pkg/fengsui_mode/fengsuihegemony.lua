@@ -156,7 +156,47 @@ function HegLogic:chooseGenerals()
     }
     room:setBanner("@heg_bankingdom", chinese_kingdoms)
   end
-  table.sort(allKingdoms)
+    table.sort(allKingdoms)
+
+  -- 可选：从常规中立者与野心家中随机保留指定数量，作为本局可用武将。
+  local randomNeutral = tonumber(room:getSettings("fengsui_random_neutral")) or 0
+  local randomWild = tonumber(room:getSettings("fengsui_random_wild")) or 0
+  if randomNeutral > 0 or randomWild > 0 then
+    local regularNeutral = {
+      fengsui_heg__jiaxu = true, fengsui_heg__lusu = true, fengsui_heg__xushu = true,
+      fengsui_heg__zhaoe = true, fengsui_heg__xushao = true,
+    }
+    -- Hidden flags are resolved while the room builds its initial pile.  Keep
+    -- the random pool authoritative even when an older room cache omitted a
+    -- visible neutral general.
+    for name in pairs(regularNeutral) do
+      if Fk.generals[name] and not table.contains(room.general_pile, name) then
+        table.insert(room.general_pile, name)
+      end
+    end
+    local candidates = table.filter(room.general_pile, function(name)
+      local g = Fk.generals[name]
+      return g and ((g.kingdom == "wild" and randomWild > 0) or (regularNeutral[name] and randomNeutral > 0))
+    end)
+    -- 只从五名常规中立者中抽取，学园都市中立者不纳入本选项。
+    local neutralCandidates = table.filter(candidates, function(name) return regularNeutral[name] == true end)
+    local wildCandidates = table.filter(candidates, function(name) return Fk.generals[name].kingdom == "wild" end)
+    local selectedNeutral = table.random(neutralCandidates, math.min(randomNeutral, #neutralCandidates))
+    local selectedWild = table.random(wildCandidates, math.min(randomWild, #wildCandidates))
+    local selected = table.connect(selectedNeutral, selectedWild)
+    local selectedSet = {}
+    for _, name in ipairs(selected) do selectedSet[name] = true end
+    for i = #room.general_pile, 1, -1 do
+      local generalName = room.general_pile[i]
+      local g = Fk.generals[generalName]
+      if g and (g.kingdom == "wild" or regularNeutral[generalName]) and not selectedSet[generalName] then
+        table.remove(room.general_pile, i)
+      end
+    end
+    if #selectedNeutral > 0 then room:setBanner("@&enable_neutral_generals", selectedNeutral) end
+    if #selectedWild > 0 then room:setBanner("@&enable_wildgenerals", selectedWild) end
+    room:sendLog{ type = "#fengsui_random_neutral_wild", arg = table.concat(table.map(selected, Util.TranslateMapper), " "), toast = true }
+  end
 
 
   local players = room.players
@@ -454,6 +494,7 @@ heg = fk.CreateGameMode{
   end,
   reward_punish = function (self, victim, killer)
     local room = victim.room
+    local reward = {victim = victim, killer = killer, replaced = false}
     local shangmuReward = victim:getMark("fengsui_heg__shangmu_reward")
     if killer and shangmuReward > 0 then
       if not killer.dead then
@@ -470,7 +511,10 @@ heg = fk.CreateGameMode{
       room:setPlayerMark(victim, "fengsui_toaru__heg__duoshou_reward", 0)
       return
     end
-    if killer then
+    if killer and killer:isAlive() and killer.kingdom ~= "unknown" then
+      room.logic:trigger(H.KillRewardExecuting, killer, reward)
+    end
+    if killer and not reward.replaced then
       if killer.kingdom ~= "unknown" and not killer.dead then
         local times = 1
         if room:getBanner("additional_reward") then --贾充
@@ -593,6 +637,23 @@ heg.ui_settings = {
       title = "heg_enter_battle_royal_on_first_shuffle",
     },
 
+    W.ComboRow {
+      _settingsKey = "fengsui_random_neutral",
+      title = "fengsui_random_neutral",
+      model = { "0", "1", "2", "3", "4", "5" },
+    },
+
+    W.ComboRow {
+      _settingsKey = "fengsui_random_wild",
+      title = "fengsui_random_wild",
+      model = { "0", "1", "2", "3", "4", "5" },
+    },
+
+    W.SwitchRow {
+      _settingsKey = "fengsui_remove_fuli",
+      title = "fengsui_remove_fuli",
+    },
+
     --首死下局一号位
     W.SwitchRow {
       _settingsKey = "firstdeadnextseat1",
@@ -623,6 +684,18 @@ Fk:loadTranslationTable{
   ["help: heg_old_battle_royal"] = "进入鏖战后，牌堆中的【桃】视为【杀】或【闪】",
   ["heg_watch_next_deputy"] = "观看下家副将",
   ["help: heg_watch_next_deputy"] = "游戏开始前观看下家的副将",
+  ["fengsui_random_neutral"] = "随机中立者武将数量",
+  ["fengsui_random_wild"] = "随机野心家武将数量",
+  ["@&enable_neutral_generals"] = "本局中立者",
+  ["@&enable_wildgenerals"] = "本局野心家",
+  ["#wild-choose"] = "野心家建国：选择你要成为的势力！",
+  ["#wild_join-choose"] = "加入建国",
+  ["help: fengsui_random_neutral"] = "本局从常规中立者中随机保留指定数量（0至5）。<br><a href='fengsui_neutral_rule_help'>查看中立者机制</a>",
+  ["help: fengsui_random_wild"] = "本局从野心家武将中随机保留指定数量（0至5）。",
+  ["fengsui_neutral_rule_help"] = "中立者机制：中立者可与魏、蜀、吴、群、晋势力武将组合；单独明置时仍视为未确定势力，亮出另一张武将牌后确定势力；不可与野心家或另一名中立者组合。",
+  ["help: fengsui_neutral_rule_help"] = "中立者机制：中立者可与魏、蜀、吴、群、晋势力武将组合；单独明置时仍视为未确定势力，亮出另一张武将牌后确定势力；不可与野心家或另一名中立者组合。",
+  ["fengsui_remove_fuli"] = "删除【赋礼】事件",
+  ["help: fengsui_remove_fuli"] = "开启后，鏖战事件池不再包含【赋礼】。",
   ["heg_enter_battle_royal_on_first_shuffle"] = "第一次洗牌进入鏖战",
   ["heg__firstdeadnextseat1"] = "首死玩家下局成为一号位",
 

@@ -2,7 +2,10 @@ local Util = require "packages.fengsui.pkg.fengsui_hebi.util"
 local kuohu = fk.CreateSkill { name = "fengsui_heg__kuohu" }
 kuohu:addEffect("active", {
   anim_type = "control", card_num = 0, target_num = 1,
-  can_use = function(self, player) return player:usedSkillTimes(self.name, Player.HistoryTurn) == 0 end,
+  can_use = function(self, player)
+    return player.phase == Player.Play and Util.hasGeneralName(player, "fengsui_heg__shanxia") and player:hasShownSkill(self.name) and
+      player:usedSkillTimes(self.name, Player.HistoryTurn) == 0
+  end,
   card_filter = Util.FalseFunc,
   target_filter = function(self, player, to_select, selected)
     local forced = player:getMark("fengsui_heg__kuohu_forced_target")
@@ -28,15 +31,19 @@ kuohu:addEffect("active", {
       local place = #places == 1 and places[1] or room:askToChoice(target, { choices = places, skill_name = self.name })
       target:hideGeneral(place == "fengsui_heg__kuohu_deputy")
       room:setPlayerMark(target, "fengsui_heg__kuohu_hidden-turn", 1)
+      local slot = place == "fengsui_heg__kuohu_deputy" and "d" or "m"
+      room:setPlayerMark(target, "fengsui_heg__kuohu_hidden_slot-turn", slot)
+      Util.prohibitReveal(target, slot == "d", self.name, "turn")
       room:drawCards(target, 1, self.name)
     end
   end,
 })
 kuohu:addEffect(fk.GeneralRevealed, { global = true,
-  can_trigger = function(self, _, target) return target and target:getMark("fengsui_heg__kuohu_hidden-turn") > 0 end,
-  on_use = function(self, _, target, player, data)
-    if data and data.m and target.general ~= "anjiang" then target:hideGeneral(false) end
-    if data and data.d and target.deputyGeneral ~= "anjiang" then target:hideGeneral(true) end
+  can_refresh = function(self, _, target) return target and target:getMark("fengsui_heg__kuohu_hidden-turn") > 0 end,
+  on_refresh = function(self, _, target, player, data)
+    local slot = target:getMark("fengsui_heg__kuohu_hidden_slot-turn")
+    if data and data.m and slot == "m" and target.general ~= "anjiang" then target:hideGeneral(false) end
+    if data and data.d and slot == "d" and target.deputyGeneral ~= "anjiang" then target:hideGeneral(true) end
   end,
 })
 kuohu:addEffect(fk.CardUsing, { global = true,
@@ -50,9 +57,14 @@ kuohu:addEffect(fk.CardUsing, { global = true,
   end,
 })
 kuohu:addEffect(fk.TurnEnd, { global = true,
-  on_use = function(self, _, target) target.room:setPlayerMark(target, "fengsui_heg__kuohu_unlimited", 0) end,
+  can_refresh = function(self, _, target) return target and target:getMark("fengsui_heg__kuohu_unlimited") > 0 end,
+  on_refresh = function(self, _, target) target.room:setPlayerMark(target, "fengsui_heg__kuohu_unlimited", 0) end,
 })
-kuohu:addEffect(fk.TurnStart, { global = true,
-  on_use = function(self, _, target) target.room:setPlayerMark(target, "fengsui_heg__kuohu_hidden-turn", 0) end,
+kuohu:addEffect(fk.TurnStart, { global = true, is_delay_effect = true,
+  can_trigger = function(self, _, target) return target and target:getMark("fengsui_heg__kuohu_hidden-turn") > 0 end,
+  on_use = function(self, _, target)
+    target.room:setPlayerMark(target, "fengsui_heg__kuohu_hidden-turn", 0)
+    target.room:setPlayerMark(target, "fengsui_heg__kuohu_hidden_slot-turn", 0)
+  end,
 })
 return kuohu

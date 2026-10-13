@@ -1,10 +1,23 @@
+local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 local qusheng = fk.CreateSkill { name = "fengsui_heg__qusheng" }
+
+local function hasSameNameOtherColor(room, id)
+  local card = Fk:getCardById(id)
+  if not card then return false end
+  return table.find(room.discard_pile, function(other)
+    local c = Fk:getCardById(other)
+    return other ~= id and c and c.name == card.name and c.color ~= card.color
+  end) ~= nil
+end
 
 qusheng:addEffect(fk.AfterCardsMove, {
   global = true,
   can_trigger = function(self, _, target, player, data)
-    return player:hasSkill(self.name) and player:getMark(self.name .. "-turn") == 0 and data and
-      table.find(data, function(m) return m.toArea == Card.DiscardPile and (m.moveReason == fk.ReasonUse or m.moveReason == fk.ReasonResponse) and m.moveInfo and #m.moveInfo > 0 end) ~= nil
+    return U.hasGeneralName(player, "fengsui_heg__biyu") and player:hasShownSkill(self.name) and player:getMark(self.name .. "-turn") == 0 and data and
+      table.find(data, function(m)
+        if m.toArea ~= Card.DiscardPile or (m.moveReason ~= fk.ReasonUse and m.moveReason ~= fk.ReasonResponse) or not m.moveInfo then return false end
+        return table.find(m.moveInfo, function(info) return hasSameNameOtherColor(player.room, info.cardId) end) ~= nil
+      end) ~= nil
   end,
   on_cost = function(self, event, target, player, data)
     if player.room:askToSkillInvoke(player, { skill_name = self.name, prompt = "#fengsui_heg__qusheng-invoke" }) then
@@ -24,8 +37,7 @@ qusheng:addEffect(fk.AfterCardsMove, {
             for _, other in ipairs(room.discard_pile) do
               local c = Fk:getCardById(other)
               if other ~= id and c and c.name == card.name and c.color ~= card.color then
-                table.insert(candidates, { first = id, second = other, source = move.from })
-                break
+                table.insert(candidates, { first = id, second = other })
               end
             end
           end
@@ -33,15 +45,18 @@ qusheng:addEffect(fk.AfterCardsMove, {
       end
     end
     if #candidates == 0 then return end
-    local pair = candidates[1]
-    local choice = room:askToChoice(player, { choices = { "fengsui_heg__qusheng_first", "fengsui_heg__qusheng_second" }, skill_name = self.name })
-    local gain, put = choice == "fengsui_heg__qusheng_second" and pair.second or pair.first, choice == "fengsui_heg__qusheng_second" and pair.first or pair.second
+    local pair = candidates[math.random(#candidates)]
+    -- 获得匹配的弃牌；本次使用/打出的牌回到牌堆顶。
+    local gain, put = pair.second, pair.first
     room:setPlayerMark(player, self.name .. "-turn", 1)
     room:obtainCard(player, gain, true, fk.ReasonPrey, player, self.name)
-    if room:getCardArea(put) == Card.DiscardPile then room:moveCardTo(put, Card.DrawPile, nil, fk.ReasonPut, self.name, nil, true, player) end
-    if room.current and pair.source ~= room.current then room:drawCards(room.current, 1, self.name) end
+    if room:getCardArea(put) == Card.DiscardPile then
+      room:moveCardTo(put, Card.DrawPile, nil, fk.ReasonPut, self.name, nil, true, player)
+      table.removeOne(room.draw_pile, put)
+      table.insert(room.draw_pile, 1, put)
+    end
   end,
 })
 
-qusheng:addEffect(fk.TurnStart, { global = true, on_use = function(self, _, target) target.room:setPlayerMark(target, self.name .. "-turn", 0) end })
+qusheng:addEffect(fk.TurnStart, { global = true, can_refresh = function(self, _, target) return target and target:getMark(self.name .. "-turn") > 0 end, on_refresh = function(self, _, target) target.room:setPlayerMark(target, self.name .. "-turn", 0) end })
 return qusheng

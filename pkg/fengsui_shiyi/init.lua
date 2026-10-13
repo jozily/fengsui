@@ -4,6 +4,13 @@ extension.game_modes_whitelist = { "new_heg_mode", "fengsui_heg__mode" }
 
 extension:loadSkillSkelsByPath("./packages/fengsui/pkg/fengsui_shiyi/skills")
 
+-- 升、降技能文件保留在拾遗的 sweeping 目录中，但仍属于本扩展的国战标记技能；
+-- 显式注册原文件，避免标记存在而技能按钮和翻译未加载。
+extension:loadSkillSkels {
+  require "packages.fengsui.pkg.fengsui_shiyi.fengsui_sweeping.skills.fengsui_heg_ascend_skill",
+  require "packages.fengsui.pkg.fengsui_shiyi.fengsui_sweeping.skills.fengsui_heg__descend_skill",
+}
+
 -- 当前子包武将注册顺序
 local zhouxuan = General:new(extension, "fengsui_heg__zhouxuan", "wei", 3)
 zhouxuan:addSkills { "fengsui_heg__wumei", "fengsui_heg__jiemeng" }
@@ -81,7 +88,7 @@ misaka:addSkills { "fengsui_toaru__heg__cipao", "fengsui_toaru__heg__junshi" }
 local shirai = General:new(extension, "fengsui_toaru__heg__shirai", "fengsui_neutralall", 3, 3, General.Female)
 shirai:addSkills { "fengsui_toaru__heg__shunyi", "fengsui_toaru__heg__fengji" }
 
-assert(#extension.skill_skels == 16, "fengsui_shiyi must load exactly 18 skill skeletons")
+assert(#extension.skill_skels == 18, "fengsui_shiyi must load exactly 18 skill skeletons")
 
 Fk:loadTranslationTable{
   ["fengsui_shiyi"] = "烽燧燎原-拾遗",
@@ -147,7 +154,14 @@ Fk:loadTranslationTable{
 
 assert(#extension.generals == 19, "fengsui_shiyi must register exactly 19 generals")
 
-for _, general in ipairs(extension.generals) do general.hidden = true end
+-- 番外武将默认隐藏；五名常规中立者必须进入正常选将池。
+local visible_neutral = {
+  fengsui_heg__jiaxu = true, fengsui_heg__lusu = true, fengsui_heg__xushu = true,
+  fengsui_heg__zhaoe = true, fengsui_heg__xushao = true,
+}
+for _, general in ipairs(extension.generals) do
+  general.hidden = not visible_neutral[general.name]
+end
 
 return extension
 

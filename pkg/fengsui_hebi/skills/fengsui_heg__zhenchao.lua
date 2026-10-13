@@ -1,15 +1,74 @@
-local fuzheng = fk.CreateSkill { name = "fengsui_heg__zhenchao" }
-local function takeBottom(room, skill)
-  local id = room.draw_pile[#room.draw_pile]; if not id then return nil end
-  room:moveCardTo(id, Card.Processing, nil, fk.ReasonJustMove, skill, nil, true); return id
+local zhenchao = fk.CreateSkill { name = "fengsui_heg__zhenchao" }
+
+local function available(self, player)
+  return player:hasShownSkill(self.name) and
+    player:usedSkillTimes(self.name, Player.HistoryTurn) == 0 and
+    #player.room.draw_pile > 0
 end
-local function askBottom(self, room, player, shown, judge)
-  if player:getMark(self.name .. "-round") > 0 or not room:askToSkillInvoke(player,{skill_name=self.name,prompt="#fengsui_heg__zhenchao"}) then return end
-  room:setPlayerMark(player,self.name.."-round",1); local id=takeBottom(room,self.name); if not id then return end
-  if judge then room:changeJudge{card=Fk:getCardById(id),skillName=self.name} end
-  if shown and #shown>0 then room:obtainCard(player,shown,true,fk.ReasonPrey,player,self.name) end
-  if #player:getCardIds("he")>0 and room:askToSkillInvoke(player,{skill_name=self.name,prompt="#fengsui_heg__zhenchao-bottom"}) then local c=room:askToChooseCard(player,{target=player,flag="he",skill_name=self.name}); room:moveCardTo(c,Card.DrawPile,nil,fk.ReasonPut,self.name,nil,true,player) end
+
+local function putBottom(self, player)
+  local room = player.room
+  if player.dead or player:isNude() then return end
+  local cards = room:askToCards(player, {
+    min_num = 1, max_num = 1, include_equip = true, cancelable = true,
+    skill_name = self.name, prompt = "#fengsui_heg__zhenchao-bottom",
+  })
+  if #cards > 0 then
+    room:moveCards {
+      ids = cards, from = player, toArea = Card.DrawPile,
+      drawPilePosition = -1, moveReason = fk.ReasonPut,
+      skillName = self.name, moveVisible = true,
+    }
+  end
 end
-fuzheng:addEffect(fk.FinishJudge,{can_trigger=function(self,_,target,player,data) return player:hasSkill(self.name) and target and data and data.card end,on_use=function(self,_,target,player,data) askBottom(self,player.room,player,{data.card:getEffectiveId()},true) end})
-fuzheng:addEffect(fk.CardShown,{global=true,can_trigger=function(self,_,target,player,data) return player:hasSkill(self.name) and data and data.cardIds and #data.cardIds>0 end,on_use=function(self,_,target,player,data) askBottom(self,player.room,player,data.cardIds,false) end})
-return fuzheng
+
+zhenchao:addEffect(fk.AskForRetrial, {
+  can_trigger = function(self, _, target, player, data)
+    return target and data and data.card and available(self, player)
+  end,
+  on_cost = function(self, _, _, player)
+    return player.room:askToSkillInvoke(player, {
+      skill_name = self.name, prompt = "#fengsui_heg__zhenchao",
+    })
+  end,
+  on_use = function(self, _, _, player, data)
+    local room = player.room
+    local id = room.draw_pile[#room.draw_pile]
+    if not id then return end
+    room:changeJudge {
+      card = Fk:getCardById(id), player = player, data = data,
+      skillName = self.name, exchange = true,
+    }
+    putBottom(self, player)
+  end,
+})
+
+zhenchao:addEffect(fk.CardShown, {
+  can_trigger = function(self, _, target, player, data)
+    return target and available(self, player) and data and
+      data.cardIds and #data.cardIds == 1
+  end,
+  on_cost = function(self, _, _, player)
+    return player.room:askToSkillInvoke(player, {
+      skill_name = self.name, prompt = "#fengsui_heg__zhenchao",
+    })
+  end,
+  on_use = function(self, _, target, player, data)
+    local room = player.room
+    local original = data.cardIds[1]
+    local area = room:getCardArea(original)
+    local source = data.from or target
+    local id = room.draw_pile[#room.draw_pile]
+    if not id then return end
+    -- 先将底牌交到原牌所在区域，再取得原牌；后续展示事件读取替代牌。
+    room:moveCards {
+      ids = {id}, to = (area == Card.PlayerHand or area == Card.PlayerEquip) and source or nil, toArea = area,
+      moveReason = fk.ReasonJustMove, skillName = self.name, moveVisible = true,
+    }
+    data.cardIds = {id}
+    room:obtainCard(player, original, true, fk.ReasonPrey, player, self.name)
+    putBottom(self, player)
+  end,
+})
+
+return zhenchao

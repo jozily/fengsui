@@ -8,8 +8,7 @@ local chendu = fk.CreateSkill{
 local function getSwapMates(room, target)
   return table.filter(room.alive_players, function(p)
     if p == target or not H.compareKingdomWith(p, target) then return false end
-    return (H.hasGeneral(target, false) and H.hasGeneral(p, false)) or
-      (H.hasGeneral(target, true) and H.hasGeneral(p, true))
+    return H.hasGeneral(target, true) and H.hasGeneral(p, true)
   end)
 end
 
@@ -34,7 +33,7 @@ end
 chendu:addEffect(H.GeneralTransformed, {
   global = true,
   can_trigger = function(self, event, target, player, data)
-    return target and target:isAlive() and data.isMain == false and player:hasSkill(chendu.name) and
+    return target and target:isAlive() and data.isMain == false and player:hasShownSkill(chendu.name) and
       H.compareKingdomWith(target, player) and #getChoices(player.room, target) > 0
   end,
   on_cost = function(self, event, target, player, data)
@@ -68,23 +67,7 @@ chendu:addEffect(H.GeneralTransformed, {
     })
     local mate = selected[1]
     if not mate then return end
-    local positions = {}
-    if H.hasGeneral(target, false) and H.hasGeneral(mate, false) then
-      table.insert(positions, "fengsui_heg__chendu_main")
-    end
-    if H.hasGeneral(target, true) and H.hasGeneral(mate, true) then
-      table.insert(positions, "fengsui_heg__chendu_deputy")
-    end
-    local position = #positions == 1 and positions[1] or room:askToChoice(target, {
-      choices = positions,
-      skill_name = chendu.name,
-      prompt = "#fengsui_heg__chendu-position::" .. mate.id,
-    })
-    if position == "fengsui_heg__chendu_main" then
-      swapMain(room, target, mate)
-    elseif position == "fengsui_heg__chendu_deputy" then
-      H.swapDeputy(room, target, mate)
-    end
+    H.swapDeputy(room, target, mate)
   end,
 })
 

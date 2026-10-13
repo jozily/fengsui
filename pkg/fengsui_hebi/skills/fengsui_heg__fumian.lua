@@ -63,8 +63,8 @@ fumian:addEffect("maxcards", {
 
 Fk:loadTranslationTable{
   ["#fengsui_heg__fumian-choice"] = "福绵：选择本回合增加的一项",
-  ["fumian_draw"] = "摸牌阶段摸牌数+1",
-  ["fumian_slash"] = "出牌阶段使用【杀】次数+1",
+  ["fumian_draw"] = "摸牌数+1",
+  ["fumian_slash"] = "出杀次数+1",
   ["fumian_maxcards"] = "手牌上限+1",
   ["@fengsui_heg__fumian-turn"] = "福绵：",
 }

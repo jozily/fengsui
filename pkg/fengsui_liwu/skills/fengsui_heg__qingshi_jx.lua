@@ -1,14 +1,19 @@
 local s = fk.CreateSkill { name = "fengsui_heg__qingshi_jx" }
 s:addEffect(fk.TargetConfirming, {
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(s.name) and player:getMark(s.name .. "-round") == 0 and
+    return target == player and player:hasShownSkill(s.name) and data.from and data.from ~= player and player:getMark(s.name .. "-round") == 0 and
       data.card and data.card.color == Card.Black and
       (data.card.trueName == "slash" or data.card.type == Card.TypeTrick) and
       not player:isKongcheng()
   end,
   on_cost = function(self, event, target, player, data)
-    local cards = player.room:askToDiscard(player, {
-      min_num = 1, max_num = 1, include_equip = false, skill_name = s.name, cancelable = true,
+    local eligible = table.filter(player:getCardIds("h"), function(id)
+      return Fk:getCardById(id).color == Card.Black
+    end)
+    if #eligible == 0 then return false end
+    local cards = player.room:askToCards(player, {
+      min_num = 1, max_num = 1, include_equip = false,
+      pattern = tostring(Exppattern { id = eligible }), skill_name = s.name, cancelable = true,
     })
     if #cards == 0 then return false end
     event:setCostData(self, cards)
@@ -19,7 +24,10 @@ s:addEffect(fk.TargetConfirming, {
     local card = Fk:getCardById(event:getCostData(self)[1])
     room:setPlayerMark(player, s.name .. "-round", 1)
     data:cancelTarget(player)
-    if card.color == Card.Black then player:drawCards(1, s.name) end
+    room:throwCard(card:getEffectiveId(), s.name, player, player)
+    if data.card and data.card:getEffectiveId() > 0 and room:getCardArea(data.card:getEffectiveId()) ~= Card.Void then
+      room:obtainCard(player, data.card, true, fk.ReasonPrey, player, s.name)
+    end
   end,
 })
 return s

@@ -2,15 +2,61 @@ local modern = require "packages.hegemony.util"
 
 local compat = setmetatable({}, { __index = modern })
 
+compat.HegMarkChanged = TriggerEvent:subclass("FengsuiHegMarkChanged")
+-- Fengsui 奖惩即将执行时；替换摸牌和弃牌两种分支，保留死亡的其他后续。
+compat.KillRewardExecuting = TriggerEvent:subclass("FengsuiKillRewardExecuting")
+
+if not modern.__fengsui_mark_hooked then
+  local addHegMark = modern.addHegMark
+  modern.addHegMark = function(player, markName, number)
+    local result = addHegMark(player, markName, number)
+    if player and player.room and player.room.logic then
+      player.room.logic:trigger(compat.HegMarkChanged, player, {
+        markName = markName,
+        number = number or 1,
+      })
+    end
+    return result
+  end
+  modern.__fengsui_mark_hooked = true
+end
+
 -- Fengsui's hegemony rule passes room explicitly; the 0.5.20 helper only needs player.
 function compat.addHegMark(roomOrPlayer, playerOrMark, markOrNumber, number)
   if type(playerOrMark) == "string" then
+    local player, mark, n = roomOrPlayer, playerOrMark, markOrNumber or 1
+    if mark == "fengsui_heg_ascend" or mark == "fengsui_heg__descend" then
+      local room = player.room
+      local key = mark == "fengsui_heg_ascend" and "@!!fengsui_heg_ascend" or "@!!fengsui_heg__descend"
+      local skill = mark == "fengsui_heg_ascend" and "fengsui_heg_ascend_skill&" or "fengsui_heg__descend_skill&"
+      room:addPlayerMark(player, key, n)
+      room:handleAddLoseSkills(player, skill)
+      if room.logic then room.logic:trigger(compat.HegMarkChanged, player, { markName = mark, number = n }) end
+      return
+    end
     return modern.addHegMark(roomOrPlayer, playerOrMark, markOrNumber)
+  end
+  if markOrNumber == "fengsui_heg_ascend" or markOrNumber == "fengsui_heg__descend" then
+    local player, mark, n = playerOrMark, markOrNumber, number or 1
+    local room = player.room
+    local key = mark == "fengsui_heg_ascend" and "@!!fengsui_heg_ascend" or "@!!fengsui_heg__descend"
+    local skill = mark == "fengsui_heg_ascend" and "fengsui_heg_ascend_skill&" or "fengsui_heg__descend_skill&"
+    room:addPlayerMark(player, key, n)
+    room:handleAddLoseSkills(player, skill)
+    if room.logic then room.logic:trigger(compat.HegMarkChanged, player, { markName = mark, number = n }) end
+    return
   end
   return modern.addHegMark(playerOrMark, markOrNumber, number)
 end
 
 function compat.removeHegMark(room, player, markName, number)
+  if markName == "fengsui_heg_ascend" or markName == "fengsui_heg__descend" then
+    local key = markName == "fengsui_heg_ascend" and "@!!fengsui_heg_ascend" or "@!!fengsui_heg__descend"
+    local skill = markName == "fengsui_heg_ascend" and "fengsui_heg_ascend_skill&" or "fengsui_heg__descend_skill&"
+    room:removePlayerMark(player, key, number or 1)
+    if player:getMark(key) == 0 then room:handleAddLoseSkills(player, "-" .. skill) end
+    return
+  end
   return modern.removeHegMark(room, player, markName, number)
 end
 

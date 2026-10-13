@@ -1,8 +1,9 @@
 local H = require "packages.fengsui.hegemony_util"
+local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 local qiongbu = fk.CreateSkill { name = "fengsui_heg__qiongbu" }
 
 local function canTrigger(target, player)
-  return target and target ~= player and target:isAlive() and player:hasSkill("fengsui_heg__qiongbu") and
+  return target and target ~= player and target:isAlive() and U.hasGeneralName(player, "fengsui_heg__shanxia") and player:hasShownSkill("fengsui_heg__qiongbu") and
     player:getMark("fengsui_heg__qiongbu_resolving") == 0 and player:getMark("fengsui_heg__qiongbu-turn") == 0 and
     H.getGeneralsRevealedNum(target) ~= H.getGeneralsRevealedNum(player)
 end
@@ -22,17 +23,22 @@ local function adjust(self, target, player)
     else break end
   end
   room:setPlayerMark(player, "fengsui_heg__qiongbu_resolving", 0)
-  room:drawCards(player, 2, self.name)
+  room:drawCards(target, 2, self.name)
 end
 
 for _, event in ipairs({ fk.GeneralShown, fk.GeneralHidden }) do
   qiongbu:addEffect(event, {
     global = true,
-    can_trigger = function(self, _, target, player) return canTrigger(target, player) end,
+    can_trigger = function(self, event, target, player) return canTrigger(target, player) end,
     on_trigger = function(self, event, target, player, data)
       local room = player.room
       room:setPlayerMark(player, "fengsui_heg__qiongbu-turn", 1)
-      if room:askToSkillInvoke(player, { skill_name = self.name, prompt = "#fengsui_heg__qiongbu-adjust::" .. target.id }) then
+      local choice = room:askToChoice(target, {
+          choices = { "fengsui_heg__qiongbu-adjust", "fengsui_heg__qiongbu-damage" },
+          skill_name = self.name,
+          prompt = "#fengsui_heg__qiongbu-choice",
+        })
+      if choice == "fengsui_heg__qiongbu-adjust" then
         adjust(self, target, player)
       else
         room:damage { to = target, damage = 1, skillName = self.name }
@@ -42,6 +48,7 @@ for _, event in ipairs({ fk.GeneralShown, fk.GeneralHidden }) do
   })
 end
 qiongbu:addEffect(fk.TurnStart, { global = true,
-  on_use = function(self, _, target) target.room:setPlayerMark(target, "fengsui_heg__qiongbu-turn", 0) end,
+  can_refresh = function(self, _, target) return target and target:getMark("fengsui_heg__qiongbu-turn") > 0 end,
+  on_refresh = function(self, _, target) target.room:setPlayerMark(target, "fengsui_heg__qiongbu-turn", 0) end,
 })
 return qiongbu

@@ -2,7 +2,7 @@ local H = require "packages.fengsui.hegemony_util"
 
 local dishang = fk.CreateSkill{
   name = "fengsui_heg__dishangRemake",
-  tags = { Skill.Compulsory, Skill.MainPlace },
+  tags = { Skill.MainPlace },
 }
 
 -- 阵法技的主动按钮仅用于发起阵法召唤。

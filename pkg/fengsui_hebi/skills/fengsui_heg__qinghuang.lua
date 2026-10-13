@@ -4,8 +4,8 @@ local qinghuang = fk.CreateSkill { name = "fengsui_heg__qinghuang" }
 qinghuang:addEffect(fk.CardUseFinished, {
   global = true,
   can_trigger = function(self, _, target, player, data)
-    return player:hasSkill(self.name) and target and target ~= player and H.compareKingdomWith(player, target)
-      and player.room.current == target and player:usedSkillTimes(self.name, Player.HistoryTurn) == 0 and data and data.card
+    return U.hasGeneralName(player, "fengsui_heg__songyi") and player:hasShownSkill(self.name) and target and target ~= player and target.phase == Player.Play and H.compareKingdomWith(player, target)
+      and player.room.current == target and data and data.card
   end,
   on_use = function(self, _, target, player, data)
     local room = player.room
@@ -24,5 +24,5 @@ qinghuang:addEffect(fk.CardUseFinished, {
     end
   end,
 })
-qinghuang:addEffect(fk.TurnStart, { global = true, on_use = function(self, _, target) target.room:setPlayerMark(target, "fengsui_heg__qinghuang-last", 0) end })
+qinghuang:addEffect(fk.TurnStart, { global = true, can_refresh = function(self, _, target) return target and target:getMark("fengsui_heg__qinghuang-last") ~= 0 end, on_refresh = function(self, _, target) target.room:setPlayerMark(target, "fengsui_heg__qinghuang-last", 0) end })
 return qinghuang

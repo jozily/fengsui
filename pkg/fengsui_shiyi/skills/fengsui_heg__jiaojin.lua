@@ -6,7 +6,7 @@ local jiaojin = fk.CreateSkill {
 
 Fk:loadTranslationTable{
   ["fengsui_heg__jiaojin"] = "骄矜",
-  [":fengsui_heg__jiaojin"] = "当你受到伤害后，若伤害来源与你的武将牌明置状态不同且你的武将牌均明置，你可以暗置此武将牌并令其执行一个军令。若其不执行，你回复1点体力。",
+  [":fengsui_heg__jiaojin"] = "当你受到伤害后，若伤害来源与你的武将牌明置数量不同且你的武将牌均明置，你可以暗置此武将牌并令其执行一个军令。若其不执行，你回复1点体力。",
   ["#fengsui_heg__jiaojin-invoke"] = "骄矜：是否暗置此武将牌，令 %dest 执行一个军令？",
 
   ["$fengsui_heg__jiaojin1"] = "恩情惩刑，皆是本公主的赏赐。",

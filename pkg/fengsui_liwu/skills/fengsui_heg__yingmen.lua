@@ -25,12 +25,26 @@ local function xushaoRevealed(player)
   return isDeputy and player.deputyGeneral == XUSHAO or not isDeputy and player.general == XUSHAO
 end
 
+local function allowedVisitor(general)
+  return general and general.kingdom ~= "wild" and general.kingdom ~= "fengsui_neutral" and
+    general.kingdom ~= "fengsui_neutralall"
+end
+
+local function collectShownGenerals(room)
+  local shown = {}
+  for _, p in ipairs(room.alive_players) do
+    if p.general ~= "anjiang" then shown[p.general] = true end
+    if p.deputyGeneral ~= "anjiang" then shown[p.deputyGeneral] = true end
+  end
+  return shown
+end
+
 local function eligibleSkill(skill, isDeputy)
   if not skill then return false end
   if isDeputy == nil then return false end
   if skill:hasTag(Skill.MainPlace) and isDeputy then return false end
   if skill:hasTag(Skill.DeputyPlace) and not isDeputy then return false end
-  return not skill:hasTag(Skill.Limited)
+  return true
 end
 
 local function attachSkill(room, player, skill)
@@ -43,6 +57,7 @@ local function attachSkill(room, player, skill)
 end
 
 local function addVisitor(room, player, generalName)
+  if not allowedVisitor(Fk.generals[generalName]) then return end
   local visitors = U.getPrivateMark(player, "&fengsui_heg__fangke")
   table.insertIfNeed(visitors, generalName)
   U.setPrivateMark(player, "&fengsui_heg__fangke", visitors)
@@ -63,6 +78,7 @@ local function fillVisitors(room, player)
   local need = kingdomCount(room) - #visitors
   if need <= 0 then return end
   local selectedKingdoms = {}
+  local shownGenerals = collectShownGenerals(room)
   for _, name in ipairs(visitors) do
     local general = Fk.generals[name]
     if general then table.insertIfNeed(selectedKingdoms, general.kingdom) end
@@ -71,7 +87,9 @@ local function fillVisitors(room, player)
     local generals = room:findGenerals(function(generalName)
       local general = Fk.generals[generalName]
       if not general then return false end
+      if not allowedVisitor(general) then return false end
       if table.contains(visitors, generalName) then return false end
+      if shownGenerals[generalName] then return false end
       if table.contains(selectedKingdoms, general.kingdom) then return false end
       return table.find(general:getSkillNameList(), function(name)
         return eligibleSkill(Fk.skills[name], isDeputy)
@@ -99,7 +117,7 @@ local function attachVisitorSkills(room, player)
   if isDeputy == nil then return end
   for _, generalName in ipairs(U.getPrivateMark(player, "&fengsui_heg__fangke")) do
     local general = Fk.generals[generalName]
-    if general then
+    if allowedVisitor(general) then
       for _, skillName in ipairs(general:getSkillNameList()) do
         local skill = Fk.skills[skillName]
         if eligibleSkill(skill, isDeputy) and
@@ -174,11 +192,17 @@ s:addEffect(fk.Damaged, {
 })
 
 s:addTest(function(room, me)
+  for _, name in ipairs({
+    "fengsui_heg__jiaxu", "fengsui_heg__lusu", "fengsui_heg__xushu",
+    "fengsui_heg__zhaoe", "fengsui_heg__xushao",
+  }) do
+    lu.assertFalse(Fk.generals[name].hidden)
+  end
   lu.assertTrue(eligibleSkill(Fk.skills["fengsui_heg__yinbing"], false))
   lu.assertFalse(eligibleSkill(Fk.skills["fengsui_heg__yinbing"], true))
-  lu.assertTrue(eligibleSkill(Fk.skills["fengsui_heg__yuandao"], true))
-  lu.assertFalse(eligibleSkill(Fk.skills["fengsui_heg__yuandao"], false))
-  lu.assertFalse(eligibleSkill(Fk.skills["fengsui_heg__baoguo"], false))
+  lu.assertFalse(eligibleSkill(Fk.skills["fengsui_heg__yuandao"], true))
+  lu.assertTrue(eligibleSkill(Fk.skills["fengsui_heg__yuandao"], false))
+  lu.assertTrue(eligibleSkill(Fk.skills["fengsui_heg__baoguo"], false))
 
   local translations = require "packages.fengsui.pkg.fengsui_liwu.option_translations"
   for key in pairs(translations) do
@@ -198,6 +222,8 @@ s:addTest(function(room, me)
   FkTest.runInRoom(function()
     clearVisitors(room, me)
   end)
+  local shown = collectShownGenerals(room)
+  lu.assertTrue(shown[me.general] == true)
 end)
 
 return s

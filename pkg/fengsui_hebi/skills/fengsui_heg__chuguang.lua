@@ -9,8 +9,9 @@ end
 chuguang:addEffect(fk.AfterSkillEffect, {
   global = true,
   can_trigger = function(self, _, target, player, data)
-    return target == player and player:hasSkill(self.name) and player:getMark(self.name .. "-round") == 0 and
-      data and data.skill and (data.skill.name == "fengsui_heg__jiaosu" or data.skill.name == "fengsui_heg__yaoming") and
+    local skillName = data and data.skill and data.skill:getSkeleton().name
+    return target == player and player:hasShownSkill(self.name) and player:getMark(self.name .. "-round") == 0 and
+      (skillName == "fengsui_heg__jiaosu" or skillName == "fengsui_heg__yaoming") and
       player:getMark("fengsui_heg__chuguang_count-round") == #sameKingdomPlayers(player)
   end,
   on_use = function(self, _, _, player)
@@ -29,6 +30,7 @@ chuguang:addEffect(fk.AfterSkillEffect, {
       local slot = place and "d" or "m"
       -- Use the engine's position-specific reveal lock, retaining other skills' locks.
       room:addTableMark(player, MarkEnum.RevealProhibited, slot)
+      room:addTableMark(player, "@fengsui_heg__ban_reveal-round", Fk:translate(self.name) .. " 禁亮" .. Fk:translate(H.getActualGeneral(player, place)))
       room:setPlayerMark(player, lockMark, slot)
     end
     local candidates = sameKingdomPlayers(player)

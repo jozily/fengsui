@@ -1,37 +1,22 @@
-local H = require "packages.hegemony.util"
 local s = fk.CreateSkill { name = "fengsui_heg__shuge" }
-
-local function useLimit(player)
-  return math.max(1, #table.filter(player.room.alive_players, function(p)
-    return H.compareKingdomWith(p, player)
-  end))
-end
-
-local function refreshMark(player)
-  player.room:setPlayerMark(player, "@" .. s.name,
-    tostring(player:getMark(s.name .. "_used")) .. "/" .. tostring(useLimit(player)))
-end
 
 s:addEffect(fk.Damaged, {
   can_trigger = function(self, event, target, player, data)
-    if target ~= player or not player:hasSkill(s.name) or
-      player:getMark(s.name .. "_used") >= useLimit(player) or not data.from or data.from == player then return false end
-    if not table.find(player:getCardIds("h"), function(id) return Fk:getCardById(id).is_damage_card end) then return false end
-    return table.find(player.room:getOtherPlayers(player), function(p)
+    if target ~= player or not player:hasShownSkill(s.name) or player:usedSkillTimes(s.name, Player.HistoryRound) > 0 or
+      not data.from or data.from == player then return false end
+    local damageCards = table.filter(player:getCardIds("h"), function(id) return Fk:getCardById(id).is_damage_card end)
+    return #damageCards > 0 and table.find(player.room:getOtherPlayers(player), function(p)
       return p ~= data.from and p:canPindian(data.from)
     end) ~= nil
   end,
   on_cost = function(self, event, target, player, data)
-    local targets = table.filter(player.room:getOtherPlayers(player), function(p)
-      return p ~= data.from and p:canPindian(data.from)
-    end)
-    local damageCards = table.filter(player:getCardIds("h"), function(id)
-      return Fk:getCardById(id).is_damage_card
-    end)
-    local tos, cards = player.room:askToChooseCardsAndPlayers(player, {
+    local room = player.room
+    local targets = table.filter(room:getOtherPlayers(player), function(p) return p ~= data.from and p:canPindian(data.from) end)
+    local damageCards = table.filter(player:getCardIds("h"), function(id) return Fk:getCardById(id).is_damage_card end)
+    local tos, cards = room:askToChooseCardsAndPlayers(player, {
       min_num = 1, max_num = 1, min_card_num = 1, max_card_num = 1,
-      targets = targets, pattern = tostring(Exppattern { id = damageCards }), skill_name = s.name,
-      prompt = "#fengsui_heg__shuge-give::" .. data.from.id, cancelable = true,
+      targets = targets, pattern = tostring(Exppattern { id = damageCards }),
+      skill_name = s.name, prompt = "#fengsui_heg__shuge-give::" .. data.from.id, cancelable = true,
     })
     if #tos == 0 or #cards == 0 then return false end
     event:setCostData(self, { to = tos[1], card = cards[1] })
@@ -39,8 +24,6 @@ s:addEffect(fk.Damaged, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    room:addPlayerMark(player, s.name .. "_used", 1)
-    refreshMark(player)
     local cost = event:getCostData(self)
     local card = Fk:getCardById(cost.card)
     room:showCards({ cost.card }, player, player)
@@ -65,13 +48,6 @@ s:addEffect(fk.Damaged, {
       end
     end
   end,
-})
-
-s:addEffect(fk.GameStart, {
-  can_trigger = function(self, event, target, player, data)
-    return player:hasSkill(s.name, true, true)
-  end,
-  on_use = function(self, event, target, player, data) refreshMark(player) end,
 })
 
 return s

@@ -2,16 +2,6 @@ local H = require "packages.fengsui.hegemony_util"
 
 local s = fk.CreateSkill { name = "fengsui_heg__yangming" }
 
-local function kingdomCount(room)
-  local kingdoms = {}
-  for _, p in ipairs(room.alive_players) do
-    if p.kingdom ~= "unknown" and p.kingdom ~= "fengsui_neutral" and p.kingdom ~= "fengsui_neutralall" then
-      table.insertIfNeed(kingdoms, p.kingdom)
-    end
-  end
-  return #kingdoms
-end
-
 local function getDiscardCardTypes(data, player, usedCards)
   usedCards = usedCards or player:getTableMark(s.name .. "_used_cards-turn")
   local types = {}
@@ -55,35 +45,15 @@ s:addEffect(fk.AfterCardsMove, {
 s:addEffect(fk.TurnEnd, {
   global = true,
   can_trigger = function(self, event, target, player, data)
-    return target and player:hasSkill(s.name) and H.compareKingdomWith(target, player) and
+    return target and player:hasShownSkill(s.name) and H.compareKingdomWith(target, player) and
       #player:getTableMark(s.name .. "-turn") > 0
   end,
   on_cost = function(self, event, target, player, data)
     return player.room:askToSkillInvoke(player, { skill_name = s.name })
   end,
   on_use = function(self, event, target, player, data)
-    local room = player.room
     local x = #player:getTableMark(s.name .. "-turn")
     player:drawCards(x, s.name)
-    if player.dead or x < kingdomCount(room) or player:isKongcheng() then return end
-    room:showCards(player:getCardIds("h"), player, player)
-    local chosen = {}
-    for _ = 1, x do
-      if player.dead or player:isKongcheng() then break end
-      local targets = table.filter(room:getOtherPlayers(player), function(p)
-        return p:isAlive() and p.kingdom ~= "unknown" and p.kingdom ~= "fengsui_neutral" and
-          p.kingdom ~= "fengsui_neutralall" and not table.contains(chosen, p.kingdom)
-      end)
-      if #targets == 0 then break end
-      local tos, cards = room:askToChooseCardsAndPlayers(player, {
-        min_num = 1, max_num = 1, min_card_num = 1, max_card_num = 1,
-        targets = targets, pattern = ".|.|.|hand", skill_name = s.name,
-        prompt = "#fengsui_heg__yangming-give", cancelable = false,
-      })
-      if #tos == 0 or #cards == 0 then break end
-      table.insertIfNeed(chosen, tos[1].kingdom)
-      room:moveCardTo(cards, Card.PlayerHand, tos[1], fk.ReasonGive, s.name, nil, true, player)
-    end
   end,
 })
 

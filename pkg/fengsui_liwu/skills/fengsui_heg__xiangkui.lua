@@ -17,7 +17,7 @@ end
 s:addEffect(fk.TurnStart, {
   global = true,
   can_trigger = function(self, event, target, player, data)
-    return target and target ~= player and player:hasSkill(s.name) and H.compareKingdomWith(target, player) and
+    return target and target ~= player and player:hasShownSkill(s.name) and H.compareKingdomWith(target, player) and
       not player:isKongcheng() and target:getMark(s.name .. "-turn") == 0
   end,
   on_cost = function(self, event, target, player, data)

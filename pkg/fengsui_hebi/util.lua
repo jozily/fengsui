@@ -110,7 +110,14 @@ function U.revealSkillGeneral(player, skill_name)
 end
 
 function U.hideSkillGeneral(player, skill_name)
-  return H.hideBySkillName(player, skill_name)
+  local is_deputy = U.getSkillPlace(player, skill_name)
+  if is_deputy == nil then return false end
+  if (is_deputy and player.deputyGeneral == "anjiang") or
+      (not is_deputy and player.general == "anjiang") then
+    return false
+  end
+  player:hideGeneral(is_deputy)
+  return true
 end
 
 function U.revealOneGeneral(target)
@@ -138,7 +145,44 @@ function U.swapGenerals(room, player)
 
   if deputy_hidden then player:hideGeneral(false) end
   if main_hidden then player:hideGeneral(true) end
+  -- changeHero 的连续调用可能只刷新第一次变更的技能集合；重新按当前明置位置补齐武将牌技能。
+  local expected = {}
+  local former = {}
+  for _, name in ipairs({ main, deputy }) do
+    local g = Fk.generals[name]
+    if g then for _, skill in ipairs(g:getSkillNameList(true)) do former[skill] = true end end
+  end
+  for _, is_deputy in ipairs({false, true}) do
+    local name = H.getActualGeneral(player, is_deputy)
+    local g = Fk.generals[name]
+    local hidden = is_deputy and player.deputyGeneral == "anjiang" or (not is_deputy and player.general == "anjiang")
+    if g and not hidden then
+      for _, skill in ipairs(g:getSkillNameList(true)) do
+        expected[skill] = true
+      end
+    end
+  end
+  local restore = {}
+  for skill in pairs(expected) do
+    if not player:hasSkill(skill, true, true) then table.insert(restore, skill) end
+  end
+  if #restore > 0 then room:handleAddLoseSkills(player, table.concat(restore, "|"), nil, false) end
+  local stale = {}
+  for skill in pairs(former) do
+    if not expected[skill] and player:hasSkill(skill, true, true) then table.insert(stale, "-" .. skill) end
+  end
+  if #stale > 0 then room:handleAddLoseSkills(player, table.concat(stale, "|"), nil, false) end
   return true
+end
+
+-- Use the engine's reveal prohibition; the visible mark explains which card is locked.
+function U.prohibitReveal(player, is_deputy, skill_name, duration)
+  local suffix = "-" .. duration
+  local room = player.room
+  room:addTableMark(player, MarkEnum.RevealProhibited .. suffix, is_deputy and "d" or "m")
+  local label = Fk:translate(skill_name) .. " 禁亮" ..
+    Fk:translate(H.getActualGeneral(player, is_deputy))
+  room:addTableMark(player, "@fengsui_heg__ban_reveal" .. suffix, label)
 end
 
 return U

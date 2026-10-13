@@ -8,7 +8,7 @@ local qingsong = fk.CreateSkill{
 qingsong:addEffect(fk.TargetConfirmed, {
   anim_type = "defensive",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(qingsong.name) and
+    return target == player and player:hasShownSkill(qingsong.name) and
       H.allGeneralsRevealed(player) and not player:isKongcheng()
   end,
   on_cost = function(self, event, target, player, data)
@@ -43,7 +43,7 @@ qingsong:addEffect(fk.TargetConfirmed, {
       (given.type == Card.TypeBasic or given:isCommonTrick()) then
       local card_name = Fk:getCardById(cost.card).trueName
       room:addTableMark(player, "fengsui_heg__qingsong_use-turn", card_name)
-      room:addTableMarkIfNeed(player, "@fengsui_heg__qingsong-turn", card_name)
+      room:addTableMarkIfNeed(player, "@fengsui_heg__qingsong-turn", "青松：" .. Fk:translate(card_name))
     end
   end,
 })

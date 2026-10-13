@@ -4,22 +4,24 @@ local xiarong = fk.CreateSkill { name = "fengsui_heg__xiarong" }
 xiarong:addEffect(fk.Damaged, {
   global = true,
   can_trigger = function(self, _, target, player)
-    return player:hasSkill(self.name) and target ~= nil and target ~= player
+    return player:hasShownSkill(self.name) and target ~= nil and target ~= player
       and H.compareKingdomWith(player, target)
-      and player.general ~= "anjiang" and player.deputyGeneral ~= "anjiang"
-      and target.general ~= "anjiang" and target.deputyGeneral ~= "anjiang"
+      and H.getGeneralsRevealedNum(player) == 2
+      and H.getGeneralsRevealedNum(target) == 2
   end,
   on_use = function(self, _, target, player, data)
     local room = player.room
-    room:recover { who = target, num = 1, recoverBy = player, skillName = self.name }
     local place = U.getSkillPlace(player, self.name)
     if place ~= nil then player:hideGeneral(place) end
     local hidden = room:askToChoice(target, { choices = { "fengsui_heg__xiarong_main", "fengsui_heg__xiarong_deputy" }, skill_name = self.name })
     target:hideGeneral(hidden == "fengsui_heg__xiarong_deputy")
-    if data and data.from and data.from ~= player and data.from ~= target
-      and player:distanceTo(data.from) > 1 and target:distanceTo(data.from) > 1 then
-      if player.general == "anjiang" then player:revealGeneral(false) end
-      if player.deputyGeneral == "anjiang" then player:revealGeneral(true) end
+    if not target.dead then
+      room:recover { who = target, num = 1, recoverBy = player, skillName = self.name }
+    end
+    if data and data.from and not player.dead
+      and not data.from:inMyAttackRange(player) and not data.from:inMyAttackRange(target) then
+      -- 暗置后重新明置发动技能的同一张武将牌。
+      if place ~= nil then player:revealGeneral(place) end
     end
   end,
 })

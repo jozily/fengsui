@@ -1,3 +1,4 @@
+local H = require "packages.fengsui.hegemony_util"
 local jiezhi = fk.CreateSkill{
   name = "fengsui_heg__jiezhi",
 }
@@ -25,7 +26,7 @@ end
 jiezhi:addEffect(fk.AfterCardsMove, {
   anim_type = "defensive",
   can_trigger = function(self, event, target, player, data)
-    if not player:hasSkill(jiezhi.name) then return false end
+    if not player:hasShownSkill(jiezhi.name) then return false end
     for _, move in ipairs(data) do
       if move.from == player and move.to and move.to ~= player and move.toArea == Card.PlayerHand then
         for _, info in ipairs(move.moveInfo) do
@@ -57,10 +58,10 @@ jiezhi:addEffect(fk.AfterCardsMove, {
     local obtained = Fk:getCardById(cost.discard)
     if given:compareColorWith(obtained) then
       room:addTableMarkIfNeed(cost.to, "fengsui_heg__jiezhi_prohibit-turn", player.id)
-      room:addTableMarkIfNeed(cost.to, "@fengsui_heg__jiezhi-turn", player.id)
+      room:addTableMarkIfNeed(cost.to, "@fengsui_heg__jiezhi-turn", "节枝：" .. Fk:translate(H.getActualGeneral(player, false)))
     else
       room:addTableMarkIfNeed(player, "fengsui_heg__jiezhi_prohibit-turn", cost.to.id)
-      room:addTableMarkIfNeed(player, "@fengsui_heg__jiezhi-turn", cost.to.id)
+      room:addTableMarkIfNeed(player, "@fengsui_heg__jiezhi-turn", "节枝：" .. Fk:translate(H.getActualGeneral(cost.to, false)))
     end
   end,
 })

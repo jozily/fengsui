@@ -3,7 +3,9 @@ local s = fk.CreateSkill { name = "fengsui_heg__yinyu",  related_skills = {"feng
 
 s:addEffect(fk.GeneralShown, {
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(s.name) and player:getMark(s.name) == 0 and
+    local place = H.inGeneralSkills(player, s.name)
+    return target == player and player:hasShownSkill(s.name) and player:getMark(s.name) == 0 and
+      place ~= nil and data and ((place == "m" and data.m) or (place == "d" and data.d)) and
       player.kingdom ~= "unknown" and player.kingdom ~= "fengsui_neutral" and player.kingdom ~= "fengsui_neutralall"
   end,
   on_use = function(self, event, target, player, data)

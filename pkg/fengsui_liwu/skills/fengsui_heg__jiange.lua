@@ -1,9 +1,12 @@
 local s = fk.CreateSkill { name = "fengsui_heg__jiange" }
+s.bypass_distances = function(self, player, skill, card)
+  return card and card.skillName == s.name
+end
 s:addEffect("viewas", {
   pattern = "slash,duel",
   handly_pile = true,
   card_filter = function(self, player, to_select, selected)
-    if #selected > 0 or player:getMark(s.name .. "-turn") ~= 0 then return false end
+    if #selected > 0 or player:getMark(s.name .. "-round") ~= 0 then return false end
     local c = Fk:getCardById(to_select)
     return c.type == Card.TypeTrick or c.type == Card.TypeEquip
   end,
@@ -16,7 +19,7 @@ s:addEffect("viewas", {
     return c
   end,
   before_use = function(self, player, use)
-    player.room:setPlayerMark(player, s.name .. "-turn", 1)
+    player.room:setPlayerMark(player, s.name .. "-round", 1)
     player:drawCards(1, s.name)
   end,
 })

@@ -31,7 +31,8 @@ local enterBattleRoyalMode = function(room)
   else
     room:setBanner("@[:]BattleRoyalDummy", "NewBattleRoyalMode")
   end
-  local name = isold and "#battle_royal&" or "#battle_royal_new&"
+  -- 与 hegemony 的实际技能名一致；新鏖战技能负责将非转化桃视为酒。
+  local name = isold and "battle_royal&" or "new_battle_royal&"
   for _, p in ipairs(room.alive_players) do
     room:handleAddLoseSkills(p, name, nil, false)
   end
@@ -408,7 +409,10 @@ hegRule:addEffect(fk.GameStart, {
 
     can_refresh = can_trigger,
     on_refresh = function(self, event, target, player, data)
-      player.room:addSkill("#battle_royal_peach&") -- 鏖战牌面
+        -- 新鏖战由 new_battle_royal& 的 view-as/prohibit 负责桃转酒；旧鏖战才需要旧牌面过滤。
+        if player.room:getSettings("oldBattleRoyal") then
+          player.room:addSkill("#battle_royal_peach&")
+        end
       local sessiondata = player.room:getSessionData()
       sessiondata.firstdeadnextseat1_record = nil
       player.room:setSessionData(sessiondata)
