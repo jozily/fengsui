@@ -9,11 +9,11 @@ room:addPlayerMark(player,"fengsui_heg__chuguang_count-round",1);
 U.swapGenerals(room,player);
 data:cancelTarget(victim);
 room:addPlayerMark(victim,"fengsui_heg__jiaosu_target",1);
-room:addTableMark(player,"@fengsui_heg__jiaosu_count-round",Fk:translate(H.getActualGeneral(victim, false)));
-room:addTableMark(victim,"@fengsui_heg__jiaosu_target",Fk:translate(H.getActualGeneral(player, false)));
+room:addTableMark(player,"@fengsui_heg__jiaosu_count-round",tostring(victim.seat));
+room:addTableMark(victim,"@fengsui_heg__jiaosu_target",tostring(player.seat));
 room:drawCards(victim,1,self.name) end }
 )
-jiaosu:addEffect(fk.AfterDying,{global=true,can_trigger=function(self,_,target,player) return target and player:hasShownSkill(self.name) and U.getSkillPlace(player,self.name)==false and H.compareKingdomWith(player,target) and target:getMark("fengsui_heg__jiaosu_target")>0 end,on_use=function(self,_,target,player) local room=player.room;
+jiaosu:addEffect(fk.AfterDying,{global=true,can_trigger=function(self,_,target,player) return target and player:hasShownSkill(self.name) and H.compareKingdomWith(player,target) and target:getMark("fengsui_heg__jiaosu_target")>0 end,on_use=function(self,_,target,player) local room=player.room;
 room:setPlayerMark(target,"fengsui_heg__jiaosu_target",0);
 room:setPlayerMark(target,"@fengsui_heg__jiaosu_target",0);
 room:setPlayerMark(target,"fengsui_heg__jiaosu_extra-turn",1) end}

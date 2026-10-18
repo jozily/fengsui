@@ -171,20 +171,10 @@ jiami:addCompanions("fengsui_heg__lujii")
 jiami:addSkills { "fengsui_heg__yanyu", "fengsui_heg__duanyuan" }
 
 local zuosi = General:new(extension, "fengsui_heg__zuosi", "jin", 3, 3, General.Bigender)
-zuosi:addCompanions("fengsui_heg__zuofen")
 zuosi:addSkills { "fengsui_heg__yandu", "fengsui_heg__chongjing", "fengsui_heg__aishan" }
 
-local zuofen = General:new(extension, "fengsui_heg__zuofen", "jin", 3, 3, General.Bigender)
-zuofen:addCompanions("fengsui_heg__zuosi")
-zuofen:addSkills { "fengsui_heg__yandu", "fengsui_heg__chongjing", "fengsui_heg__aishan" }
-
 local douwu = General:new(extension, "fengsui_heg__douwu", "qun", 4, 4, General.Bigender)
-douwu:addCompanions("fengsui_heg__doumiao")
 douwu:addSkills { "fengsui_heg__bahuan", "fengsui_heg__youhuan" }
-
-local doumiao = General:new(extension, "fengsui_heg__doumiao", "qun", 4, 4, General.Bigender)
-doumiao:addCompanions("fengsui_heg__douwu")
-doumiao:addSkills { "fengsui_heg__bahuan", "fengsui_heg__youhuan" }
 
 assert(#extension.skill_skels >= 151, "fengsui_hebi must load the official skill skeletons")
 
@@ -1644,7 +1634,7 @@ local H = require "packages.fengsui.hegemony_util"
     ["@fengsui_heg__tishi"]="体势",
     ["@fengsui_heg__siji"]="思疾",
     ["@fengsui_heg__beiqiu_target"]="悲秋目标", ["fengsui_heg__beiqiu_target"]="悲秋目标",
-    ["@fengsui_heg__jiaosu_target"]="皎宿目标", ["@fengsui_heg__yaoming_target"]="曜暝目标", ["@fengsui_heg__jiaosu_count-round"]="皎宿", ["@fengsui_heg__yaoming_count-round"]="曜暝",
+    ["@fengsui_heg__jiaosu_target"]="皎宿目标座次", ["@fengsui_heg__yaoming_target"]="曜暝目标座次", ["@fengsui_heg__jiaosu_count-round"]="皎宿目标座次", ["@fengsui_heg__yaoming_count-round"]="曜暝目标座次",
     ["@fengsui_heg__yuchen-turn"]="毓尘：",
   ["#fengsui_heg__shangmu-invoke"]="赏募：是否明置此武将牌并发起军令？", ["#fengsui_heg__shangmu-source"]="赏募：选择此次伤害来源", ["#fengsui_heg__dunmeng-invoke"]="敦盟：是否替换此次击杀奖惩？",
   ["#fengsui_heg__chuguang-target"] = "黜光：选择一名同势力角色摸牌",
@@ -1705,10 +1695,8 @@ Fk:loadTranslationTable{
 }
 
 Fk:loadTranslationTable{
-  ["fengsui_heg__zuosi"] = "左思", ["#fengsui_heg__zuosi"] = "洛下双锋", ["designer:fengsui_heg__zuosi"] = "公冶长风",
-  ["fengsui_heg__zuofen"] = "左棻", ["#fengsui_heg__zuofen"] = "洛下双锋", ["designer:fengsui_heg__zuofen"] = "公冶长风",
-  ["fengsui_heg__douwu"] = "窦武", ["#fengsui_heg__douwu"] = "椒房共济", ["designer:fengsui_heg__douwu"] = "公冶长风",
-  ["fengsui_heg__doumiao"] = "窦妙", ["#fengsui_heg__doumiao"] = "椒房共济", ["designer:fengsui_heg__doumiao"] = "公冶长风",
+  ["fengsui_heg__zuosi"] = "左思左棻", ["#fengsui_heg__zuosi"] = "洛下双锋", ["designer:fengsui_heg__zuosi"] = "公冶长风",
+  ["fengsui_heg__douwu"] = "窦武窦妙", ["#fengsui_heg__douwu"] = "椒房共济", ["designer:fengsui_heg__douwu"] = "公冶长风",
   ["fengsui_heg__yandu"] = "研都", [":fengsui_heg__yandu"] = "当你明置此武将牌后，你可以依次重铸一张本次未以此法重铸过的类别的牌。",
   ["fengsui_heg__chongjing"] = "憧京", [":fengsui_heg__chongjing"] = "锁定技，当你重铸牌后，你需选择一名本轮未以此法选择过的势力的角色令其使用此重铸牌。若其无法使用此牌或此牌无合法目标，其或你失去一点体力。",
   ["fengsui_heg__aishan"] = "哀扇", [":fengsui_heg__aishan"] = "每个势力每轮限一次，当有角色体力值变化后不大于你且你的武将牌均明置，你可以暗置此武将牌并展示你与其各一张牌，根据牌面信息依次执行：颜色、花色、牌名一致，你获得这两张牌、你重铸这两张牌、你变更副将。",
@@ -1729,7 +1717,7 @@ Fk:loadTranslationTable{
 
 require "packages.fengsui.pkg.fengsui_hebi.option_translations"
 
-assert(#extension.generals == 46, "fengsui_hebi must register exactly 46 generals")
+assert(#extension.generals == 43, "fengsui_hebi must register exactly 43 generals")
 return extension
 
 

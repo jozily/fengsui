@@ -13,11 +13,11 @@ room:addPlayerMark(player,"fengsui_heg__chuguang_count-round",1);
 U.swapGenerals(room,player);
 data:addTarget(candidates[1]);
 room:addPlayerMark(data.from,"fengsui_heg__yaoming_target",1);
-room:addTableMark(player,"@fengsui_heg__yaoming_count-round",Fk:translate(H.getActualGeneral(data.from, false)));
-room:addTableMark(data.from,"@fengsui_heg__yaoming_target",Fk:translate(H.getActualGeneral(player, true)));
+room:addTableMark(player,"@fengsui_heg__yaoming_count-round",tostring(data.from.seat));
+room:addTableMark(data.from,"@fengsui_heg__yaoming_target",tostring(player.seat));
 room:drawCards(data.from,1,self.name) end}
 )
-yaoming:addEffect(fk.Death,{global=true,can_trigger=function(self,_,target,player) return target and player:hasShownSkill(self.name) and U.getSkillPlace(player,self.name)==true and H.compareKingdomWith(player,target) and target:getMark("fengsui_heg__yaoming_target")>0 end,on_use=function(self,_,target,player) local room=player.room;
+yaoming:addEffect(fk.Death,{global=true,can_trigger=function(self,_,target,player) return target and player:hasShownSkill(self.name) and H.compareKingdomWith(player,target) and target:getMark("fengsui_heg__yaoming_target")>0 end,on_use=function(self,_,target,player) local room=player.room;
 room:setPlayerMark(target,"fengsui_heg__yaoming_target",0);
 room:setPlayerMark(target,"@fengsui_heg__yaoming_target",0);
 room:loseHp(player,1);
