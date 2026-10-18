@@ -659,7 +659,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__lixian"] = "佚名",
   ["cv:fengsui_heg__lixian"] = "暂无",
   ["fengsui_heg__xunyun"] = "勋殒",
-  [":fengsui_heg__xunyun"] = "<b>锁定技，</b>当你首次进入濒死状态时，你令伤害来源移除副将且本局无法再次变更，然后你可以令一名其他同势力角色<b>合璧</b>。",
+  [":fengsui_heg__xunyun"] = "<b>锁定技，</b>当你首次进入濒死状态时，你令伤害来源移除副将且本局无法再次变更，然后你可以令一名其他同势力角色<a href='heg__hebi'>合璧</a>。",
   ["fengsui_heg__zhengchi"] = "正斥",
   [":fengsui_heg__zhengchi"] = "当有同势力角色使用基本牌或普通锦囊牌指定目标后，若你武将牌均明置，你可暗置此武将牌并与另一名非此牌目标其他角色拼点，胜者成为此牌使用者，若其与你势力相同，你可明置此武将牌且此牌点数为其拼点点数。",
   ["#fengsui_heg__zhengchi-invoke"] = "正斥：你可以与一名非此牌目标角色拼点",
