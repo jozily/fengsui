@@ -7,15 +7,15 @@ extension:loadSkillSkelsByPath("./packages/fengsui/pkg/fengsui_hebi/skills")
 -- 当前子包武将注册顺序
 local xuncan = General:new(extension, "fengsui_heg__xuncan", "wei", 3)
 xuncan:addCompanions("hs__xunyu")
-xuncan:addCompanions("fengsui_heg__caoshi")
+xuncan:addCompanions("fengsui_heg__caocen")
 xuncan:addSkills { "fengsui_heg__yudao", "fengsui_heg__tongyi" }
 
-local caoshi = General:new(extension, "fengsui_heg__caoshi", "wei", 3)
-caoshi:addCompanions("fengsui_heg__xuncan")
-caoshi:addCompanions("ld__caohong")
-caoshi.gender = General.Female
-caoshi:addSkill("fengsui_heg__duanjin")
-caoshi:addSkill("fengsui_heg__qingshang")
+local caocen = General:new(extension, "fengsui_heg__caocen", "wei", 3)
+caocen:addCompanions("fengsui_heg__xuncan")
+caocen:addCompanions("ld__caohong")
+caocen.gender = General.Female
+caocen:addSkill("fengsui_heg__duanjin")
+caocen:addSkill("fengsui_heg__qingshang")
 
 local sunsuo = General:new(extension, "fengsui_heg__sunsuo", "wei", 3, 3, General.Female)
 sunsuo:addSkills { "fengsui_heg__fenshuang", "fengsui_heg__yingmian" }
@@ -458,7 +458,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__xuncan"] = "公冶长风",
   ["cv:fengsui_heg__xuncan"] = "暂无",
   ["fengsui_heg__yudao"] = "熨道",
-  [":fengsui_heg__yudao"] = "当你对同势力角色造成伤害后，你可令其<a href='heg__hebi'>合璧</a>或变更副将；当你受到同势力角色造成的伤害后，你可令双方中没有阴阳鱼标记的一方获得一枚阴阳鱼标记。",
+  [":fengsui_heg__yudao"] = "当你对同势力角色造成伤害后，你可令其<a href='heg__hebi'>合璧</a>；当你受到同势力角色造成的伤害后，你可令双方中没有阴阳鱼标记的一方获得一枚阴阳鱼标记。",
   ["fengsui_heg__tongyi"] = "通意",
   [":fengsui_heg__tongyi"] = "当你进入濒死状态时，若你的武将牌均明置，你可以暗置此武将牌并亮出牌堆顶的牌和一张伤害来源的手牌，若颜色相同，你恢复一点体力值。",
   ["$fengsui_heg__yudao1"] = "此卿遗我于人间之相思物乎？",
@@ -474,12 +474,12 @@ Fk:loadTranslationTable{
 
 
 Fk:loadTranslationTable{
-  ["fengsui_heg__caoshi"] = "曹氏",
-  ["#fengsui_heg__caoshi"] = "清梦还郎",
-  ["~fengsui_heg__caoshi"] = "莫为我伤神，荀郎.......",
-  ["designer:fengsui_heg__caoshi"] = "公冶长风",
-  ["illustrator:fengsui_heg__caoshi"] = "佚名",
-  ["cv:fengsui_heg__caoshi"] = "暂无",
+  ["fengsui_heg__caocen"] = "曹涔",
+  ["#fengsui_heg__caocen"] = "清梦还郎",
+  ["~fengsui_heg__caocen"] = "莫为我伤神，荀郎.......",
+  ["designer:fengsui_heg__caocen"] = "公冶长风",
+  ["illustrator:fengsui_heg__caocen"] = "佚名",
+  ["cv:fengsui_heg__caocen"] = "暂无",
   ["fengsui_heg__duanjin"] = "断衿",
   [":fengsui_heg__duanjin"] = "当此武将牌被移除或变更后，你可以与一名同势力其他角色副将<a href='heg__yiwei'>易位</a>并各获得一枚珠联璧合标记。",
   ["fengsui_heg__qingshang"] = "清殇",
@@ -669,7 +669,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__lixian"] = "佚名",
   ["cv:fengsui_heg__lixian"] = "暂无",
   ["fengsui_heg__xunyun"] = "勋殒",
-  [":fengsui_heg__xunyun"] = "<b>锁定技，</b>当你首次进入濒死状态时，你令伤害来源移除副将且本局无法再次变更，然后你可以令一名其他同势力角色<b>合璧</b>或变更副将。",
+  [":fengsui_heg__xunyun"] = "<b>锁定技，</b>当你首次进入濒死状态时，你令伤害来源移除副将且本局无法再次变更，然后你可以令一名其他同势力角色<b>合璧</b>。",
   ["fengsui_heg__zhengchi"] = "正斥",
   [":fengsui_heg__zhengchi"] = "当有同势力角色使用基本牌或普通锦囊牌指定目标后，若你武将牌均明置，你可暗置此武将牌并与另一名非此牌目标其他角色拼点，胜者成为此牌使用者，若其与你势力相同，你可明置此武将牌且此牌点数为其拼点点数。",
   ["#fengsui_heg__zhengchi-invoke"] = "正斥：你可以与一名非此牌目标角色拼点",
@@ -776,7 +776,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__qiangong_equip"] = "装备区",
   ["fengsui_heg__qiangong_judge"] = "判定区",
   ["fengsui_heg__bizun"] = "迁宫",
-  [":fengsui_heg__bizun"] = "出牌阶段限一次，你可以选择两名角色并选择一个二者均有牌的相同区域，所选角色依次获得彼此相同区域的一张牌，然后你可以令其中的小势力角色摸一张牌，若其与你势力相同，你可令其<a href='heg__hebi'>合璧</a>或变更副将。",
+  [":fengsui_heg__bizun"] = "出牌阶段限一次，你可以选择两名角色并选择一个二者均有牌的相同区域，所选角色依次获得彼此相同区域的一张牌，然后你可以令其中的小势力角色摸一张牌，若其与你势力相同，你可令其<a href='heg__hebi'>合璧</a>。",
   ["$fengsui_heg__qiangong1"] = "尊位非我所求，休儿平安，便胜万千恩宠。",
   ["$fengsui_heg__qiangong2"] = "花开太盛易招风雨，不若敛华守静。",
   ["$fengsui_heg__qiangong3"] = "退居人后，非为自轻，实为避祸全身。",
@@ -934,7 +934,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__mazhi"] = "公冶长风",
   ["cv:fengsui_heg__mazhi"] = "暂无",
   ["fengsui_heg__shenqing"] = "申情",
-  [":fengsui_heg__shenqing"] = "限定技，出牌阶段，你可以选择场上两张武将牌，若其中有满足【珠联璧合】的武将牌，则其所属角色各获得一枚【珠联璧合】标记；若均不满足，你可以令其中一位所属角色<a href='heg__hebi'>合璧</a> 或变更副将。",
+  [":fengsui_heg__shenqing"] = "限定技，出牌阶段，你可以选择场上两张武将牌，若其中有满足珠联璧合的武将牌，则其所属角色各获得一枚珠联璧合标记；若均不满足，你可以令其中一位所属角色<a href='heg__hebi'>合璧</a>。",
   ["fengsui_heg__juangu"] = "眷故",
   [":fengsui_heg__juangu"] = "当一名拥有珠联璧合武将牌的角色于回合内首次使用基本牌或普通锦囊牌指定另一名拥有与其配对之珠联璧合武将牌的角色为目标后，若此两张武将牌：不属于同一名角色，你可以令其各摸一张牌；属于同一名角色，你可以令此牌额外执行一次。",
   ["$fengsui_heg__shenqing1"] = "字字啼血成赋，句句唤故人归...",
@@ -1267,7 +1267,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__kuaishi"] = "公冶长风",
   ["cv:fengsui_heg__kuaishi"] = "暂无",
   ["fengsui_heg__hejue"] = "合珏",
-  [":fengsui_heg__hejue"] = "当你受到伤害后或结束阶段，你可以选择至多两张武将牌，若为两张珠联璧合的武将牌，则其对应角色各摸一张牌；若对应角色数为1，你可以令其选择<a href='heg__hebi'>合璧</a>或变更副将。",
+  [":fengsui_heg__hejue"] = "当你受到伤害后或结束阶段，你可以选择至多两张武将牌，若为两张珠联璧合的武将牌，则其对应角色各摸一张牌；若对应角色数为1，你可以令其<a href='heg__hebi'>合璧</a>。",
   ["#fengsui_heg__hejue-invoke1"] = "合珏：是否发动？",
   ["#fengsui_heg__hejue-invoke2"] = "合珏：结束阶段是否发动？",
   ["#fengsui_heg__hejue-choose"] = "合珏：选择一张或两张武将牌对应的角色",
@@ -1345,7 +1345,7 @@ Fk:loadTranslationTable{
 
 Fk:loadTranslationTable{
   ["fengsui_heg"] = "烽燧燎原",
-  ["heg__hebi"] = "合璧：变更副将的子集。玩家主将需有对应珠联璧合武将牌方可进行合璧；玩家选择合璧后将副将变更为主将对应的珠联璧合武将牌，然后获得一枚珠联璧合标记。<br>",
+  ["heg__hebi"] = "合璧：变更副将的子集。玩家主将需有对应珠联璧合武将牌方可进行合璧；玩家选择合璧后将副将变更为主将对应的珠联璧合武将牌，然后获得一枚珠联璧合标记；如果没有与之配对的珠联璧合对象则自动变更副将。<br>",
 }
 
 Fk:loadTranslationTable{
@@ -1387,7 +1387,7 @@ Fk:loadTranslationTable{
   ["#fengsui_heg__yingmian-ask"] = "盈面：选择一名角色并为其选择一道军令",
   ["#fengsui_heg__caixia-invoke"] = "才瑕：你可以摸同势力角色数张牌，然后暗置一张武将牌",
   ["#fengsui_heg__qiaoshi-invoke"] = "樵拾：你可以与 %dest 各摸一张牌",
-  ["#fengsui_heg__qiaoshi-change"] = "樵拾：你可以令 %dest 合璧或变更副将",
+  ["#fengsui_heg__qiaoshi-change"] = "樵拾：你可以令 %dest 合璧",
   ["#fengsui_heg__duanjin-choose"] = "断衿：选择一名同势力角色，与其副将易位",
   ["#fengsui_heg__ruwu-drop"] = "如晤：请弃置 %arg 张牌",
   ["#fengsui_heg__ruwu-choice"] = "如晤：请选择获得阴阳鱼标记或变更副将",
@@ -1400,7 +1400,7 @@ Fk:loadTranslationTable{
   ["#fengsui_heg__baizu-choose-all"] = "败族：请选择 %arg 名角色（每个已确定势力各一名）",
   ["#fengsui_heg__baizu-discard"] = "败族：请弃置一张牌进行类别比对",
   ["#fengsui_heg__fenchai-active"] = "分钗：选择一名异性角色，你与其依次对彼此使用无距离限制的冰【杀】",
-  ["#fengsui_heg__fenchai-change"] = "分钗：你可以令 %dest 合璧或变更副将",
+  ["#fengsui_heg__fenchai-change"] = "分钗：你可以令 %dest 合璧",
   ["#fengsui_heg__fenchai-fish"] = "分钗：是否令使用者与目标中没有阴阳鱼的角色各获得一枚阴阳鱼？",
   ["#fengsui_heg__xinmai-active"] = "薪脉：令一名角色获得本回合进入弃牌堆的所有【杀】",
   ["#fengsui_heg__xinmai-choice"] = "薪脉：请选择受到1点雷电伤害，或在武将牌均明置时暗置一张武将牌",
@@ -1581,7 +1581,7 @@ local H = require "packages.fengsui.hegemony_util"
     ["fengsui_heg__dulu_discard"]="弃置一个区域的所有牌防止伤害", ["fengsui_heg__dulu_hand"]="弃置手牌区", ["fengsui_heg__dulu_equip"]="弃置装备区", ["fengsui_heg__dulu_draw"]="令刘懿君摸一张牌", ["fengsui_heg__shigong_gain"]="获得妒戮并摸牌", ["fengsui_heg__shigong_full"]="回复至体力上限", ["#fengsui_heg__liuchen"]="血守北地", ["fengsui_heg__cuizhi"]="崔芷", ["#fengsui_heg__cuizhi"]="微光之火",
     ["fengsui_heg__zhanjue"]="战绝", [":fengsui_heg__zhanjue"]="出牌阶段，你可以将所有手牌当作决斗对一名势力与你不同的角色使用。此决斗中，对方可以弃置装备区的所有牌视为打出一张【杀】。",
     ["fengsui_heg__lieying"]="烈荧", [":fengsui_heg__lieying"]="限定技，当你使用一张单目标牌指定其他角色为目标后，你可以失去一点体力令此牌无法被响应。",
-    ["fengsui_heg__ranlv"]="燃缕", [":fengsui_heg__ranlv"]="当有角色受到锦囊牌造成的伤害后，若你的武将牌均明置，你可以暗置此武将牌并横置你与受伤角色，若你已横置，你可以令一名势力与你相同的角色合璧或变更副将。",
+    ["fengsui_heg__ranlv"]="燃缕", [":fengsui_heg__ranlv"]="当有角色受到锦囊牌造成的伤害后，若你的武将牌均明置，你可以暗置此武将牌并横置你与受伤角色，若你已横置，你可以令一名势力与你相同的角色合璧。",
     ["fengsui_heg__juexun"]="绝殉", [":fengsui_heg__juexun"]="当你失去所有手牌后，你可以令本回合下一次全场造成的伤害改为火焰伤害；若你因此受到此伤害，你摸两张牌并横置。",
     ["$fengsui_heg__cimang1"]="闺中英雄志四方，雄藏兵甲胜儿郎！", ["$fengsui_heg__cimang2"]="生死关头，别人谁肯冲围？",
     ["$fengsui_heg__quchi1"]="军情如火情，将军不可迟慢！", ["$fengsui_heg__quchi2"]="束袖轻旗，穿营破阵！",
@@ -1681,14 +1681,14 @@ Fk:loadTranslationTable{
   ["designer:fengsui_heg__hanmi"] = "公冶长风", ["illustrator:fengsui_heg__hanmi"] = "公冶长风", ["cv:fengsui_heg__hanmi"] = "暂无",
   ["fengsui_heg__chengtiao"] = "承祧", [":fengsui_heg__chengtiao"] = "当有角色获得国战标记后，你可以重铸其获得此标记的标记字数张牌。当场上有角色获得珠联璧合标记后，你可以将此武将牌变更为贾谧并令一名角色获得“门荫”或“绝嗣”。",
   ["fengsui_heg__juesi"] = "绝嗣", [":fengsui_heg__juesi"] = "锁定技，你的回合内，其他所有武将牌明置数量与你不同的角色视为未确定势力角色（不改变奖惩）。",
-  ["fengsui_heg__menyin"] = "门荫", [":fengsui_heg__menyin"] = "主将技，限定技，此武将牌上阴阳鱼数量-1。出牌阶段，若你所在势力为大势力，你可以令一名武将牌均明置的同势力角色合璧或暗置变更副将。",
+  ["fengsui_heg__menyin"] = "门荫", [":fengsui_heg__menyin"] = "主将技，限定技，此武将牌上阴阳鱼数量-1。出牌阶段，若你所在势力为大势力，你可以令一名武将牌均明置的同势力角色合璧。",
   ["fengsui_heg__jiami"] = "贾谧", ["#fengsui_heg__jiami"] = "金谷延宾",
   ["designer:fengsui_heg__jiami"] = "公冶长风", ["illustrator:fengsui_heg__jiami"] = "公冶长风", ["cv:fengsui_heg__jiami"] = "暂无",
     ["fengsui_heg__yanyu"] = "延誉", [":fengsui_heg__yanyu"] = "当一名与你势力相同的角色明置武将牌后，若你的武将牌均明置，你可以令其选择一项：1.摸两张牌，本轮无法再明置任何武将牌；2.获得一枚阴阳鱼标记，然后你弃置一张牌并暗置此武将牌。",
   ["fengsui_heg__duanyuan"] = "断元", [":fengsui_heg__duanyuan"] = "限定技，一号位的回合开始时，你可令所有同势力角色和未确定势力的角色选择一项：1.明置一张武将牌，然后本轮其首次造成的伤害+1；2.重铸三张类别不同的牌（无则重铸所有牌）。",
   ["#fengsui_heg__chengtiao-recast"] = "承祧：请选择重铸的牌", ["#fengsui_heg__chengtiao-target"] = "承祧：选择一名角色获得技能",
-  ["#fengsui_heg__menyin-target"] = "门荫：选择一名同势力角色", ["#fengsui_heg__menyin-choice"] = "门荫：选择合璧或暗置变更副将",
-  ["fengsui_heg__menyin_hebi"] = "合璧", ["fengsui_heg__menyin_hide"] = "暗置变更副将",
+  ["#fengsui_heg__menyin-target"] = "门荫：选择一名同势力角色", ["#fengsui_heg__menyin-choice"] = "门荫：选择合璧",
+  ["fengsui_heg__menyin_hebi"] = "合璧",
   ["#fengsui_heg__yanyu-invoke"] = "延誉：是否发动？", ["#fengsui_heg__yanyu-choice"] = "延誉：请选择一项", ["#fengsui_heg__yanyu-discard"] = "延誉：选择弃置一张牌", ["fengsui_heg__yanyu_draw"] = "摸两张牌，本轮不能明置武将牌", ["fengsui_heg__yanyu_mark"] = "获得阴阳鱼并令韩谧弃牌",
   ["#fengsui_heg__duanyuan-choice"] = "断元：请选择一项", ["#fengsui_heg__duanyuan-recast"] = "断元：请选择重铸的牌", ["fengsui_heg__duanyuan_reveal"] = "明置武将牌，本轮首次伤害+1", ["fengsui_heg__duanyuan_recast"] = "重铸牌",
   ["$fengsui_heg__chengtiao1"] = "韩门生我身，贾氏续我名。", ["$fengsui_heg__chengtiao2"] = "一身承两姓，何以问宗祧？", ["$fengsui_heg__chengtiao3"] = "易姓非易命，承宗亦承权。", ["$fengsui_heg__chengtiao4"] = "今日辞韩氏，他朝入贾门。",
@@ -1716,9 +1716,9 @@ Fk:loadTranslationTable{
   ["fengsui_heg__yandu_type_0"] = "基本牌", ["fengsui_heg__yandu_type_1"] = "锦囊牌", ["fengsui_heg__yandu_type_2"] = "装备牌",
   ["#fengsui_heg__chongjing-target"] = "憧京：选择一名本轮未选择过势力的角色",
   ["#fengsui_heg__chongjing-use"] = "憧京：使用重铸的牌",
-  ["@fengsui_heg__chongjing_kingdom-round"] = "憧京已选势力：",
+  ["@fengsui_heg__chongjing_kingdom-round"] = "憧京：",
   ["#fengsui_heg__aishan-card"] = "哀扇：选择一张牌展示",
-  ["@fengsui_heg__aishan_kingdom-round"] = "哀扇已触发势力：",
+  ["@fengsui_heg__aishan_kingdom-round"] = "哀扇：",
   ["#fengsui_heg__bahuan-target"] = "拔宦：选择一名角色",
   ["#fengsui_heg__bahuan-give"] = "拔宦：是否交给窦武一张牌并恢复体力？",
   ["#fengsui_heg__bahuan-give-card"] = "拔宦：交给窦武一张牌",

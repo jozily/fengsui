@@ -11,16 +11,16 @@ qingshang:addEffect(fk.DamageInflicted, {
   can_trigger = function(self, event, target, player, data)
     return target == player and player:hasSkill(qingshang.name) and
       data.from and data.from ~= player and
-      U.hasGeneralName(player, "fengsui_heg__caoshi") and
+      U.hasGeneralName(player, "fengsui_heg__caocen") and
       data.damage >= player.hp + player.shield
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local isDeputy = U.getGeneralPlace(player, "fengsui_heg__caoshi")
+    local isDeputy = U.getGeneralPlace(player, "fengsui_heg__caocen")
     if isDeputy then
       H.transformGeneral(room, player, false, false, 3, qingshang.name)
     else
-      U.removeGeneralByName(player, "fengsui_heg__caoshi")
+      U.removeGeneralByName(player, "fengsui_heg__caocen")
     end
     data:preventDamage()
 

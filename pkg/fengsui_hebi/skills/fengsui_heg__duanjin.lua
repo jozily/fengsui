@@ -9,7 +9,7 @@ local function addDuanjinEffect(triggerEvent)
 duanjin:addEffect(triggerEvent, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:isAlive() and player:hasShownSkill(duanjin.name) and data.origName == "fengsui_heg__caoshi" and
+    return target == player and player:isAlive() and player:hasShownSkill(duanjin.name) and data.origName == "fengsui_heg__caocen" and
       H.hasGeneral(player, true)
   end,
   on_cost = function(self, event, target, player, data)

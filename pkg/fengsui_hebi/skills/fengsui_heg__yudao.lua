@@ -51,7 +51,7 @@ yudao:addEffect(fk.Damaged, {
 })
 
 Fk:loadTranslationTable{
-  ["#fengsui_heg__yudao-change"] = "熨道：你可以令 %dest 合璧或变更副将",
+  ["#fengsui_heg__yudao-change"] = "熨道：你可以令 %dest 合璧",
   ["#fengsui_heg__yudao-fish"] = "熨道：选择双方中一名没有阴阳鱼标记的角色获得标记",
 }
 

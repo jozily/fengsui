@@ -80,8 +80,8 @@ Fk:loadTranslationTable{
   [":fengsui_heg__shenqing"] = "限定技，出牌阶段，你可以选择场上两张武将牌，若其中有满足【珠联璧合】的武将牌，则其所属角色各获得一枚【珠联璧合】标记；若均不满足，你可以令其中一位所属角色<a href='heg__hebi'>合璧</a> 或变更副将。",
   ["#fengsui_heg__shenqing-invoke"] = "申情：挑选两张武将牌进行判断",
   ["#fengsui_heg__shenqing-choose"] = "申情：请选择场上两张武将牌",
-  ["#fengsui_heg__shenqing-hebi"] = "申情：未构成珠联璧合，选择一名角色令其合璧或变更副将",
-  ["shenqing_hebi"] = "令 %src 合璧或变更副将",
+  ["#fengsui_heg__shenqing-hebi"] = "申情：未构成珠联璧合，选择一名角色令其合璧",
+  ["shenqing_hebi"] = "令 %src 合璧",
 }
 
 shenqing:addTest(function(room, me)
