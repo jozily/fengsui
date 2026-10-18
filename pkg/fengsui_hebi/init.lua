@@ -170,6 +170,22 @@ jiami:addCompanions("fengsui_heg__panyue")
 jiami:addCompanions("fengsui_heg__lujii")
 jiami:addSkills { "fengsui_heg__yanyu", "fengsui_heg__duanyuan" }
 
+local zuosi = General:new(extension, "fengsui_heg__zuosi", "jin", 3, 3, General.Bigender)
+zuosi:addCompanions("fengsui_heg__zuofen")
+zuosi:addSkills { "fengsui_heg__yandu", "fengsui_heg__chongjing", "fengsui_heg__aishan" }
+
+local zuofen = General:new(extension, "fengsui_heg__zuofen", "jin", 3, 3, General.Bigender)
+zuofen:addCompanions("fengsui_heg__zuosi")
+zuofen:addSkills { "fengsui_heg__yandu", "fengsui_heg__chongjing", "fengsui_heg__aishan" }
+
+local douwu = General:new(extension, "fengsui_heg__douwu", "qun", 4, 4, General.Bigender)
+douwu:addCompanions("fengsui_heg__doumiao")
+douwu:addSkills { "fengsui_heg__bahuan", "fengsui_heg__youhuan" }
+
+local doumiao = General:new(extension, "fengsui_heg__doumiao", "qun", 4, 4, General.Bigender)
+doumiao:addCompanions("fengsui_heg__douwu")
+doumiao:addSkills { "fengsui_heg__bahuan", "fengsui_heg__youhuan" }
+
 assert(#extension.skill_skels >= 151, "fengsui_hebi must load the official skill skeletons")
 
 
@@ -1685,9 +1701,32 @@ Fk:loadTranslationTable{
   ["~fengsui_heg__jiami"] = "金谷宾朋满座……竟无一人，能救我乎？",
 }
 
+Fk:loadTranslationTable{
+  ["fengsui_heg__zuosi"] = "左思", ["#fengsui_heg__zuosi"] = "洛下双锋", ["designer:fengsui_heg__zuosi"] = "公冶长风",
+  ["fengsui_heg__zuofen"] = "左棻", ["#fengsui_heg__zuofen"] = "洛下双锋", ["designer:fengsui_heg__zuofen"] = "公冶长风",
+  ["fengsui_heg__douwu"] = "窦武", ["#fengsui_heg__douwu"] = "椒房共济", ["designer:fengsui_heg__douwu"] = "公冶长风",
+  ["fengsui_heg__doumiao"] = "窦妙", ["#fengsui_heg__doumiao"] = "椒房共济", ["designer:fengsui_heg__doumiao"] = "公冶长风",
+  ["fengsui_heg__yandu"] = "研都", [":fengsui_heg__yandu"] = "当你明置此武将牌后，你可以依次重铸一张本次未以此法重铸过的类别的牌。",
+  ["fengsui_heg__chongjing"] = "憧京", [":fengsui_heg__chongjing"] = "锁定技，当你重铸牌后，你需选择一名本轮未以此法选择过的势力的角色令其使用此重铸牌。若其无法使用此牌或此牌无合法目标，其或你失去一点体力。",
+  ["fengsui_heg__aishan"] = "哀扇", [":fengsui_heg__aishan"] = "每个势力每轮限一次，当有角色体力值变化后不大于你且你的武将牌均明置，你可以暗置此武将牌并展示你与其各一张牌，根据牌面信息依次执行：颜色、花色、牌名一致，你获得这两张牌、你重铸这两张牌、你变更副将。",
+  ["fengsui_heg__bahuan"] = "拔宦", [":fengsui_heg__bahuan"] = "回合开始时，你可以选择场上所有势力各一名武将牌明置数不大于你的角色，对其依次造成一点伤害，然后其可以交给你一张牌并恢复一点体力。",
+  ["fengsui_heg__youhuan"] = "幽寰", [":fengsui_heg__youhuan"] = "锁定技，当有角色受到伤害后，若伤害来源与你势力相同且你的武将牌均明置，你暗置此武将牌并令此伤害-1。",
+  ["#fengsui_heg__yandu-choice"] = "研都：选择本次重铸的牌类别",
+  ["#fengsui_heg__yandu-card"] = "研都：选择要重铸的牌",
+  ["fengsui_heg__yandu_type_0"] = "基本牌", ["fengsui_heg__yandu_type_1"] = "锦囊牌", ["fengsui_heg__yandu_type_2"] = "装备牌",
+  ["#fengsui_heg__chongjing-target"] = "憧京：选择一名本轮未选择过势力的角色",
+  ["#fengsui_heg__chongjing-use"] = "憧京：使用重铸的牌",
+  ["@fengsui_heg__chongjing_kingdom-round"] = "憧京已选势力：",
+  ["#fengsui_heg__aishan-card"] = "哀扇：选择一张牌展示",
+  ["@fengsui_heg__aishan_kingdom-round"] = "哀扇已触发势力：",
+  ["#fengsui_heg__bahuan-target"] = "拔宦：选择一名角色",
+  ["#fengsui_heg__bahuan-give"] = "拔宦：是否交给窦武一张牌并恢复体力？",
+  ["#fengsui_heg__bahuan-give-card"] = "拔宦：交给窦武一张牌",
+}
+
 require "packages.fengsui.pkg.fengsui_hebi.option_translations"
 
-assert(#extension.generals == 42, "fengsui_hebi must register exactly 42 generals")
+assert(#extension.generals == 46, "fengsui_hebi must register exactly 46 generals")
 return extension
 
 
