@@ -170,10 +170,10 @@ jiami:addCompanions("fengsui_heg__panyue")
 jiami:addCompanions("fengsui_heg__lujii")
 jiami:addSkills { "fengsui_heg__yanyu", "fengsui_heg__duanyuan" }
 
-local zuosi = General:new(extension, "fengsui_heg__zuosi", "jin", 3, 3, General.Bigender)
+local zuosi = General:new(extension, "fengsui_heg__zuosizuofen", "jin", 3, 3, General.Bigender)
 zuosi:addSkills { "fengsui_heg__yandu", "fengsui_heg__chongjing", "fengsui_heg__aishan" }
 
-local douwu = General:new(extension, "fengsui_heg__douwu", "qun", 4, 4, General.Bigender)
+local douwu = General:new(extension, "fengsui_heg__douwudoumiao", "qun", 4, 4, General.Bigender)
 douwu:addSkills { "fengsui_heg__bahuan", "fengsui_heg__youhuan" }
 
 assert(#extension.skill_skels >= 151, "fengsui_hebi must load the official skill skeletons")
@@ -1695,8 +1695,8 @@ Fk:loadTranslationTable{
 }
 
 Fk:loadTranslationTable{
-  ["fengsui_heg__zuosi"] = "左思左棻", ["#fengsui_heg__zuosi"] = "洛下双锋", ["designer:fengsui_heg__zuosi"] = "公冶长风",
-  ["fengsui_heg__douwu"] = "窦武窦妙", ["#fengsui_heg__douwu"] = "椒房共济", ["designer:fengsui_heg__douwu"] = "公冶长风",
+  ["fengsui_heg__zuosizuofen"] = "左思左棻", ["#fengsui_heg__zuosizuofen"] = "洛下双锋", ["designer:fengsui_heg__zuosizuofen"] = "公冶长风",
+  ["fengsui_heg__douwudoumiao"] = "窦武窦妙", ["#fengsui_heg__douwudoumiao"] = "椒房共济", ["designer:fengsui_heg__douwudoumiao"] = "公冶长风",
   ["fengsui_heg__yandu"] = "研都", [":fengsui_heg__yandu"] = "当你明置此武将牌后，你可以依次重铸一张本次未以此法重铸过的类别的牌。",
   ["fengsui_heg__chongjing"] = "憧京", [":fengsui_heg__chongjing"] = "锁定技，当你重铸牌后，你需选择一名本轮未以此法选择过的势力的角色令其使用此重铸牌。若其无法使用此牌或此牌无合法目标，其或你失去一点体力。",
   ["fengsui_heg__aishan"] = "哀扇", [":fengsui_heg__aishan"] = "每个势力每轮限一次，当有角色体力值变化后不大于你且你的武将牌均明置，你可以暗置此武将牌并展示你与其各一张牌，根据牌面信息依次执行：颜色、花色、牌名一致，你获得这两张牌、你重铸这两张牌、你变更副将。",
