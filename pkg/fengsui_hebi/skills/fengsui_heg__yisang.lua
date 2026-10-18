@@ -1,79 +1,59 @@
 local H = require "packages.fengsui.hegemony_util"
+local yisang = fk.CreateSkill { name = "fengsui_heg__yisang" }
 
-local yisang = fk.CreateSkill{
-  name = "fengsui_heg__yisang",
-}
-
+-- 记录本回合场上上一张使用或打出的牌颜色。
 yisang:addEffect(fk.CardUsing, {
   global = true,
   mute = true,
-  can_refresh = function(self, event, target, player, data)
-    return target == player and player.room.current == player and data.card ~= nil
+  can_refresh = function(self, _, target, _, data)
+    return target and target.room.current == target and data.card ~= nil
   end,
-  on_refresh = function(self, event, target, player, data)
-    data.extra_data = data.extra_data or {}
-    data.extra_data.fengsui_heg__yisang_previous_color =
-      player:getMark("fengsui_heg__yisang_last_color-turn")
-    player.room:setPlayerMark(player, "fengsui_heg__yisang_last_color-turn", data.card.color)
+  on_refresh = function(self, _, target, _, data)
+    target.room:setPlayerMark(target, "fengsui_heg__yisang_last_color-turn", data.card.color)
+  end,
+})
+yisang:addEffect(fk.CardResponding, {
+  global = true,
+  mute = true,
+  can_refresh = function(self, _, target, _, data)
+    return target and target.room.current == target and data.card ~= nil
+  end,
+  on_refresh = function(self, _, target, _, data)
+    target.room:setPlayerMark(target, "fengsui_heg__yisang_last_color-turn", data.card.color)
   end,
 })
 
 yisang:addEffect(fk.TargetSpecified, {
   anim_type = "support",
-  can_trigger = function(self, event, target, player, data)
+  can_trigger = function(self, _, target, player, data)
     local recipient = data.to
-    if not (player:hasSkill(yisang.name) and recipient and
-      H.compareKingdomWith(recipient, player)) then return false end
-    local previous_color = (data.extra_data or {}).fengsui_heg__yisang_previous_color
-    return previous_color and previous_color ~= 0 and previous_color == data.card.color
+    if not target or not recipient or not player:hasSkill(self.name) or
+      not H.compareKingdomWith(recipient, player) or not data.card then return false end
+    local last = target:getMark("fengsui_heg__yisang_last_color-turn")
+    return last ~= 0 and last == data.card.color
   end,
   on_cost = function(self, event, target, player, data)
     local recipient = data.to
     if player.room:askToSkillInvoke(player, {
-      skill_name = yisang.name,
-      prompt = "#fengsui_heg__yisang-invoke::" .. recipient.id,
+      skill_name = self.name, prompt = "#fengsui_heg__yisang-invoke::" .. recipient.id,
     }) then
       event:setCostData(self, { to = recipient })
       return true
     end
   end,
-  on_use = function(self, event, target, player, data)
-    local room = player.room
+  on_use = function(self, event, _, player)
     local recipient = event:getCostData(self).to
-    local top = room:getNCards(1)[1]
-    if not top then return end
-    room:moveCardTo(top, Card.Processing, nil, fk.ReasonJustMove, yisang.name, nil, true, player)
-
-    local choices = {"fengsui_heg__yisang_get"}
-    if not recipient:isNude() then
-      table.insert(choices, "fengsui_heg__yisang_replace")
-    end
-    local choice = room:askToChoice(recipient, {
-      choices = choices,
-      skill_name = yisang.name,
-      prompt = "#fengsui_heg__yisang-choice",
+    if recipient:isNude() then return end
+    local ids = player.room:askToChooseCards(recipient, {
+      target = recipient, flag = "he", min = 1, max = 1,
+      skill_name = self.name, prompt = "#fengsui_heg__yisang-recast",
     })
-    if choice == "fengsui_heg__yisang_replace" then
-      local replacement = room:askToChooseCard(recipient, {
-        target = recipient,
-        flag = "he",
-        prompt = "#fengsui_heg__yisang-replace",
-        skill_name = yisang.name,
-      })
-      room:moveCards({
-        ids = {replacement},
-        from = recipient,
-        toArea = Card.DrawPile,
-        moveReason = fk.ReasonPut,
-        skillName = yisang.name,
-        drawPilePosition = 1,
-        moveVisible = false,
-      })
-    end
-    if room:getCardArea(top) == Card.Processing and recipient:isAlive() then
-      room:obtainCard(recipient, top, true, fk.ReasonPrey, recipient, yisang.name)
-    end
+    if #ids > 0 then player.room:recastCard(ids, recipient, self.name) end
   end,
 })
+
+Fk:loadTranslationTable {
+  ["#fengsui_heg__yisang-recast"] = "诒桑：选择一张牌重铸",
+}
 
 return yisang

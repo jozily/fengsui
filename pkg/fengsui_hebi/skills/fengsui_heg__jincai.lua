@@ -1,91 +1,49 @@
 local H = require "packages.fengsui.hegemony_util"
+local U = require "packages.fengsui.pkg.fengsui_hebi.util"
+local jincai = fk.CreateSkill { name = "fengsui_heg__jincai" }
 
-local jincai = fk.CreateSkill{
-  name = "fengsui_heg__jincai",
-}
-
-local damage_sources_mark = "fengsui_heg__jincai_damage_sources-round"
-
-jincai:addEffect(fk.CardUseFinished, {
+jincai:addEffect(fk.TargetSpecified, {
   anim_type = "control",
-  can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(jincai.name) and
-      player:usedSkillTimes(jincai.name, Player.HistoryRound) == 0 and
-      data.card.color == Card.Red and
-      (data.card.type == Card.TypeBasic or data.card:isCommonTrick())
+  can_trigger = function(self, _, target, player, data)
+    return target and data and data.to == player and data.card and data.card.color == Card.Red and
+      player:hasSkill(self.name) and player:usedSkillTimes(self.name, Player.HistoryTurn) == 0
   end,
   on_cost = function(self, event, target, player, data)
-    local chosen = player.room:askToChoosePlayers(player, {
-      min_num = 1,
-      max_num = 1,
-      targets = player.room.alive_players,
-      skill_name = jincai.name,
-      prompt = "#fengsui_heg__jincai-choose",
-      cancelable = true,
+    return player.room:askToSkillInvoke(player, {
+      skill_name = self.name,
+      prompt = "#fengsui_heg__jincai-invoke::" .. target.id,
     })
-    if #chosen > 0 then
-      event:setCostData(self, { to = chosen[1] })
-      return true
-    end
   end,
-  on_use = function(self, event, target, player, data)
+  on_use = function(self, _, target, player, data)
     local room = player.room
-    local to = event:getCostData(self).to
-    local all_choices = { "fengsui_heg__jincai_draw", "fengsui_heg__jincai_red" }
-    local choices = { "fengsui_heg__jincai_red" }
-    if H.allGeneralsRevealed(to) then
-      table.insert(choices, 1, "fengsui_heg__jincai_draw")
-    end
-    local choice = room:askToChoice(to, {
-      choices = choices,
-      all_choices = all_choices,
-      skill_name = jincai.name,
+    local choices = { "fengsui_heg__jincai_obtain" }
+    if H.allGeneralsRevealed(target) then table.insert(choices, 1, "fengsui_heg__jincai_hide") end
+    local choice = room:askToChoice(target, {
+      choices = choices, skill_name = self.name,
       prompt = "#fengsui_heg__jincai-choice::" .. player.id,
     })
-    if choice == "fengsui_heg__jincai_draw" then
-      to:drawCards(2, jincai.name)
-      if to:isAlive() then
-        local hidden_place = H.doHideGeneral(room, to, to, jincai.name)
-        local record = to:getTableMark(MarkEnum.RevealProhibited .. "-turn")
-        table.insertIfNeed(record, hidden_place and "d" or "m")
-        room:setPlayerMark(to, MarkEnum.RevealProhibited .. "-turn", record)
-      end
-      room:addTableMarkIfNeed(player, damage_sources_mark, to.id)
-      room:setPlayerMark(to, "@fengsui_heg__jincai-round", player.id)
+    if choice == "fengsui_heg__jincai_hide" then
+      local place = room:askToChoice(target, {
+        choices = { "fengsui_heg__jincai_main", "fengsui_heg__jincai_deputy" },
+        skill_name = self.name, prompt = "#fengsui_heg__jincai-place",
+      })
+      target:hideGeneral(place == "fengsui_heg__jincai_deputy")
+      U.prohibitReveal(target, place == "fengsui_heg__jincai_deputy", self.name, "turn")
+      data.nullifiedTargets = data.nullifiedTargets or {}
+      table.insertIfNeed(data.nullifiedTargets, target)
     else
-      room:setPlayerMark(to, "fengsui_heg__jincai_red-turn", 1)
+      room:obtainCard(player, data.card, true, fk.ReasonPrey, player, self.name)
     end
-  end,
-})
-
-jincai:addEffect(fk.DamageInflicted, {
-  global = true,
-  is_delay_effect = true,
-  can_trigger = function(self, event, target, player, data)
-    return target == player and data.from and
-      table.contains(player:getTableMark(damage_sources_mark), data.from.id)
-  end,
-  on_use = function(self, event, target, player, data)
-    data:changeDamage(-1)
-    local sources = player:getTableMark(damage_sources_mark)
-    table.removeOne(sources, data.from.id)
-    player.room:setPlayerMark(player, damage_sources_mark, #sources > 0 and sources or 0)
-    if data.from:getMark("@fengsui_heg__jincai-round") == player.id then
-      player.room:setPlayerMark(data.from, "@fengsui_heg__jincai-round", 0)
-    end
-  end,
-})
-
-jincai:addEffect("prohibit", {
-  global = true,
-  prohibit_use = function(self, player, card)
-    return player:getMark("fengsui_heg__jincai_red-turn") > 0 and
-      card and card.color == Card.Red
   end,
 })
 
 Fk:loadTranslationTable{
-  ["@fengsui_heg__jincai-round"] = "矜才：",
+  ["#fengsui_heg__jincai-invoke"] = "矜才：是否令 %dest 选择一项？",
+  ["fengsui_heg__jincai_hide"] = "暗置一张武将牌且此牌无效",
+  ["fengsui_heg__jincai_obtain"] = "令矜才拥有者获得此牌",
+  ["fengsui_heg__jincai_main"] = "暗置主将",
+  ["fengsui_heg__jincai_deputy"] = "暗置副将",
+  ["#fengsui_heg__jincai-place"] = "矜才：选择暗置的武将牌",
 }
 
 return jincai

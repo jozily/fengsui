@@ -1,34 +1,48 @@
 local H = require "packages.fengsui.hegemony_util"
-local Util = require "packages.fengsui.pkg.fengsui_hebi.util"
+local U = require "packages.fengsui.pkg.fengsui_hebi.util"
+
 local chaohua = fk.CreateSkill { name = "fengsui_heg__chaohua" }
-chaohua:addEffect("active", { card_num=0,target_num=1,
-  can_use=function(self,p) return p:hasShownSkill(self.name) and p:usedSkillTimes(self.name,Player.HistoryPhase)==0 end,
-  card_filter=Util.FalseFunc,
-  target_filter=function(self,p,to,sel) return #sel==0 and to~=p and H.getGeneralsRevealedNum(to)==2 end,
-  on_use=function(self,room,effect)
-    local t=effect.tos[1]
-    local place = room:askToChoice(effect.from, { choices = { "fengsui_heg__chaohua_main", "fengsui_heg__chaohua_deputy" }, skill_name = self.name })
-    local is_deputy = place == "fengsui_heg__chaohua_deputy"
-    local gname = is_deputy and t.deputyGeneral or t.general
-    local g = Fk.generals[gname]
-    local choices={"fengsui_heg__chaohua_double"}
-    if effect.from:getMark("fengsui_heg__chaohua_transform-used") == 0 then
-      table.insert(choices, "fengsui_heg__chaohua_transform")
+
+chaohua:addEffect("active", {
+  card_num = 0,
+  target_num = 1,
+  can_use = function(self, player)
+    return player:hasShownSkill(self.name) and player:usedSkillTimes(self.name, Player.HistoryPhase) == 0
+  end,
+  card_filter = U.FalseFunc,
+  target_filter = function(self, player, to, selected)
+    return #selected == 0 and to ~= player and H.getGeneralsRevealedNum(to) == 2
+  end,
+  on_use = function(self, room, effect)
+    local from, target = effect.from, effect.tos[1]
+    if not H.compareKingdomWith(from, target) then
+      room:setPlayerMark(from, "fengsui_heg__chaohua_invalid-turn", 1)
+      return
     end
-    local choice=room:askToChoice(effect.from,{choices=choices,skill_name=self.name})
-    if choice=="fengsui_heg__chaohua_double" then
-      if g then for _,sk in ipairs(g:getSkillNameList(true)) do if t:usedSkillTimes(sk,Player.HistoryRound)>0 then t:setSkillUseHistory(sk,0,Player.HistoryRound) end end end
-      t:hideGeneral(is_deputy)
-      Util.prohibitReveal(t, is_deputy, self.name, "turn")
-      room:addPlayerMark(t,"fengsui_heg__chaohua_double-turn",1)
+    local place = room:askToChoice(from, {
+      choices = { "fengsui_heg__chaohua_main", "fengsui_heg__chaohua_deputy" },
+      skill_name = self.name,
+    })
+    local is_deputy = place == "fengsui_heg__chaohua_deputy"
+    local gname = is_deputy and target.deputyGeneral or target.general
+    local general = Fk.generals[gname]
+    if not general then return end
+    target:hideGeneral(is_deputy)
+    U.prohibitReveal(target, is_deputy, self.name, "turn")
+    local choices = { "fengsui_heg__chaohua_draw" }
+    local limited = table.filter(general:getSkillNameList(true), function(name)
+      local sk = Fk.skills[name]
+      return sk and sk:hasTag(Skill.Limited) and target:usedSkillTimes(name, Player.HistoryGame) > 0
+    end)
+    if #limited > 0 then table.insert(choices, "fengsui_heg__chaohua_reset") end
+    local choice = room:askToChoice(from, { choices = choices, skill_name = self.name })
+    if choice == "fengsui_heg__chaohua_draw" then
+      room:drawCards(target, 2, self.name)
     else
-      t:hideGeneral(is_deputy)
-      Util.prohibitReveal(t, is_deputy, self.name, "turn")
-      if not is_deputy and g then for _,sk in ipairs(g:getSkillNameList(true)) do local obj=Fk.skills[sk]; if obj and obj:hasTag(Skill.Limited) then t:setSkillUseHistory(sk,0,Player.HistoryGame) end end end
-      H.transformGeneral(room,t,false,false,1,self.name)
-      -- “移除此选项”属于朝华发动者的长期记录，不能记在目标角色身上。
-      room:setPlayerMark(effect.from,"fengsui_heg__chaohua_transform-used",1)
+      local selected = room:askToChoice(from, { choices = limited, skill_name = self.name, prompt = "#fengsui_heg__chaohua-reset" })
+      target:setSkillUseHistory(selected, 0, Player.HistoryGame)
     end
   end,
 })
+
 return chaohua
