@@ -2,7 +2,7 @@ local H = require "packages.fengsui.hegemony_util"
 
 local ruwu = fk.CreateSkill{
   name = "fengsui_heg__ruwu",
-  tags = { Skill.DeputyPlace, Skill.Compulsory },
+  tags = { Skill.Compulsory },
 }
 
 local mark_skills = {

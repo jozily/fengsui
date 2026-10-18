@@ -2,61 +2,62 @@ local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 local Util = require "packages.utility.utility"
 
-local yuchen = fk.CreateSkill{
-  name = "fengsui_heg__yuchen",
-}
+local yuchen = fk.CreateSkill { name = "fengsui_heg__yuchen" }
 
-local function settleNewCombination(room, player)
-  local main_name = H.getActualGeneral(player, false)
-  local deputy_name = H.getActualGeneral(player, true)
-  local main = Fk.generals[main_name]
-  local deputy = Fk.generals[deputy_name]
-  if not main or not deputy then return end
+local function equalYinYang(player)
+  local main = Fk.generals[H.getActualGeneral(player, false)]
+  local deputy = Fk.generals[H.getActualGeneral(player, true)]
+  if not main or not deputy then return false end
+  return (main.maxHp + (main.mainMaxHpAdjustedValue or 0)) ==
+    (deputy.maxHp + (deputy.deputyMaxHpAdjustedValue or 0))
+end
 
-  local mainHp = main.maxHp + (main.mainMaxHpAdjustedValue or 0)
-  local deputyHp = deputy.maxHp + (deputy.deputyMaxHpAdjustedValue or 0)
-  if mainHp == deputyHp and player:getMark("@!!yinyangfish") == 0 then
-    H.addHegMark(player, "yinyangfish")
-    room:addTableMarkIfNeed(player, "@fengsui_heg__yuchen-turn", "毓尘：" .. Fk:translate("@!!yinyangfish"))
-  end
-  if (main:isCompanionWith(deputy) or deputy:isCompanionWith(main)) and
-    player:getMark("@!!companion") == 0 then
-    H.addHegMark(player, "companion")
-    room:addTableMarkIfNeed(player, "@fengsui_heg__yuchen-turn", "毓尘：" .. Fk:translate("@!!companion"))
+local function resolveChoice(room, player)
+  if not player:isAlive() or not equalYinYang(player) then return end
+  local choices = { "fengsui_heg__yuchen_draw" }
+  if H.hasGeneral(player, true) then table.insert(choices, "fengsui_heg__yuchen_transform") end
+  local choice = room:askToChoice(player, {
+    choices = choices, skill_name = yuchen.name,
+    prompt = "#fengsui_heg__yuchen-choice",
+  })
+  if choice == "fengsui_heg__yuchen_draw" then
+    local n = math.max(0, player:getMaxCards() - player:getHandcardNum())
+    if n > 0 then room:drawCards(player, n, yuchen.name) end
+  else
+    H.transformGeneral(room, player, false, false, 1, yuchen.name)
+    if player:isAlive() and player:getMark("@!!companion") == 0 then
+      H.addHegMark(player, "companion")
+    end
   end
 end
 
 yuchen:addEffect("active", {
-  anim_type = "support",
-  prompt = "#fengsui_heg__yuchen-invoke",
-  card_num = 0,
-  target_num = 1,
+  anim_type = "support", prompt = "#fengsui_heg__yuchen-invoke",
+  card_num = 0, target_num = 1,
   can_use = function(self, player)
-    return player:hasShownSkill(yuchen.name) and
-      player:usedSkillTimes(yuchen.name, Player.HistoryPhase) == 0 and
+    return player:hasShownSkill(self.name) and player:usedSkillTimes(self.name, Player.HistoryPhase) == 0 and
       H.getGeneralsRevealedNum(player) > 0
   end,
   card_filter = Util.FalseFunc,
-  target_filter = function(self, player, to_select, selected)
-    if #selected > 0 or to_select == player or not H.compareKingdomWith(to_select, player) then
-      return false
-    end
-    return H.hasGeneral(player, true) and H.hasGeneral(to_select, true)
+  target_filter = function(self, player, to, selected)
+    return #selected == 0 and to ~= player and H.compareKingdomWith(to, player) and
+      H.hasGeneral(player, true) and H.hasGeneral(to, true)
   end,
   on_use = function(self, room, effect)
-    local player = effect.from
-    local target = effect.tos[1]
+    local player, target = effect.from, effect.tos[1]
     H.swapDeputy(room, player, target)
-
-    settleNewCombination(room, player)
-    if target:isAlive() then settleNewCombination(room, target) end
+    resolveChoice(room, player)
+    if target:isAlive() then resolveChoice(room, target) end
   end,
 })
 
-Fk:loadTranslationTable{
+Fk:loadTranslationTable {
   ["fengsui_heg__yuchen"] = "毓尘",
-  [":fengsui_heg__yuchen"] = "出牌阶段限一次，你可与其他同势力角色副将<a href='heg__yiwei'>易位</a>，若在两个新的组合中：主副将体力值均相等且对应角色没有阴阳鱼标记的角色获得一枚阴阳鱼标记；两张武将牌构成珠联璧合且对应角色没有珠联璧合标记的角色获得一枚珠联璧合标记。",
+  [":fengsui_heg__yuchen"] = "出牌阶段限一次，你可以与一名其他同势力角色副将<a href='heg__yiwei'>易位</a>，易位前后控制此武将牌的角色中主副将阴阳鱼相等的角色依次（由你开始）选择一项：1.将手牌数摸至手牌上限；2.变更副将并获得一枚珠联璧合标记，然后移除此选项。",
   ["#fengsui_heg__yuchen-invoke"] = "毓尘：选择一名其他同势力角色，与其副将易位",
-  ["@fengsui_heg__yuchen-turn"] = "毓尘：",
+  ["#fengsui_heg__yuchen-choice"] = "毓尘：请选择一项",
+  ["fengsui_heg__yuchen_draw"] = "将手牌数摸至手牌上限",
+  ["fengsui_heg__yuchen_transform"] = "变更副将并获得珠联璧合标记",
 }
+
 return yuchen
