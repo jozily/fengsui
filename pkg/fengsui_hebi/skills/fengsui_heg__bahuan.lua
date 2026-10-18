@@ -19,7 +19,7 @@ bahuan:addEffect(fk.TurnStart, {
     for _, target in ipairs(targets) do
       if target and target:isAlive() then
         room:damage { from = player, to = target, damage = 1, skillName = self.name }
-        if not target.dead and not player:isNude() and room:askToSkillInvoke(target, { skill_name = self.name, prompt = "#fengsui_heg__bahuan-give" }) then
+        if not target.dead and not target:isNude() and room:askToSkillInvoke(target, { skill_name = self.name, prompt = "#fengsui_heg__bahuan-give" }) then
           local card = room:askToCards(target, { min_num = 1, max_num = 1, include_equip = true, skill_name = self.name, prompt = "#fengsui_heg__bahuan-give-card", cancelable = false })
           if #card > 0 then room:obtainCard(player, card, true, fk.ReasonGive, target, self.name); room:recover { who = target, num = 1, skillName = self.name } end
         end
