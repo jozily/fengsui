@@ -1635,6 +1635,7 @@ local H = require "packages.fengsui.hegemony_util"
     ["@fengsui_heg__siji"]="思疾",
     ["@fengsui_heg__beiqiu_target"]="悲秋目标", ["fengsui_heg__beiqiu_target"]="悲秋目标",
     ["@fengsui_heg__jiaosu_target"]="皎宿目标座次", ["@fengsui_heg__yaoming_target"]="曜暝目标座次", ["@fengsui_heg__jiaosu_count-round"]="皎宿目标座次", ["@fengsui_heg__yaoming_count-round"]="曜暝目标座次",
+    ["@fengsui_heg__chuguang_disabled-round"]="黜光：失效技能",
     ["@fengsui_heg__yuchen-turn"]="毓尘：",
   ["#fengsui_heg__shangmu-invoke"]="赏募：是否明置此武将牌并发起军令？", ["#fengsui_heg__shangmu-source"]="赏募：选择此次伤害来源", ["#fengsui_heg__dunmeng-invoke"]="敦盟：是否替换此次击杀奖惩？",
   ["#fengsui_heg__chuguang-target"] = "黜光：选择一名同势力角色摸牌",
