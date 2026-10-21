@@ -1,58 +1,72 @@
 local H = require "packages.fengsui.hegemony_util"
 
-local yudao = fk.CreateSkill{
+local yudao = fk.CreateSkill {
   name = "fengsui_heg__yudao",
 }
 
-yudao:addEffect(fk.Damage, {
-  anim_type = "support",
-  can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(yudao.name) and data.to and data.to:isAlive() and
-      H.compareKingdomWith(player, data.to)
-  end,
-  on_cost = function(self, event, target, player, data)
-    return player.room:askToSkillInvoke(player, {
-      skill_name = yudao.name,
-      prompt = "#fengsui_heg__yudao-change::" .. data.to.id,
-    })
-  end,
-  on_use = function(self, event, target, player, data)
-    H.askToHebiOrTransform(player.room, data.to, yudao.name, false)
-  end,
-})
+local function arrangeXunxun(player)
+  if player.dead then return end
+  local room = player.room
+  local ret = room:askToArrangeCards(player, {
+    skill_name = "hs__xunxun",
+    card_map = { room:getNCards(4), "Bottom", "Top" },
+    prompt = "#xunxun",
+    free_arrange = true,
+    max_limit = { 4, 2 },
+    min_limit = { 0, 2 },
+  })
+  local top, bottom = ret[2], ret[1]
+  for i = #top, 1, -1 do
+    table.removeOne(room.draw_pile, top[i])
+    table.insert(room.draw_pile, 1, top[i])
+  end
+  for _, id in ipairs(bottom) do
+    table.removeOne(room.draw_pile, id)
+    table.insert(room.draw_pile, id)
+  end
+  room:sendLog { type = "#GuanxingResult", from = player.id, arg = #top, arg2 = #bottom }
+end
 
-yudao:addEffect(fk.Damaged, {
-  anim_type = "support",
-  can_trigger = function(self, event, target, player, data)
-    if target ~= player or not player:hasSkill(yudao.name) or not data.from or data.from.dead or
-      not H.compareKingdomWith(player, data.from) then return false end
-    return player:getMark("@!!yinyangfish") == 0 or data.from:getMark("@!!yinyangfish") == 0
-  end,
-  on_cost = function(self, event, target, player, data)
-    local candidates = table.filter({player, data.from}, function(p)
-      return p:isAlive() and p:getMark("@!!yinyangfish") == 0
-    end)
-    local chosen = player.room:askToChoosePlayers(player, {
-      targets = candidates,
-      min_num = 1,
-      max_num = 1,
-      skill_name = yudao.name,
-      prompt = "#fengsui_heg__yudao-fish",
-      cancelable = true,
-    })
-    if #chosen > 0 then
-      event:setCostData(self, {to = chosen[1]})
-      return true
-    end
-  end,
-  on_use = function(self, event, target, player, data)
-    H.addHegMark(event:getCostData(self).to, "yinyangfish")
-  end,
-})
+local function participants(event, player, data)
+  if event == fk.Damage then
+    return player, data.to
+  end
+  return data.from, player
+end
 
-Fk:loadTranslationTable{
-  ["#fengsui_heg__yudao-change"] = "熨道：你可以令 %dest 合璧",
-  ["#fengsui_heg__yudao-fish"] = "熨道：选择双方中一名没有阴阳鱼标记的角色获得标记",
+for _, event in ipairs({ fk.Damage, fk.Damaged }) do
+  yudao:addEffect(event, {
+    anim_type = "support",
+    can_trigger = function(self, _, target, player, data)
+      if target ~= player or not player:hasSkill(self.name) or
+        player:usedSkillTimes(self.name, Player.HistoryTurn) > 0 or
+        not data or data.damageType == fk.NormalDamage then
+        return false
+      end
+      local source, victim = participants(event, player, data)
+      return (source and source:isAlive() and H.compareKingdomWith(player, source)) or
+        (victim and victim:isAlive() and H.compareKingdomWith(player, victim))
+    end,
+    on_cost = function(self, event, target, player, data)
+      return player.room:askToSkillInvoke(player, {
+        skill_name = self.name,
+        prompt = "#fengsui_heg__yudao-invoke",
+      })
+    end,
+    on_use = function(self, event, target, player, data)
+      local source, victim = participants(event, player, data)
+      if source and source:isAlive() and H.compareKingdomWith(player, source) then
+        H.askToHebiOrTransform(player.room, source, self.name, false)
+      end
+      if victim and victim:isAlive() and H.compareKingdomWith(player, victim) then
+        arrangeXunxun(victim)
+      end
+    end,
+  })
+end
+
+Fk:loadTranslationTable {
+  ["#fengsui_heg__yudao-invoke"] = "熨道：你可以发动此技能",
 }
 
 return yudao
