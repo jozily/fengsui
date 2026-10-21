@@ -19,6 +19,25 @@ end
 
 overrideSijian()
 
+-- 官方麒麟弓在传入 card_data 选择框时漏传 prompt，AI 会在解析空提示词时崩溃。
+-- 仅补充该技能的默认提示，不改官方技能逻辑。
+local function overrideKylinBowPrompt()
+  if not Room or not Room.askToChooseCard or Room._fengsuiKylinBowPrompt then return end
+  local original = Room.askToChooseCard
+  Room.askToChooseCard = function(self, player, params)
+    if params and not params.prompt and params.skill_name == "#kylin_bow_skill" then
+      params.prompt = "#fengsui-kylin-bow"
+    end
+    return original(self, player, params)
+  end
+  Room._fengsuiKylinBowPrompt = true
+  Fk:loadTranslationTable {
+    ["#fengsui-kylin-bow"] = "麒麟弓：选择一张坐骑牌弃置",
+  }
+end
+
+overrideKylinBowPrompt()
+
 -- 这些技能只负责悼离的阶段清理/特效，不应在战报中生成“【】”或
 -- “【悼离骤雨】”。部分旧引擎版本不会把骨架上的 mute 完整复制到
 -- 延迟触发器，因此在所有扩展技能实例创建后再强制静默一次。

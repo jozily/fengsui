@@ -25,6 +25,13 @@ local function arrangeXunxun(player)
     table.insert(room.draw_pile, id)
   end
   room:sendLog { type = "#GuanxingResult", from = player.id, arg = #top, arg2 = #bottom }
+  local obtain = {}
+  for i = 1, math.min(2, #room.draw_pile) do
+    table.insert(obtain, room.draw_pile[#room.draw_pile - i + 1])
+  end
+  if #obtain > 0 and player:isAlive() then
+    room:obtainCard(player, obtain, true, fk.ReasonPrey, player, yudao.name)
+  end
 end
 
 local function participants(event, player, data)
@@ -66,7 +73,7 @@ for _, event in ipairs({ fk.Damage, fk.Damaged }) do
 end
 
 Fk:loadTranslationTable {
-  ["#fengsui_heg__yudao-invoke"] = "熨道：你可以发动此技能",
+  ["#fengsui_heg__yudao-invoke"] = "熨道：是否令符合条件的角色发动效果？",
 }
 
 return yudao

@@ -810,7 +810,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__mazhi"] = "公冶长风",
   ["cv:fengsui_heg__mazhi"] = "暂无",
   ["fengsui_heg__shenqing"] = "申情",
-  [":fengsui_heg__shenqing"] = "限定技，出牌阶段，你可以选择场上两张武将牌，若其中有满足珠联璧合的武将牌，则其所属角色各获得一枚珠联璧合标记；若均不满足，你可以令其中一位所属角色<a href='heg__hebi'>合璧</a>。",
+  [":fengsui_heg__shenqing"] = "限定技，出牌阶段，你可以令所有同势力角色依次选择是否<a href='heg__hebi'>合璧</a>。",
   ["fengsui_heg__juangu"] = "眷故",
   [":fengsui_heg__juangu"] = "当一名角色于其回合内首次使用基本牌或普通锦囊牌指定目标后，若目标与其有珠联璧合的武将牌，你可以令二者各摸一张牌或令此牌执行两次。",
   ["$fengsui_heg__shenqing1"] = "字字啼血成赋，句句唤故人归...",
@@ -1222,7 +1222,7 @@ Fk:loadTranslationTable{
 
 Fk:loadTranslationTable{
   ["fengsui_heg"] = "烽燧燎原",
-  ["heg__hebi"] = "合璧：将副将变更为与主将配对且本局未被变更过的珠联璧合武将牌，然后获得一枚珠联璧合标记。一局游戏里每张武将牌只能被变更一次；如果没有与之配对的珠联璧合对象则自动变更副将。变更副将时，目标武将牌须为本局未被变更过且不存活于场上的新武将牌（暗置武将牌也计入场上）。",
+  ["heg__hebi"] = "合璧：将副将变更为与主将配对且本局未被变更过的珠联璧合武将牌，然后获得一枚珠联璧合标记，如果没有与之配对的珠联璧合对象则自动变更副将。",
 }
 
 Fk:loadTranslationTable{
