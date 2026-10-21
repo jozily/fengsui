@@ -17,7 +17,7 @@ end
 jiubo:addEffect(fk.TargetConfirming, {
   anim_type = "defensive",
   can_trigger = function(self, event, target, player, data)
-    if not (player:hasSkill(jiubo.name) and H.compareKingdomWith(target, player) and
+    if not (player:hasSkill(jiubo.name) and not H.compareKingdomWith(target, player) and
       data.card.is_damage_card and #data:getAllTargets() == 1 and
       H.allGeneralsRevealed(player)) then return false end
     local has_cost = table.find(player:getCardIds("he"), function(id)

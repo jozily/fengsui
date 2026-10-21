@@ -28,15 +28,10 @@ weihou:addEffect(fk.AskForRetrial, {
       cancelable = true,
     })
     if #cards > 0 then
-      local choice = player.room:askToChoice(player, {
-        choices = {"fengsui_heg__weihou_main", "fengsui_heg__weihou_deputy"},
-        skill_name = weihou.name,
-        prompt = "#fengsui_heg__weihou-hide",
-      })
-      event:setCostData(self, {
-        cards = cards,
-        hide_deputy = choice == "fengsui_heg__weihou_deputy",
-      })
+      -- 维后暗置技能所在武将牌的另一张武将牌。
+      local place = require("packages.fengsui.pkg.fengsui_hebi.util").getSkillPlace(player, weihou.name)
+      if place == nil or not H.allGeneralsRevealed(player) then return false end
+      event:setCostData(self, { cards = cards, hide_deputy = not place })
       return true
     end
   end,
@@ -56,9 +51,7 @@ weihou:addEffect(fk.AskForRetrial, {
 })
 
 Fk:loadTranslationTable{
-  ["#fengsui_heg__weihou-hide"] = "维后：选择暗置一张武将牌",
-  ["fengsui_heg__weihou_main"] = "暗置主将",
-  ["fengsui_heg__weihou_deputy"] = "暗置副将",
+  ["#fengsui_heg__weihou-hide"] = "维后：暗置另一张武将牌",
 }
 
 return weihou

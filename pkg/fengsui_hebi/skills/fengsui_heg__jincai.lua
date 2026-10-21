@@ -16,21 +16,22 @@ jincai:addEffect(fk.TargetSpecified, {
   end,
   on_use = function(self, _, target, player, data)
     local room = player.room
-    local choices = { "fengsui_heg__jincai_obtain" }
-    if H.allGeneralsRevealed(target) then table.insert(choices, 1, "fengsui_heg__jincai_hide") end
+    local choices = { "fengsui_heg__jincai_hide", "fengsui_heg__jincai_obtain" }
     local choice = room:askToChoice(target, {
       choices = choices, skill_name = self.name,
       prompt = "#fengsui_heg__jincai-choice::" .. player.id,
     })
     if choice == "fengsui_heg__jincai_hide" then
+      if not H.allGeneralsRevealed(target) then
+        data.use:setNullified()
+        return
+      end
       local place = room:askToChoice(target, {
         choices = { "fengsui_heg__jincai_main", "fengsui_heg__jincai_deputy" },
         skill_name = self.name, prompt = "#fengsui_heg__jincai-place",
       })
       target:hideGeneral(place == "fengsui_heg__jincai_deputy")
       U.prohibitReveal(target, place == "fengsui_heg__jincai_deputy", self.name, "turn")
-      data.nullifiedTargets = data.nullifiedTargets or {}
-      table.insertIfNeed(data.nullifiedTargets, target)
     else
       room:obtainCard(player, data.card, true, fk.ReasonPrey, player, self.name)
     end
@@ -39,7 +40,7 @@ jincai:addEffect(fk.TargetSpecified, {
 
 Fk:loadTranslationTable{
   ["#fengsui_heg__jincai-invoke"] = "矜才：是否令 %dest 选择一项？",
-  ["fengsui_heg__jincai_hide"] = "暗置一张武将牌且此牌无效",
+  ["fengsui_heg__jincai_hide"] = "若武将牌均明置则暗置一张且本回合无法明置，否则此牌无效",
   ["fengsui_heg__jincai_obtain"] = "令矜才拥有者获得此牌",
   ["fengsui_heg__jincai_main"] = "暗置主将",
   ["fengsui_heg__jincai_deputy"] = "暗置副将",

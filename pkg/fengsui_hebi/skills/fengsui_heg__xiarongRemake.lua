@@ -1,6 +1,6 @@
 local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
-local xiarong = fk.CreateSkill { name = "fengsui_heg__xiarong" }
+local xiarong = fk.CreateSkill { name = "fengsui_heg__xiarongRemake" }
 xiarong:addEffect(fk.Damaged, {
   global = true,
   can_trigger = function(self, _, target, player)
@@ -13,8 +13,8 @@ xiarong:addEffect(fk.Damaged, {
     local room = player.room
     local place = U.getSkillPlace(player, self.name)
     if place ~= nil then player:hideGeneral(place) end
-    local hidden = room:askToChoice(target, { choices = { "fengsui_heg__xiarong_main", "fengsui_heg__xiarong_deputy" }, skill_name = self.name })
-    target:hideGeneral(hidden == "fengsui_heg__xiarong_deputy")
+    local hidden = room:askToChoice(target, { choices = { "fengsui_heg__xiarongRemake_main", "fengsui_heg__xiarongRemake_deputy" }, skill_name = self.name })
+    target:hideGeneral(hidden == "fengsui_heg__xiarongRemake_deputy")
     if not target.dead then
       room:recover { who = target, num = 1, recoverBy = player, skillName = self.name }
     end

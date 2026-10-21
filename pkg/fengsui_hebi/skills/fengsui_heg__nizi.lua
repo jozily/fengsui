@@ -56,7 +56,14 @@ nizi:addEffect(fk.CardUseFinished, { global = true,
     local selected = displayToCode[picked]
     if not selected then return end
     player.room:setPlayerMark(player, self.name .. "-processing", 1)
-    for mark in string.gmatch(selected, "[^,]+") do H.removeHegMark(player.room, player, mark, 1) end
+    local last_mark
+    for mark in string.gmatch(selected, "[^,]+") do
+      H.removeHegMark(player.room, player, mark, 1)
+      last_mark = mark
+    end
+    if last_mark then
+      player.room:setPlayerMark(player, "fengsui_heg__zhuiji-last", last_mark)
+    end
     local use = player.room:askToUseVirtualCard(player, {
       name = card.name, skill_name = self.name, cancelable = false,
     })

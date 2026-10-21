@@ -1,144 +1,68 @@
-local H = require "packages.fengsui.hegemony_util"
-
 local fuyin = fk.CreateSkill{
   name = "fengsui_heg__fuyin",
+  tags = { Skill.Compulsory },
 }
 
-fuyin:addEffect(fk.EventPhaseStart, {
-  anim_type = "control",
-  can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(fuyin.name) and player.phase == Player.Start and
-      table.find(player.room.alive_players, function(p)
-        return p ~= player and H.compareKingdomWith(p, player) and not p:isNude()
-      end) ~= nil
+local function usedTypes(player)
+  local types = {}
+  for _, event in ipairs(player.room.logic:getEventsOfScope(GameEvent.UseCard, 9999,
+      function(e) return e.data and e.data.from == player end, Player.HistoryTurn)) do
+    local card = event.data.card
+    if card then types[card.type] = true end
+  end
+  local n = 0
+  for _ in pairs(types) do n = n + 1 end
+  return math.max(1, n)
+end
+
+fuyin:addEffect(fk.TurnEnd, {
+  anim_type = "drawcard",
+  can_trigger = function(self, _, target, player)
+    return target == player and player:hasSkill(fuyin.name) and
+      #player.room.draw_pile + #player.room.discard_pile > 0
   end,
-  on_use = function(self, event, target, player, data)
+  on_use = function(self, _, _, player)
     local room = player.room
-    local targets = table.filter(room.alive_players, function(p)
-      return p ~= player and H.compareKingdomWith(p, player) and not p:isNude()
-    end)
-    local tops, bottoms = {}, {}
-    for _, p in ipairs(targets) do
-      local choices = {"fuyin_top", "fuyin_bottom", "Cancel"}
-      local choice = room:askToChoice(p, { choices = choices, skill_name = fuyin.name })
-      if choice ~= "Cancel" then
-         local card = room:askToChooseCard(p, {
-           target = p,
-           flag = "he",
-           skill_name = fuyin.name,
-         })
-         local pos = choice == "fuyin_top" and 1 or -1
-         room:moveCards({
-           ids = {card},
-           toArea = Card.DrawPile,
-           drawPilePosition = pos,
-           moveReason = fk.ReasonPut,
-           skillName = fuyin.name,
-           proposer = p,
-           moveVisible = true,
-         })
-         if choice == "fuyin_top" then table.insert(tops, p.id)
-           room:setPlayerMark(p, "@fengsui_heg__fuyin_top-turn", player.id)
-         else
-           table.insert(bottoms, p.id)
-           room:setPlayerMark(p, "@fengsui_heg__fuyin_bottom-turn", player.id)
-         end
+    local n = usedTypes(player)
+    if n <= 0 then return end
+    local ids = room:getNCards(n, "bottom")
+    room:moveCards {
+      ids = ids, toArea = Card.Processing, moveReason = fk.ReasonJustMove,
+      skillName = fuyin.name, moveVisible = true,
+    }
+    room:showCards(ids, player)
+    local failed = false
+    for _, id in ipairs(ids) do
+      if player.dead then break end
+      local card = Fk:getCardById(id)
+      if not card or room:getCardArea(id) ~= Card.Processing then
+        failed = true
+      else
+        local use = room:askToUseRealCard(player, {
+          pattern = tostring(Exppattern{ id = { id } }),
+          skill_name = fuyin.name,
+          prompt = ":fengsui_heg__fuyin",
+          cancelable = false,
+          skip = true,
+          expand_pile = { id },
+          extra_data = { bypass_times = true },
+        })
+        if use then
+          use.extraUse = true
+          room:useCard(use)
+        else
+          failed = true
+          room:obtainCard(player, id, true, fk.ReasonPrey, player, fuyin.name)
+        end
       end
     end
-    if #tops + #bottoms > 0 then
-      room:setPlayerMark(player, "fengsui_heg__fuyin_tops-turn", tops)
-      room:setPlayerMark(player, "fengsui_heg__fuyin_bottoms-turn", bottoms)
-      room:setPlayerMark(player, "fengsui_heg__fuyin_damage-turn", 0)
-      room:setPlayerMark(player, "fengsui_heg__fuyin_discard-turn", 0)
-    end
-  end,
-})
-
--- 记录本回合伤害
-fuyin:addEffect(fk.Damage, {
-  global = true,
-  mute = true,
-  can_trigger = function(self, event, target, player, data)
-    return type(player:getMark("fengsui_heg__fuyin_tops-turn")) == "table" and data.from == player
-  end,
-  on_use = function(self, event, target, player, data)
-    local dmg = player:getMark("fengsui_heg__fuyin_damage-turn") + data.damage
-    player.room:setPlayerMark(player, "fengsui_heg__fuyin_damage-turn", dmg)
-  end,
-})
-
--- 记录本回合弃置
-fuyin:addEffect(fk.AfterCardsMove, {
-  global = true,
-  mute = true,
-  can_trigger = function(self, event, target, player, data)
-    if type(player:getMark("fengsui_heg__fuyin_tops-turn")) ~= "table" then return false end
-    for _, move in ipairs(data) do
-       if move.from == player and move.moveReason == fk.ReasonDiscard then return true end
-    end
-  end,
-  on_use = function(self, event, target, player, data)
-    local sum = player:getMark("fengsui_heg__fuyin_discard-turn")
-    for _, move in ipairs(data) do
-       if move.from == player and move.moveReason == fk.ReasonDiscard then
-           sum = sum + #move.moveInfo
-       end
-    end
-    player.room:setPlayerMark(player, "fengsui_heg__fuyin_discard-turn", sum)
-  end,
-})
-
--- 回合结束结算
-fuyin:addEffect(fk.EventPhaseStart, {
-  global = true,
-  can_trigger = function(self, event, target, player, data)
-    return target == player and player.phase == Player.Finish and
-      type(player:getMark("fengsui_heg__fuyin_tops-turn")) == "table"
-  end,
-  on_use = function(self, event, target, player, data)
-     local dmg = player:getMark("fengsui_heg__fuyin_damage-turn")
-     local dis = player:getMark("fengsui_heg__fuyin_discard-turn")
-     local tops = player:getTableMark("fengsui_heg__fuyin_tops-turn")
-     local bottoms = player:getTableMark("fengsui_heg__fuyin_bottoms-turn")
-     local room = player.room
-
-     local draws, loses = {}, {}
-     if dmg > dis then
-         draws, loses = tops, bottoms
-     elseif dmg < dis then
-         draws, loses = bottoms, tops
-     end
-
-     for _, pid in ipairs(draws) do
-        local p = room:getPlayerById(pid)
-        if p and p:isAlive() then p:drawCards(2, fuyin.name) end
-     end
-     for _, pid in ipairs(loses) do
-        local p = room:getPlayerById(pid)
-        if p and p:isAlive() then room:loseHp(p, 1, fuyin.name) end
-     end
-
-     room:setPlayerMark(player, "fengsui_heg__fuyin_tops-turn", 0)
-     room:setPlayerMark(player, "fengsui_heg__fuyin_bottoms-turn", 0)
-     room:setPlayerMark(player, "fengsui_heg__fuyin_damage-turn", 0)
-     room:setPlayerMark(player, "fengsui_heg__fuyin_discard-turn", 0)
-     for _, pid in ipairs(table.connect(tops, bottoms)) do
-       local p = room:getPlayerById(pid)
-       if p then
-         room:setPlayerMark(p, "@fengsui_heg__fuyin_top-turn", 0)
-         room:setPlayerMark(p, "@fengsui_heg__fuyin_bottom-turn", 0)
-       end
-     end
+    if failed and player:isAlive() then room:loseHp(player, 1, fuyin.name) end
   end,
 })
 
 Fk:loadTranslationTable{
   ["fengsui_heg__fuyin"] = "负胤",
-  [":fengsui_heg__fuyin"] = "准备阶段，所有其他同势力角色可选择用一张牌替换牌堆顶/底的牌。回合结束时，若你于本回合造成的伤害数大于/小于弃置的牌数，所有选择牌堆顶/牌堆底的角色摸两张牌，选择另一项的角色失去一点体力。",
-  ["fuyin_top"] = "替换牌堆顶",
-  ["fuyin_bottom"] = "替换牌堆底",
-  ["@fengsui_heg__fuyin_top-turn"] = "负胤：",
-  ["@fengsui_heg__fuyin_bottom-turn"] = "负胤：",
+  [":fengsui_heg__fuyin"] = "锁定技，回合结束时，你亮出牌堆底的X张牌并依次使用其中的牌，若其中有无法被使用的牌，你获得之并失去一点体力（X为你本回合使用过牌的类别数且至少为1）。",
 }
 
 return fuyin

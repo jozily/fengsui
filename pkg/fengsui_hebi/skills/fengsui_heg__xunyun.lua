@@ -51,7 +51,7 @@ xunyun:addEffect(H.GeneralTransforming, {
 
 Fk:loadTranslationTable{
   ["#fengsui_heg__xunyun-change"] = "勋殒：令另一名同势力角色合璧",
-  ["@fengsui_heg__xunyun_nochange"] = "勋殒：无法变更副将",
+  ["@fengsui_heg__xunyun_nochange"] = "勋殒禁变更",
 }
 
 return xunyun

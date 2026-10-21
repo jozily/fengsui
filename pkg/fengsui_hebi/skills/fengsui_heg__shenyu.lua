@@ -4,7 +4,8 @@ shenyu:addEffect(fk.TurnEnd, {
   can_trigger = function(self, _, target, player)
     return target and target:isAlive() and player:hasShownSkill(self.name) and
       target:getMark("fengsui_heg__shenyu-turn") == 0 and
-      target:getMark("fengsui_heg__shenyu-discard") > target.hp
+      target:getHandcardNum() ~= target.hp and
+      target:getMark("fengsui_heg__shenyu-discard") >= target.hp
   end,
   on_cost = function(self, event, target, player)
     return player.room:askToSkillInvoke(player, { skill_name = self.name, prompt = "#fengsui_heg__shenyu-invoke::" .. target.id })

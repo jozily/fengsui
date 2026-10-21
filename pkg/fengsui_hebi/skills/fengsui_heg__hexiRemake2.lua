@@ -2,7 +2,7 @@ local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local hexi = fk.CreateSkill{
-  name = "fengsui_heg__hexi",
+  name = "fengsui_heg__hexiRemake2",
 }
 
 hexi:addEffect(fk.AfterCardsMove, {
@@ -22,7 +22,7 @@ hexi:addEffect(fk.AfterCardsMove, {
     if #equips == 0 then return false end
 
     local cid = U.chooseCardsFromList(room, player, equips, 1, 1,
-      "#fengsui_heg__hexi-move", hexi.name, true)
+      "#fengsui_heg__hexiRemake2-move", hexi.name, true)
     if #cid > 0 then
        local tos = room:askToChoosePlayers(player, {
           targets = table.filter(room.alive_players, function(p)
@@ -30,7 +30,7 @@ hexi:addEffect(fk.AfterCardsMove, {
           end),
           min_num = 1, max_num = 1,
           cancelable = true,
-          prompt = "#fengsui_heg__hexi-choose",
+          prompt = "#fengsui_heg__hexiRemake2-choose",
           skill_name = hexi.name,
        })
        if #tos > 0 then
@@ -49,17 +49,17 @@ hexi:addEffect(fk.AfterCardsMove, {
 
     if to:isAlive() then
        local choices = {}
-       if H.getGeneralsRevealedNum(to) < 2 then table.insert(choices, "fengsui_heg__hexi_reveal_damage") end
-       if H.allGeneralsRevealed(to) then table.insert(choices, "fengsui_heg__hexi_hide_draw") end
+       if H.getGeneralsRevealedNum(to) < 2 then table.insert(choices, "fengsui_heg__hexiRemake2_reveal_damage") end
+       if H.allGeneralsRevealed(to) then table.insert(choices, "fengsui_heg__hexiRemake2_hide_draw") end
        if #choices == 0 then return end
 
        local choice = room:askToChoice(to, {
           choices = choices,
-          prompt = "#fengsui_heg__hexi-choice",
+          prompt = "#fengsui_heg__hexiRemake2-choice",
           skill_name = hexi.name,
        })
 
-       if choice == "fengsui_heg__hexi_reveal_damage" then
+       if choice == "fengsui_heg__hexiRemake2_reveal_damage" then
           U.revealOneGeneral(to)
           if room.current and room.current:isAlive() then
              room:damage{ from = to, to = room.current, damage = 1, skillName = hexi.name }
@@ -76,8 +76,8 @@ hexi:addEffect(fk.AfterCardsMove, {
 })
 
 Fk:loadTranslationTable{
-  ["fengsui_heg__hexi_reveal_damage"] = "明置一张武将牌并对当前回合角色造成1点伤害",
-  ["fengsui_heg__hexi_hide_draw"] = "暗置一张武将牌并摸两张牌（本回合不能明置）",
+  ["fengsui_heg__hexiRemake2_reveal_damage"] = "明置一张武将牌并对当前回合角色造成1点伤害",
+  ["fengsui_heg__hexiRemake2_hide_draw"] = "暗置一张武将牌并摸两张牌（本回合不能明置）",
 }
 
 return hexi

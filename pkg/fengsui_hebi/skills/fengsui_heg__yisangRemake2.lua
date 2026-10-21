@@ -1,7 +1,7 @@
 local H = require "packages.fengsui.hegemony_util"
 
 local yisang = fk.CreateSkill{
-  name = "fengsui_heg__yisang",
+  name = "fengsui_heg__yisangRemake2",
 }
 
 yisang:addEffect(fk.CardUsing, {
@@ -12,9 +12,9 @@ yisang:addEffect(fk.CardUsing, {
   end,
   on_refresh = function(self, event, target, player, data)
     data.extra_data = data.extra_data or {}
-    data.extra_data.fengsui_heg__yisang_previous_color =
-      player:getMark("fengsui_heg__yisang_last_color-turn")
-    player.room:setPlayerMark(player, "fengsui_heg__yisang_last_color-turn", data.card.color)
+    data.extra_data.fengsui_heg__yisangRemake2_previous_color =
+      player:getMark("fengsui_heg__yisangRemake2_last_color-turn")
+    player.room:setPlayerMark(player, "fengsui_heg__yisangRemake2_last_color-turn", data.card.color)
   end,
 })
 
@@ -24,14 +24,14 @@ yisang:addEffect(fk.TargetSpecified, {
     local recipient = data.to
     if not (player:hasSkill(yisang.name) and recipient and
       H.compareKingdomWith(recipient, player)) then return false end
-    local previous_color = (data.extra_data or {}).fengsui_heg__yisang_previous_color
+    local previous_color = (data.extra_data or {}).fengsui_heg__yisangRemake2_previous_color
     return previous_color and previous_color ~= 0 and previous_color == data.card.color
   end,
   on_cost = function(self, event, target, player, data)
     local recipient = data.to
     if player.room:askToSkillInvoke(player, {
       skill_name = yisang.name,
-      prompt = "#fengsui_heg__yisang-invoke::" .. recipient.id,
+      prompt = "#fengsui_heg__yisangRemake2-invoke::" .. recipient.id,
     }) then
       event:setCostData(self, { to = recipient })
       return true
@@ -44,20 +44,20 @@ yisang:addEffect(fk.TargetSpecified, {
     if not top then return end
     room:moveCardTo(top, Card.Processing, nil, fk.ReasonJustMove, yisang.name, nil, true, player)
 
-    local choices = {"fengsui_heg__yisang_get"}
+    local choices = {"fengsui_heg__yisangRemake2_get"}
     if not recipient:isNude() then
-      table.insert(choices, "fengsui_heg__yisang_replace")
+      table.insert(choices, "fengsui_heg__yisangRemake2_replace")
     end
     local choice = room:askToChoice(recipient, {
       choices = choices,
       skill_name = yisang.name,
-      prompt = "#fengsui_heg__yisang-choice",
+      prompt = "#fengsui_heg__yisangRemake2-choice",
     })
-    if choice == "fengsui_heg__yisang_replace" then
+    if choice == "fengsui_heg__yisangRemake2_replace" then
       local replacement = room:askToChooseCard(recipient, {
         target = recipient,
         flag = "he",
-        prompt = "#fengsui_heg__yisang-replace",
+        prompt = "#fengsui_heg__yisangRemake2-replace",
         skill_name = yisang.name,
       })
       room:moveCards({

@@ -3,7 +3,7 @@ local siji = fk.CreateSkill { name = "fengsui_heg__siji" }
 local function updateMark(room, target)
   local plus = target:getMark(MarkEnum.AddMaxCardsInTurn)
   local minus = target:getMark(MarkEnum.MinusMaxCardsInTurn)
-  local text = "思疾 手牌上限"
+  local text = "手牌上限"
   if plus > 0 then text = text .. "+" .. plus end
   if minus > 0 then text = text .. (plus > 0 and "/" or "") .. "-" .. minus end
   room:setPlayerMark(target, "@fengsui_heg__siji", text)
@@ -37,7 +37,7 @@ siji:addEffect(fk.Damage, {
     on_cost = function(self, _, target, player) return player.room:askToSkillInvoke(player, { skill_name = self.name, prompt = "#fengsui_heg__siji-invoke" }) end,
     on_use = function(self, _, _, player) resolve(self, player) end,
   })
-siji:addEffect(fk.TurnStart, {
+siji:addEffect(fk.TurnEnd, {
   global = true,
   can_refresh = function(self, _, target)
     return target and target:getMark("@fengsui_heg__siji") ~= 0

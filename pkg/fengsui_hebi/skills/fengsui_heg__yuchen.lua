@@ -15,7 +15,7 @@ end
 local function resolveChoice(room, player)
   if not player:isAlive() or not equalYinYang(player) then return end
   local choices = { "fengsui_heg__yuchen_draw" }
-  if H.hasGeneral(player, true) then table.insert(choices, "fengsui_heg__yuchen_transform") end
+  if H.hasGeneral(player, true) and not room:getBanner("fengsui_heg__yuchen_removed") then table.insert(choices, "fengsui_heg__yuchen_transform") end
   local choice = room:askToChoice(player, {
     choices = choices, skill_name = yuchen.name,
     prompt = "#fengsui_heg__yuchen-choice",
@@ -24,8 +24,9 @@ local function resolveChoice(room, player)
     local n = math.max(0, player:getMaxCards() - player:getHandcardNum())
     if n > 0 then room:drawCards(player, n, yuchen.name) end
   else
+    room:setBanner("fengsui_heg__yuchen_removed", true)
     H.transformGeneral(room, player, false, false, 1, yuchen.name)
-    if player:isAlive() and player:getMark("@!!companion") == 0 then
+    if player:isAlive() then
       H.addHegMark(player, "companion")
     end
   end
@@ -35,7 +36,7 @@ yuchen:addEffect("active", {
   anim_type = "support", prompt = "#fengsui_heg__yuchen-invoke",
   card_num = 0, target_num = 1,
   can_use = function(self, player)
-    return player:hasShownSkill(self.name) and player:usedSkillTimes(self.name, Player.HistoryPhase) == 0 and
+    return player.phase == Player.Play and player:hasShownSkill(self.name) and player:usedSkillTimes(self.name, Player.HistoryPhase) == 0 and
       H.getGeneralsRevealedNum(player) > 0
   end,
   card_filter = Util.FalseFunc,
@@ -45,9 +46,10 @@ yuchen:addEffect("active", {
   end,
   on_use = function(self, room, effect)
     local player, target = effect.from, effect.tos[1]
+    local moved = U.getSkillPlace(player, self.name) == true
     H.swapDeputy(room, player, target)
     resolveChoice(room, player)
-    if target:isAlive() then resolveChoice(room, target) end
+    if moved and target:isAlive() then resolveChoice(room, target) end
   end,
 })
 

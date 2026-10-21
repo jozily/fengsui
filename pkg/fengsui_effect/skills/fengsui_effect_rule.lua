@@ -1,5 +1,6 @@
 local effectRule = fk.CreateSkill{
   name = "#fengsui_effect_rule",
+  tags = { Skill.Compulsory },
 }
 
 local root = "packages/fengsui/pkg/fengsui_effect/qml/"

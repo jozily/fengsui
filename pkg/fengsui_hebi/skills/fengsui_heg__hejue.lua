@@ -1,63 +1,76 @@
 local H = require "packages.fengsui.hegemony_util"
 local hejue = fk.CreateSkill { name = "fengsui_heg__hejue" }
 
-local function chooseOwnerAndHebi(room, player, owners)
-  local alive = table.filter(owners, function(p) return p:isAlive() end)
-  if #alive == 0 then return end
-  local tos = room:askToChoosePlayers(player, {
-    targets = alive, min_num = 1, max_num = 1, skill_name = hejue.name,
-    prompt = "#fengsui_heg__hejue-hebi", cancelable = false,
-  })
-  if tos[1] then H.askToHebiOrTransform(room, tos[1], hejue.name, true) end
+local function actualGenerals(player)
+  local ret = {}
+  for _, name in ipairs({ H.getActualGeneral(player, false), H.getActualGeneral(player, true) }) do
+    if name and name ~= "anjiang" and not name:startsWith("blank_") and Fk.generals[name] then
+      table.insert(ret, Fk.generals[name])
+    end
+  end
+  return ret
 end
 
-local function handleHejue(room, player)
-  local all_gens = {}
-  for _, p in ipairs(room.alive_players) do
-    if p.general ~= "anjiang" and not p.general:startsWith("blank_") then table.insert(all_gens, p.general) end
-    if p.deputyGeneral ~= "anjiang" and not p.deputyGeneral:startsWith("blank_") then table.insert(all_gens, p.deputyGeneral) end
+local function companionDraws(players)
+  local matched = {}
+  local generals = table.map(players, actualGenerals)
+  for i, owner in ipairs(players) do
+    local count = 0
+    for _, mine in ipairs(generals[i]) do
+      local paired = false
+      for _, theirs in ipairs(generals) do
+        for _, other in ipairs(theirs) do
+          if mine:isCompanionWith(other) or other:isCompanionWith(mine) then
+            paired = true
+            break
+          end
+        end
+        if paired then break end
+      end
+      if paired then count = count + 1 end
+    end
+    if count > 0 then table.insert(matched, { player = owner, count = count }) end
   end
-  if #all_gens == 0 then return end
-  local U = require "packages.utility.utility"
-  local choices = U.askToChooseGeneralsAndChoice(player, {
-    skill_name = hejue.name, generals = all_gens,
-    prompt = "#fengsui_heg__hejue-choose", min_num = 1, max_num = 2,
-  })
-  if #choices == 0 then return end
-  local owners = {}
-  for _, gen in ipairs(choices) do
-    local owner = table.find(room.alive_players, function(p) return p.general == gen or p.deputyGeneral == gen end)
-    if owner then table.insertIfNeed(owners, owner) end
-  end
-  local is_comp = false
-  if #choices == 2 then
-    local first, second = Fk.generals[choices[1]], Fk.generals[choices[2]]
-    is_comp = first and second and (first:isCompanionWith(second) or second:isCompanionWith(first))
-  end
-  if is_comp then
-    for _, owner in ipairs(owners) do if owner:isAlive() then owner:drawCards(1, hejue.name) end end
-  else
-    chooseOwnerAndHebi(room, player, owners)
-  end
+  return matched
 end
 
 hejue:addEffect(fk.Damaged, {
   anim_type = "support",
-  can_trigger = function(self, _, target, player) return target == player and player:hasSkill(self.name) end,
-  on_cost = function(self, _, _, player) return player.room:askToSkillInvoke(player, { skill_name = self.name, prompt = "#fengsui_heg__hejue-invoke1" }) end,
-  on_use = function(self, _, _, player) handleHejue(player.room, player) end,
-})
-hejue:addEffect(fk.EventPhaseStart, {
-  anim_type = "support",
-  can_trigger = function(self, _, target, player) return target == player and player.phase == Player.Finish and player:hasSkill(self.name) end,
-  on_cost = function(self, _, _, player) return player.room:askToSkillInvoke(player, { skill_name = self.name, prompt = "#fengsui_heg__hejue-invoke2" }) end,
-  on_use = function(self, _, _, player) handleHejue(player.room, player) end,
+  can_trigger = function(self, _, target, player)
+    return target == player and player:hasSkill(self.name)
+  end,
+  on_cost = function(self, event, _, player)
+    return player.room:askToSkillInvoke(player, { skill_name = self.name, prompt = "#fengsui_heg__hejue-invoke" })
+  end,
+  on_use = function(self, event, _, player)
+    local room = player.room
+    local tos = room:askToChoosePlayers(player, {
+      targets = room.alive_players, min_num = 1, max_num = 2,
+      skill_name = self.name, prompt = "#fengsui_heg__hejue-choose", cancelable = false,
+    })
+    if #tos == 0 then return end
+    local paired = companionDraws(tos)
+    if #paired > 0 then
+      for _, item in ipairs(paired) do
+        if item.player:isAlive() then item.player:drawCards(item.count, self.name) end
+      end
+      return
+    end
+    local same_kingdom = table.filter(tos, function(p)
+      return H.compareKingdomWith(player, p)
+    end)
+    if #same_kingdom == 0 then return end
+    local selected = room:askToChoosePlayers(player, {
+      targets = same_kingdom, min_num = 1, max_num = 1,
+      skill_name = self.name, prompt = "#fengsui_heg__hejue-hebi", cancelable = false,
+    })
+    if selected[1] then H.askToHebiOrTransform(room, selected[1], self.name, false) end
+  end,
 })
 
 Fk:loadTranslationTable {
-  ["#fengsui_heg__hejue-invoke1"] = "合珏：是否发动？",
-  ["#fengsui_heg__hejue-invoke2"] = "合珏：结束阶段是否发动？",
-  ["#fengsui_heg__hejue-choose"] = "合珏：选择一张或两张武将牌对应的角色",
+  ["#fengsui_heg__hejue-invoke"] = "合珏：是否发动？",
+  ["#fengsui_heg__hejue-choose"] = "合珏：选择至多两名角色",
   ["#fengsui_heg__hejue-hebi"] = "合珏：选择一名角色令其合璧",
 }
 return hejue

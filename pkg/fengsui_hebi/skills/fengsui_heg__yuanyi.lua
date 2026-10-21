@@ -1,12 +1,11 @@
+local H = require "packages.fengsui.hegemony_util"
 local yuanyi = fk.CreateSkill{
   name = "fengsui_heg__yuanyi",
   tags = { Skill.Compulsory },
 }
 
 local function sameRevealState(first, second)
-  return first and second and
-    (first.general == "anjiang") == (second.general == "anjiang") and
-    (first.deputyGeneral == "anjiang") == (second.deputyGeneral == "anjiang")
+  return first and second and H.getGeneralsRevealedNum(first) == H.getGeneralsRevealedNum(second)
 end
 
 yuanyi:addEffect(fk.DamageCaused, {

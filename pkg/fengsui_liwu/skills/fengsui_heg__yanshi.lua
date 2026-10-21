@@ -16,7 +16,10 @@ s:addEffect(fk.GeneralShown, {
       targets = player.room:getOtherPlayers(player), min_num = 1, max_num = 1,
       skill_name = s.name, prompt = "#fengsui_heg__yanshi-target", cancelable = false,
     })
-    if #tos > 0 then player.room:setPlayerMark(player, s.name .. "_target", tos[1].id) end
+    if #tos > 0 then
+      player.room:setPlayerMark(player, s.name .. "_target", tos[1].id)
+      player.room:setPlayerMark(tos[1], "@fengsui_heg__yanshi_target", 1)
+    end
   end,
 })
 

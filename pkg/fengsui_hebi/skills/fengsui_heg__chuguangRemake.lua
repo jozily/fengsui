@@ -1,7 +1,7 @@
 local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
-local chuguang = fk.CreateSkill { name = "fengsui_heg__chuguang", tags = { Skill.Compulsory } }
-local lockMark = "fengsui_heg__chuguang_locked_place"
+local chuguang = fk.CreateSkill { name = "fengsui_heg__chuguangRemake", tags = { Skill.Compulsory } }
+local lockMark = "fengsui_heg__chuguangRemake_locked_place"
 local function sameKingdomPlayers(player)
   return table.filter(player.room.alive_players, function(p) return H.compareKingdomWith(player, p) end)
 end
@@ -12,7 +12,7 @@ chuguang:addEffect(fk.AfterSkillEffect, {
     local skillName = data and data.skill and data.skill:getSkeleton().name
     return target == player and player:hasShownSkill(self.name) and player:getMark(self.name .. "-round") == 0 and
       (skillName == "fengsui_heg__jiaosu" or skillName == "fengsui_heg__yaoming") and
-      player:getMark("fengsui_heg__chuguang_count-round") == #sameKingdomPlayers(player)
+      player:getMark("fengsui_heg__chuguangRemake_count-round") == #sameKingdomPlayers(player)
   end,
   on_use = function(self, _, _, player)
     local room = player.room
@@ -36,7 +36,7 @@ chuguang:addEffect(fk.AfterSkillEffect, {
     local candidates = sameKingdomPlayers(player)
     if #candidates == 0 then return end
     local tos = room:askToChoosePlayers(player, {targets = candidates, min_num = 1, max_num = 1,
-      skill_name = self.name, prompt = "#fengsui_heg__chuguang-target", cancelable = false})
+      skill_name = self.name, prompt = "#fengsui_heg__chuguangRemake-target", cancelable = false})
     if #tos > 0 then room:drawCards(tos[1], n, self.name) end
   end,
 })

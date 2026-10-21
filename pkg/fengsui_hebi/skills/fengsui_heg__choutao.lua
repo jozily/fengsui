@@ -4,26 +4,34 @@ local choutao = fk.CreateSkill{
   name = "fengsui_heg__choutao",
 }
 
-local function gainedCardThisTurn(player)
-  return #player.room.logic:getEventsOfScope(GameEvent.MoveCards, 1, function(e)
-    return table.find(e.data, function(move)
-      return move.to == player and move.toArea == Card.PlayerHand and #move.moveInfo > 0
-    end) ~= nil
-  end, Player.HistoryTurn) > 0
+local function gainedCountThisTurn(player)
+  local n = 0
+  for _, e in ipairs(player.room.logic:getEventsOfScope(GameEvent.MoveCards, 9999, function() return true end, Player.HistoryTurn)) do
+    for _, move in ipairs(e.data or {}) do
+      if move.to == player and move.toArea == Card.PlayerHand and move.from ~= player then
+        n = n + #(move.moveInfo or {})
+      end
+    end
+  end
+  return n
 end
 
-choutao:addEffect(fk.TurnEnd, {
+local function damageTakenThisTurn(player)
+  local n = 0
+  for _, e in ipairs(player.room.logic:getEventsOfScope(GameEvent.Damage, 9999, function() return true end, Player.HistoryTurn)) do
+    local damage = e.data
+    if damage and damage.to == player and e.exec_ret == true then n = n + (damage.damage or 0) end
+  end
+  return n
+end
+
+choutao:addEffect(fk.EventPhaseStart, {
   global = true,
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
-    return target ~= player and player:hasSkill(choutao.name) and
-      gainedCardThisTurn(player) and
-      player:getHandcardNum() > target:getHandcardNum() and
-      table.find(player:getCardIds("h"), function(id)
-        local card = Fk:getCardById(id)
-        return card.trueName == "slash" and
-          player:canUseTo(card, target, { bypass_distances = true, bypass_times = true })
-      end)
+    return target and target ~= player and target.phase == Player.Finish and target:isAlive() and
+      player:hasSkill(choutao.name) and damageTakenThisTurn(player) > 0 and
+      gainedCountThisTurn(player) > damageTakenThisTurn(player)
   end,
   on_cost = function(self, event, target, player, data)
     return player.room:askToSkillInvoke(player, {
@@ -32,26 +40,14 @@ choutao:addEffect(fk.TurnEnd, {
     })
   end,
   on_use = function(self, event, target, player, data)
-    player.room:askToUseRealCard(player, {
-      pattern = "slash",
-      skill_name = choutao.name,
-      prompt = "#fengsui_heg__choutao-use::" .. target.id,
-      cancelable = false,
-      extra_data = {
-        exclusive_targets = { target.id },
-        bypass_distances = true,
-        bypass_times = true,
-        extraUse = true,
-      },
-    })
+    player.room:damage { from = player, to = target, damage = 1, skillName = choutao.name }
   end,
 })
 
 Fk:loadTranslationTable{
   ["fengsui_heg__choutao"] = "仇讨",
-  [":fengsui_heg__choutao"] = "其他角色的回合结束时，若你本回合获得过牌且手牌数大于其，你可对其使用一张无距离限制的【杀】。",
-  ["#fengsui_heg__choutao-invoke"] = "仇讨：你可以对 %dest 使用一张无距离限制的【杀】",
-  ["#fengsui_heg__choutao-use"] = "仇讨：请对 %dest 使用一张无距离限制的【杀】",
+  [":fengsui_heg__choutao"] = "其他角色的回合结束阶段，若你于此回合内受到过伤害且获得牌的数量大于受到的伤害值，你可以对该角色造成一点伤害。",
+  ["#fengsui_heg__choutao-invoke"] = "仇讨：是否对 %dest 造成1点伤害？",
 
 }
 

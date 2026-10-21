@@ -194,6 +194,15 @@ local function chooseGenerals(self)
   table.shuffle(generals)
   local req = Request:new(players, "AskForGeneral")
   req.timeout = room:getSettings("generalTimeout")
+  local fallbackPairs = {}
+  for i = 1, #generals - 1 do
+    for j = i + 1, #generals do
+      if canPair(Fk.generals[generals[i]], Fk.generals[generals[j]]) then
+        table.insert(fallbackPairs, { generals[i], generals[j] })
+      end
+    end
+  end
+  local fallbackIndex = 0
   for index, player in ipairs(players) do
     local choices = table.slice(generals, (index - 1) * generalNum + 1, index * generalNum + 1)
     table.sort(choices, function(a, b) return Fk.generals[a].kingdom > Fk.generals[b].kingdom end)
@@ -205,6 +214,10 @@ local function chooseGenerals(self)
         end
       end
       if req.default_reply[player.id] then break end
+    end
+    if not req.default_reply[player.id] then
+      fallbackIndex = fallbackIndex + 1
+      req:setDefaultReply(player, fallbackPairs[fallbackIndex] or fallbackPairs[1])
     end
     req:setData(player, { choices, 2, false, true })
   end

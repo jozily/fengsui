@@ -26,6 +26,9 @@ function M.prepare(room, receiver, deceased)
   local cards = deceased:getCardIds("hej")
   if #cards > 0 then
     room:obtainCard(receiver, cards, true, fk.ReasonPrey, deceased, "fengsui_heg__daoli")
+    for _, id in ipairs(cards) do
+      room:setCardMark(Fk:getCardById(id), "@@fengsui_heg__daoli", 1)
+    end
   end
   local gained = {}
   for _, mark in ipairs(M.marks) do

@@ -17,39 +17,15 @@ caocen.gender = General.Female
 caocen:addSkill("fengsui_heg__duanjin")
 caocen:addSkill("fengsui_heg__qingshang")
 
-local sunsuo = General:new(extension, "fengsui_heg__sunsuo", "wei", 3, 3, General.Female)
-sunsuo:addSkills { "fengsui_heg__fenshuang", "fengsui_heg__yingmian" }
-
-local liuxun = General:new(extension, "fengsui_heg__liuxun", "wei", 3,3, General.Female)
-liuxun:addSkill("fengsui_heg__neixi")
-liuxun:addSkill("fengsui_heg__wuli")
-
 local liuchen = General:new(extension, "fengsui_heg__liuchen", "shu", 4, 4)
 liuchen:addSkills { "fengsui_heg__zhanjue", "fengsui_heg__lieying" }
 
 local cuizhi = General:new(extension, "fengsui_heg__cuizhi", "shu", 3, 3, General.Female)
 cuizhi:addSkills { "fengsui_heg__ranlv", "fengsui_heg__juexun" }
 
-local zhangyu = General:new(extension, "fengsui_heg__zhangyu", "shu", 3)
-zhangyu:addSkills { "fengsui_heg__xiangchen", "fengsui_heg__mingding" }
-
-local wuxian = General:new(extension, "fengsui_heg__wuxian", "shu", 3, 3, General.Female)
-wuxian:addCompanions("hs__liubei")
-wuxian:addCompanions("ol_heg__wuyi")
-wuxian:addSkills { "fengsui_heg__guixiang", "fengsui_heg__fumian" }
-
 local wangfuren = General:new(extension, "fengsui_heg__wangfuren", "wu", 3, 3, General.Female)
 wangfuren:addCompanions("hs__sunquan")
 wangfuren:addSkills { "fengsui_heg__qiangong", "fengsui_heg__bizun" }
-
-local heji = General:new(extension, "fengsui_heg__heji", "wu", 3, 3, General.Female)
-heji:addCompanions("fengsui_heg__sunyuan")
-heji:addSkills { "fengsui_heg__guru", "fengsui_heg__weihou" }
-
-local zhanghuai = General:new(extension, "fengsui_heg__zhanghuai", "wu", 3)
-zhanghuai.gender = General.Female
-zhanghuai:addCompanions("ld__lukang")
-zhanghuai:addSkills { "fengsui_heg__laoyan", "fengsui_heg__jueyan" }
 
 local fengsui_heg__zhangbai = General:new(extension, "fengsui_heg__zhangbai", "wu", 3)
 fengsui_heg__zhangbai:addCompanions("ty_heg__luyusheng")
@@ -65,12 +41,6 @@ fengsui_heg__malun:addCompanions("fengsui_heg__mazhi")
 fengsui_heg__malun:addSkill("fengsui_heg__dexiang")
 fengsui_heg__malun:addSkill("fengsui_heg__heci")
 
-local tianchou = General:new(extension, "fengsui_heg__tianchou", "qun", 4)
-tianchou:addSkills { "fengsui_heg__shoujie" }
-
-local liufuren = General:new(extension, "fengsui_heg__liufuren", "qun", 3, 3, General.Female)
-liufuren:addSkills { "fengsui_heg__dulu", "fengsui_heg__shigong" }
-
 local jiawu = General:new(extension, "fengsui_heg__jiawu", "jin", 3, 3, General.Female)
 jiawu:addCompanions( "fengsui_heg__hanshou")
 jiawu:addSkills { "fengsui_heg__huaixiang", "fengsui_heg__liusu" }
@@ -79,102 +49,15 @@ local hanshou = General(extension, "fengsui_heg__hanshou", "jin", 3)
 hanshou:addCompanions("fengsui_heg__jiawu")
 hanshou:addSkills { "fengsui_heg__yuyuan", "fengsui_heg__ruxiang" }
 
+local panan = General:new(extension, "fengsui_heg__panan", "jin", 3)
+panan:addSkills { "fengsui_heg__daoli", "fengsui_heg__beiqiu" }
+
 local kuaishi = General:new(extension, "fengsui_heg__kuaishi", "jin", 3, 3, General.Female)
 kuaishi:addCompanions("heg__sunxiuj")
+kuaishi:addCompanions("heg__wangyuanji")
 
-local fengsui_heg__wangrong = General:new(extension, "fengsui_heg__wangrong", "jin", 3)
-fengsui_heg__wangrong:addCompanions("fengsui_heg__shantao")
-fengsui_heg__wangrong:addCompanions("fengsui_heg__hejiao")
-fengsui_heg__wangrong:addSkill("fengsui_heg__fumiao")
-fengsui_heg__wangrong:addSkill("fengsui_heg__ruwu")
-
-local fengsui_heg__xiejiu = General:new(extension, "fengsui_heg__xiejiu", "jin", 3)
-fengsui_heg__xiejiu.gender = General.Female
-fengsui_heg__xiejiu:addSkill("fengsui_heg__yuchen")
-fengsui_heg__xiejiu:addSkill("fengsui_heg__guitu")
-
-local jiabao = General:new(extension, "fengsui_heg__jiabao", "jin", 3, 3, General.Female)
-jiabao:addSkills { "fengsui_heg__gaofan", "fengsui_heg__canyun" }
-jiabao:addCompanions("heg__simajiong")
-
-local wangqian = General:new(extension, "fengsui_heg__wangqian", "jin", 3, 3, General.Female)
-wangqian:addSkills { "fengsui_heg__yaxi", "fengsui_heg__xiarong" }
-
-local weijie = General:new(extension, "fengsui_heg__weijie", "jin", 3)
-weijie:addSkills { "fengsui_heg__shenyu", "fengsui_heg__siji" }
-
-local lemin = General:new(extension, "fengsui_heg__lemin", "jin", 3, 3, General.Female)
-lemin:addSkills { "fengsui_heg__juanyi", "fengsui_heg__lishi" }
-
-local shanxia = General:new(extension, "fengsui_heg__shanxia", "jin", 4)
-shanxia:addSkills { "fengsui_heg__kuohu", "fengsui_heg__qiongbu" }
-
-local songyi = General:new(extension, "fengsui_heg__songyi", "jin", 3)
-songyi:addSkills { "fengsui_heg__qinghuang", "fengsui_heg__pinliu" }
-
-local jin_yueguang = General:new(extension, "fengsui_heg__jinsister", "jin", 3, 3, General.Female)
-jin_yueguang:addSkills { "fengsui_heg__jiaosu", "fengsui_heg__yaoming", "fengsui_heg__chuguang" }
-
-local panyue = General:new(extension, "fengsui_heg__panyue", "jin", 3)
-panyue:addSkills { "fengsui_heg__daoli", "fengsui_heg__beiqiu" }
-
-local biyu = General:new(extension, "fengsui_heg__biyu", "jin", 4, 4, General.Female)
-biyu:addSkills { "fengsui_heg__qusheng", "fengsui_heg__jinshi" }
-
-local xixuan = General:new(extension, "fengsui_heg__xixuan", "jin", 3, 3, General.Female)
-xixuan:addSkills { "fengsui_heg__nizi", "fengsui_heg__buge" }
-
-local wangxizhi = General:new(extension, "fengsui_heg__wangxizhi", "jin", 4)
-wangxizhi:addSkills { "fengsui_heg__fuyang", "fengsui_heg__zhuiji", "fengsui_heg__tishi" }
-
-local wenqiao = General:new(extension, "fengsui_heg__wenqiao", "jin", 4)
-wenqiao:addSkills { "fengsui_heg__shangmu", "fengsui_heg__dunmeng" }
-
-local hejiao = General:new(extension, "fengsui_heg__hejiao", "jin", 3)
-hejiao:addSkills { "fengsui_heg__jiezhi", "fengsui_heg__qingsong" }
-
-local yangyan = General:new(extension, "fengsui_heg__yangyan", "jin", 3, 3, General.Female)
-yangyan:addCompanions("fengsui_heg__yangzhi")
-yangyan:addSkills { "fengsui_heg__xuanbei", "fengsui_heg__jiyuan" }
-
-local yangzhi = General:new(extension, "fengsui_heg__yangzhi", "jin", 3, 3, General.Female)
-yangzhi:addCompanions("fengsui_heg__yangyan")
-yangzhi:addCompanions("fengsui_heg__yangjun")
-yangzhi:addCompanions("heg__yangjun")
-yangzhi:addSkills { "fengsui_heg__yisang", "fengsui_heg__jiubo" }
-
-local xuwen = General:new(extension, "fengsui_heg__xuwen", "jin", 3, 3, General.Female)
-xuwen:addCompanions("heg__wangjun")
-xuwen:addSkills { "fengsui_heg__fuhui", "fengsui_heg__mohua" }
-
-local simayou = General:new(extension, "fengsui_heg__simayou", "jin", 3)
-simayou:addSkills { "fengsui_heg__zhenchao", "fengsui_heg__jude" }
-simayou:addCompanions("fengsui_heg__jiabao")
-
-local zhugelian = General:new(extension, "fengsui_heg__zhugelian", "jin", 3, 3, General.Female)
-zhugelian:addSkills { "fengsui_heg__chaohua", "fengsui_heg__qiju" }
-
-local xunguan = General:new(extension, "fengsui_heg__xunguan", "jin", 4, 4, General.Female)
-xunguan:addSkills { "fengsui_heg__cimang", "fengsui_heg__quchi" }
-
-local hanmi = General:new(extension, "fengsui_heg__hanmi", "jin", 4)
-hanmi.mainMaxHpAdjustedValue = -1
-hanmi:addCompanions("fengsui_heg__jiawu")
-hanmi:addCompanions("fengsui_heg__hanshou")
-hanmi:addSkills { "fengsui_heg__chengtiao", "fengsui_heg__juesi", "fengsui_heg__menyin" }
-
-local jiami = General:new(extension, "fengsui_heg__jiami", "jin", 3)
--- 贾谧是韩谧的变更武将，必须能被 changeHero 正常加载；不作为隐藏武将注册。
-jiami.hidden = true
-jiami:addCompanions("fengsui_heg__panyue")
-jiami:addCompanions("fengsui_heg__lujii")
-jiami:addSkills { "fengsui_heg__yanyu", "fengsui_heg__duanyuan" }
-
-local zuosi = General:new(extension, "fengsui_heg__zuosizuofen", "jin", 3, 3, General.Bigender)
-zuosi:addSkills { "fengsui_heg__yandu", "fengsui_heg__chongjing", "fengsui_heg__aishan" }
-
-local douwu = General:new(extension, "fengsui_heg__douwudoumiao", "qun", 4, 4, General.Bigender)
-douwu:addSkills { "fengsui_heg__bahuan", "fengsui_heg__youhuan" }
+liuchen:addCompanions("fengsui_heg__cuizhi")
+cuizhi:addCompanions("fengsui_heg__liuchen")
 
 assert(#extension.skill_skels >= 151, "fengsui_hebi must load the official skill skeletons")
 
@@ -193,18 +76,25 @@ Fk:loadTranslationTable{
   ["@fengsui_heg__juanzhi-turn"] = "卷帙：已重铸牌名",
   ["#fengsui_heg__juanzhi-use"] = "卷帙：你可以使用一张牌名字数为 %arg 的基本牌或普通锦囊牌",
   ["fengsui_heg__cangjuan"] = "藏卷",
-  [":fengsui_heg__cangjuan"] = "当你首次明置此武将牌时，若<a href=':imperial_order'>【敕令】</a>仍未被移除，你从牌堆或角色手牌区使用之（该角色摸一张牌），然后若<a href=':heg_zhaoshu'>【诏书】</a>不存在于场上任意区域，你获得并使用之。每回合限一次，你可以使用【诏书】上的一张牌，然后将一张与之花色不同的牌置于其上。",
+  [":fengsui_heg__cangjuan"] = "锁定技，当你首次明置此武将牌时，若<a href=':imperial_order'>【敕令】</a>仍未被移除，你从牌堆或角色手牌区使用之（该角色摸一张牌），然后若<a href=':heg_zhaoshu'>【诏书】</a>不存在于场上任意区域，你获得并使用之。",
   ["#fengsui_heg__cangjuan"] = "藏卷：使用一张“诏”，然后将一张花色不同的牌置为“诏”",
   ["#fengsui_heg__cangjuan-imperial"] = "藏卷：请使用【敕令】",
   ["#fengsui_heg__cangjuan-zhaoshu"] = "藏卷：请使用【诏书】",
   ["#fengsui_heg__cangjuan-response"] = "藏卷：请响应使用一张“诏”",
   ["#fengsui_heg__cangjuan-put"] = "藏卷：请将一张与%arg花色不同的牌置为“诏”",
+  ["fengsui_heg__jianhe"] = "剑合",
+  [":fengsui_heg__jianhe"] = "主将技，此武将牌上的阴阳鱼-1。每回合限一次，你可以使用<a href=':heg_zhaoshu'>【诏书】</a>上的一张牌，然后将一张与之花色不同的牌置于其上。",
+  ["#fengsui_heg__jianhe"] = "剑合：请使用一张【诏书】上的牌",
+  ["#fengsui_heg__jianhe-response"] = "剑合：请使用一张【诏书】上的牌响应",
+  ["#fengsui_heg__jianhe-put"] = "剑合：请将一张与%arg花色不同的牌置为【诏书】",
   ["fengsui_heg__yinbing"] = "饮冰",
-  [":fengsui_heg__yinbing"] = "主将技，锁定技，此武将牌上的阴阳鱼单独-1。若你的势力为唯一大势力，你无法响应其他同势力角色的牌。若你为小势力角色，大势力角色无法响应你的牌。",
+  [":fengsui_heg__yinbing"] = "副将技，锁定技，当你成为一张多目标牌的目标后，若<a href=':heg_zhaoshu'>【诏书】</a>上有牌，你获得之且此牌对你无效，否则此牌对你结算两次。",
   ["$fengsui_heg__juanzhi1"] = "此剑光芒艳发，非凡物也，当以华阴赤土拭之。",
   ["$fengsui_heg__juanzhi2"] = "斗牛间常有紫气，其兆如何，还请阁下解之。",
-  ["$fengsui_heg__cangjuan1"] = "此剑光芒艳发，非凡物也，当以华阴赤土拭之。",
-  ["$fengsui_heg__cangjuan2"] = "斗牛间常有紫气，其兆如何，还请阁下解之。",
+  ["$fengsui_heg__jianhe1"] = "此剑光芒艳发，非凡物也，当以华阴赤土拭之。",
+  ["$fengsui_heg__jianhe2"] = "斗牛间常有紫气，其兆如何，还请阁下解之。",
+  ["$fengsui_heg__cangjuan1"] = "赤心如丹，思虑王室之险。",
+  ["$fengsui_heg__cangjuan2"] = "气节如玉，心忧国家之难。",
   ["$fengsui_heg__yinbing1"] = "情势危急，故为此举以脱一时之困。",
   ["$fengsui_heg__yinbing2"] = "若当下之围不解，何以图千秋之惠？",
   ["~fengsui_heg__zhanghua"] = "式乾之议，臣谏事具存，非不谏也……",
@@ -244,13 +134,13 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__qiaozhou"] = "公冶长风",
   ["cv:fengsui_heg__qiaozhou"] = "暂无",
   ["fengsui_heg__baoguo"] = "保国",
-  [":fengsui_heg__baoguo"] = "限定技，当一名同势力角色进入濒死状态时，若你不是大势力角色，你可令所有同势力角色依次选择执行：选择一名大势力角色并交给其至少X张牌（X为与其势力相同的角色数；不足则全交），然后回复1点体力并变更副将。",
+  [":fengsui_heg__baoguo"] = "限定技，当一名同势力角色进入濒死状态时，若你为小势力角色，你可以令所有与你势力相同的角色选择是否将所有牌交给任意一名当前大势力的角色，若如此做，其恢复一点体力并变更副将。",
   ["#fengsui_heg__baoguo-invoke"] = "保国：是否对 %dest 发动？",
   ["#fengsui_heg__baoguo-choice"] = "保国：请选择一项",
   ["fengsui_heg__baoguo_give"] = "交给大势力角色X张牌，然后恢复1点体力",
   ["fengsui_heg__baoguo_transform"] = "变更副将",
   ["#fengsui_heg__baoguo-cards"] = "保国：请选择 %arg 张牌",
-  ["#fengsui_heg__baoguo-major"] = "保国：选择一名大势力角色获得这 %arg 张牌",
+  ["#fengsui_heg__baoguo-major"] = "保国：选择一名大势力角色获得牌",
   ["fengsui_heg__baoguoRemake"] = "保国·旧",
   [":fengsui_heg__baoguoRemake"] = "限定技，当有同势力角色进入濒死状态时，若你为小势力角色，你可以依次令同势力角色选择一项：1.移除副将或将X张牌交给任意一名大势力角色，然后恢复一点体力值；2.摸X张牌（X为当前大势力角色数）。",
   ["#fengsui_heg__baoguoRemake-invoke"] = "保国·旧：是否对 %dest 发动？",
@@ -389,15 +279,15 @@ Fk:loadTranslationTable{
   ["#fengsui_heg__yanzuo"] = "研作：重铸至少两张同类别牌，视为使用对应类别的一张非装备牌",
   ["#fengsui_heg__yanzuo-name"] = "研作：请选择要视为使用的牌，并指定恰好%arg名目标",
   ["fengsui_heg__heyi"] = "和乂",
-  [":fengsui_heg__heyi"] = "当你受到或造成伤害后，你可以获得一名与伤害来源势力相同的其他角色的一张牌，然后你交给其X张牌（X为此伤害值）。",
-  ["#fengsui_heg__heyi-choose"] = "和乂：选择一名与伤害来源 %dest 势力相同的其他角色，获得其一张牌后交给其 %arg 张牌",
-  ["#fengsui_heg__heyi-give"] = "和乂：请交给 %dest %arg 张牌",
+  [":fengsui_heg__heyi"] = "每回合各限一次，当你造成或受到伤害后，你可以展示牌堆顶和牌堆底的各一张牌，然后获得其中一张，并用一张牌替换其中一张。",
+  ["#fengsui_heg__heyi-invoke"] = "和乂：是否展示牌堆顶和牌堆底的牌？",
+  ["#fengsui_heg__heyi-replace"] = "和乂：选择一张牌替换牌堆中的一张牌",
   ["fengsui_heg__pijian"] = "辟剑",
-  [":fengsui_heg__pijian"] = "副将技，其他角色的回合结束阶段，若你拥有本回合进入弃牌堆所包含的所有类别的牌，你可弃置之并对其造成一点雷属性伤害。",
+  [":fengsui_heg__pijian"] = "副将技，其他角色的回合结束后，若你的手牌区有任意本回合被使用过的牌的同名牌，你可以展示并弃置之，然后视为对其使用一张【决斗】。",
   ["#fengsui_heg__pijian-invoke"] = "辟剑：是否对 %dest 发动？",
   ["#fengsui_heg__pijian-card"] = "辟剑：选择一张%arg牌弃置，以对%dest造成1点雷电伤害",
   ["fengsui_heg__zeyu"] = "泽誉",
-  [":fengsui_heg__zeyu"] = "主将技，你计算体力上限时减少1个单独的阴阳鱼。当与你势力相同的角色杀死一名势力不同的角色时，你可令其摸两张牌并选择一项：1.主副将<a href='heg__yiwei'>易位</a>；2.变更副将。",
+  [":fengsui_heg__zeyu"] = "主将技，当与你势力相同的角色因杀死其他角色而执行奖惩后，你可令其变更副将。",
   ["#fengsui_heg__zeyu-invoke"] = "泽誉：是否对 %dest 发动？",
   ["#fengsui_heg__zeyu-choice"] = "泽誉：请选择一项",
   ["fengsui_heg__zeyu_swap"] = "主副将易位",
@@ -422,18 +312,17 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__yangjun"] = "公冶长风",
   ["cv:fengsui_heg__yangjun"] = "暂无",
   ["fengsui_heg__guishang"] = "诡赏",
-  [":fengsui_heg__guishang"] = "出牌阶段，你可以展示任意张牌并选择一个军令，令一名其他角色选择一项：1.执行此军令并获得这些牌；2.弃置等量张牌，然后视为使用一张仅指定其与你的【以逸待劳】。出牌阶段结束时，本回合获得牌唯一最多的角色对唯一最少的角色造成一点伤害。",
-  ["#fengsui_heg__guishang"] = "诡赏：展示至少一张牌并选择一名本回合未以此法选择过的角色",
+  [":fengsui_heg__guishang"] = "出牌阶段限一次，你可以发起一个军令并依次选择所有其他势力各一名角色，你视为对其中不执行的角色使用一张【远交近攻】或【以逸待劳】，其中执行的角色视为对你使用一张【远交近攻】或【以逸待劳】。",
+  ["#fengsui_heg__guishang"] = "诡赏：发起军令并选择各势力角色",
+  ["#fengsui_heg__guishang-target"] = "诡赏：选择势力 %arg 的角色",
+  ["#fengsui_heg__guishang-card"] = "诡赏：选择对 %dest 使用的牌",
   ["#fengsui_heg__guishang-show"] = "诡赏：展示至少一张手牌并令 %dest 选择",
   ["#fengsui_heg__guishang-choice"] = "诡赏：请选择一项",
   ["fengsui_heg__guishang_gain"] = "获得这些牌并执行一个军令",
   ["fengsui_heg__guishang_discard_use"] = "弃置牌，然后视为使用【以逸待劳】",
   ["#fengsui_heg__guishang-discard"] = "诡赏：弃置至少一张与展示牌花色均不同的牌",
   ["fengsui_heg__aobi"] = "拗愎",
-  [":fengsui_heg__aobi"] = "锁定技，回合开始时，你选择一项：1.本回合仅能对自己使用牌，使用一张牌后摸一张牌；2.本回合仅能对其他角色使用牌，每种花色的首张牌可额外选择一名目标。回合结束时，若你本回合未造成过伤害，你失去一点体力值。",
-  ["#fengsui_heg__aobi-choice"] = "拗愎：请选择一项",
-  ["fengsui_heg__aobi_self"] = "本回合仅能对自己使用牌，用一张牌后摸一张牌",
-  ["fengsui_heg__aobi_others"] = "本回合仅能对其他角色使用牌，首次使用一种花色的牌额外结算一次",
+  [":fengsui_heg__aobi"] = "锁定技，你的回合内，若有连续两张被使用的牌使用者相同且目标有相同者，该目标摸一张牌。回合结束时，本回合获得过牌最多的角色对所有未获得过牌的角色造成一点伤害，若该角色不唯一且不为你，则反之。",
   ["$fengsui_heg__guishang1"] = "这是赏给你的！",
   ["$fengsui_heg__guishang2"] = "别争斗，见者有份！",
   ["$fengsui_heg__aobi1"] = "吾权倾朝野，终有一日夺得这天下！",
@@ -517,7 +406,7 @@ Fk:loadTranslationTable{
   [":fengsui_heg__lixi"] = "锁定技，当你进入濒死状态时，你令所有角色的非锁定技失效直至本回合结束。",
   ["#fengsui_heg__lixi-invalid"] = "离徙：所有角色的非锁定技失效直至本回合结束",
   ["fengsui_heg__juansui"] = "狷谇",
-  [":fengsui_heg__juansui"] = "锁定技，当你的体力值变为1时，你摸两张牌并复原你的武将牌，然后你视为使用一张本局未以此法且仅可指定当前回合角色势力角色为目标的普通锦囊牌。",
+  [":fengsui_heg__juansui"] = "锁定技，每回合限一次，当你的体力值变为1时，你摸两张牌并复原你的武将牌，然后你视为使用一张本局未以此法且仅可指定当前回合角色势力角色为目标的普通锦囊牌。",
   ["#fengsui_heg__juansui-use"] = "狷谇：请使用一张本局未以此法使用过的普通锦囊牌",
   ["$fengsui_heg__lixi1"] = "青砖浸透红颜泪，朱墙难困腊梅香。",
   ["$fengsui_heg__lixi2"] = "素衣何惧霜雪重？俯仰无愧，不须低眉！",
@@ -558,7 +447,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__yanrou"] = "公冶长风",
   ["cv:fengsui_heg__yanrou"] = "暂无",
   ["fengsui_heg__choutao"] = "仇讨",
-  [":fengsui_heg__choutao"] = "其他角色的回合结束阶段，若你本回合获得过牌且手牌数大于其，你可对其使用一张无距离限制的【杀】。",
+  [":fengsui_heg__choutao"] = "其他角色的回合结束阶段，若你于此回合内受到过伤害且获得牌的数量大于受到的伤害值，你可以对该角色造成一点伤害。",
   ["#fengsui_heg__choutao-invoke"] = "仇讨：你可以对 %dest 使用一张无距离限制的【杀】",
   ["#fengsui_heg__choutao-use"] = "仇讨：请对 %dest 使用一张无距离限制的【杀】",
   ["fengsui_heg__yongfan"] = "雍番",
@@ -634,7 +523,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__dishang_equip4"] = "进攻坐骑栏",
   ["fengsui_heg__dishang_equip5"] = "宝物栏",
   ["fengsui_heg__fuyin"] = "负胤",
-  [":fengsui_heg__fuyin"] = "准备阶段，所有其他同势力角色可选择用一张牌替换牌堆顶/底的牌。回合结束时，若你于本回合造成的伤害数大于/小于弃置的牌数，所有选择牌堆顶/牌堆底的角色摸两张牌，选择另一项的角色失去一点体力。",
+  [":fengsui_heg__fuyin"] = "锁定技，回合结束时，你亮出牌堆底的X张牌并依次使用其中的牌，若其中有无法被使用的牌，你获得之并失去一点体力（X为你本回合使用过牌的类别数且至少为1）。",
   ["#fengsui_heg__fuyin-invoke"] = "负胤：是否令其他同势力角色选择替换牌堆顶或牌堆底？",
   ["$fengsui_heg__dishang1"] = "此番须拼死一战，以赎戴罪之身。",
   ["$fengsui_heg__dishang2"] = "攻须凭计，守则尽胆。",
@@ -789,11 +678,8 @@ Fk:loadTranslationTable{
   [":fengsui_heg__guru"] = "锁定技，当你仅明置此武将牌时，你摸牌阶段摸牌数+X；当你武将牌均明置且X小于场上势力数时，你与其他角色、其他角色与你的距离+X（X为同势力角色数且至多为2）。",
   ["@fengsui_heg__guru_distance"] = "孤茹距离",
   ["fengsui_heg__weihou"] = "维后",
-  [":fengsui_heg__weihou"] = "当同势力角色的判定牌即将生效时，若你的武将牌均明置，你可以暗置一张武将牌并用装备区的一张牌替代之。",
-  ["#fengsui_heg__weihou-invoke"] = "维后：你可以暗置一张武将牌，用一张装备牌修改 %dest 的判定",
-  ["#fengsui_heg__weihou-hide"] = "维后：选择暗置一张武将牌",
-  ["fengsui_heg__weihou_main"] = "暗置主将",
-  ["fengsui_heg__weihou_deputy"] = "暗置副将",
+  [":fengsui_heg__weihou"] = "当同势力角色的判定牌即将生效时，若你的武将牌均明置，你可以暗置另一张武将牌并用装备区的一张牌替代之。",
+  ["#fengsui_heg__weihou-invoke"] = "维后：你可以暗置另一张武将牌，用一张装备牌修改 %dest 的判定",
   ["$fengsui_heg__guru1"] = "机杼声寒，惟抚此孤成继。",
   ["$fengsui_heg__guru2"] = "丹墀九阶，岂容宵小近御？",
     ["$fengsui_heg__guru3"] = "中庭独守，惟愿皇嗣延祚。",
@@ -871,7 +757,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__jincai_draw"] = "摸两张牌并暗置一张武将牌，本轮对技能发动者的下一次伤害-1",
   ["fengsui_heg__jincai_red"] = "本回合不能使用红色牌",
   ["fengsui_heg__lianxi"] = "连徙",
-  [":fengsui_heg__lianxi"] = "<b>锁定技，</b>与你势力相同的角色明置武将牌数变化后，你令其选择一项：1.弃置一个区域所有牌对当前回合角色造成一点伤害；2.与你副将<a href='heg__yiwei'>易位</a>。",
+  [":fengsui_heg__lianxi"] = "锁定技，与你势力相同的角色明置武将牌数变化后，你令其选择一项：1.弃置一个区域所有牌并对当前回合角色造成一点伤害；2.摸两张牌并与你副将<a href='heg__yiwei'>易位</a>。",
   ["$fengsui_heg__jincai1"] = "笔墨本为诤言劝主，今日只能书写无奈之志。",
   ["$fengsui_heg__jincai2"] = "权贵之心如秋草，昨日喜哀今朝弃之。",
     ["$fengsui_heg__jincai3"] = "才学满腹却无处可施，此乃吾之恨也。",
@@ -891,22 +777,22 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__heqi"] = "夺帅",
   ["cv:fengsui_heg__heqi"] = "暂无",
   ["fengsui_heg__junwei"] = "军巍",
-  [":fengsui_heg__junwei"] = "阵法技，与你处于同一阵列的角色的回合开始时，其可选择一项：若其武将牌均明置，其可以暗置一张武将牌令另一张武将牌上的技能本轮内无视主副将关系；若其有暗置的武将牌，其可以明置所有暗置的武将牌并获得一枚阴阳鱼标记。",
+  [":fengsui_heg__junwei"] = "阵法技，与你处于同一阵列的角色回合开始时，若其武将牌均明置，其可以暗置一张武将牌于本回合获得<a href=':heg__fushou'>“付授”</a>，否则其可以明置一张武将牌并摸两张牌。",
   ["#fengsui_heg__junwei-choice"] = "军巍：你可以暗置或明置武将牌",
-  ["#fengsui_heg__junwei-hide"] = "军巍：暗置一张武将牌，令另一张武将牌上的技能本轮无视主副将关系",
-  ["#fengsui_heg__junwei-reveal"] = "军巍：明置所有暗置武将牌并获得一枚阴阳鱼标记",
-  ["fengsui_heg__junwei_hide"] = "暗置一张武将牌，另一张武将牌上的技能本轮无视主副将关系",
-  ["fengsui_heg__junwei_reveal"] = "明置所有暗置武将牌并获得一枚阴阳鱼标记",
+  ["#fengsui_heg__junwei-hide"] = "军巍：暗置一张武将牌，于本回合获得“付授”",
+  ["#fengsui_heg__junwei-reveal"] = "军巍：明置一张暗置武将牌并摸两张牌",
+  ["fengsui_heg__junwei_hide"] = "暗置一张武将牌，于本回合获得“付授”",
+  ["fengsui_heg__junwei_reveal"] = "明置一张暗置武将牌并摸两张牌",
   ["fengsui_heg__junwei_main"] = "主将",
   ["fengsui_heg__junwei_deputy"] = "副将",
   ["fengsui_heg__junwei_both"] = "主将和副将",
   ["@fengsui_heg__junwei-round"] = "军巍：无视主副将关系",
   ["fengsui_heg__chenji"] = "沉绩",
-  [":fengsui_heg__chenji"] = "主将技，锁定技，同势力角色的阵法技无视其阵法关系；当你的标记数超过全场角色数时，你死亡。",
+  [":fengsui_heg__chenji"] = "主将技，锁定技，同势力角色的阵法技无视其阵法关系。",
   ["fengsui_heg__zhouwang"] = "骤望",
-  [":fengsui_heg__zhouwang"] = "副将技，出牌阶段限一次，你可以将X张阴阳鱼标记当作一张先驱标记使用。若你以此法使用的【知己知彼】观看目标手牌后你与其存在同名牌，本轮你的阵法技无视阵法关系（X为场上已确定的势力数）。",
-  ["#fengsui_heg__zhouwang"] = "骤望：弃置阴阳鱼，选择【知己知彼】的目标",
-  ["@fengsui_heg__zhouwang-round"] = "骤望：阵法无视关系",
+  [":fengsui_heg__zhouwang"] = "副将技，锁定技，此武将牌上单独的阴阳鱼个数-1。当你使用【杀】指定目标后或当你成为【杀】的目标时，你令使用者展示所有手牌并弃置其中牌名唯一多的牌。",
+  ["#fengsui_heg__zhouwang-invoke"] = "骤望：是否令 %dest 视为使用【知己知彼】并摸一张牌？",
+  ["#fengsui_heg__zhouwang-use"] = "骤望：请视为使用【知己知彼】",
   ["$fengsui_heg__junwei1"] = "甲胄鲜明，旌旗照日，随我荡平东南！",
   ["$fengsui_heg__junwei2"] = "山越负险，亦难当我严兵整阵！",
   ["$fengsui_heg__chenji1"] = "新都、建安诸叛既平，此功当铭江表。",
@@ -926,7 +812,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__shenqing"] = "申情",
   [":fengsui_heg__shenqing"] = "限定技，出牌阶段，你可以选择场上两张武将牌，若其中有满足珠联璧合的武将牌，则其所属角色各获得一枚珠联璧合标记；若均不满足，你可以令其中一位所属角色<a href='heg__hebi'>合璧</a>。",
   ["fengsui_heg__juangu"] = "眷故",
-  [":fengsui_heg__juangu"] = "当一名拥有珠联璧合武将牌的角色于回合内首次使用基本牌或普通锦囊牌指定另一名拥有与其配对之珠联璧合武将牌的角色为目标后，若此两张武将牌：不属于同一名角色，你可以令其各摸一张牌；属于同一名角色，你可以令此牌额外执行一次。",
+  [":fengsui_heg__juangu"] = "当一名角色于其回合内首次使用基本牌或普通锦囊牌指定目标后，若目标与其有珠联璧合的武将牌，你可以令二者各摸一张牌或令此牌执行两次。",
   ["$fengsui_heg__shenqing1"] = "字字啼血成赋，句句唤故人归...",
   ["$fengsui_heg__shenqing2"] = "昔年同窗烛今燃，可照前路？",
     ["$fengsui_heg__shenqing3"] = "父亲，阿姊，若在泉下闻此诵，应展颜...",
@@ -1009,7 +895,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__qiaosi_trick"] = "锦囊牌",
   ["fengsui_heg__qiaosi_equip"] = "装备牌",
   ["fengsui_heg__baizu"] = "败族",
-  [":fengsui_heg__baizu"] = "<b>锁定技，</b>结束阶段，若你已受伤且有牌，你需选择场上所有已确定势力各一位其他角色，你与这些角色同时弃置一张牌，弃置类别与你不同的角色失去一点体力。若其因此死亡，你变更副将。",
+  [":fengsui_heg__baizu"] = "锁定技，结束阶段，若你已受伤且有牌，你需选择场上所有已确定势力各一位其他角色，你与这些角色同时弃置一张牌，所有弃置牌类别与其他角色均不同的角色失去一点体力（包括你）。若其因此死亡，你变更副将。",
   ["$fengsui_heg__qiaosi1"] = "身居长位，犹处峭崖之巅。",
   ["$fengsui_heg__qiaosi2"] = "为长而不得承嗣，岂有善终乎？",
   ["$fengsui_heg__baizu1"] = "今袁氏之势，岂独因我？",
@@ -1027,13 +913,10 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__fuhuanghou"] = "佚名",
   ["cv:fengsui_heg__fuhuanghou"] = "暂无",
   ["fengsui_heg__qujian"] = "祛僭",
-[":fengsui_heg__qujian"] = "准备阶段，你可以令至多同势力角色数名角色各摸一张牌，其中手牌数唯一最少的角色视为对唯一最多的角色使用一张雷【杀】，然后你可以与一名以此法摸牌的角色拼点，败者进入连环状态。",
-  ["#fengsui_heg__qujian-choose"] = "祛僭：选择至多 %arg 名角色各摸一张牌",
-  ["#fengsui_heg__qujian-pindian"] = "祛僭：你可以选择一名以此法摸牌的角色拼点",
+[":fengsui_heg__qujian"] = "出牌阶段限一次，你可以弃置所有手牌视为对攻击范围内所有角色使用一张雷【杀】，因此受伤的角色横置武将牌。",
   ["fengsui_heg__weiluan"] = "危鸾",
-  [":fengsui_heg__weiluan"] = "当同势力角色成为一张伤害牌的目标后，若其武将牌均明置，你可以令其暗置一张武将牌，然后其摸两张牌并将一张牌置于牌堆顶。",
-  ["#fengsui_heg__weiluan-invoke"] = "危鸾：是否令 %dest 暗置一张武将牌、摸一张牌并将一张手牌置于牌堆顶？",
-  ["#fengsui_heg__weiluan-top"] = "危鸾：请选择一张手牌置于牌堆顶",
+  [":fengsui_heg__weiluan"] = "当一名同势力角色成为【杀】的目标后，你可以令其横置武将牌并摸一张牌。",
+  ["#fengsui_heg__weiluan-invoke"] = "危鸾：是否令 %dest 横置武将牌并摸一张牌？",
   ["$fengsui_heg__qujian1"] = "踽踽独行，何人援之？",
   ["$fengsui_heg__qujian2"] = "惴惴不安，谁又在暗处窥看？",
   ["$fengsui_heg__weiluan1"] = "大汉四百年基业，岂可毁于曹贼之手？",
@@ -1096,12 +979,18 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__hejiao"] = "公冶长风",
   ["cv:fengsui_heg__hejiao"] = "暂无",
   ["fengsui_heg__jiezhi"] = "节枝",
-  [":fengsui_heg__jiezhi"] = "当其他角色获得你的牌后，若本回合有与之类别不同的牌进入弃牌堆，你可以获得其中第一张。若这两张牌颜色：相同，其本回合无法使用牌指定你为目标；不同，你本回合使用牌无法指定其为目标。",
-  ["#fengsui_heg__jiezhi-invoke"] = "节枝：是否获得最后进入弃牌堆的不同类别牌，并与 %dest 比较颜色？",
+  [":fengsui_heg__jiezhi"] = "锁定技，其他角色获得你的牌后，你展示之；当其他角色获得你的牌后，若弃牌堆有唯一一张与此牌牌名相同的牌，你获得之，然后此回合内你与其无法成为彼此使用牌的目标。",
+  ["#fengsui_heg__jiezhi-invoke"] = "节枝：是否发动？",
   ["fengsui_heg__qingsong"] = "青松",
-  [":fengsui_heg__qingsong"] = "当你成为一张牌的目标后，若你的武将牌均明置，你可以暗置此武将牌并将一张类别不同的牌正面朝上交给一名其他角色，若其与你势力不同且此牌为可使用的基本牌或普通锦囊牌，你于本回合结束后视为使用此牌。",
+  [":fengsui_heg__qingsong"] = "当你成为一张基本牌或普通锦囊牌的目标后，你可以将一张类别不同的牌交给其他角色，此回合结束后，你可以视为使用此牌并摸一张牌。",
+  ["@fengsui_heg__qingsong-phase"] = "青松：",
   ["@fengsui_heg__qingsong-turn"] = "青松：",
-  ["@fengsui_heg__jiezhi-turn"] = "节枝：",
+  ["@fengsui_heg__qingsong-turn1"] = "青松：",
+  ["@fengsui_heg__qingsong-turn2"] = "青松：",
+  ["@fengsui_heg__qingsong_pending"] = "青松：",
+  ["@fengsui_heg__jiezhi-turn"] = "节枝",
+  ["@fengsui_heg__jiezhi-turn1"] = "节枝",
+  ["@fengsui_heg__jiezhi-turn2"] = "节枝",
   ["$fengsui_heg__jiezhi1"] = "元裒如北夏门，拉攞自欲坏，非一木所能支。",
   ["$fengsui_heg__jiezhi2"] = "君问此枝比李何如？",
   ["$fengsui_heg__jiezhi3"] = "礼不可废，身亦不可毁。",
@@ -1196,16 +1085,17 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__jiawu"] = "公冶长风",
   ["cv:fengsui_heg__jiawu"] = "暂无",
   ["fengsui_heg__huaixiang"] = "怀香",
-  [":fengsui_heg__huaixiang"] = "同势力角色的回合内，若每种类别首次有牌因弃置进入弃牌堆，你可获得其中一张并令一名确定势力的角色本回合视为未确定势力。",
-  ["#fengsui_heg__huaixiang-card"] = "怀香",
+  [":fengsui_heg__huaixiang"] = "同势力角色的回合内每种类别限一次，若有牌不因使用或打出而置入弃牌堆后，你可获得其中一张并令一名确定势力的角色本回合视为未确定势力。",
+  ["#fengsui_heg__huaixiang-card"] = "怀香：选择一张本回合首次因弃置进入弃牌堆的牌",
   ["#fengsui_heg__huaixiang-target"] = "怀香：令一名确定势力的角色本回合视为未确定势力",
-  ["@fengsui_heg__huaixiang-turn"] = "怀香：视为未确定势力",
+  ["@fengsui_heg__huaixiang-turn"] = "怀香",
+  ["@fengsui_heg__huaixiang_category-turn"] = "怀香",
   ["fengsui_heg__huaixiangRemake"] = "怀香·旧",
   [":fengsui_heg__huaixiangRemake"] = "出牌阶段，你可以重铸一张本回合未进入弃牌堆类别的牌并选择一名已确定势力的角色，其本回合视为未确定势力。",
   ["fengsui_heg__liusu"] = "流愫",
-  [":fengsui_heg__liusu"] = "出牌阶段限一次，你可以重铸一张牌，若此牌合法目标中包含任意名未确定势力角色，回合结束后你可以令等量名角色将手牌摸至体力上限。",
+  [":fengsui_heg__liusu"] = "出牌阶段限一次，你可以重铸一张牌，若此牌合法目标中包含任意名未确定势力角色，回合结束后你可以令至多等量名角色将手牌摸至体力上限。",
   ["#fengsui_heg__liusu"] = "流愫：重铸一张牌，并记录其合法目标中的未确定势力角色数",
-  ["@fengsui_heg__liusu_unknown-turn"] = "流愫 %arg",
+  ["@fengsui_heg__liusu_unknown-turn"] = "流愫",
   ["#fengsui_heg__liusu-fill"] = "流愫：选择 %arg 名角色将手牌摸至体力上限",
   ["fengsui_heg__liusuRemake"] = "流愫·旧",
   [":fengsui_heg__liusuRemake"] = "出牌阶段限一次，你可以弃置一张牌并获得弃牌堆第一张与此牌合法目标数相同的非同名基本牌或普通锦囊牌。若其合法目标中包含任意名未确定势力角色，回合结束后你可以令等量名角色将手牌摸至体力上限。",
@@ -1232,10 +1122,10 @@ Fk:loadTranslationTable{
   ["fengsui_heg__yuyuan"] = "逾垣",
   [":fengsui_heg__yuyuan"] = "你于每回合使用的首张单体基本牌或普通锦囊牌可以额外指定任意名未确定势力角色为目标，若其中没有角色受到伤害且你的武将牌均明置，你暗置此武将牌。",
   ["#fengsui_heg__yuyuan-extra"] = "逾垣：额外指定未确定势力角色为目标",
-  ["fengsui_heg__ruxiang"] = "擩香",
+  ["fengsui_heg__ruxiang"] = "濡香",
   [":fengsui_heg__ruxiang"] = "当你明置此武将牌时，你可以使用一张牌（不计入次数）；当你受到或造成伤害后，你可以重铸至多等同于此伤害值张牌。",
-  ["#fengsui_heg__ruxiang-use"] = "擩香：你可以使用一张牌（不计入次数）",
-  ["#fengsui_heg__ruxiang-recast"] = "擩香：你可以重铸至多%arg张牌",
+  ["#fengsui_heg__ruxiang-use"] = "濡香：你可以使用一张牌（不计入次数）",
+  ["#fengsui_heg__ruxiang-recast"] = "濡香：你可以重铸至多%arg张牌",
   ["$fengsui_heg__yuyuan1"] = "高墙虽险，难阻此心向卿。",
   ["$fengsui_heg__yuyuan2"] = "嘘……莫要惊动了巡夜之人。",
   ["$fengsui_heg__yuyuan3"] = "贾公面前，还需……多加收敛。",
@@ -1257,13 +1147,10 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__kuaishi"] = "公冶长风",
   ["cv:fengsui_heg__kuaishi"] = "暂无",
   ["fengsui_heg__hejue"] = "合珏",
-  [":fengsui_heg__hejue"] = "当你受到伤害后或结束阶段，你可以选择至多两张武将牌，若为两张珠联璧合的武将牌，则其对应角色各摸一张牌；若对应角色数为1，你可以令其<a href='heg__hebi'>合璧</a>。",
-  ["#fengsui_heg__hejue-invoke1"] = "合珏：是否发动？",
-  ["#fengsui_heg__hejue-invoke2"] = "合珏：结束阶段是否发动？",
-  ["#fengsui_heg__hejue-choose"] = "合珏：选择一张或两张武将牌对应的角色",
-  ["#fengsui_heg__hejue-choice"] = "合珏：请选择一项",
-  ["fengsui_heg__hejue_hebi"] = "令其合璧",
-  ["fengsui_heg__hejue_transform"] = "令其变更副将",
+  [":fengsui_heg__hejue"] = "当你受到伤害后，你可以选择至多两名角色，若其中有两张珠联璧合的武将牌，则其对应角色各摸一张牌，否则你选择其中一名同势力角色<a href='heg__hebi'>合璧</a>。",
+  ["#fengsui_heg__hejue-invoke"] = "合珏：是否发动？",
+  ["#fengsui_heg__hejue-choose"] = "合珏：选择至多两名角色",
+  ["#fengsui_heg__hejue-hebi"] = "合珏：选择一名角色令其合璧",
   ["fengsui_heg__hexi"] = "貉隙",
   [":fengsui_heg__hexi"] = "当你于摸牌阶段外获得牌后，你可以将装备区一张牌移动至一名其他角色的对应区域，然后你选择一项：1.令其对当前回合角色造成一点伤害；2.若其武将牌均明置，暗置其一张武将牌且本回合无法明置。",
   ["#fengsui_heg__hexi-choose"] = "貉隙：选择一名其他角色",
@@ -1294,7 +1181,7 @@ Fk:loadTranslationTable{
   ["#fengsui_heg__fumiao-pindian"] = "浮邈：选择一张手牌与牌堆底的牌比较点数",
   ["#fengsui_heg__fumiao-top"] = "浮邈：选择一张拼点牌置于牌堆顶",
   ["fengsui_heg__ruwu"] = "如晤",
-  [":fengsui_heg__ruwu"] = "锁定技，每当有角色获得或使用标记后，你摸一张牌，若为珠联璧合标记，你摸两张牌，若其势力与你不同，你弃置X张牌获得一枚阴阳鱼标记或变更副将。（X为场上拥有标记的角色数）",
+  [":fengsui_heg__ruwu"] = "锁定技，每当有角色获得或使用标记后，你摸一张牌（珠联璧合改为两张）。若其与你势力不同，你弃置X张牌并选择一项：1.获得一枚阴阳鱼；2.变更副将（X为你拥有的标记数）。",
   ["$fengsui_heg__fumiao1"] = "浮生若梦，梦中有山水，梦中有知音，梦中亦有宦争。",
   ["$fengsui_heg__fumiao2"] = "离宦独行数十年，到得暮年终方悟。",
     ["$fengsui_heg__fumiao3"] = "于竹林中悟得物外之趣，于遁世处探得天地之理。",
@@ -1335,7 +1222,7 @@ Fk:loadTranslationTable{
 
 Fk:loadTranslationTable{
   ["fengsui_heg"] = "烽燧燎原",
-  ["heg__hebi"] = "合璧：变更副将的子集。玩家主将需有对应珠联璧合武将牌方可进行合璧；玩家选择合璧后将副将变更为主将对应的珠联璧合武将牌，然后获得一枚珠联璧合标记；如果没有与之配对的珠联璧合对象则自动变更副将。<br>",
+  ["heg__hebi"] = "合璧：将副将变更为与主将配对且本局未被变更过的珠联璧合武将牌，然后获得一枚珠联璧合标记。一局游戏里每张武将牌只能被变更一次；如果没有与之配对的珠联璧合对象则自动变更副将。变更副将时，目标武将牌须为本局未被变更过且不存活于场上的新武将牌（暗置武将牌也计入场上）。",
 }
 
 Fk:loadTranslationTable{
@@ -1370,6 +1257,9 @@ Fk:loadTranslationTable{
   ["#FenshuangTransfer"] = "受【%arg】影响，下一道作用于 %from 的军令改为由 %to 执行",
   ["#fengsui_heg__fudao-invoke"] = "覆倒：是否弃置所有手牌，令对 %dest 造成的伤害增加 %arg 点？",
   ["#fengsui_heg__juangu-invoke"] = "眷故：是否发动技能结算珠联璧合武将牌的效果？",
+  ["#fengsui_heg__juangu-choice"] = "眷故：请选择一项",
+  ["fengsui_heg__juangu_draw"] = "令二者各摸一张牌",
+  ["fengsui_heg__juangu_twice"] = "令此牌执行两次",
   ["#fengsui_heg__bizun-invoke"] = "迁宫：选择一名失去某个区域最后一张牌的同势力角色，令其摸一张牌",
   ["#fengsui_heg__qingsong-give"] = "青松：请选择一张与当前牌类别不同的手牌",
   ["#fengsui_heg__qingsong-to"] = "青松：选择一名其他角色，将所选手牌正面朝上交给其",
@@ -1466,54 +1356,39 @@ Fk:loadTranslationTable{
 }
 
 
-local fk = fk
-local H = require "packages.fengsui.hegemony_util"
-
-  zhugelian.subkingdom = "wu"
-  xunguan.subkingdom = "qun"
-  liuchen:addCompanions("fengsui_heg__cuizhi")
-  cuizhi:addCompanions("fengsui_heg__liuchen")
-  liufuren:addCompanions("hs__yuanshao")
-  wangqian:addCompanions("fengsui_heg__weijie")
-  weijie:addCompanions("fengsui_heg__wangqian")
-  xixuan:addCompanions("fengsui_heg__wangxizhi")
-  zhugelian:addCompanions("heg__simazhou")
-  wangxizhi:addCompanions("fengsui_heg__xixuan")
-  lemin:addCompanions("heg__simaying")
-  biyu:addCompanions("heg__simaliang")
   Fk:loadTranslationTable{
-    ["#fengsui_heg__wangqian"]="谆梦长枕", ["#fengsui_heg__weijie"]="怀梦千古", ["#fengsui_heg__panyue"]="念卿耿耿", ["#fengsui_heg__shanxia"]="峻绳豪右", ["#fengsui_heg__lemin"]="闺牵时难", ["#fengsui_heg__songyi"]="清管流尘", ["#fengsui_heg__jinsister"]="双曜并宫", ["#fengsui_heg__biyu"]="弦声见幸", ["#fengsui_heg__xixuan"]="女中笔仙", ["#fengsui_heg__wangxizhi"]="翰墨流觞", ["#fengsui_heg__wenqiao"]="盟江靖难",
-    ["fengsui_heg__wangqian"]="王倩", ["fengsui_heg__weijie"]="卫玠", ["fengsui_heg__panyue"]="潘岳", ["fengsui_heg__shanxia"]="山遐", ["fengsui_heg__lemin"]="乐敏", ["fengsui_heg__songyi"]="宋祎", ["fengsui_heg__jinsister"]="靳月光靳月华", ["fengsui_heg__biyu"]="碧玉", ["fengsui_heg__xixuan"]="郗璿", ["fengsui_heg__wangxizhi"]="王羲之", ["fengsui_heg__wenqiao"]="温峤",
+    ["#fengsui_heg__wangqian"]="谆梦长枕", ["#fengsui_heg__weijie"]="怀梦千古", ["#fengsui_heg__panan"]="念卿耿耿", ["#fengsui_heg__shanxia"]="峻绳豪右", ["#fengsui_heg__lemin"]="闺牵时难", ["#fengsui_heg__songyi"]="清管流尘", ["#fengsui_heg__jinsister"]="双曜并宫", ["#fengsui_heg__biyu"]="弦声见幸", ["#fengsui_heg__xixuan"]="女中笔仙", ["#fengsui_heg__wangxizhi"]="翰墨流觞", ["#fengsui_heg__wenqiao"]="盟江靖难",
+    ["fengsui_heg__wangqian"]="王倩", ["fengsui_heg__weijie"]="卫玠", ["fengsui_heg__panan"]="潘安", ["fengsui_heg__shanxia"]="山遐", ["fengsui_heg__lemin"]="乐敏", ["fengsui_heg__songyi"]="宋祎", ["fengsui_heg__jinsister"]="靳月光靳月华", ["fengsui_heg__biyu"]="碧玉", ["fengsui_heg__xixuan"]="郗璿", ["fengsui_heg__wangxizhi"]="王羲之", ["fengsui_heg__wenqiao"]="温峤",
     ["designer:fengsui_heg__wangqian"]="公冶长风",
     ["designer:fengsui_heg__weijie"]="公冶长风",
-    ["designer:fengsui_heg__panyue"]="公冶长风",
+    ["designer:fengsui_heg__panan"]="公冶长风",
     ["designer:fengsui_heg__shanxia"]="公冶长风",
     ["designer:fengsui_heg__lemin"]="公冶长风",
     ["designer:fengsui_heg__songyi"]="公冶长风",
     ["designer:fengsui_heg__jinsister"]="公冶长风",
     ["designer:fengsui_heg__biyu"]="公冶长风",
     ["designer:fengsui_heg__xixuan"]="公冶长风",
-    ["designer:fengsui_heg__wangxizhi"]="公冶长风",
-    ["designer:fengsui_heg__wenqiao"]="公冶长风",
+    ["designer:fengsui_heg__wangxizhi"]="Mayday",
+    ["designer:fengsui_heg__wenqiao"]="Mayday",
     [":fengsui_heg__yaxi"]="每轮限一次，当一名其他角色发动其武将牌上的技能后，若其本轮已发动过此技能且其武将牌均明置，你可以令其摸一张牌，然后暗置其拥有此技能的武将牌（本回合内不能明置）。",
-    [":fengsui_heg__xiarong"]='当一名与你势力相同的角色受到伤害后，若你与其武将牌均明置，你可以暗置你与其各一张武将牌，若如此做，其恢复一点体力值（若为你则直接暗置此武将牌即可）。若此伤害有来源，且你与其均不在伤害来源的攻击范围内，你明置此武将牌。',
-    [":fengsui_heg__shenyu"]='每回合结束后，若本回合角色于其回合内弃置过牌且数量大于体力值，你可以令其将手牌数调整至体力值。',
+    [":fengsui_heg__xiarong"]="当一名同势力角色受到伤害后，若你与其武将牌均明置，你可以暗置此武将牌与其一张武将牌，若如此做，其恢复一点体力值。",
+    [":fengsui_heg__shenyu"]='每回合结束后，若本回合角色于其回合内弃置过牌且数量不小于体力值，你可以令其将手牌数调整至体力值。',
     [":fengsui_heg__siji"]='当你受到或造成伤害后，你可以弃置一张牌令当前回合角色本回合手牌上限+1，或若当前回合角色手牌上限不为0，你可以摸一张牌令其本回合手牌上限-1。',
-    [":fengsui_heg__daoli"]='限定技，当其他同势力角色死亡时，你可以获得其所有牌和国战标记，并于此回合结束后获得一个仅拥有其武将牌上技能的额外出牌阶段。此阶段结束后弃置所有因此获得的牌。',
-    [":fengsui_heg__beiqiu"]='<b>锁定技，</b>①当一名与你势力相同/不同的角色明置或变更武将牌后，你与其各摸/弃置一张牌。②首个成为此技能①目标的其他角色死亡后，你弃置所有牌。③当你死亡时，你令一名其他同势力角色对你发动“悼离”（若有）。',
-    [":fengsui_heg__kuohu"]='出牌阶段限一次，你可以令一名在你攻击范围内的角色选择一项：1.若其武将牌均明置，其暗置一张武将牌且本回合不能明置武将牌；若其有暗置武将牌，其明置一张武将牌，然后你获得其一张牌；2.你摸两张牌，本回合你对其使用牌没有次数限制。',
-    [":fengsui_heg__qiongbu"]='每回合限一次，当有其他角色明置或暗置武将牌后，若此武将牌已明置且其与你明置武将牌数不同，你可以令其选择一项：1.调整至与你相同并摸两张牌；2.你对其造成1点伤害。',
-    [":fengsui_heg__juanyi"]="当一名与你势力相同的角色一次性获得至少两张牌后，你可以令其摸一张牌并将一张牌交给另一名角色，若该角色与你势力不同，其弃置该角色一张牌。",
-    [":fengsui_heg__lishi"]='当一名与你势力相同的角色一次性失去至少两张牌后，若其手牌数不大于体力值，你可以交给其一张牌并摸一张牌。',
+    [":fengsui_heg__daoli"]="限定技，当其他同势力角色死亡时，你可以获得其所有牌和国战标记，并于此回合结束后执行一个仅拥有其武将牌上技能的额外出牌阶段。此阶段结束后你弃置因此法获得的牌。",
+    [":fengsui_heg__beiqiu"]="锁定技，当一名与你势力相同/不同的角色明置或变更武将牌后，你与其各摸/弃置一张牌，首个因此摸或弃牌的其他角色死亡后，你弃置所有牌。当你死亡时，你可以选择一名其他同势力角色对你发动“悼离”。",
+    [":fengsui_heg__kuohu"]='出牌阶段，你可以令一名在你攻击范围内的其他角色根据其已明置武将牌数执行并摸一张牌：2，暗置一张武将牌（本回合无法明置）；1或0，明置一张武将牌。若其势力与你不同，此技能本轮失效。',
+    [":fengsui_heg__qiongbu"]='当一名角色明置或暗置武将牌后，若你的武将牌均明置且其已均明置，你可以与其各摸一张牌，否则你可以暗置此武将牌并对其造成一点伤害。',
+    [":fengsui_heg__juanyi"]="当一名同势力角色一次性获得至少两张牌后，你可以令其摸一张牌并将一张牌交给另一名角色，若该角色与其势力不同，其弃置该角色一张牌。",
+    [":fengsui_heg__lishi"]="当一名同势力角色一次性失去至少两张牌后，若其手牌数不大于体力值，你可以交给其一张牌并摸一张牌。",
     [":fengsui_heg__qinghuang"]="当一名其他同势力角色于其回合内使用一张牌结算结束后，若此牌与其本回合使用的上一张牌颜色相同且类别不同，你可以与其副将<a href='heg__yiwei'>易位</a>，然后你与其各摸一张牌。",
     [":fengsui_heg__pinliu"]="锁定技，当此武将牌与其他角色的武将牌<a href='heg__yiwei'>易位</a>后，易位前后控制此武将牌的角色各展示一张手牌。点数较大的角色选择一项：1.获得另一名角色展示的牌，然后摸两张牌；2.令另一名角色变更副将。",
-    [":fengsui_heg__jiaosu"]="主将技，当一名同势力角色成为不同势力角色使用的单体目标牌的目标后，你可以主副将<a href='heg__yiwei'>易位</a>并取消此目标，然后其摸一张牌。当一名成为过此技能前半段效果的同势力角色脱离濒死状态后，你令其复原武将牌并于此回合结束后获得一个额外的出牌阶段。",
-    [":fengsui_heg__chuguang"]='锁定技，当你于一轮内第X次发动“皎宿”或“曜暝”后，你令一名同势力角色摸X张牌，然后“皎宿”或“曜暝”失效直至本轮结束；当一名成为过“皎宿”/“曜暝”目标的角色脱离濒死状态后/死亡后，其复原武将牌并于此回合结束后获得一个额外的出牌阶段/你失去一点体力并暗置变更副将（X为同势力角色数）。',
-    [":fengsui_heg__yaoming"]="副将技，当一名同势力角色使用单体目标牌指定不同势力角色为目标后，你可以主副将<a href='heg__yiwei'>易位</a>为此牌增加一名合法目标，然后其摸一张牌。当一名成为过此技能前半段效果的同势力角色死亡后，你失去一点体力并暗置变更副将。",
-    [":fengsui_heg__qusheng"]='每回合限一次，当一张牌因使用或打出进入弃牌堆后，若弃牌堆中有与此牌牌名相同且颜色不同的另一张牌，你可以获得弃牌堆中的另一张，并将因使用或打出的此牌置于牌堆顶。',
-    [":fengsui_heg__jinshi"]='锁定技，当你的另一张武将牌明置、被移除或变更后，若你的武将牌均明置，你暗置此武将牌，然后失去1点体力；当此武将牌下次明置时，你将手牌摸至体力上限，然后可以使用一张牌。',
+    [":fengsui_heg__jiaosu"]="主将技，当一名同势力角色成为不同势力角色使用的单体目标牌的目标后，你可以主副将<a href='heg__yiwei'>易位</a>并取消此目标，然后其摸一张牌。",
+    [":fengsui_heg__chuguang"]="锁定技，当你于一轮内第X次发动“皎宿”或“曜暝”后，你令一名同势力角色摸X张牌然后“皎宿”或“曜暝”失效直至本轮结束；当一名成为过“皎宿”/“曜暝”目标的角色脱离濒死状态后/死亡后，其复原武将牌并于此回合结束后获得一个额外的出牌阶段/你失去一点体力并暗置变更副将（X为同势力角色数）。",
+    [":fengsui_heg__yaoming"]="副将技，当一名同势力角色使用单体目标牌指定不同势力角色为目标后，你可以主副将<a href='heg__yiwei'>易位</a>为此牌增加一名合法目标，然后其摸一张牌。",
+    [":fengsui_heg__qusheng"]='当一张基本牌或普通锦囊牌因使用而进入弃牌堆后，若弃牌堆有与此牌牌名相同且颜色不同的另一张牌，你可以获得之，然后将原牌置于牌堆顶。',
+    [":fengsui_heg__jinshi"]='锁定技，当你明置另一张武将牌后，你失去一点体力值并暗置此武将牌。你下次明置此武将牌时将手牌摸至体力上限。',
     [":fengsui_heg__nizi"]='当一名与你势力相同的角色于其回合内使用的基本牌或普通锦囊牌结算后，你可以弃置任意枚名字字数之和等于此牌牌名字数的国战标记，视为使用此牌，然后若你的武将牌均明置，你暗置此武将牌。',
-    [":fengsui_heg__buge"]="当你明置武将牌后或受到伤害后，你可以随机获得一枚国战标记（概率：珠联璧合10%/阴阳鱼50%/先驱10%/<a href=':fengsui_heg_ascend_skill&'>升</a>10%/<a href=':fengsui_heg__descend_skill&'>降</a>20%）。",
+    [":fengsui_heg__buge"]="当你明置此武将牌后或受到伤害后，你可以随机获得一枚国战标记。",
     [":fengsui_heg__fuyang"]="锁定技，当你首次明置此武将牌后，你获得一枚<a href=':fengsui_heg_ascend_skill&'>“升”</a>和一枚<a href=':fengsui_heg__descend_skill&'>“降”</a>。",
     [":fengsui_heg__zhuiji"]='出牌阶段，若你本局游戏使用过国战标记，你可以获得一枚与你上次使用的国战标记同名的标记，然后此技能失效直至你累计造成或受到X点伤害（X为该标记名字的字数）。',
     ["#fengsui_heg__tishi-slash"]="体势：选择一名角色，视为对其使用雷【杀】",
@@ -1532,15 +1407,21 @@ local H = require "packages.fengsui.hegemony_util"
     ["#fengsui_heg__qusheng-invoke"]="取声：是否获得同名异色牌？", ["#fengsui_heg__jinshi-use"]="噤誓：你可以使用一张牌",
     ["#fengsui_heg__nizi-choice"]="拟字：选择要弃置的国战标记组合",
     ["#fengsui_heg__cimang-invoke"]="刺芒：是否获得牌堆底的一张牌？",
-    ["#fengsui_heg__qiju-use"]="戚举：是否将此基本牌转化为其他基本牌？",
-    ["fengsui_heg__siji_up"]="令当前回合角色手牌上限+1",
+    ["#fengsui_heg__qiju-use"]="戚举：是否将此基本牌转化为其他基本牌？", ["#fengsui_heg__qiju-slash"]="戚举：是否使用一张【杀】？",
+    ["fengsui_heg__siji_up"]="弃置一张牌并令当前回合角色手牌上限+1",
     ["fengsui_heg__siji_down"]="摸一张牌并令当前回合角色手牌上限-1",
-    ["fengsui_heg__kuohu_reveal"]="明置一张武将牌并交给括户者一张牌",
-    ["fengsui_heg__kuohu_hide"]="暗置一张武将牌并摸一张牌",
+    ["fengsui_heg__kuohu_reveal"]="明置一张武将牌",
+    ["fengsui_heg__kuohu_hide"]="暗置一张武将牌",
+    ["#fengsui_heg__kuohu-choice"]="括户：请选择一张武将牌执行明置或暗置",
+    ["#fengsui_heg__kuohu-gain"]="括户：选择获得 %dest 一张牌",
     ["fengsui_heg__kuohu_main"]="暗置主将",
     ["fengsui_heg__kuohu_deputy"]="暗置副将",
     ["@!!fengsui_heg_ascend"]="升",
+    [":@!!fengsui_heg_ascend"]="出牌阶段，你可以弃置一枚“升”，回复1点体力。", ["@!!fengsui_heg_ascend1"]="升", [":@!!fengsui_heg_ascend1"]="出牌阶段，你可以弃置一枚“升”，回复1点体力。",
     ["@!!fengsui_heg__descend"]="降",
+    [":@!!fengsui_heg__descend"]="出牌阶段，你可以弃置一枚“降”，受到1点无来源伤害。", ["@!!fengsui_heg__descend1"]="降", [":@!!fengsui_heg__descend1"]="出牌阶段，你可以弃置一枚“降”，受到1点无来源伤害。",
+    ["@@fengsui_heg_ascend"]="升", ["@@fengsui_heg__descend"]="降",
+    [":@@fengsui_heg_ascend"]="升", [":@@fengsui_heg__descend"]="降",
     ["fengsui_heg_ascend"]="升",
     ["fengsui_heg__descend"]="降",
     ["fengsui_heg_ascend_skill&"]="升",
@@ -1552,14 +1433,14 @@ local H = require "packages.fengsui.hegemony_util"
 
     [":fengsui_heg__tishi"]='锁定技，当你的体力值每轮首次变为：3点，你获得一枚阴阳鱼标记；2点，你获得一枚先驱标记；1点，你视为使用一张雷【杀】（不计入次数）。',
     [":fengsui_heg__dunmeng"]='限定技，当有角色执行击杀奖惩时，你可以将此次奖惩改为摸2X张牌与暗置变更副将（X为游戏轮数）。',
-    [":fengsui_heg__shangmu"]='当一名角色即将受到伤害时，若此伤害令其进入濒死状态，你可以明置此武将牌并为所有角色（不包括此受伤角色）选择一个军令，你可将此次伤害来源改为其中任意一位执行军令的角色（你执行军令的方向改为由原伤害来源向你发起）。',
-    [":fengsui_heg__chaohua"]='出牌阶段，你可以选择一名武将牌均明置的角色，暗置其一张武将牌并选择一项：1.令其摸两张牌且本回合此武将牌无法明置；2.重置其一个发动过的限定技并移除此选项。若你选择的角色与你势力不同，此技能本回合失效。',
-    [":fengsui_heg__qiju"]='限定技，出牌阶段，本轮内：你可以令所有武将牌明置数量与你不同的角色变为未确定势力（不改变获胜条件）。然后武将牌明置数量与你相同的角色可对任意一名未确定势力的角色使用一张【杀】。',
+    [":fengsui_heg__shangmu"]='当一名角色即将受到致命伤害时，你可以明置此武将牌并令其为除其之外的所有角色选择一个军令，然后你可将此次伤害来源改为其中一位执行此军令的角色。若为你且你的武将牌均明置，你暗置此武将牌。',
+    [":fengsui_heg__chaohua"]="出牌阶段限两次，你可以选择一名武将牌均明置的角色，暗置其一张武将牌并选择一项：1.令其摸两张牌且本回合此武将牌无法明置；2.重置其一个发动过的限定技并移除此选项。",
+    [":fengsui_heg__qiju"]='限定技，出牌阶段，本轮内：你可以令所有武将牌明置数量与你不同的角色变为未确定势力（不改变获胜条件）。然后武将牌明置数量与你相同的角色可对任意一名未确定势力角色使用一张【杀】。',
     [":fengsui_heg__cimang"]="当你明置此武将牌后，你可以获得牌堆底的一张牌（若此牌可使用则使用之且无距离次数限制）。",
     [":fengsui_heg__quchi"]="当你造成或受到伤害后，若你的武将牌均明置，你可以暗置此武将牌，重铸两张牌并进行等量次判定，然后将两张判定牌分别置于牌堆顶和牌堆底，若两张判定牌颜色一致，你明置此武将牌。",
     ["fengsui_heg__zhugelian"]="诸葛涟", ["#fengsui_heg__zhugelian"]="琅琊王妃", ["designer:fengsui_heg__zhugelian"]="公冶长风",
     ["fengsui_heg__xunguan"]="荀灌",
-    ["#fengsui_heg__xiangchen-invoke"]="相谶：是否观看武将牌并令其获得一个技能？", ["#fengsui_heg__xiangchen-choose"]="相谶：选择一张武将牌和其上的一个技能", ["#fengsui_heg__xiangchen-hide"]="相谶：选择暗置主将或副将", ["#fengsui_heg__xiangchen-skill"]="相谶：选择令其获得的技能", ["fengsui_heg__xiangchen_main"]="暗置主将", ["fengsui_heg__xiangchen_deputy"]="暗置副将", ["#fengsui_heg__shigong-skill"]="示恭：获得妒戮并摸牌", ["#fengsui_heg__bingyao-invoke"]="并曜：是否取消 %dest 的目标？", ["#fengsui_heg__bingyao-add"]="并曜：是否为此牌增加一名目标？", ["#fengsui_heg__daoli-invoke"]="悼离：是否发动？",
+    ["@@fengsui_heg__daoli"]="悼离", ["#fengsui_heg__xiangchen-invoke"]="相谶：是否观看武将牌并令其获得一个技能？", ["#fengsui_heg__xiangchen-choose"]="相谶：选择一张武将牌和其上的一个技能", ["#fengsui_heg__xiangchen-hide"]="相谶：选择暗置主将或副将", ["#fengsui_heg__xiangchen-skill"]="相谶：选择令其获得的技能", ["fengsui_heg__xiangchen_main"]="暗置主将", ["fengsui_heg__xiangchen_deputy"]="暗置副将", ["#fengsui_heg__shigong-skill"]="示恭：获得妒戮并摸牌", ["#fengsui_heg__bingyao-invoke"]="并曜：是否取消 %dest 的目标？", ["#fengsui_heg__bingyao-add"]="并曜：是否为此牌增加一名目标？", ["#fengsui_heg__daoli-invoke"]="悼离：是否发动？",
     ["fengsui_heg__liuchen"]="刘谌", ["fengsui_heg__liufuren"]="刘懿君", ["#fengsui_heg__liufuren"]="酷妒伏身", ["fengsui_heg__zhangyu"]="张裕", ["#fengsui_heg__zhangyu"]="谶照兴亡",
     ["fengsui_heg__dulu"]="妒戮", [":fengsui_heg__dulu"]="当你即将造成伤害时，若目标明置的武将牌数与你不同，你可以令其选择一项：1.弃置手牌区或装备区的所有牌（至少一张）防止此伤害；2.令你摸一张牌。",
     ["fengsui_heg__shigong"]="示恭", [":fengsui_heg__shigong"]="限定技，当你于回合外进入濒死状态时，若你的副将未被移除，你可以移除副将，然后令当前回合角色选择一项：1.其获得<a href='fengsui_heg__dulu'>妒戮</a>并摸X张牌，然后你将体力回复至1点（X为其体力上限）；2.你将体力回复至体力上限。",
@@ -1569,9 +1450,9 @@ local H = require "packages.fengsui.hegemony_util"
     ["fengsui_heg__xiangchen"]="相谶", [":fengsui_heg__xiangchen"]="每回合限一次，当一名同势力角色的体力值发生变化后，若当前回合角色已确定势力且不为野心家，你可以观看剩余武将池中与当前回合角色势力与勾玉相同的X张武将牌，并选择其中一张武将牌上的一个技能令其获得。其下个回合结束后，移除所有以此法获得的技能并摸等量张牌（X为当前回合角色所属势力的角色数）。",
     ["fengsui_heg__mingding"]="命定", [":fengsui_heg__mingding"]="限定技，与你势力相同的角色进入濒死状态时，若其曾因“相谶”获得过技能且其副将未被移除，你可以令其将体力值恢复至1，移除其副将，然后令其随机获得一个其因“相谶”获得过的技能。",
     ["fengsui_heg__dulu_discard"]="弃置一个区域的所有牌防止伤害", ["fengsui_heg__dulu_hand"]="弃置手牌区", ["fengsui_heg__dulu_equip"]="弃置装备区", ["fengsui_heg__dulu_draw"]="令刘懿君摸一张牌", ["fengsui_heg__shigong_gain"]="获得妒戮并摸牌", ["fengsui_heg__shigong_full"]="回复至体力上限", ["#fengsui_heg__liuchen"]="血守北地", ["fengsui_heg__cuizhi"]="崔芷", ["#fengsui_heg__cuizhi"]="微光之火",
-    ["fengsui_heg__zhanjue"]="战绝", [":fengsui_heg__zhanjue"]="出牌阶段，你可以将所有手牌当作决斗对一名势力与你不同的角色使用。此决斗中，对方可以弃置装备区的所有牌视为打出一张【杀】。",
-    ["fengsui_heg__lieying"]="烈荧", [":fengsui_heg__lieying"]="限定技，当你使用一张单目标牌指定其他角色为目标后，你可以失去一点体力令此牌无法被响应。",
-    ["fengsui_heg__ranlv"]="燃缕", [":fengsui_heg__ranlv"]="当有角色受到锦囊牌造成的伤害后，若你的武将牌均明置，你可以暗置此武将牌并横置你与受伤角色，若你已横置，你可以令一名势力与你相同的角色合璧。",
+    ["fengsui_heg__zhanjue"]="战绝", [":fengsui_heg__zhanjue"]="出牌阶段限一次，你可以将所有手牌当作决斗对一名势力与你不同的角色使用。此决斗中，双方可以弃置装备区的所有牌视为打出一张【杀】。",
+    ["fengsui_heg__lieying"]="烈荧", [":fengsui_heg__lieying"]="限定技，当你使用一张单目标基本牌或普通锦囊牌指定其他角色为目标后，你可以失去一点体力令此牌无法被响应。",
+    ["fengsui_heg__ranlv"]="燃缕", [":fengsui_heg__ranlv"]="当有角色受到锦囊牌造成的伤害后，若你的武将牌均明置，你可以暗置此武将牌并横置你与受伤角色，若你已横置，你可以令一名势力与你相同的角色<a href='heg__hebi'>合璧</a>。",
     ["fengsui_heg__juexun"]="绝殉", [":fengsui_heg__juexun"]="当你失去所有手牌后，你可以令本回合下一次全场造成的伤害改为火焰伤害；若你因此受到此伤害，你摸两张牌并横置。",
     ["$fengsui_heg__cimang1"]="闺中英雄志四方，雄藏兵甲胜儿郎！", ["$fengsui_heg__cimang2"]="生死关头，别人谁肯冲围？",
     ["$fengsui_heg__quchi1"]="军情如火情，将军不可迟慢！", ["$fengsui_heg__quchi2"]="束袖轻旗，穿营破阵！",
@@ -1583,7 +1464,7 @@ local H = require "packages.fengsui.hegemony_util"
     ["$fengsui_heg__daoli5"]="之子归穷泉，重壤永幽隔。", ["$fengsui_heg__daoli6"]="独无李氏灵，髣髴覩尔容。", ["$fengsui_heg__daoli7"]="抚衿长叹息，不觉涕沾胸。", ["$fengsui_heg__daoli8"]="徘徊墟墓间，欲去复不忍。",
     ["$fengsui_heg__beiqiu1"]="览花莳之时育兮，察盛衰之所托。", ["$fengsui_heg__beiqiu2"]="感冬索而春敷兮，嗟夏茂而秋落。", ["$fengsui_heg__beiqiu3"]="蝉暳暳而寒吟，雁飘飘而南飞。",
     ["$fengsui_heg__beiqiu4"]="望庐思其人，入室想所历。", ["$fengsui_heg__beiqiu5"]="孤魂独茕茕，安知灵与无。", ["$fengsui_heg__beiqiu6"]="谁谓帝宫远，路极悲有余。", ["$fengsui_heg__beiqiu7"]="荏苒冬春谢，寒暑忽流易。", ["$fengsui_heg__beiqiu8"]="落叶委埏侧，枯荄带坟隅。", ["$fengsui_heg__beiqiu9"]="床空委清尘，室虚来悲风。", ["$fengsui_heg__beiqiu10"]="尔祭讵几时，朔望忽复尽。", ["$fengsui_heg__beiqiu11"]="亹亹朞月周，戚戚弥相愍。", ["$fengsui_heg__beiqiu12"]="悲怀感物来，泣涕应情陨。",
-    ["~fengsui_heg__panyue"]="可谓白首同所归……",
+    ["~fengsui_heg__panan"]="可谓白首同所归……",
     ["$fengsui_heg__yaxi1"]="既已知过，便当自省。", ["$fengsui_heg__yaxi2"]="锋芒太露，终非长久之道。", ["$fengsui_heg__yaxi3"]="少言以养德，慎行以全身。", ["$fengsui_heg__yaxi4"]="卫家清谈，不在喧声。",
     ["$fengsui_heg__xiarong1"]="我儿素弱，还望诸君稍存宽宥。", ["$fengsui_heg__xiarong2"]="伤人者未必有意，护者岂可无意？", ["$fengsui_heg__xiarong3"]="容人一分，便是为自己留路。", ["$fengsui_heg__xiarong4"]="卫门虽清贵，亦难久经风霜。",
     ["~fengsui_heg__wangqian"]="我儿尚未远行，怎忍先赴黄泉……",
@@ -1626,17 +1507,18 @@ local H = require "packages.fengsui.hegemony_util"
     ["$fengsui_heg__mingding1"]="春秋百载，死疾死戾，死灾死刑，何以谓长生？", ["$fengsui_heg__mingding2"]="我闻君子不施己欲于人，今徒作金刀俎上脍尔。",
     ["~fengsui_heg__zhangyu"]="我不畏死，君何以死而吓我邪？",
     ["#fengsui_heg__lieying-invoke"]="烈荧：是否失去1点体力令此牌无法被响应？", ["#fengsui_heg__juexun-invoke"]="绝殉：是否令本回合下一次伤害改为火焰伤害？", ["#fengsui_heg__xunguan"]="不遁云影", ["designer:fengsui_heg__xunguan"]="公冶长风",
-    ["fengsui_heg__chaohua"]="朝华", ["fengsui_heg__qiju"]="戚举", ["fengsui_heg__cimang"]="刺芒", ["fengsui_heg__quchi"]="驱驰",
+    ["fengsui_heg__chaohua"]="朝华", ["fengsui_heg__qiju"]="戚举", ["fengsui_heg__cimang"]="刺芒", ["fengsui_heg__quchi"]="驱驰", ["@fengsui_heg__ban_reveal-turn"]=" ", ["@fengsui_heg__ban_reveal-round"]="禁亮：",
     ["#fengsui_heg__quchi-invoke"]="驱驰：是否暗置此武将牌并重铸两张牌进行判定？", ["#fengsui_heg__quchi-target"]="驱驰：选择置于牌堆顶的判定牌",
     ["fengsui_heg__yaxi"]="揠息", ["fengsui_heg__xiarong"]="遐容", ["fengsui_heg__shenyu"]="神毓", ["fengsui_heg__siji"]="思疾", ["fengsui_heg__daoli"]="悼离", ["fengsui_heg__beiqiu"]="悲秋", ["fengsui_heg__kuohu"]="括户", ["fengsui_heg__qiongbu"]="穷逋", ["fengsui_heg__juanyi"]="眷易", ["fengsui_heg__lishi"]="离室", ["fengsui_heg__qinghuang"]="清篁", ["fengsui_heg__pinliu"]="品流", ["fengsui_heg__jiaosu"]="皎宿", ["fengsui_heg__chuguang"]="黜光", ["fengsui_heg__yaoming"]="曜暝", ["fengsui_heg__qusheng"]="取声", ["fengsui_heg__jinshi"]="噤誓", ["fengsui_heg__nizi"]="拟字", ["fengsui_heg__buge"]="不隔", ["fengsui_heg__fuyang"]="俯仰", ["fengsui_heg__zhuiji"]="追迹", ["fengsui_heg__tishi"]="体势", ["fengsui_heg__shangmu"]="赏募", ["fengsui_heg__dunmeng"]="敦盟",
-    ["fengsui_heg__shenyu_track"]="神毓·记录", ["fengsui_heg__shenyu_reset"]="神毓·重置", ["fengsui_heg__quchi_empty"]="驱驰·余势", ["fengsui_heg__daoli_extra"]="悼离·余势", ["fengsui_heg__daoli_on_death"]="悼离·承接",
+    ["#fengsui_heg__shenyu_track"]="", ["#fengsui_heg__shenyu_reset"]="", ["#fengsui_heg__quchi_empty"]="", ["#fengsui_heg__daoli_extra"]="", ["#fengsui_heg__daoli_on_death"]="",
     ["@fengsui_heg__zhuiji"]="追迹",
     ["@fengsui_heg__tishi"]="体势",
     ["@fengsui_heg__siji"]="思疾",
-    ["@fengsui_heg__beiqiu_target"]="悲秋目标", ["fengsui_heg__beiqiu_target"]="悲秋目标",
-    ["@fengsui_heg__jiaosu_target"]="皎宿目标座次", ["@fengsui_heg__yaoming_target"]="曜暝目标座次", ["@fengsui_heg__jiaosu_count-round"]="皎宿目标座次", ["@fengsui_heg__yaoming_count-round"]="曜暝目标座次",
-    ["@fengsui_heg__chuguang_disabled-round"]="黜光：失效技能",
-    ["@fengsui_heg__yuchen-turn"]="毓尘：",
+    ["@fengsui_heg__beiqiu_target"]="悲秋", ["fengsui_heg__beiqiu_target"]="悲秋",
+    ["@fengsui_heg__yanshi_target"]="魇誓",
+    ["@fengsui_heg__jiaosu_target"]="皎宿", ["@fengsui_heg__yaoming_target"]="曜暝",
+    ["@fengsui_heg__chuguang_disabled-round"]="黜光",
+    ["@fengsui_heg__yuchen-turn"]="毓尘",
   ["#fengsui_heg__shangmu-invoke"]="赏募：是否明置此武将牌并发起军令？", ["#fengsui_heg__shangmu-source"]="赏募：选择此次伤害来源", ["#fengsui_heg__dunmeng-invoke"]="敦盟：是否替换此次击杀奖惩？",
   ["#fengsui_heg__chuguang-target"] = "黜光：选择一名同势力角色摸牌",
     ["#fengsui_heg__qiongbu-adjust"] = "穷逋：是否将其明置武将牌数量调整至与你相同并摸两张牌？",
@@ -1675,7 +1557,7 @@ Fk:loadTranslationTable{
   ["designer:fengsui_heg__hanmi"] = "公冶长风", ["illustrator:fengsui_heg__hanmi"] = "公冶长风", ["cv:fengsui_heg__hanmi"] = "暂无",
   ["fengsui_heg__chengtiao"] = "承祧", [":fengsui_heg__chengtiao"] = "当有角色获得国战标记后，你可以重铸其获得此标记的标记字数张牌。当场上有角色获得珠联璧合标记后，你可以将此武将牌变更为贾谧并令一名角色获得“门荫”或“绝嗣”。",
   ["fengsui_heg__juesi"] = "绝嗣", [":fengsui_heg__juesi"] = "锁定技，你的回合内，其他所有武将牌明置数量与你不同的角色视为未确定势力角色（不改变奖惩）。",
-  ["fengsui_heg__menyin"] = "门荫", [":fengsui_heg__menyin"] = "主将技，限定技，此武将牌上阴阳鱼数量-1。出牌阶段，若你所在势力为大势力，你可以令一名武将牌均明置的同势力角色合璧。",
+  ["fengsui_heg__menyin"] = "门荫", [":fengsui_heg__menyin"] = "主将技，限定技，此武将牌上阴阳鱼数量-1。出牌阶段开始时，若你所在势力为大势力，你可以令一名武将牌均明置的同势力角色<a href='heg__hebi'>合璧</a>。",
   ["fengsui_heg__jiami"] = "贾谧", ["#fengsui_heg__jiami"] = "金谷延宾",
   ["designer:fengsui_heg__jiami"] = "公冶长风", ["illustrator:fengsui_heg__jiami"] = "公冶长风", ["cv:fengsui_heg__jiami"] = "暂无",
     ["fengsui_heg__yanyu"] = "延誉", [":fengsui_heg__yanyu"] = "当一名与你势力相同的角色明置武将牌后，若你的武将牌均明置，你可以令其选择一项：1.摸两张牌，本轮无法再明置任何武将牌；2.获得一枚阴阳鱼标记，然后你弃置一张牌并暗置此武将牌。",
@@ -1699,35 +1581,57 @@ Fk:loadTranslationTable{
   ["fengsui_heg__zuosizuofen"] = "左思左棻", ["#fengsui_heg__zuosizuofen"] = "洛下双锋", ["designer:fengsui_heg__zuosizuofen"] = "公冶长风",
   ["fengsui_heg__douwudoumiao"] = "窦武窦妙", ["#fengsui_heg__douwudoumiao"] = "椒房共济", ["designer:fengsui_heg__douwudoumiao"] = "公冶长风",
   ["fengsui_heg__yandu"] = "研都", [":fengsui_heg__yandu"] = "当你明置此武将牌后，你可以依次重铸一张本次未以此法重铸过的类别的牌。",
-  ["fengsui_heg__chongjing"] = "憧京", [":fengsui_heg__chongjing"] = "锁定技，当你重铸牌后，你需选择一名本轮未以此法选择过的势力的角色令其使用此重铸牌。若其无法使用此牌或此牌无合法目标，其或你失去一点体力。",
-  ["fengsui_heg__aishan"] = "哀扇", [":fengsui_heg__aishan"] = "每个势力每轮限一次，当有角色体力值变化后不大于你且你的武将牌均明置，你可以暗置此武将牌并展示你与其各一张牌，根据牌面信息依次执行：颜色、花色、牌名一致，你获得这两张牌、你重铸这两张牌、你变更副将。",
-  ["fengsui_heg__bahuan"] = "拔宦", [":fengsui_heg__bahuan"] = "回合开始时，你可以选择场上所有势力各一名武将牌明置数不大于你的角色，对其依次造成一点伤害，然后其可以交给你一张牌并恢复一点体力。",
+  ["fengsui_heg__chongjing"] = "憧京", [":fengsui_heg__chongjing"] = "锁定技，当你重铸牌后，你需令一名本轮未以此法选择过势力的角色使用此重铸牌。若其未使用此牌/此技能无合法目标，其/你失去一点体力值。",
+  ["fengsui_heg__aishan"] = "哀扇", [":fengsui_heg__aishan"] = "每个势力每轮限一次，当有角色体力值变化后不大于你且你的武将牌均明置，你可以暗置此武将牌并展示你与其各一张手牌，若这些牌：颜色/花色/牌名一致，你获得之/重铸之/变更副将。",
+  ["fengsui_heg__bahuan"] = "拔宦", [":fengsui_heg__bahuan"] = "回合开始时，你可以选择场上所有势力各一名其他角色且其武将牌明置数不大于你的角色，对其依次造成一点伤害，然后其可以交给你一张牌并恢复一点体力。",
   ["fengsui_heg__youhuan"] = "幽寰", [":fengsui_heg__youhuan"] = "锁定技，当有角色受到伤害后，若伤害来源与你势力相同且你的武将牌均明置，你暗置此武将牌并令此伤害-1。",
+  ["$fengsui_heg__yandu1"] = "十载磨锋，今朝赋成三都。",
+  ["$fengsui_heg__yandu2"] = "一赋惊京洛，纸贵满都城。",
+  ["$fengsui_heg__yandu3"] = "文章自有千钧骨，何须朱门借声名？",
+  ["$fengsui_heg__yandu4"] = "残墨重研，再续西晋风流。",
+  ["$fengsui_heg__aishan1"] = "宫扇一摇，荣辱尽付西风。",
+  ["$fengsui_heg__aishan2"] = "同根一脉，岂容骨肉相望？",
+  ["$fengsui_heg__aishan3"] = "妾以寸心托翰墨，君可识字外情？",
+  ["$fengsui_heg__aishan4"] = "旧字犹堪重题，旧情却难重续。",
+  ["$fengsui_heg__chongjing1"] = "十年磨就三都赋，今朝携卷叩京华。",
+  ["$fengsui_heg__chongjing2"] = "兄长文章惊洛下，天下何处不识君？",
+  ["$fengsui_heg__chongjing3"] = "妾亦胸藏锦绣句，奈何身入帝王家。",
+  ["$fengsui_heg__chongjing4"] = "纵隔宫墙千重锁，吾心犹念旧时花。",
+  ["$fengsui_heg__chongjing5"] = "此卷相赠，莫负京城所望。",
+  ["$fengsui_heg__chongjing6"] = "天下纵广，终有一席容才。",
+  ["$fengsui_heg__bahuan1"] = "宦竖窃柄，岂容汉阙蒙尘！",
+  ["$fengsui_heg__bahuan2"] = "诸贤并起，誓清禁闼之奸。",
+  ["$fengsui_heg__bahuan3"] = "一击破奸胆，忠骨岂容欺！",
+  ["$fengsui_heg__bahuan4"] = "以血涤宫闱，以身卫汉祚！",
+  ["$fengsui_heg__youhuan1"] = "深宫重帷，亦当为汉室遮风。",
+  ["$fengsui_heg__youhuan2"] = "君臣同心，幽宫自有回春日。",
+  ["$fengsui_heg__youhuan3"] = "一念系社稷，幽闺岂惧风波？",
+  ["$fengsui_heg__youhuan4"] = "父亲既决，女儿便替汉室守住宫门！",
+  ["~fengsui_heg__zuosizuofen"] = "三都已成，离思难赋……",
+  ["~fengsui_heg__douwudoumiao"] = "忠臣竟殒禁闼……父亲……父亲……",
   ["#fengsui_heg__yandu-choice"] = "研都：选择本次重铸的牌类别",
   ["#fengsui_heg__yandu-card"] = "研都：选择要重铸的牌",
-  ["fengsui_heg__yandu_type_0"] = "基本牌", ["fengsui_heg__yandu_type_1"] = "锦囊牌", ["fengsui_heg__yandu_type_2"] = "装备牌",
+  ["fengsui_heg__yandu_type_1"] = "基本牌", ["fengsui_heg__yandu_type_2"] = "锦囊牌", ["fengsui_heg__yandu_type_3"] = "装备牌",
   ["#fengsui_heg__chongjing-target"] = "憧京：选择一名本轮未选择过势力的角色",
   ["#fengsui_heg__chongjing-use"] = "憧京：使用重铸的牌",
-  ["@fengsui_heg__chongjing_kingdom-round"] = "憧京：",
+  ["@fengsui_heg__chongjing_kingdom-round"] = "憧京",
   ["#fengsui_heg__aishan-card"] = "哀扇：选择一张牌展示",
-  ["@fengsui_heg__aishan_kingdom-round"] = "哀扇：",
+  ["@fengsui_heg__aishan_kingdom-round"] = "哀扇",
   ["#fengsui_heg__bahuan-target"] = "拔宦：选择一名角色",
   ["#fengsui_heg__bahuan-give"] = "拔宦：是否交给窦武一张牌并恢复体力？",
   ["#fengsui_heg__bahuan-give-card"] = "拔宦：交给窦武一张牌",
 }
 
+Fk:loadTranslationTable{
+  ["#fengsui_heg__baoguo-execute"] = "保国：是否交牌给一名大势力角色，然后回复1点体力并变更副将？",
+  ["#fengsui_heg__xiarong-invoke"] = "遐容：是否暗置武将牌，令 %dest 回复1点体力？",
+  ["#fengsui_heg__aishan-invoke"] = "哀扇：是否暗置此武将牌，与 %dest 各展示一张牌？",
+}
+
 require "packages.fengsui.pkg.fengsui_hebi.option_translations"
 
-assert(#extension.generals == 43, "fengsui_hebi must register exactly 43 generals")
+-- hidden 武将仍会保留在 Package.generals 中；按可选武将数量校验，避免
+-- 不同引擎版本对 hidden 项的统计方式影响包加载。
+local visible_generals = table.filter(extension.generals, function(g) return not g.hidden end)
+assert(#visible_generals == 12, "fengsui_hebi must register exactly 12 visible generals")
 return extension
-
-
-
-
-
-
-
-
-
-
-

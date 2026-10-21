@@ -6,14 +6,15 @@ local menyin = fk.CreateSkill {
 
 menyin:addEffect(fk.EventPhaseStart, {
   can_trigger = function(self, _, target, player)
-    return target == player and player:hasShownSkill(self.name) and player.phase == Player.Play and
+    return target == player and player:hasShownSkill(self.name) and
+      H.inGeneralSkills(player, self.name) == "m" and player.phase == Player.Play and
       player:usedSkillTimes(self.name, Player.HistoryGame) == 0 and
       H.isBigKingdomPlayer(player)
   end,
   on_use = function(self, _, _, player)
     local room = player.room
     local candidates = table.filter(room.alive_players, function(p)
-      return p ~= player and H.compareKingdomWith(p, player) and
+      return H.compareKingdomWith(p, player) and
         p.general ~= "anjiang" and p.deputyGeneral ~= "anjiang"
     end)
     if #candidates == 0 then return end

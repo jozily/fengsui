@@ -27,11 +27,12 @@ liusu:addEffect("active", {
   on_use = function(self, room, effect)
     local player = effect.from
     local card = Fk:getCardById(effect.cards[1])
-    local x = #getUnknownTargets(player, card)
     room:recastCard(effect.cards, player, liusu.name)
+    -- 重铸会同步结算怀香；人数必须在怀香令角色变为未确定势力后再计算。
+    local x = #getUnknownTargets(player, card)
     if x > 0 then
       room:setPlayerMark(player, unknown_num_mark, x)
-      room:setPlayerMark(player, visible_mark, x)
+      room:setPlayerMark(player, visible_mark, "目标" .. x)
     end
   end,
 })
@@ -44,14 +45,14 @@ liusu:addEffect(fk.TurnEnd, {
   on_cost = function(self, event, target, player, data)
     local x = player:getMark(unknown_num_mark)
     local tos = player.room:askToChoosePlayers(player, {
-      min_num = x,
+      min_num = 1,
       max_num = x,
       targets = player.room.alive_players,
       prompt = "#fengsui_heg__liusu-fill:::" .. x,
       skill_name = liusu.name,
       cancelable = true,
     })
-    if #tos == x then
+    if #tos > 0 and #tos <= x then
       event:setCostData(self, {tos = tos})
       return true
     end

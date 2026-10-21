@@ -8,10 +8,12 @@ local juansui = fk.CreateSkill{
 juansui:addEffect(fk.HpChanged, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(juansui.name) and player.hp == 1 and data.old ~= 1
+    return target == player and player:hasSkill(juansui.name) and
+      player:getMark("fengsui_heg__juansui_used-turn") == 0 and player.hp == 1 and data.old ~= 1
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
+    room:setPlayerMark(player, "fengsui_heg__juansui_used-turn", 1)
     player:drawCards(2, juansui.name)
     player:reset()
 

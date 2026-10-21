@@ -17,6 +17,7 @@ end
 
 dexiang:addEffect(fk.TargetSpecified, {
   anim_type = "defensive",
+  on_cost = function() return true end,
   can_trigger = function(self, event, target, player, data)
     return player:hasSkill(dexiang.name) and
       (data.card.type == Card.TypeBasic or data.card:isCommonTrick()) and

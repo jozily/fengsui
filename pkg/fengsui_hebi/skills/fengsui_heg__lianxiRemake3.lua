@@ -1,7 +1,7 @@
 local H = require "packages.fengsui.hegemony_util"
 
 local lianxi = fk.CreateSkill{
-  name = "fengsui_heg__lianxi",
+  name = "fengsui_heg__lianxiRemake3",
 }
 
 lianxi:addEffect(fk.GeneralHidden, {
@@ -11,7 +11,7 @@ lianxi:addEffect(fk.GeneralHidden, {
       H.compareKingdomWith(target, player) and data ~= "fengsui_heg__zhangbai"
   end,
   on_cost = function(self, event, target, player, data)
-    if player.room:askToSkillInvoke(player, { skill_name = lianxi.name, prompt = "#fengsui_heg__lianxi-invoke::" .. target.id }) then
+    if player.room:askToSkillInvoke(player, { skill_name = lianxi.name, prompt = "#fengsui_heg__lianxiRemake3-invoke::" .. target.id }) then
        return true
     end
   end,
@@ -52,7 +52,7 @@ lianxi:addEffect(fk.GeneralHidden, {
         min_num = 1,
         max_num = 1,
         skill_name = lianxi.name,
-        prompt = "#fengsui_heg__lianxi-swap"
+        prompt = "#fengsui_heg__lianxiRemake3-swap"
       })
       if #to_swap > 0 then
          H.swapDeputy(room, player, to_swap[1])
@@ -62,8 +62,8 @@ lianxi:addEffect(fk.GeneralHidden, {
 })
 
 Fk:loadTranslationTable{
- ["#fengsui_heg__lianxi-invoke"] = "连徙：令 %dest 弃置一个区域所有牌并对当前角色造成1点伤害，然后你与队友副将易位",
-  ["#fengsui_heg__lianxi-swap"] = "连徙：请选择一名同势力角色进行副将易位",
+ ["#fengsui_heg__lianxiRemake3-invoke"] = "连徙：令 %dest 弃置一个区域所有牌并对当前角色造成1点伤害，然后你与队友副将易位",
+  ["#fengsui_heg__lianxiRemake3-swap"] = "连徙：请选择一名同势力角色进行副将易位",
   ["lianxi_hand"] = "手牌区",
   ["lianxi_equip"] = "装备区",
   ["lianxi_judge"] = "判定区",

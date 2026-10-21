@@ -1,59 +1,37 @@
 local H = require "packages.fengsui.hegemony_util"
-local yisang = fk.CreateSkill { name = "fengsui_heg__yisang" }
-
--- 记录本回合场上上一张使用或打出的牌颜色。
-yisang:addEffect(fk.CardUsing, {
+local yisang = fk.CreateSkill {name = "fengsui_heg__yisang"}
+local lastMark = "fengsui_heg__yisang_last-turn"
+for _, timing in ipairs({fk.PreCardUse, fk.CardResponding}) do
+  yisang:addEffect(timing, {
+    global = true, mute = true,
+    can_refresh = function(self, _, target, _, data)
+      return target and target.room.current and data.card and not (data.extra_data and data.extra_data.yisang_recorded)
+    end,
+    on_refresh = function(self, _, target, _, data)
+      local room = target.room
+      data.extra_data = data.extra_data or {}
+      data.extra_data.yisang_recorded = true
+      local previous = room.current:getTableMark(lastMark)
+      data.extra_data.yisang_previous_color = previous.color
+      room:setPlayerMark(room.current, lastMark, {color = data.card.color})
+    end,
+  })
+end
+yisang:addEffect(fk.TargetConfirmed, {
   global = true,
-  mute = true,
-  can_refresh = function(self, _, target, _, data)
-    return target and target.room.current == target and data.card ~= nil
-  end,
-  on_refresh = function(self, _, target, _, data)
-    target.room:setPlayerMark(target, "fengsui_heg__yisang_last_color-turn", data.card.color)
-  end,
-})
-yisang:addEffect(fk.CardResponding, {
-  global = true,
-  mute = true,
-  can_refresh = function(self, _, target, _, data)
-    return target and target.room.current == target and data.card ~= nil
-  end,
-  on_refresh = function(self, _, target, _, data)
-    target.room:setPlayerMark(target, "fengsui_heg__yisang_last_color-turn", data.card.color)
-  end,
-})
-
-yisang:addEffect(fk.TargetSpecified, {
-  anim_type = "support",
   can_trigger = function(self, _, target, player, data)
-    local recipient = data.to
-    if not target or not recipient or not player:hasSkill(self.name) or
-      not H.compareKingdomWith(recipient, player) or not data.card then return false end
-    local last = target:getMark("fengsui_heg__yisang_last_color-turn")
-    return last ~= 0 and last == data.card.color
+    local extra = data.use.extra_data
+    return player:hasSkill(yisang.name) and H.compareKingdomWith(target, player) and not target:isNude() and
+      extra and extra.yisang_previous_color ~= nil and extra.yisang_previous_color == data.card.color
   end,
-  on_cost = function(self, event, target, player, data)
-    local recipient = data.to
-    if player.room:askToSkillInvoke(player, {
-      skill_name = self.name, prompt = "#fengsui_heg__yisang-invoke::" .. recipient.id,
-    }) then
-      event:setCostData(self, { to = recipient })
-      return true
-    end
+  on_cost = function(self, event, target, player)
+    local cards = player.room:askToCards(target, {min_num = 1, max_num = 1, include_equip = true,
+      skill_name = yisang.name, prompt = "#fengsui_heg__yisang-recast", cancelable = true})
+    if #cards > 0 then event:setCostData(self, cards); return true end
   end,
-  on_use = function(self, event, _, player)
-    local recipient = event:getCostData(self).to
-    if recipient:isNude() then return end
-    local ids = player.room:askToChooseCards(recipient, {
-      target = recipient, flag = "he", min = 1, max = 1,
-      skill_name = self.name, prompt = "#fengsui_heg__yisang-recast",
-    })
-    if #ids > 0 then player.room:recastCard(ids, recipient, self.name) end
+  on_use = function(self, event, target, player)
+    player.room:recastCard(event:getCostData(self), target, yisang.name)
   end,
 })
-
-Fk:loadTranslationTable {
-  ["#fengsui_heg__yisang-recast"] = "诒桑：选择一张牌重铸",
-}
-
+Fk:loadTranslationTable{["#fengsui_heg__yisang-recast"] = "诒桑：你可以重铸一张牌"}
 return yisang

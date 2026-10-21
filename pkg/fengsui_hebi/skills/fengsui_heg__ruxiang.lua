@@ -99,8 +99,8 @@ ruxiang:addEffect(fk.Damage, {
 })
 
 Fk:loadTranslationTable{
-  ["#fengsui_heg__ruxiang-use"] = "擩香：你可以使用一张牌（不计入次数）",
-  ["#fengsui_heg__ruxiang-recast"] = "擩香：你可以重铸至多 %arg 张牌",
+  ["#fengsui_heg__ruxiang-use"] = "濡香：你可以使用一张牌（不计入次数）",
+  ["#fengsui_heg__ruxiang-recast"] = "濡香：你可以重铸至多 %arg 张牌",
 }
 
 return ruxiang

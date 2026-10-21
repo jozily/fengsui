@@ -50,6 +50,19 @@ zhuiji:addEffect(fk.AfterSkillEffect, {
     player.room:setPlayerMark(player, ZNAME .. "-last", markForSkill(data))
   end,
 })
+
+-- 标记技能之外，拟字、周王、陈梦等技能会直接消耗国战标记。统一的
+-- HegMarkChanged 事件记录这些消耗，保证“上次使用过的标记”不会漏记。
+zhuiji:addEffect(H.HegMarkChanged, {
+  global = true,
+  can_refresh = function(self, _, target, player, data)
+    return target == player and data and data.action == "use" and usedSkills[data.markName] == nil and
+      table.contains({ "yinyangfish", "vanguard", "companion", "wild", "fengsui_heg_ascend", "fengsui_heg__descend" }, data.markName)
+  end,
+  on_refresh = function(self, _, _, player, data)
+    player.room:setPlayerMark(player, ZNAME .. "-last", data.markName)
+  end,
+})
 local function reduce(self, player)
   local n = player:getMark(ZNAME .. "-damage")
   if n > 0 then player.room:setPlayerMark(player, ZNAME .. "-damage", n - 1) end

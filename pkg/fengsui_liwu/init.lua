@@ -12,6 +12,13 @@ local yanrou = General:new(extension, "fengsui_heg__yanrou", "wei", 4)
 yanrou:addCompanions("hs__caocao")
 yanrou:addSkills { "fengsui_heg__choutao", "fengsui_heg__yongfan" }
 
+local sunsuo = General:new(extension, "fengsui_heg__sunsuo", "wei", 3, 3, General.Female)
+sunsuo:addSkills { "fengsui_heg__fenshuang", "fengsui_heg__yingmian" }
+
+local liuxun = General:new(extension, "fengsui_heg__liuxun", "wei", 3,3, General.Female)
+liuxun:addSkill("fengsui_heg__neixi")
+liuxun:addSkill("fengsui_heg__wuli")
+
 local mamiao = General:new(extension, "fengsui_heg__mamiao", "shu", 4)
 mamiao:addCompanions("fengsui_heg__lixian")
 mamiao:addSkill("fengsui_heg__zhangguan")
@@ -35,12 +42,30 @@ fengsui_heg__limi:addCompanions("fengsui_heg__qiaozhou", "fengsui_heg__chenshou"
 fengsui_heg__limi:addSkill("fengsui_heg__ciying")
 fengsui_heg__limi:addSkill("fengsui_heg__chendu")
 
+local zhangyu = General:new(extension, "fengsui_heg__zhangyu", "shu", 3)
+zhangyu:addSkills { "fengsui_heg__xiangchen", "fengsui_heg__mingding" }
+
+local wuxian = General:new(extension, "fengsui_heg__wuxian", "shu", 3, 3, General.Female)
+wuxian:addCompanions("hs__liubei")
+wuxian:addCompanions("ol_heg__wuyi")
+wuxian:addSkills { "fengsui_heg__guixiang", "fengsui_heg__fumian" }
+
 local xushi = General:new(extension, "fengsui_heg__xushi", "wu", 3, 3, General.Female)
 xushi:addSkill("fengsui_heg__fuzhu")
 xushi:addSkill("fengsui_heg__chenmeng")
 
 local heqi = General:new(extension, "fengsui_heg__heqi", "wu", 4)
+heqi.deputyMaxHpAdjustedValue = -1
 heqi:addSkills { "fengsui_heg__junwei", "fengsui_heg__chenji", "fengsui_heg__zhouwang" }
+
+local heji = General:new(extension, "fengsui_heg__heji", "wu", 3, 3, General.Female)
+heji:addCompanions("fengsui_heg__sunyuan")
+heji:addSkills { "fengsui_heg__guru", "fengsui_heg__weihou" }
+
+local zhanghuai = General:new(extension, "fengsui_heg__zhanghuai", "wu", 3)
+zhanghuai.gender = General.Female
+zhanghuai:addCompanions("ld__lukang")
+zhanghuai:addSkills { "fengsui_heg__laoyan", "fengsui_heg__jueyan" }
 
 local gongsunxiu = General:new(extension, "fengsui_heg__gongsunxiu", "qun", 4)
 gongsunxiu:addCompanions("ld__gongsunyuan")
@@ -55,18 +80,109 @@ fengsui_heg__fuhuanghou.gender = General.Female
 fengsui_heg__fuhuanghou:addSkill("fengsui_heg__qujian")
 fengsui_heg__fuhuanghou:addSkill("fengsui_heg__weiluan")
 
+local tianchou = General:new(extension, "fengsui_heg__tianchou", "qun", 4)
+tianchou:addSkills { "fengsui_heg__shoujie" }
+
+local liufuren = General:new(extension, "fengsui_heg__liufuren", "qun", 3, 3, General.Female)
+liufuren:addSkills { "fengsui_heg__dulu", "fengsui_heg__shigong" }
+
+local douwu = General:new(extension, "fengsui_heg__douwudoumiao", "qun", 4, 4, General.Bigender)
+douwu:addSkills { "fengsui_heg__bahuan", "fengsui_heg__youhuan" }
+
 local hulie = General:new(extension, "fengsui_heg__hulie", "jin", 4)
 hulie:addSkills { "fengsui_heg__kunshi", "fengsui_heg__fudao" }
 
 local zuti = General:new(extension, "fengsui_heg__zuti", "jin", 4)
 zuti:addSkills { "fengsui_heg__kangying", "fengsui_heg__jietu" }
 
+local fengsui_heg__wangrong = General:new(extension, "fengsui_heg__wangrong", "jin", 3)
+fengsui_heg__wangrong:addCompanions("fengsui_heg__shantao")
+fengsui_heg__wangrong:addCompanions("fengsui_heg__hejiao")
+fengsui_heg__wangrong:addSkill("fengsui_heg__fumiao")
+fengsui_heg__wangrong:addSkill("fengsui_heg__ruwu")
+
+local fengsui_heg__xiejiu = General:new(extension, "fengsui_heg__xiejiu", "jin", 3)
+fengsui_heg__xiejiu.gender = General.Female
+fengsui_heg__xiejiu:addSkill("fengsui_heg__yuchen")
+fengsui_heg__xiejiu:addSkill("fengsui_heg__guitu")
+
+local jiabao = General:new(extension, "fengsui_heg__jiabao", "jin", 3, 3, General.Female)
+jiabao:addSkills { "fengsui_heg__gaofan", "fengsui_heg__canyun" }
+jiabao:addCompanions("heg__simajiong")
+
+local wangqian = General:new(extension, "fengsui_heg__wangqian", "jin", 3, 3, General.Female)
+wangqian:addSkills { "fengsui_heg__yaxi", "fengsui_heg__xiarong" }
+
+local weijie = General:new(extension, "fengsui_heg__weijie", "jin", 3)
+weijie:addSkills { "fengsui_heg__shenyu", "fengsui_heg__siji" }
+
+local lemin = General:new(extension, "fengsui_heg__lemin", "jin", 3, 3, General.Female)
+lemin:addSkills { "fengsui_heg__juanyi", "fengsui_heg__lishi" }
+
+local shanxia = General:new(extension, "fengsui_heg__shanxia", "jin", 4)
+shanxia:addSkills { "fengsui_heg__kuohu", "fengsui_heg__qiongbu" }
+
+local songyi = General:new(extension, "fengsui_heg__songyi", "jin", 3)
+songyi:addSkills { "fengsui_heg__qinghuang", "fengsui_heg__pinliu" }
+
+local jin_yueguang = General:new(extension, "fengsui_heg__jinsister", "jin", 3, 3, General.Female)
+jin_yueguang:addSkills { "fengsui_heg__jiaosu", "fengsui_heg__yaoming", "fengsui_heg__chuguang" }
+
+local biyu = General:new(extension, "fengsui_heg__biyu", "jin", 4, 4, General.Female)
+biyu:addSkills { "fengsui_heg__qusheng", "fengsui_heg__jinshi" }
+
+local xixuan = General:new(extension, "fengsui_heg__xixuan", "jin", 3, 3, General.Female)
+xixuan:addSkills { "fengsui_heg__nizi", "fengsui_heg__buge" }
+
+local wangxizhi = General:new(extension, "fengsui_heg__wangxizhi", "jin", 4)
+wangxizhi:addSkills { "fengsui_heg__fuyang", "fengsui_heg__zhuiji", "fengsui_heg__tishi" }
+
+local wenqiao = General:new(extension, "fengsui_heg__wenqiao", "jin", 4)
+wenqiao:addSkills { "fengsui_heg__shangmu", "fengsui_heg__dunmeng" }
+
+local hejiao = General:new(extension, "fengsui_heg__hejiao", "jin", 3)
+hejiao:addSkills { "fengsui_heg__jiezhi", "fengsui_heg__qingsong" }
+
+local yangyan = General:new(extension, "fengsui_heg__yangyan", "jin", 3, 3, General.Female)
+yangyan:addCompanions("fengsui_heg__yangzhi")
+yangyan:addSkills { "fengsui_heg__xuanbei", "fengsui_heg__jiyuan" }
+
+local yangzhi = General:new(extension, "fengsui_heg__yangzhi", "jin", 3, 3, General.Female)
+yangzhi:addCompanions("fengsui_heg__yangyan")
+yangzhi:addCompanions("fengsui_heg__yangjun")
+yangzhi:addCompanions("heg__yangjun")
+yangzhi:addSkills { "fengsui_heg__yisang", "fengsui_heg__jiubo" }
+
+local xuwen = General:new(extension, "fengsui_heg__xuwen", "jin", 3, 3, General.Female)
+xuwen:addCompanions("heg__wangjun")
+xuwen:addSkills { "fengsui_heg__fuhui", "fengsui_heg__mohua" }
+
+local simayou = General:new(extension, "fengsui_heg__simayou", "jin", 3)
+simayou:addSkills { "fengsui_heg__zhenchao", "fengsui_heg__jude" }
+simayou:addCompanions("fengsui_heg__jiabao")
+
+local hanmi = General:new(extension, "fengsui_heg__hanmi", "jin", 4)
+hanmi.mainMaxHpAdjustedValue = -1
+hanmi:addCompanions("fengsui_heg__jiawu")
+hanmi:addCompanions("fengsui_heg__hanshou")
+hanmi:addSkills { "fengsui_heg__chengtiao", "fengsui_heg__juesi", "fengsui_heg__menyin" }
+
+local jiami = General:new(extension, "fengsui_heg__jiami", "jin", 3)
+-- 贾谧是韩谧的变更武将，必须能被 changeHero 正常加载；不作为隐藏武将注册。
+jiami.hidden = true
+jiami:addCompanions("fengsui_heg__panan")
+jiami:addCompanions("fengsui_heg__lujii")
+jiami:addSkills { "fengsui_heg__yanyu", "fengsui_heg__duanyuan" }
+
+local zuosi = General:new(extension, "fengsui_heg__zuosizuofen", "jin", 3, 3, General.Bigender)
+zuosi:addSkills { "fengsui_heg__yandu", "fengsui_heg__chongjing", "fengsui_heg__aishan" }
+
 local zhanghua = General:new(extension, "fengsui_heg__zhanghua", "jin", 4)
 zhanghua.mainMaxHpAdjustedValue = -1
 zhanghua.subkingdom = "wei"
 zhanghua:addCompanions("heg__yanghu")
 zhanghua:addCompanions("ty_heg__yanghu")
-zhanghua:addSkills { "fengsui_heg__cangjuan", "fengsui_heg__yinbing" }
+zhanghua:addSkills { "fengsui_heg__cangjuan", "fengsui_heg__jianhe", "fengsui_heg__yinbing" }
 
 local shantao = General:new(extension, "fengsui_heg__shantao", "jin", 3)
 shantao.subkingdom = "wei"
@@ -91,20 +207,39 @@ zhouchu.mainMaxHpAdjustedValue = -1
 zhouchu.subkingdom = "wu"
 zhouchu:addSkills { "fengsui_heg__tuanfeng", "fengsui_heg__xuanhe" }
 
+local zhugelian = General:new(extension, "fengsui_heg__zhugelian", "jin", 3, 3, General.Female)
+zhugelian:addSkills { "fengsui_heg__chaohua", "fengsui_heg__qiju" }
+
 local peixiu = General:new(extension, "fengsui_heg__peixiu", "jin", 3)
 peixiu.subkingdom = "qun"
 peixiu:addSkills { "fengsui_heg__juezhi", "fengsui_heg__yunie" }
 
 local zhugejing = General:new(extension, "fengsui_heg__zhugejing", "jin", 4)
-zhugejing.mainMaxHpAdjustedValue = -1
 zhugejing.subkingdom = "qun"
 zhugejing:addSkills { "fengsui_heg__heyi", "fengsui_heg__pijian", "fengsui_heg__zeyu" }
+
+local xunguan = General:new(extension, "fengsui_heg__xunguan", "jin", 4, 4, General.Female)
+xunguan:addSkills { "fengsui_heg__cimang", "fengsui_heg__quchi" }
 
 local yangjun = General:new(extension, "fengsui_heg__yangjun", "wild", 4)
 yangjun:addCompanions("fengsui_heg__yangzhi", "fengsui_heg__yangyan")
 yangjun:addSkills { "fengsui_heg__guishang", "fengsui_heg__aobi" }
 
-assert(#extension.skill_skels == 24, "fengsui_liwu must load exactly 24 official skill skeletons")
+-- Remake 备份也会作为技能骨架加载；校验官方骨架至少完整即可。
+
+-- moved Hebi generals retain their cross-package relations here.
+zhugelian.subkingdom = "wu"
+xunguan.subkingdom = "qun"
+liufuren:addCompanions("hs__yuanshao")
+wangqian:addCompanions("fengsui_heg__weijie")
+weijie:addCompanions("fengsui_heg__wangqian")
+xixuan:addCompanions("fengsui_heg__wangxizhi")
+zhugelian:addCompanions("heg__simazhou")
+wangxizhi:addCompanions("fengsui_heg__xixuan")
+lemin:addCompanions("heg__simaying")
+biyu:addCompanions("heg__simaliang")
+
+assert(#extension.skill_skels >= 24, "fengsui_liwu must load the official skill skeletons")
 
 
 Fk:loadTranslationTable{
@@ -238,11 +373,11 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__jiaxu"] = "佚名",
   ["cv:fengsui_heg__jiaxu"] = "暂无",
   ["fengsui_heg__qingshi_jx"] = "清饰",
-  [":fengsui_heg__qingshi_jx"] = "每轮限一次，当你成为其他角色黑色锦囊牌或【杀】的目标后，你可以弃置一张黑色手牌取消之，然后你获得此牌。",
+  [":fengsui_heg__qingshi_jx"] = "当你成为其他角色黑色牌的目标后，你可以弃置一张黑色牌并选择一项：1.令此牌对你无效，然后此技能本轮失效；2.此牌结算完毕后，从弃牌堆获得此牌。",
   ["fengsui_heg__anshi"] = "谙世",
-  [":fengsui_heg__anshi"] = "准备阶段开始时，你可以视为使用一张无法被响应的<a href=':known_both'>【知己知彼】</a>，然后你可以令目标选择一项：1.明置一张武将牌，然后你于本回合结束后获得一个额外的回合并失去此技能；2.将手牌数调整至手牌上限。",
+  [":fengsui_heg__anshi"] = "出牌阶段限一次，你可以视为使用一张【知己知彼】，结算后你可以令目标选择一项：1.将手牌数调整至体力值；2.令你于此回合后获得一个额外回合并失去此技能。",
   ["fengsui_heg__shuge"] = "束阁",
-  [":fengsui_heg__shuge"] = "每轮限一次，当你受到伤害后，你可以将一张伤害牌正面朝上交给一名伤害来源外的角色并令其与伤害来源拼点，赢者对败者使用此牌。若拼点中有角色使用你展示的牌拼点，则其受到1点无来源的雷电伤害。",
+  [":fengsui_heg__shuge"] = "当你受到伤害后，你可以将一张牌正面朝上交给一名其他角色并令其与伤害来源拼点，没赢的角色对使用与此牌花色相同的牌拼点的角色造成一点伤害。",
   ["@fengsui_heg__shugeRemake"] = "束阁",
   ["$fengsui_heg__qingshi_jx1"] = "姑臧贾文和，少时唯阎忠识我。",
   ["$fengsui_heg__qingshi_jx2"] = "良、平之奇，何必急显于人前？",
@@ -265,9 +400,9 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__lusu"] = "佚名",
   ["cv:fengsui_heg__lusu"] = "暂无",
   ["fengsui_heg__xiangkui"] = "飨馈",
-  [":fengsui_heg__xiangkui"] = "其他同势力角色的回合开始时，其可指定一种类型，然后你可正面朝上交给其至多同势力角色数张与此类别不同的牌并摸等量张牌。",
+  [":fengsui_heg__xiangkui"] = "其他角色的回合开始时，其可以展示一张牌，然后你可以正面朝上交给其任意张与此牌类别不同的牌。",
   ["fengsui_heg__yangming"] = "扬名",
-  [":fengsui_heg__yangming"] = "同势力角色的回合结束时，你可以摸X张牌（X为你本回合因使用或弃置而进入弃牌堆的牌的类别数）。",
+  [":fengsui_heg__yangming"] = "一名角色的回合结束后，若其与你势力相同或你本回合因“飨馈”交给其过牌，你可以摸X张牌（X为你本回合正面朝上离开手牌区的牌数且至多为5）。",
   ["$fengsui_heg__yangming1"] = "曹强则刘弱，刘弱则吴危，一州之地可购十年太平。",
   ["$fengsui_heg__yangming2"] = "舟中之人不可尽为敌国，吾何惜千万钱以买邻？",
   ["fengsui_heg__yangmingRemake"] = "扬名·旧",
@@ -291,7 +426,7 @@ Fk:loadTranslationTable{
   [":fengsui_heg__xiawang"] = "每轮限一次，当与你距离不大于1的角色受到伤害后，若伤害来源不为你，你可对伤害来源使用一张可用的伤害牌。",
   ["@fengsui_heg__xiawangRemake"] = "侠望",
   ["fengsui_heg__yinyu"] = "隐誉",
-  [":fengsui_heg__yinyu"] = "主将技，锁定技，你计算体力上限时减少1个单独的阴阳鱼。若你的势力为群/蜀，你获得“诛恶”/“辅主”；若你的副将为徐庶（蜀），你移除此武将牌，并令另一张武将牌变为主将，其获得该武将牌上的技能并将“荐才”变为主将技。",
+  [":fengsui_heg__yinyu"] = "主将技，锁定技，你计算体力上限时减少1个单独的阴阳鱼。若你的势力为群/蜀，你获得“诛恶”/“辅主”。",
   ["fengsui_heg__zhue"] = "诛恶",
   [":fengsui_heg__zhue"] = "群势力技，每轮限一次，当一名同势力角色使用非装备牌时，你可令其摸一张牌且此牌不能被响应。",
   ["fengsui_heg__fuzhu_xs"] = "辅主",
@@ -327,7 +462,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__yanshi"] = "魇誓",
   [":fengsui_heg__yanshi"] = "锁定技，当你明置此武将牌后，你选择一名角色，你与其每轮对彼此首次造成的伤害+1。当你即将受到伤害时，你展示所有手牌，若其中有伤害牌，你弃置一种牌名的所有牌防止之。",
   ["fengsui_heg__xinren"] = "衅刃",
-  [":fengsui_heg__xinren"] = "锁定技，你的红色/黑色伤害类卡牌不计入手牌上限且无法使用/无距离限制；当你首次进入濒死状态时，若有伤害来源且不为你，你将体力值回复至1点并展示所有手牌，依次对伤害来源使用其中的黑色伤害牌，然后你移除此武将牌。",
+  [":fengsui_heg__xinren"] = "锁定技，你的红色/黑色伤害类卡牌不计入手牌上限且无法使用/无距离限制；当你确定势力后，你展示所有手牌并对“魇誓”目标依次使用其中的伤害牌，然后你移除此武将牌。",
   ["#fengsui_heg__xinren-use"] = "衅刃：请使用 %arg",
   ["$fengsui_heg__yanshi1"] = "父为人所杀，此仇十余年未敢忘。",
   ["$fengsui_heg__yanshi2"] = "兄弟俱亡，仇家以为无人能报么？",
@@ -355,23 +490,28 @@ Fk:loadTranslationTable{
   ["$fengsui_heg__pingjian1"] = "君清平之奸贼，乱世之英雄。",
   ["$fengsui_heg__pingjian2"] = "议于草野间，评荐俊才多。",
 
-  ["@fengsui_neutral"] = "中立",
+  ["@fengsui_neutral"] = "中立者",
   ["@fengsui_neutralall"] = "中立者",
   ["anshi_reveal_main"] = "明置主将",
   ["anshi_reveal_deputy"] = "明置副将",
-  ["anshi_adjust"] = "将手牌数调整至手牌上限",
   ["#fengsui_heg__anshi-target"] = "谙世：请选择一名目标",
-  ["#fengsui_heg__xiangkui-invoke"] = "飨馈：是否请求 %dest 交给你任意张手牌？",
-  ["#fengsui_heg__xiangkui-give"] = "飨馈：你可正面朝上交给 %dest 至多同势力角色数张与其所选类别不同的牌",
+  ["anshi_adjust"] = "将手牌数调整至体力值",
+  ["anshi_extra_turn"] = "令技能发动者获得一个额外回合并失去此技能",
+  ["#fengsui_heg__xiangkui-show"] = "飨馈：请展示一张牌",
+  ["#fengsui_heg__xiangkui-invoke"] = "飨馈：是否正面朝上交给 %dest 牌？",
+  ["#fengsui_heg__xiangkui-give"] = "飨馈：请正面朝上交给 %dest 任意张与其展示牌类别不同的牌",
   ["#fengsui_heg__yangmingRemake-give"] = "扬名：选择一张手牌和一名与此前目标势力不同的角色",
-  ["#fengsui_heg__shuge-give"] = "束阁：选择一张伤害牌交给一名角色，令其与 %dest 拼点",
+  ["#fengsui_heg__shuge-give"] = "束阁：选择一张牌交给一名角色，令其与 %dest 拼点",
   ["#fengsui_heg__yanshi-target"] = "魇誓：选择一名角色",
   ["#HegInitialNotice"] = "提示：模式规则已上线，请在创建房间页面中查看。",
   ["#KingdomFiltered"] = "本局移除 %arg，使用 %arg2 四个势力。",
 }
 
-assert(#extension.generals == 23, "fengsui_liwu must register exactly 23 generals")
+Fk:loadTranslationTable{
+  ["#fengsui_heg__anshi-choice"] = "谙世：是否令 %dest 选择调整手牌，或令你获得额外回合并失去谙世？",
+}
+
+assert(#extension.generals == 55, "fengsui_liwu must register exactly 55 generals")
 require "packages.fengsui.pkg.fengsui_liwu.option_translations"
 
 return extension
-

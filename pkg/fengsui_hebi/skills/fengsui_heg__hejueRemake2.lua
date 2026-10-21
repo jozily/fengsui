@@ -1,7 +1,7 @@
 local H = require "packages.fengsui.hegemony_util"
 
 local hejue = fk.CreateSkill{
-  name = "fengsui_heg__hejue",
+  name = "fengsui_heg__hejueRemake2",
 }
 
 local function handleHejue(room, player)
@@ -16,7 +16,7 @@ local function handleHejue(room, player)
    local choices = U.askToChooseGeneralsAndChoice(player, {
       skill_name = hejue.name,
       generals = all_gens,
-      prompt = "#fengsui_heg__hejue-choose",
+      prompt = "#fengsui_heg__hejueRemake2-choose",
       min_num = 1,
       max_num = 2,
    })
@@ -54,7 +54,7 @@ hejue:addEffect(fk.Damaged, {
     return target == player and player:hasSkill(hejue.name)
   end,
   on_cost = function(self, event, target, player, data)
-    return player.room:askToSkillInvoke(player, { skill_name = hejue.name, prompt = "#fengsui_heg__hejue-invoke1" })
+    return player.room:askToSkillInvoke(player, { skill_name = hejue.name, prompt = "#fengsui_heg__hejueRemake2-invoke1" })
   end,
   on_use = function(self, event, target, player, data)
     handleHejue(player.room, player)
@@ -67,7 +67,7 @@ hejue:addEffect(fk.EventPhaseStart, {
     return target == player and player.phase == Player.Finish and player:hasSkill(hejue.name)
   end,
   on_cost = function(self, event, target, player, data)
-    return player.room:askToSkillInvoke(player, { skill_name = hejue.name, prompt = "#fengsui_heg__hejue-invoke2" })
+    return player.room:askToSkillInvoke(player, { skill_name = hejue.name, prompt = "#fengsui_heg__hejueRemake2-invoke2" })
   end,
   on_use = function(self, event, target, player, data)
     handleHejue(player.room, player)
@@ -75,9 +75,9 @@ hejue:addEffect(fk.EventPhaseStart, {
 })
 
 Fk:loadTranslationTable{
- ["#fengsui_heg__hejue-invoke1"] = "合珏：是否发动？",
-  ["#fengsui_heg__hejue-invoke2"] = "合珏：结束阶段是否发动？",
-  ["#fengsui_heg__hejue-choose"] = "合珏：选择一张或两张武将牌对应的角色",
+ ["#fengsui_heg__hejueRemake2-invoke1"] = "合珏：是否发动？",
+  ["#fengsui_heg__hejueRemake2-invoke2"] = "合珏：结束阶段是否发动？",
+  ["#fengsui_heg__hejueRemake2-choose"] = "合珏：选择一张或两张武将牌对应的角色",
 }
 
 return hejue

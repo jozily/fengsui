@@ -6,41 +6,20 @@ local weiluan = fk.CreateSkill{
 
 weiluan:addEffect(fk.TargetConfirmed, {
   anim_type = "defensive",
-  can_trigger = function(self, event, target, player, data)
-    return player:hasSkill(weiluan.name) and
-           H.compareKingdomWith(target, player) and H.allGeneralsRevealed(target) and
-           data.card and data.card.is_damage_card
+  can_trigger = function(self, _, target, player, data)
+    return target and player:hasSkill(weiluan.name) and
+      H.compareKingdomWith(target, player) and data.card and data.card.trueName == "slash"
   end,
-  on_cost = function(self, event, target, player, data)
+  on_cost = function(self, _, target, player)
     return player.room:askToSkillInvoke(player, {
       skill_name = weiluan.name,
       prompt = "#fengsui_heg__weiluan-invoke::" .. target.id,
     })
   end,
-  on_use = function(self, event, target, player, data)
-    local room = player.room
-    H.doHideGeneral(room, target, target, weiluan.name)
-
-    target:drawCards(2, weiluan.name)
-    if target:isAlive() and not target:isKongcheng() then
-      local card = room:askToChooseCard(target, {
-        target = target,
-        flag = "h",
-        prompt = "#fengsui_heg__weiluan-top",
-        skill_name = weiluan.name,
-      })
-      if card then
-        room:moveCards({
-          ids = { card },
-          from = target,
-          toArea = Card.DrawPile,
-          moveReason = fk.ReasonPut,
-          proposer = target,
-          skillName = weiluan.name,
-          drawPilePosition = 1,
-          moveVisible = true,
-        })
-      end
+  on_use = function(self, _, target)
+    if target:isAlive() then
+      target:setChainState(true)
+      target:drawCards(1, weiluan.name)
     end
   end,
 })

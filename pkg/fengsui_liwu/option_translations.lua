@@ -25,6 +25,7 @@ local translations = {
   ["#fengsui_heg__xuguRemake-damage"] = "虚谷：请选择伤害来源和目标",
   ["#fengsui_heg__youming-top"] = "幽明：将一张牌置于牌堆顶",
   ["#fengsui_neutral_rule"] = "一碗水端平",
+  [":#fengsui_neutral_rule"] = "锁定技，当你首次明置中立者武将牌时触发特效；若先明置另一张有势力的武将牌或同时明置两张武将牌，则不触发特效。",
 
   ["fengsui_heg__fangke_skills"] = "访客技能",
 

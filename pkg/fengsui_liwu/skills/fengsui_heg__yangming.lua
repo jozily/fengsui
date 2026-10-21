@@ -1,84 +1,40 @@
 local H = require "packages.fengsui.hegemony_util"
-
-local s = fk.CreateSkill { name = "fengsui_heg__yangming" }
-
-local function getDiscardCardTypes(data, player, usedCards)
-  usedCards = usedCards or player:getTableMark(s.name .. "_used_cards-turn")
-  local types = {}
+local s = fk.CreateSkill {name = "fengsui_heg__yangming"}
+local function countOpenHandCards(data, player)
+  local n = 0
   for _, move in ipairs(data) do
-    if move.toArea == Card.DiscardPile and
-      (move.moveReason == fk.ReasonDiscard and move.from == player or move.moveReason == fk.ReasonUse) then
+    local publicArea = table.contains({Card.Processing, Card.DiscardPile, Card.PlayerEquip, Card.PlayerJudge}, move.toArea)
+    local visible = move.moveVisible == true or (move.moveVisible == nil and publicArea) or move.specialVisible == true
+    if move.from == player and visible and (move.to ~= player or move.toArea ~= Card.PlayerHand) then
       for _, info in ipairs(move.moveInfo) do
-        if move.moveReason == fk.ReasonDiscard or table.contains(usedCards, info.cardId) then
-          table.insertIfNeed(types, Fk:getCardById(info.cardId):getTypeString())
-        end
+        if info.fromArea == Card.PlayerHand then n = n + 1 end
       end
     end
   end
-  return types
+  return n
 end
-
-s:addEffect(fk.PreCardUse, {
-  mute = true,
-  can_refresh = function(self, event, target, player, data)
-    return target == player and player:hasSkill(s.name) and #Card:getIdList(data.card) > 0
-  end,
-  on_refresh = function(self, event, target, player, data)
-    local ids = player:getTableMark(s.name .. "_used_cards-turn")
-    table.insertTableIfNeed(ids, Card:getIdList(data.card))
-    player.room:setPlayerMark(player, s.name .. "_used_cards-turn", ids)
-  end,
-})
-
-s:addEffect(fk.AfterCardsMove, {
-  mute = true,
-  can_refresh = function(self, event, target, player, data)
-    return player:hasSkill(s.name) and #getDiscardCardTypes(data, player) > 0
-  end,
-  on_refresh = function(self, event, target, player, data)
-    local types = player:getTableMark(s.name .. "-turn")
-    table.insertTableIfNeed(types, getDiscardCardTypes(data, player))
-    player.room:setPlayerMark(player, s.name .. "-turn", types)
-  end,
-})
-
+local function countThisTurn(player)
+  local n = 0
+  for _, e in ipairs(player.room.logic:getEventsOfScope(GameEvent.MoveCards, 9999, function() return true end, Player.HistoryTurn)) do
+    n = n + countOpenHandCards(e.data, player)
+    if n >= 5 then return 5 end
+  end
+  return n
+end
 s:addEffect(fk.TurnEnd, {
   global = true,
-  can_trigger = function(self, event, target, player, data)
-    return target and player:hasShownSkill(s.name) and H.compareKingdomWith(target, player) and
-      #player:getTableMark(s.name .. "-turn") > 0
+  can_trigger = function(self, _, target, player)
+    return target and player:hasSkill(s.name) and
+      (H.compareKingdomWith(target, player) or player:getMark("fengsui_heg__yangming-gave-turn") > 0) and countThisTurn(player) > 0
   end,
-  on_cost = function(self, event, target, player, data)
-    return player.room:askToSkillInvoke(player, { skill_name = s.name })
+  on_cost = function(self, _, _, player)
+    return player.room:askToSkillInvoke(player, {skill_name = s.name})
   end,
-  on_use = function(self, event, target, player, data)
-    local x = #player:getTableMark(s.name .. "-turn")
-    player:drawCards(x, s.name)
-  end,
+  on_use = function(self, _, _, player) player:drawCards(countThisTurn(player), s.name) end,
 })
-
 s:addTest(function(room, me)
-  local slash = room:printCard("slash")
-  local duel = room:printCard("duel")
-  local types = getDiscardCardTypes({
-    {
-      from = me,
-      toArea = Card.DiscardPile,
-      moveReason = fk.ReasonDiscard,
-      moveInfo = {
-        { cardId = slash.id, fromArea = Card.PlayerHand },
-      },
-    },
-    {
-      toArea = Card.DiscardPile,
-      moveReason = fk.ReasonUse,
-      moveInfo = {
-        { cardId = duel.id, fromArea = Card.Processing },
-      },
-    },
-  }, me, { duel.id })
-  lu.assertTrue(table.contains(types, "basic"))
-  lu.assertTrue(table.contains(types, "trick"))
+  lu.assertEquals(countOpenHandCards({{from = me, toArea = Card.DiscardPile, moveInfo = {{fromArea = Card.PlayerHand}, {fromArea = Card.PlayerEquip}}}}, me), 1)
+  lu.assertEquals(countOpenHandCards({{from = me, to = room.players[2], toArea = Card.PlayerHand, moveVisible = false, moveInfo = {{fromArea = Card.PlayerHand}}}}, me), 0)
+  lu.assertEquals(countOpenHandCards({{from = me, to = room.players[2], toArea = Card.PlayerHand, moveVisible = true, moveInfo = {{fromArea = Card.PlayerHand}}}}, me), 1)
 end)
-
 return s

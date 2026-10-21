@@ -1,74 +1,59 @@
 local H = require "packages.fengsui.hegemony_util"
 
-local ruwu = fk.CreateSkill{
+local ruwu = fk.CreateSkill {
   name = "fengsui_heg__ruwu",
   tags = { Skill.Compulsory },
 }
+local resolvingMark = "fengsui_heg__ruwu_resolving"
 
-local mark_skills = {
-  ["vanguard_skill&"] = 1,
-  ["yinyangfish_skill&"] = 1,
-  ["companion_draw&"] = 2,
-  ["wild_draw&"] = 1,
-}
-
-local function resolveRuwu(player, target, skill_name)
-    local room = player.room
-    player:drawCards(mark_skills[skill_name], ruwu.name)
-    if player.dead or H.compareKingdomWith(target, player) then return end
-
-    local x = #table.filter(room.alive_players, function(p)
-      return p:getMark("@!!companion") > 0 or p:getMark("@!!yinyangfish") > 0 or
-        p:getMark("@!!vanguard") > 0 or p:getMark("@!!wild") > 0
-    end)
-    local choices = {"fengsui_heg__ruwu_transform"}
-    if #player:getCardIds("he") >= x then
-      table.insert(choices, 1, "fengsui_heg__ruwu_yinyang")
-    end
-    local choice = room:askToChoice(player, {
-      choices = choices,
-      skill_name = ruwu.name,
-      prompt = "#fengsui_heg__ruwu-choice",
-    })
-    if choice == "fengsui_heg__ruwu_yinyang" then
-      if x > 0 then
-        local cards = room:askToDiscard(player, {
-          min_num = x,
-          max_num = x,
-          include_equip = true,
-          skill_name = ruwu.name,
-          prompt = "#fengsui_heg__ruwu-drop:::" .. x,
-          cancelable = false,
-        })
-        if #cards ~= x or player.dead then return end
-      end
-      H.addHegMark(player, "yinyangfish")
-    else
-      H.transformGeneral(room, player, false, false)
-    end
+local function ownedMarkCount(player)
+  local total = 0
+  for _, name in ipairs({ "yinyangfish", "vanguard", "companion", "wild",
+      "fengsui_heg_ascend", "fengsui_heg__descend" }) do
+    local key = (name == "fengsui_heg_ascend" and "@!!fengsui_heg_ascend") or
+      (name == "fengsui_heg__descend" and "@!!fengsui_heg__descend") or ("@!!" .. name)
+    total = total + (tonumber(player:getMark(key)) or 0)
+  end
+  return total
 end
 
-ruwu:addEffect(fk.EventAcquireSkill, {
-  global = true,
-  anim_type = "drawcard",
-  can_trigger = function(self, event, target, player, data)
-    return target and player:hasSkill(ruwu.name) and data.skill and
-      mark_skills[data.skill.name] ~= nil
-  end,
-  on_use = function(self, event, target, player, data)
-    resolveRuwu(player, target, data.skill.name)
-  end,
-})
+local function resolve(player, target, markName)
+  local room = player.room
+  local amount = ownedMarkCount(player)
+  room:drawCards(player, markName == "companion" and 2 or 1, ruwu.name)
+  if player.dead or not target or H.compareKingdomWith(target, player) then return end
+  local choices = { "fengsui_heg__ruwu_transform" }
+  if #player:getCardIds("he") >= amount then
+    table.insert(choices, 1, "fengsui_heg__ruwu_yinyang")
+  end
+  local choice = room:askToChoice(player, {
+    choices = choices, skill_name = ruwu.name, prompt = "#fengsui_heg__ruwu-choice",
+  })
+  if choice == "fengsui_heg__ruwu_yinyang" then
+    local cards = room:askToDiscard(player, {
+      min_num = amount, max_num = amount, include_equip = true,
+      skill_name = ruwu.name, prompt = "#fengsui_heg__ruwu-drop::" .. amount,
+      cancelable = false,
+    })
+    if #cards == amount and player:isAlive() then
+      room:setPlayerMark(player, resolvingMark, 1)
+      H.addHegMark(player, "yinyangfish")
+      room:setPlayerMark(player, resolvingMark, 0)
+    end
+  elseif player:isAlive() then
+    H.transformGeneral(room, player, false, false, 1, ruwu.name)
+  end
+end
 
-ruwu:addEffect(fk.AfterSkillEffect, {
+ruwu:addEffect(H.HegMarkChanged, {
   global = true,
   anim_type = "drawcard",
-  can_trigger = function(self, event, target, player, data)
-    return target and player:hasSkill(ruwu.name) and data.skill and
-      mark_skills[data.skill.name] ~= nil
+  can_trigger = function(self, _, target, player, data)
+    return target and player:hasSkill(ruwu.name) and player:getMark(resolvingMark) == 0 and data and
+      data.markName and (data.action == "gain" or data.action == "use")
   end,
-  on_use = function(self, event, target, player, data)
-    resolveRuwu(player, target, data.skill.name)
+  on_use = function(self, _, target, player, data)
+    resolve(player, target, data.markName)
   end,
 })
 

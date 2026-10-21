@@ -1,7 +1,7 @@
 local H = require "packages.fengsui.hegemony_util"
 local beiqiu = fk.CreateSkill { name = "fengsui_heg__beiqiu", tags = { Skill.Compulsory } }
 local function handleShown(self, _, target, player, data)
-  if not target or not player:hasShownSkill(self.name) then return false end
+  if not target or not player:hasSkill(self.name, true, true) then return false end
   return true
 end
 local function resolve(self, target, player)
@@ -18,14 +18,16 @@ local function resolve(self, target, player)
     end
   end
 end
-beiqiu:addEffect(fk.GeneralShown, {
+-- GeneralShown 只是引擎的亮将通知时机，技能应在随后真正的
+-- GeneralRevealed 时机结算，否则其他角色亮将时可能只更新规则而不执行悲秋。
+beiqiu:addEffect(fk.GeneralRevealed, {
   global = true,
   can_trigger = handleShown,
   on_use = function(self, _, target, player)
     local room = player.room
     if target ~= player and player:getMark("fengsui_heg__beiqiu_target") == 0 then
       room:setPlayerMark(player, "fengsui_heg__beiqiu_target", target.id)
-      room:setPlayerMark(target, "@fengsui_heg__beiqiu_target", 1)
+      room:setPlayerMark(target, "@fengsui_heg__beiqiu_target", "所念之人")
     end
     resolve(self, target, player)
   end,
@@ -37,13 +39,12 @@ beiqiu:addEffect(H.GeneralTransformed, {
     local room = player.room
     if target ~= player and player:getMark("fengsui_heg__beiqiu_target") == 0 then
       room:setPlayerMark(player, "fengsui_heg__beiqiu_target", target.id)
-      room:setPlayerMark(target, "@fengsui_heg__beiqiu_target", 1)
+      room:setPlayerMark(target, "@fengsui_heg__beiqiu_target", "所念之人")
     end
     resolve(self, target, player)
   end,
 })
-local beiqiu_death = fk.CreateSkill { name = "fengsui_heg__beiqiu_death" }
-beiqiu_death:addEffect(fk.Death, {
+beiqiu:addEffect(fk.Death, {
   global = true,
   can_trigger = function(self, _, target, player)
     return target and player:hasShownSkill("fengsui_heg__beiqiu") and

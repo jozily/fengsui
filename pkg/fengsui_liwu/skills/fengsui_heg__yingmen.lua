@@ -198,8 +198,10 @@ s:addTest(function(room, me)
   }) do
     lu.assertFalse(Fk.generals[name].hidden)
   end
-  lu.assertTrue(eligibleSkill(Fk.skills["fengsui_heg__yinbing"], false))
-  lu.assertFalse(eligibleSkill(Fk.skills["fengsui_heg__yinbing"], true))
+  lu.assertFalse(eligibleSkill(Fk.skills["fengsui_heg__yinbing"], false))
+  lu.assertTrue(eligibleSkill(Fk.skills["fengsui_heg__jianhe"], false))
+  lu.assertTrue(eligibleSkill(Fk.skills["fengsui_heg__yinbing"], true))
+  lu.assertFalse(eligibleSkill(Fk.skills["fengsui_heg__jianhe"], true))
   lu.assertFalse(eligibleSkill(Fk.skills["fengsui_heg__yuandao"], true))
   lu.assertTrue(eligibleSkill(Fk.skills["fengsui_heg__yuandao"], false))
   lu.assertTrue(eligibleSkill(Fk.skills["fengsui_heg__baoguo"], false))

@@ -2,7 +2,7 @@ local duxin = fk.CreateSkill{name = "fengsui_toaru__heg__duxin"}
 
 Fk:loadTranslationTable{
   ["fengsui_toaru__heg__duxin"] = "读心",
-  [":fengsui_toaru__heg__duxin"] = "当你明置或暗置武将牌时，你可以视为使用一张【知己知彼】。",
+  [":fengsui_toaru__heg__duxin"] = "当你明置或暗置武将牌时，你可以视为使用一张不可响应的【知己知彼】并摸一张牌。",
   ["#fengsui_toaru__heg__duxin-use"] = "读心：你可以视为使用一张【知己知彼】",
 }
 
@@ -17,10 +17,15 @@ local spec = {
     return player.room:askToSkillInvoke(player, { skill_name = duxin.name })
   end,
   on_use = function(self, event, target, player, data)
-    player.room:askToUseVirtualCard(player, {
+    local use = player.room:askToUseVirtualCard(player, {
       name = "known_both", skill_name = duxin.name,
-      prompt = "#fengsui_toaru__heg__duxin-use", cancelable = false,
+      prompt = "#fengsui_toaru__heg__duxin-use", cancelable = false, skip = true,
     })
+    if use then
+      use.disresponsiveList = player.room.players
+      player.room:useCard(use)
+      if player:isAlive() then player:drawCards(1, duxin.name) end
+    end
   end,
 }
 duxin:addEffect(fk.GeneralRevealed, spec)

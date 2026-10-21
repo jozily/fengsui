@@ -13,9 +13,9 @@ end
 qusheng:addEffect(fk.AfterCardsMove, {
   global = true,
   can_trigger = function(self, _, target, player, data)
-    return U.hasGeneralName(player, "fengsui_heg__biyu") and player:hasShownSkill(self.name) and player:getMark(self.name .. "-turn") == 0 and data and
+    return U.hasGeneralName(player, "fengsui_heg__biyu") and player:hasShownSkill(self.name) and data and
       table.find(data, function(m)
-        if m.toArea ~= Card.DiscardPile or (m.moveReason ~= fk.ReasonUse and m.moveReason ~= fk.ReasonResponse) or not m.moveInfo then return false end
+        if m.toArea ~= Card.DiscardPile or m.moveReason ~= fk.ReasonUse or not m.moveInfo then return false end
         return table.find(m.moveInfo, function(info) return hasSameNameOtherColor(player.room, info.cardId) end) ~= nil
       end) ~= nil
   end,
@@ -48,15 +48,12 @@ qusheng:addEffect(fk.AfterCardsMove, {
     local pair = candidates[math.random(#candidates)]
     -- 获得匹配的弃牌；本次使用/打出的牌回到牌堆顶。
     local gain, put = pair.second, pair.first
-    room:setPlayerMark(player, self.name .. "-turn", 1)
     room:obtainCard(player, gain, true, fk.ReasonPrey, player, self.name)
     if room:getCardArea(put) == Card.DiscardPile then
       room:moveCardTo(put, Card.DrawPile, nil, fk.ReasonPut, self.name, nil, true, player)
       table.removeOne(room.draw_pile, put)
       table.insert(room.draw_pile, 1, put)
     end
-  end,
+end,
 })
-
-qusheng:addEffect(fk.TurnStart, { global = true, can_refresh = function(self, _, target) return target and target:getMark(self.name .. "-turn") > 0 end, on_refresh = function(self, _, target) target.room:setPlayerMark(target, self.name .. "-turn", 0) end })
 return qusheng

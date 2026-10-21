@@ -1,37 +1,39 @@
 local H = require "packages.fengsui.hegemony_util"
-local chongjing = fk.CreateSkill { name = "fengsui_heg__chongjing", tags = { Skill.Compulsory } }
-
+local chongjing = fk.CreateSkill {name = "fengsui_heg__chongjing", tags = {Skill.Compulsory}}
+local mark = "@fengsui_heg__chongjing_kingdom-round"
 chongjing:addEffect(fk.AfterCardsMove, {
-  global = true,
   can_trigger = function(self, _, _, player, data)
-    return player:hasShownSkill(self.name) and data and table.find(data, function(move)
-      return move.moveReason == fk.ReasonRecast and move.moveInfo and #move.moveInfo > 0
+    return player:hasSkill(self.name) and table.find(data, function(move)
+      return move.from == player and move.moveReason == fk.ReasonRecast and #move.moveInfo > 0
     end) ~= nil
   end,
   on_use = function(self, _, _, player, data)
     local room = player.room
     for _, move in ipairs(data) do
-      if move.moveReason == fk.ReasonRecast and move.moveInfo then
+      if move.from == player and move.moveReason == fk.ReasonRecast then
         for _, info in ipairs(move.moveInfo) do
-          local card = Fk:getCardById(info.cardId)
-          if card then
-            local mark_name = "@fengsui_heg__chongjing_kingdom-round"
-            local used = player:getTableMark(mark_name)
-            local tos = table.filter(room.alive_players, function(p)
-              return p ~= player and H.getKingdom(p) ~= "unknown" and not table.contains(used, H.getKingdom(p))
-            end)
-            if #tos == 0 then return end
-            local chosen = room:askToChoosePlayers(player, { targets = tos, min_num = 1, max_num = 1, skill_name = self.name, prompt = "#fengsui_heg__chongjing-target", cancelable = false })[1]
-            if not chosen then return end
-            room:addTableMark(player, mark_name, H.getKingdom(chosen))
-            room:obtainCard(chosen, card, true, fk.ReasonPrey, player, self.name)
-            local use = room:askToUseCard(chosen, { skill_name = self.name, pattern = card.name, cancelable = true, prompt = "#fengsui_heg__chongjing-use" })
-            if not use then room:loseHp(chosen, 1) end
+          if player.dead then return end
+          local targets = table.filter(room.alive_players, function(p)
+            return H.getKingdom(p) ~= "unknown" and not table.contains(player:getTableMark(mark), H.getKingdom(p))
+          end)
+          if #targets == 0 then
+            room:loseHp(player, 1, self.name)
+          else
+            local to = room:askToChoosePlayers(player, {targets = targets, min_num = 1, max_num = 1,
+              skill_name = self.name, prompt = "#fengsui_heg__chongjing-target", cancelable = false})[1]
+            room:addTableMark(player, mark, H.getKingdom(to))
+            local id = info.cardId
+            local use
+            if room:getCardArea(id) == Card.DiscardPile then
+              use = room:askToUseRealCard(to, {pattern = {id}, expand_pile = {id},
+                skill_name = self.name, prompt = "#fengsui_heg__chongjing-use", cancelable = true, skip = true})
+            end
+            if use then room:useCard(use)
+            elseif to:isAlive() then room:loseHp(to, 1, self.name) end
           end
         end
       end
     end
   end,
 })
-
 return chongjing

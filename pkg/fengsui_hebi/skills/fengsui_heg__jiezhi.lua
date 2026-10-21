@@ -1,67 +1,65 @@
-local H = require "packages.fengsui.hegemony_util"
-local jiezhi = fk.CreateSkill{
+local jiezhi = fk.CreateSkill {
   name = "fengsui_heg__jiezhi",
+  tags = { Skill.Compulsory },
 }
+local H = require "packages.fengsui.hegemony_util"
 
-local function getFirstDifferentDiscard(room, card_type)
-  local result
-  room.logic:getEventsOfScope(GameEvent.MoveCards, 1, function(e)
-    for move_index = 1, #e.data do
-      local move = e.data[move_index]
-      if move.toArea == Card.DiscardPile then
-        for info_index = 1, #move.moveInfo do
-          local id = move.moveInfo[info_index].cardId
-          if table.contains(room.discard_pile, id) and Fk:getCardById(id).type ~= card_type then
-            result = id
-            return true
-          end
-        end
+local function displayRole(player)
+  local shown = {}
+  if player.general ~= "anjiang" then
+    local general = H.getActualGeneral(player, false)
+    if general then table.insert(shown, Fk:translate(general)) end
+  end
+  if player.deputyGeneral ~= "anjiang" then
+    local general = H.getActualGeneral(player, true)
+    if general then table.insert(shown, Fk:translate(general)) end
+  end
+  if #shown == 0 then return "座次" .. tostring(player.seat) .. "号位" end
+  return table.concat(shown, " ")
+end
+
+local function gainedCards(player, data)
+  local result = {}
+  for _, move in ipairs(data or {}) do
+    if move.from == player and move.to and move.to ~= player and
+        move.toArea == Card.PlayerHand then
+      for _, info in ipairs(move.moveInfo or {}) do
+        table.insert(result, { to = move.to, id = info.cardId })
       end
     end
-    return false
-  end, Player.HistoryTurn)
+  end
   return result
 end
 
+local function matchingDiscard(room, card_id)
+  local card = Fk:getCardById(card_id, true)
+  if not card then return nil end
+  local same_name = table.filter(room.discard_pile, function(id)
+    local other = Fk:getCardById(id, true)
+    return other and other.trueName == card.trueName
+  end)
+  return #same_name == 1 and same_name[1] or nil
+end
+
+-- 其他角色获得节枝持有者的牌后，先展示这些牌，再检查后半段效果。
 jiezhi:addEffect(fk.AfterCardsMove, {
-  anim_type = "defensive",
-  can_trigger = function(self, event, target, player, data)
-    if not player:hasShownSkill(jiezhi.name) then return false end
-    for _, move in ipairs(data) do
-      if move.from == player and move.to and move.to ~= player and move.toArea == Card.PlayerHand then
-        for _, info in ipairs(move.moveInfo) do
-          if info.fromArea == Card.PlayerHand then
-            local discard = getFirstDifferentDiscard(player.room, Fk:getCardById(info.cardId).type)
-            if discard then
-              event:setCostData(self, {to = move.to, given = info.cardId, discard = discard})
-              return true
-            end
-          end
-        end
-      end
-    end
-    return false
+  can_trigger = function(self, _, _, player, data)
+    if not player:hasSkill(self.name, true, true) then return false end
+    return #gainedCards(player, data) > 0
   end,
-  on_cost = function(self, event, target, player, data)
-    local cost = event:getCostData(self)
-    return player.room:askToSkillInvoke(player, {
-      skill_name = jiezhi.name,
-      prompt = "#fengsui_heg__jiezhi-invoke::" .. cost.to.id,
-    })
-  end,
-  on_use = function(self, event, target, player, data)
+  on_use = function(self, _, _, player, data)
     local room = player.room
-    local cost = event:getCostData(self)
-    if room:getCardArea(cost.discard) ~= Card.DiscardPile then return end
-    room:obtainCard(player, cost.discard, true, fk.ReasonPrey, player, jiezhi.name)
-    local given = Fk:getCardById(cost.given)
-    local obtained = Fk:getCardById(cost.discard)
-    if given:compareColorWith(obtained) then
-      room:addTableMarkIfNeed(cost.to, "fengsui_heg__jiezhi_prohibit-turn", player.id)
-      room:addTableMarkIfNeed(cost.to, "@fengsui_heg__jiezhi-turn", "节枝：" .. Fk:translate(H.getActualGeneral(player, false)))
-    else
-      room:addTableMarkIfNeed(player, "fengsui_heg__jiezhi_prohibit-turn", cost.to.id)
-      room:addTableMarkIfNeed(player, "@fengsui_heg__jiezhi-turn", "节枝：" .. Fk:translate(H.getActualGeneral(cost.to, false)))
+    local gains = gainedCards(player, data)
+    room:showCards(table.map(gains, function(gained) return gained.id end), player)
+    for _, gained in ipairs(gains) do
+      local discard_id = matchingDiscard(room, gained.id)
+      if discard_id and room:getCardArea(discard_id) == Card.DiscardPile then
+        room:obtainCard(player, discard_id, true, fk.ReasonPrey, player, self.name)
+        room:addTableMarkIfNeed(gained.to, self.name .. "_prohibit-turn", player.id)
+        room:addTableMarkIfNeed(player, self.name .. "_prohibit-turn", gained.to.id)
+        room:addTableMarkIfNeed(gained.to, "@" .. self.name .. "-turn", displayRole(player))
+        room:addTableMarkIfNeed(player, "@" .. self.name .. "-turn", displayRole(gained.to))
+      end
     end
   end,
 })
@@ -69,8 +67,7 @@ jiezhi:addEffect(fk.AfterCardsMove, {
 jiezhi:addEffect("prohibit", {
   global = true,
   is_prohibited = function(self, from, to, card)
-    return from and to and
-      table.contains(from:getTableMark("fengsui_heg__jiezhi_prohibit-turn"), to.id)
+    return from and to and table.contains(from:getTableMark(jiezhi.name .. "_prohibit-turn"), to.id)
   end,
 })
 

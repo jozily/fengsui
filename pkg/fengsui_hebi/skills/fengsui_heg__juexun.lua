@@ -10,9 +10,11 @@ end
 juexun:addEffect(fk.AfterCardsMove, {
   can_trigger = function(self, _, _, player, data)
     return player:hasShownSkill(juexun.name) and player:getHandcardNum() == 0 and
-      player:getMark("fengsui_heg__juexun_ready") == 0 and lostAllHand(data, player)
+      player:getMark("fengsui_heg__juexun_ready") == 0 and
+      player:getMark("fengsui_heg__juexun_asked-turn") == 0 and lostAllHand(data, player)
   end,
   on_cost = function(self, _, _, player)
+    player.room:setPlayerMark(player, "fengsui_heg__juexun_asked-turn", 1)
     return player.room:askToSkillInvoke(player, {
       skill_name = juexun.name, prompt = "#fengsui_heg__juexun-invoke",
     })

@@ -25,7 +25,7 @@ yanyu:addEffect(fk.GeneralRevealed, {
     if choice == "fengsui_heg__yanyu_draw" then
       for _, deputy in ipairs({false, true}) do
         if H.hasGeneral(target, deputy) then
-          U.prohibitReveal(target, deputy, yanyu.name, "round")
+          U.prohibitReveal(target, deputy, yanyu.name, "round", "延誉 禁亮")
         end
       end
       target:drawCards(2, yanyu.name)

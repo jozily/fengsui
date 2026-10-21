@@ -1,0 +1,170 @@
+[
+  {
+    "source": "C:\\Users\\jia\\Downloads\\残墨重研，再续西_左思.mp3",
+    "target": "audio/skill/fengsui_heg__yandu4.mp3",
+    "mode": "copy",
+    "bytes": 93563,
+    "sha256": "dc5e8ced4455435521747874f2e653286891c0b65fdae9b7c63c5fdc2b0eee49"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\十载磨锋，今昭赋_左思 (1).mp3",
+    "target": "audio/skill/fengsui_heg__yandu1.mp3",
+    "mode": "copy",
+    "bytes": 82592,
+    "sha256": "10f096797b37b33e183669ae7d44fdc5592413aeb95aeee0c1b4178ed846388c"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\一赋惊京洛，纸贵_左思 (1).mp3",
+    "target": "audio/skill/fengsui_heg__yandu2.mp3",
+    "mode": "copy",
+    "bytes": 94608,
+    "sha256": "47d42ffbb3beac1bbd622c3d18969045043468e3c7184575daa7201136809b35"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\文章自有千钧骨，_左思.mp3",
+    "target": "audio/skill/fengsui_heg__yandu3.mp3",
+    "mode": "copy",
+    "bytes": 117596,
+    "sha256": "51207b5c6367de70e5a88646124ff1b6be3e17f2d7cb945a3fd66f99dbc24cca"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\宫扇一摇，荣辱尽_左棻.mp3",
+    "target": "audio/skill/fengsui_heg__aishan1.mp3",
+    "mode": "copy",
+    "bytes": 77889,
+    "sha256": "91b2499e36220860fa150d2cae7aab46418f9f3ba230be2b2b3ab4e247670ea2"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\同根一脉，岂容骨_左棻.mp3",
+    "target": "audio/skill/fengsui_heg__aishan2.mp3",
+    "mode": "copy",
+    "bytes": 77889,
+    "sha256": "0c2d84291ba0f1c49f80a5770c49594c7eff6be7c6424cf094fe4b1f2700d5e9"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\妾以寸心托翰墨，_左棻.mp3",
+    "target": "audio/skill/fengsui_heg__aishan3.mp3",
+    "mode": "copy",
+    "bytes": 94085,
+    "sha256": "b671183956c3945e4ed79d2d9d149b512c4fc0623b7e0b47f2d31a27dcd82a54"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\旧字犹堪崇题，旧_左棻.mp3",
+    "target": "audio/skill/fengsui_heg__aishan4.mp3",
+    "mode": "copy",
+    "bytes": 116551,
+    "sha256": "35b33a9a25d334932771f3f93eb827c53eb4458f0d36d50065d7b3e2db3bb5fa"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\妾亦胸藏锦绣句，_左棻.mp3",
+    "target": "audio/skill/fengsui_heg__chongjing3.mp3",
+    "mode": "copy",
+    "bytes": 116028,
+    "sha256": "b9e5ae3416ef995d14f1297ed34c6228c192e86ee082b9168cece44b697ea199"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\兄长文章惊洛下，_左棻.mp3",
+    "target": "audio/skill/fengsui_heg__chongjing2.mp3",
+    "mode": "copy",
+    "bytes": 101922,
+    "sha256": "55e6c89dbe766757c0ad3879fb0cdba3c03d2b954d160ef47b5171080f5ab8ef"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\纵隔宫墙千重锁，_左思.mp3",
+    "target": "audio/skill/fengsui_heg__chongjing4.mp3",
+    "mode": "copy",
+    "bytes": 120208,
+    "sha256": "cb0bc828fae7d07a5af652839f827d7d57a606c1ea6e394304eda2d5f2ea4929"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\宦竖窃柄，岂容汉_窦武.mp3",
+    "target": "audio/skill/fengsui_heg__bahuan1.mp3",
+    "mode": "copy",
+    "bytes": 81024,
+    "sha256": "f351a51937b41d737191dbf5f1f82ec5643e5b11957affbbabe5e1aed43f56f4"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\诸贤并起，誓清禁_窦武.mp3",
+    "target": "audio/skill/fengsui_heg__bahuan2.mp3",
+    "mode": "copy",
+    "bytes": 95130,
+    "sha256": "966a1a18e6423189388f2ae49fccb080c47b3d75666a71f54814504c740e2c80"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\一击破奸胆，忠骨_窦武.mp3",
+    "target": "audio/skill/fengsui_heg__bahuan3.mp3",
+    "mode": "copy",
+    "bytes": 86249,
+    "sha256": "46a8e7a4f4a5392e01598aa89a6078f8cb8d0d1cf301dd44b6404231693fd960"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\以血涤宫闱，以身_窦武.mp3",
+    "target": "audio/skill/fengsui_heg__bahuan4.mp3",
+    "mode": "copy",
+    "bytes": 84159,
+    "sha256": "366da246489e01869160617601a2a1d833496adea1adace5a5b00ed6fa7fcf15"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\深宫重帷，亦当为_王倩.mp3",
+    "target": "audio/skill/fengsui_heg__youhuan1.mp3",
+    "mode": "copy",
+    "bytes": 79457,
+    "sha256": "b7709647014dda403aea4c0eb6c8335ef869809d59455db1d95bdccde3296d3a"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\君臣同心，幽宫自_王倩.mp3",
+    "target": "audio/skill/fengsui_heg__youhuan2.mp3",
+    "mode": "copy",
+    "bytes": 86771,
+    "sha256": "6274ec535b78b14fb0361194453991babf0b6ef947a9cbe5e03df6980ecd3542"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\一念系社稷，幽闺_王倩.mp3",
+    "target": "audio/skill/fengsui_heg__youhuan3.mp3",
+    "mode": "copy",
+    "bytes": 93563,
+    "sha256": "861575f3e342fd861a1b295d72153188de951f0560085e45a5d6d7688b33fd63"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\父亲既决，女儿便_王倩 (1).mp3",
+    "target": "audio/skill/fengsui_heg__youhuan4.mp3",
+    "mode": "copy",
+    "bytes": 102445,
+    "sha256": "3cbc97abcb9719168f80b31d5561921e43e555f590dac59d5ad19afd8fc01f62"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\三都已成，_离思难赋……_左思.mp3",
+    "target": "audio/death/fengsui_heg__zuosizuofen.mp3",
+    "mode": "copy",
+    "bytes": 81024,
+    "sha256": "68eab33450c95c94b480f3ccff870c926d95f96cbef3792f6b19e8fe8bb4880e"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\忠臣竟殒禁踏……_父亲……父亲……_窦武.mp3",
+    "target": "audio/death/fengsui_heg__douwudoumiao.mp3",
+    "mode": "copy",
+    "bytes": 155212,
+    "sha256": "624af85000d0d14c0a6f117ee3ffa09d0ef0c2d03d1f9c701656019288103ce2"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\此卷相赠，莫负京城所望。_此卷相赠，莫负京城所望。_左棻 (1).mp3",
+    "target": "audio/skill/fengsui_heg__chongjing5.mp3",
+    "mode": "split_at_4s_and_mix",
+    "bytes": 34948,
+    "sha256": "ba6b50619c1747c290a38a65240c0fb1f95c402349306308f39f8f2d161f20d6"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\天下纵广，终有一席容才。_天下纵广，终有一席容才。_左棻.mp3",
+    "target": "audio/skill/fengsui_heg__chongjing6.mp3",
+    "mode": "split_at_4s_and_mix",
+    "bytes": 32958,
+    "sha256": "ac11df0411cdcb618dbc5926e142c222cc1492d5a308764f9e7be7347b0bb892"
+  },
+  {
+    "source": "C:\\Users\\jia\\Downloads\\十年磨就三都赋，_左思.mp3",
+    "target": "audio/skill/fengsui_heg__chongjing1.mp3",
+    "mode": "copy",
+    "bytes": 139016,
+    "sha256": "fa6925d0d56a21f4789e012dd66bfaa4210e62a436af488a4c2e7af50fecf109"
+  }
+]

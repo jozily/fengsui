@@ -1,15 +1,7 @@
-local H = require "packages.fengsui.hegemony_util"
-
 local s = fk.CreateSkill { name = "fengsui_heg__xiangkui" }
 
-local function sameKingdomCount(room, player)
-  return #table.filter(room.alive_players, function(p)
-    return H.compareKingdomWith(p, player)
-  end)
-end
-
 local function differentTypeCards(player, cardType)
-  return table.filter(player:getCardIds("h"), function(id)
+  return table.filter(player:getCardIds("he"), function(id)
     return Fk:getCardById(id):getTypeString() ~= cardType
   end)
 end
@@ -17,39 +9,37 @@ end
 s:addEffect(fk.TurnStart, {
   global = true,
   can_trigger = function(self, event, target, player, data)
-    return target and target ~= player and player:hasShownSkill(s.name) and H.compareKingdomWith(target, player) and
-      not player:isKongcheng() and target:getMark(s.name .. "-turn") == 0
+    return target and target ~= player and player:hasShownSkill(s.name) and not player:isNude() and not target:isNude()
   end,
   on_cost = function(self, event, target, player, data)
-    if not player.room:askToSkillInvoke(target, { skill_name = s.name, prompt = "#fengsui_heg__xiangkui-invoke::" .. player.id }) then
-      return false
-    end
-    local choice = player.room:askToChoice(target, {
-      choices = { "basic", "trick", "equip" }, skill_name = s.name,
+    local room = player.room
+    local shown = room:askToCards(target, {
+      min_num = 1, max_num = 1, include_equip = true, skill_name = s.name,
+      prompt = "#fengsui_heg__xiangkui-show", cancelable = true,
     })
-    event:setCostData(self, choice)
+    if #shown == 0 then return false end
+    room:showCards(shown, target, target)
+    event:setCostData(self, { card = shown[1] })
     return true
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    room:setPlayerMark(target, s.name .. "-turn", 1)
-    local available = differentTypeCards(player, event:getCostData(self))
+    local shown = Fk:getCardById(event:getCostData(self).card)
+    if not shown then return end
+    if not room:askToSkillInvoke(player, { skill_name = s.name, prompt = "#fengsui_heg__xiangkui-invoke::" .. target.id }) then return end
+    local available = differentTypeCards(player, shown:getTypeString())
     if #available == 0 then return end
     local cards = room:askToCards(player, {
-      min_num = 1, max_num = math.min(#available, sameKingdomCount(room, player)),
-      pattern = tostring(Exppattern{ id = available }), include_equip = false,
+      min_num = 0, max_num = #available,
+      pattern = tostring(Exppattern{ id = available }), include_equip = true,
       skill_name = s.name, prompt = "#fengsui_heg__xiangkui-give::" .. target.id,
       cancelable = true,
     })
-    if #cards == 0 then return end
-    room:moveCardTo(cards, Card.PlayerHand, target, fk.ReasonGive, s.name, nil, true, player)
-    if player:isAlive() then player:drawCards(#cards, s.name) end
+    if #cards > 0 then
+      room:moveCardTo(cards, Card.PlayerHand, target, fk.ReasonGive, s.name, nil, true, player)
+      room:setPlayerMark(player, "fengsui_heg__yangming-gave-turn", 1)
+    end
   end,
 })
-
-s:addTest(function(room, me)
-  lu.assertTrue(Fk:cloneCard("duel"):getTypeString() ~= "basic")
-  lu.assertTrue(Fk:cloneCard("slash"):getTypeString() ~= "trick")
-end)
 
 return s

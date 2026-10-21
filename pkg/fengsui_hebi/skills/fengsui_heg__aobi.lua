@@ -1,116 +1,81 @@
-local aobi = fk.CreateSkill{
+local aobi = fk.CreateSkill {
   name = "fengsui_heg__aobi",
   tags = { Skill.Compulsory },
 }
 
-local state_mark = "fengsui_heg__aobi_state-turn"
-local damage_mark = "fengsui_heg__aobi_damage-turn"
+local previousUser = "fengsui_heg__aobi_previous_user-turn"
+local previousTargets = "fengsui_heg__aobi_previous_targets-turn"
 
-aobi:addEffect(fk.TurnStart, {
-  anim_type = "control",
-  can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(aobi.name)
-  end,
-  on_use = function(self, event, target, player, data)
-    local choice = player.room:askToChoice(player, {
-      choices = { "fengsui_heg__aobi_self", "fengsui_heg__aobi_others" },
-      skill_name = aobi.name,
-      prompt = "#fengsui_heg__aobi-choice",
-    })
-    player.room:setPlayerMark(player, state_mark, choice)
-  end,
-})
-
-aobi:addEffect("prohibit", {
-  global = true,
-  is_prohibited = function(self, from, to, card)
-    if not from or not to or not from:hasSkill(aobi.name) then return false end
-    local state = from:getMark(state_mark)
-    return (state == "fengsui_heg__aobi_self" and to ~= from) or
-      (state == "fengsui_heg__aobi_others" and to == from)
-  end,
-})
+local function targetIds(data)
+  return table.map(data and data.tos or {}, function(p) return p.id end)
+end
 
 aobi:addEffect(fk.CardUseFinished, {
-  anim_type = "drawcard",
-  can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(aobi.name) and
-      player:getMark(state_mark) == "fengsui_heg__aobi_self"
+  global = true,
+  can_trigger = function(self, _, target, player, data)
+    return target and player:hasShownSkill(aobi.name) and player.room.current == player and data and data.tos
   end,
-  on_use = function(self, event, target, player, data)
-    player:drawCards(1, aobi.name)
-  end,
-})
-
-aobi:addEffect(fk.CardUsing, {
-  mute = true,
-  can_refresh = function(self, event, target, player, data)
-    return target == player and player:hasSkill(aobi.name) and
-      player:getMark(state_mark) == "fengsui_heg__aobi_others" and
-      data.card and data.card.suit ~= Card.NoSuit and
-      player:getMark("fengsui_heg__aobi_suit_" .. data.card.suit .. "-turn") == 0
-  end,
-  on_refresh = function(self, event, target, player, data)
-    player.room:setPlayerMark(player, "fengsui_heg__aobi_suit_" .. data.card.suit .. "-turn", 1)
-    player.room:addTableMarkIfNeed(player, "@fengsui_heg__aobi_suits-turn", data.card:getSuitString(true))
-    data.extra_data = data.extra_data or {}
-    data.extra_data.fengsui_heg__aobi_first_suit = true
-  end,
-})
-
-aobi:addEffect(fk.AfterCardTargetDeclared, {
-  anim_type = "offensive",
-  can_trigger = function(self, event, target, player, data)
-    if target ~= player or not player:hasSkill(aobi.name) or
-      player:getMark(state_mark) ~= "fengsui_heg__aobi_others" or
-      not (data.extra_data or {}).fengsui_heg__aobi_first_suit then
-      return false
+  on_use = function(self, _, target, player, data)
+    local room = player.room
+    local oldUser = player:getMark(previousUser)
+    local oldTargets = player:getTableMark(previousTargets)
+    local currentTargets = targetIds(data)
+    if oldUser == target.id then
+      local common = table.filter(currentTargets, function(id) return table.contains(oldTargets, id) end)
+      for _, id in ipairs(common) do
+        local p = room:getPlayerById(id)
+        if p and p:isAlive() then p:drawCards(1, aobi.name) end
+      end
     end
-    return #data:getExtraTargets() > 0
-  end,
-  on_cost = function(self, event, target, player, data)
-    local chosen = player.room:askToChoosePlayers(player, {
-      targets = data:getExtraTargets(),
-      min_num = 1,
-      max_num = 1,
-      skill_name = aobi.name,
-      prompt = "#fengsui_heg__aobi-extra:::" .. data.card:toLogString(),
-      cancelable = true,
-    })
-    if #chosen > 0 then
-      event:setCostData(self, {to = chosen[1]})
-      return true
-    end
-  end,
-  on_use = function(self, event, target, player, data)
-    data:addTarget(event:getCostData(self).to)
+    room:setPlayerMark(player, previousUser, target.id)
+    room:setPlayerMark(player, previousTargets, #currentTargets > 0 and currentTargets or 0)
   end,
 })
 
-Fk:loadTranslationTable{
-  ["#fengsui_heg__aobi-extra"] = "拗愎：你可以为此牌额外指定一名目标",
-  ["@fengsui_heg__aobi_suits-turn"] = "拗愎：",
-}
-
-aobi:addEffect(fk.Damage, {
+aobi:addEffect(fk.AfterCardsMove, {
   global = true,
   mute = true,
-  can_refresh = function(self, event, target, player, data)
-    return target == player and player:hasSkill(aobi.name) and player:getMark(state_mark) ~= 0
+  can_refresh = function(self, _, _, player, data)
+    return data ~= nil
   end,
-  on_refresh = function(self, event, target, player, data)
-    player.room:setPlayerMark(player, damage_mark, 1)
+  on_refresh = function(self, _, _, player, data)
+    for _, move in ipairs(data) do
+      if move.to and move.toArea ~= Card.Processing and move.moveInfo then
+        player.room:addPlayerMark(move.to, "fengsui_heg__aobi_gained-turn", #move.moveInfo)
+      end
+    end
   end,
 })
 
 aobi:addEffect(fk.TurnEnd, {
-  anim_type = "negative",
-  can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(aobi.name) and
-      player:getMark(state_mark) ~= 0 and player:getMark(damage_mark) == 0
+  can_trigger = function(self, _, target, player)
+    return target == player and player:hasShownSkill(aobi.name)
   end,
-  on_use = function(self, event, target, player, data)
-    player.room:loseHp(player, 1, aobi.name)
+  on_use = function(self, _, _, player)
+    local room = player.room
+    local max = -1
+    for _, p in ipairs(room.alive_players) do max = math.max(max, p:getMark("fengsui_heg__aobi_gained-turn")) end
+    if max <= 0 then return end
+    local most = table.filter(room.alive_players, function(p)
+      return p:getMark("fengsui_heg__aobi_gained-turn") == max
+    end)
+    local none = table.filter(room.alive_players, function(p)
+      return p:getMark("fengsui_heg__aobi_gained-turn") == 0 and not table.contains(most, p)
+    end)
+    local reverse = #most > 1 and not table.contains(most, player)
+    if reverse then
+      for _, p in ipairs(none) do
+        for _, source in ipairs(most) do
+          if p:isAlive() and source:isAlive() then room:damage { from = p, to = source, damage = 1, skillName = aobi.name } end
+        end
+      end
+    else
+      for _, source in ipairs(most) do
+        for _, p in ipairs(none) do
+          if source:isAlive() and p:isAlive() then room:damage { from = source, to = p, damage = 1, skillName = aobi.name } end
+        end
+      end
+    end
   end,
 })
 

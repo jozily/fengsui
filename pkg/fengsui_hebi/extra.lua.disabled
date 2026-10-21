@@ -34,11 +34,11 @@ return function(extension)
   add(simple("fengsui_heg__nibu", fk.Damaged, nil, function(p,t) if t==p then p.room:drawCards(p,1,"fengsui_heg__nibu") end end))
   extension:loadSkillSkels(skills)
   local defs = {
-   {"wangqian","jin",3,"fengsui_heg__yaxi","fengsui_heg__xiarong"},{"weijie","jin",3,"fengsui_heg__shenyi","fengsui_heg__siji"},{"panyue","jin",3,"fengsui_heg__daoli","fengsui_heg__kuangtao"},{"shanxia","jin",4,"fengsui_heg__jueli","fengsui_heg__beige"},{"lemin","jin",3,"fengsui_heg__xuanmu","fengsui_heg__qingguan"},{"songyi","jin",2,"fengsui_heg__bingyao","fengsui_heg__chuguang"},{"jin_yueguang","jin",2,"fengsui_heg__zhuiming","fengsui_heg__kuohu"},{"biyu","jin",4,"fengsui_heg__qiongbu","fengsui_heg__juanyi"},{"xixuan","jin",2,"fengsui_heg__lishi","fengsui_heg__pinliu"},{"wangxizhi","jin",4,"fengsui_heg__qusheng","fengsui_heg__nishi"},{"wenqiao","jin",4,"fengsui_heg__nibu","fengsui_heg__bingyao2"},
+   {"wangqian","jin",3,"fengsui_heg__yaxi","fengsui_heg__xiarong"},{"weijie","jin",3,"fengsui_heg__shenyi","fengsui_heg__siji"},{"panan","jin",3,"fengsui_heg__daoli","fengsui_heg__kuangtao"},{"shanxia","jin",4,"fengsui_heg__jueli","fengsui_heg__beige"},{"lemin","jin",3,"fengsui_heg__xuanmu","fengsui_heg__qingguan"},{"songyi","jin",2,"fengsui_heg__bingyao","fengsui_heg__chuguang"},{"jin_yueguang","jin",2,"fengsui_heg__zhuiming","fengsui_heg__kuohu"},{"biyu","jin",4,"fengsui_heg__qiongbu","fengsui_heg__juanyi"},{"xixuan","jin",2,"fengsui_heg__lishi","fengsui_heg__pinliu"},{"wangxizhi","jin",4,"fengsui_heg__qusheng","fengsui_heg__nishi"},{"wenqiao","jin",4,"fengsui_heg__nibu","fengsui_heg__bingyao2"},
   }
   for _,d in ipairs(defs) do local g=General:new(extension,"fengsui_heg__"..d[1],d[2],d[3]); g:addSkills{d[4],d[5]} end
   Fk:loadTranslationTable{
-   ["fengsui_heg__wangqian"]="王倩",["fengsui_heg__weijie"]="卫玠",["fengsui_heg__panyue"]="潘岳",["fengsui_heg__shanxia"]="山遐",["fengsui_heg__lemin"]="乐敏",["fengsui_heg__songyi"]="宋祎",["fengsui_heg__jin_yueguang"]="靳月光&靳月华",["fengsui_heg__biyu"]="碧玉",["fengsui_heg__xixuan"]="郗璿",["fengsui_heg__wangxizhi"]="王羲之",["fengsui_heg__wenqiao"]="温峤",
+   ["fengsui_heg__wangqian"]="王倩",["fengsui_heg__weijie"]="卫玠",["fengsui_heg__panan"]="潘安",["fengsui_heg__shanxia"]="山遐",["fengsui_heg__lemin"]="乐敏",["fengsui_heg__songyi"]="宋祎",["fengsui_heg__jin_yueguang"]="靳月光&靳月华",["fengsui_heg__biyu"]="碧玉",["fengsui_heg__xixuan"]="郗璿",["fengsui_heg__wangxizhi"]="王羲之",["fengsui_heg__wenqiao"]="温峤",
    ["fengsui_heg__yaxi"]="揠息",[":fengsui_heg__yaxi"]="每轮限一次，当一名角色重复发动技能且其武将牌均明置时，你令其摸一张牌并暗置该武将牌。",
    ["fengsui_heg__xiarong"]="遐容",[":fengsui_heg__xiarong"]="当同势力角色受到伤害后，你可以暗置双方武将牌并令其恢复一点体力。",
    ["fengsui_heg__shenyi"]="神毓",[":fengsui_heg__shenyi"]="每回合结束后，若本回合角色弃牌数大于其体力值，你可以令其手牌数调整至体力值。",

@@ -37,15 +37,30 @@ function Liwu.isNeutralShown(player)
 end
 
 function Liwu.isKingdomDetermined(player)
-  return player.kingdom ~= "unknown" and player.kingdom ~= Liwu.kingdom and
-    player.kingdom ~= Liwu.compatKingdom
+  local kingdom = player and player.kingdom
+  if type(kingdom) ~= "string" then
+    kingdom = player and player:getMark("__heg_kingdom")
+  end
+  return type(kingdom) == "string" and kingdom ~= "unknown" and
+    kingdom ~= Liwu.kingdom and kingdom ~= Liwu.compatKingdom
 end
 
 if not H._fengsuiNeutralWrapped then
   local originalGetKingdom = H.getKingdom
   H.getKingdom = function(player)
-    if player.kingdom == "unknown" and player:getMark("@fengsui_neutral") > 0 then
+    local kingdom = player and player.kingdom
+    -- 某些客户端回包会把势力属性暂时暴露为数字；优先使用国战规则
+    -- 保存的字符串势力，避免与 "unknown" 比较时发生类型错误。
+    if type(kingdom) ~= "string" then
+      local marked = player and player:getMark("__heg_kingdom")
+      if type(marked) == "string" then kingdom = marked end
+    end
+    local neutral_mark = tonumber(player and player:getMark("@fengsui_neutral")) or 0
+    if kingdom == "unknown" and neutral_mark > 0 then
       return Liwu.legacyKingdom .. "_" .. player.id
+    end
+    if player and type(player.kingdom) ~= "string" and type(kingdom) == "string" then
+      return kingdom
     end
     return originalGetKingdom(player)
   end

@@ -1,6 +1,15 @@
 local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 local chengtao = fk.CreateSkill { name = "fengsui_heg__chengtiao" }
+local function hasActualSkill(player)
+  for _, isDeputy in ipairs({ false, true }) do
+    local general = Fk.generals[H.getActualGeneral(player, isDeputy)]
+    if general and table.contains(general:getSkillNameList(true), chengtao.name) then
+      return true
+    end
+  end
+  return false
+end
 
 local markLength = {
   vanguard = 2,
@@ -15,7 +24,7 @@ chengtao:addEffect(H.HegMarkChanged, {
   global = true,
   can_trigger = function(self, _, target, player, data)
     return target and data and (data.number or 0) > 0 and
-      player:hasShownSkill(self.name) and markLength[data.markName] ~= nil
+      hasActualSkill(player) and markLength[data.markName] ~= nil
   end,
   on_use = function(self, _, target, player, data)
     local room = player.room

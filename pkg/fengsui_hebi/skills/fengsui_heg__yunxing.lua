@@ -5,16 +5,16 @@ local yunxing = fk.CreateSkill{
   tags = { Skill.Compulsory, Skill.DeputyPlace },
 }
 
-yunxing:addEffect(fk.EventPhaseStart, {
+local turnEffect = {
   anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)
-    return player:hasSkill(yunxing.name) and target == player and (player.phase == Player.Start or player.phase == Player.Finish)
+    return player:hasSkill(yunxing.name) and target == player
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
     player:drawCards(1, yunxing.name)
-    if not player:isKongcheng() then
-      local ids = U.chooseCardsFromList(room, player, player:getCardIds("h"), 1, 1,
+    if player:isAlive() and not player:isNude() then
+      local ids = U.chooseCardsFromList(room, player, player:getCardIds("he"), 1, 1,
         "#fengsui_heg__yunxing-top", yunxing.name, false)
       if #ids > 0 then
         room:moveCards({
@@ -29,27 +29,19 @@ yunxing:addEffect(fk.EventPhaseStart, {
       end
     end
   end,
-})
+}
+yunxing:addEffect(fk.TurnStart, turnEffect)
+yunxing:addEffect(fk.TurnEnd, turnEffect)
 
-yunxing:addEffect(fk.FinishJudge, {
-  anim_type = "drawcard",
-  can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(yunxing.name) and data.card and
-      (data.card.suit == Card.Heart or data.card.suit == Card.Spade)
+-- 梅花判定牌在生效前视为红桃，随后仍按正常判定流程结算。
+yunxing:addEffect(fk.FinishRetrial, {
+  can_trigger = function(self, _, target, player, data)
+    return target == player and player:hasSkill(yunxing.name) and data and data.card and
+      data.card.suit == Card.Club
   end,
-  on_use = function(self, event, target, player, data)
-    if data.card.suit == Card.Heart then
-      player:drawCards(1, yunxing.name)
-    elseif not player:isNude() then
-      player.room:askToDiscard(player, {
-        min_num = 1,
-        max_num = 1,
-        include_equip = true,
-        skill_name = yunxing.name,
-        cancelable = false,
-        prompt = "#fengsui_heg__yunxing-discard",
-      })
-    end
+  on_use = function(self, _, target, player, data)
+    local card = data.card
+    data.card = Fk:cloneCard(card.name, Card.Heart, card.number, yunxing.name, card:getEffectiveId())
   end,
 })
 

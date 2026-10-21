@@ -1,5 +1,5 @@
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
-local s = fk.CreateSkill { name = "fengsui_heg__shenyu_track" }
+local s = fk.CreateSkill { name = "#fengsui_heg__shenyu_track", mute = true }
 s:addEffect(fk.AfterCardsMove, { global = true,
   can_refresh = function(self, _, target, player, data)
     return player and U.hasGeneralName(player, "fengsui_heg__weijie") and player:hasShownSkill("fengsui_heg__shenyu") and data and table.find(data, function(m)

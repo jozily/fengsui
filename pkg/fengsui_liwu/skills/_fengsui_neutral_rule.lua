@@ -53,7 +53,7 @@ neutralRule:addEffect(fk.GeneralShown, {
   global = true,
   priority = 20,
   can_trigger = function(self, event, target, player, data)
-    return target == player and getLegacyNeutralPlace(player) ~= nil
+    return target == player and getLegacyNeutralPlace(player) ~= nil and data ~= nil
   end,
   on_cost = function()
     return true
@@ -62,18 +62,21 @@ neutralRule:addEffect(fk.GeneralShown, {
     local room = player and player.room
     if not room then return end
     local neutralPlace = getLegacyNeutralPlace(player)
-    local shownPlace = data.m and "m" or "d"
-    local otherShown = neutralPlace == "m" and player.deputyGeneral ~= "anjiang" or
-      neutralPlace == "d" and player.general ~= "anjiang"
-
-    if shownPlace == neutralPlace and not otherShown then
+    local shownPlace = data.m and "m" or (data.d and "d")
+    local firstNeutral = shownPlace == neutralPlace and
+      ((shownPlace == "m" and player.deputyGeneral == "anjiang") or
+       (shownPlace == "d" and player.general == "anjiang")) and
+      not (data.m and data.d)
+    if firstNeutral then
       room:setPlayerProperty(player, "kingdom", "unknown")
       room:setPlayerProperty(player, "role", "hidden")
-      room:setPlayerMark(player, "@fengsui_neutral", 1)
+      room:setPlayerMark(player, "@fengsui_neutral", "")
       room:setPlayerMark(player, "fengsui_neutral_reveal_place", otherPlace(neutralPlace))
       room:setPlayerMark(player, "fengsui_neutral_reveal_round", room:getBanner("RoundCount") or 0)
       room:setPlayerMark(player, MarkEnum.RevealProhibited .. "-fengsui", { otherPlace(neutralPlace) })
     else
+      -- 先亮正常势力牌或同时亮两张时，不触发中立特效，
+      -- 但仍按正常势力确定当前角色势力。
       room:setPlayerMark(player, "@fengsui_neutral", 0)
       determineKingdom(room, player)
     end

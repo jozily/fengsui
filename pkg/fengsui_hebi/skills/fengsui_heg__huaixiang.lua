@@ -5,6 +5,7 @@ local huaixiang = fk.CreateSkill{
 }
 
 local original_kingdom_mark = "fengsui_heg__huaixiang_original_kingdom-turn"
+local category_mark = "@fengsui_heg__huaixiang_category-turn"
 
 local function entersDiscardPileByDiscard(move)
   return move.toArea == Card.DiscardPile and
@@ -46,6 +47,7 @@ huaixiang:addEffect(fk.AfterCardsMove, {
     local current = player.room.current
     return player:hasSkill(huaixiang.name) and current and
       current.phase ~= Player.NotActive and
+      current.kingdom ~= "unknown" and player.kingdom ~= "unknown" and
       H.compareKingdomWith(current, player) and #getEligibleCards(player.room, data) > 0 and
       table.find(player.room.alive_players, function(p) return p.kingdom ~= "unknown" end) ~= nil
   end,
@@ -83,8 +85,17 @@ huaixiang:addEffect(fk.AfterCardsMove, {
       room:obtainCard(player, cost.cards[1], true, fk.ReasonPrey, player, huaixiang.name)
     end
     if to:isAlive() and to.kingdom ~= "unknown" then
+      local card_type = Fk:getCardById(cost.cards[1]).type
+      local type_text = card_type == Card.TypeBasic and "基" or
+        card_type == Card.TypeTrick and "锦" or
+        card_type == Card.TypeEquip and "装" or ""
+      local old_categories = player:getMark(category_mark)
+      if type(old_categories) ~= "string" then old_categories = "" end
+      if type_text ~= "" and not old_categories:find(type_text, 1, true) then
+        room:setPlayerMark(player, category_mark, old_categories .. type_text)
+      end
       room:setPlayerMark(to, original_kingdom_mark, to.kingdom)
-      room:setPlayerMark(to, "@fengsui_heg__huaixiang-turn", 1)
+      room:setPlayerMark(to, "@fengsui_heg__huaixiang-turn", "")
       room:setPlayerProperty(to, "kingdom", "unknown")
     end
   end,
@@ -106,7 +117,11 @@ huaixiang:addEffect(fk.TurnEnd, {
         room:setPlayerProperty(p, "kingdom", kingdom)
         room:setPlayerMark(p, original_kingdom_mark, 0)
         room:setPlayerMark(p, "@fengsui_heg__huaixiang-turn", 0)
+        room:setPlayerMark(p, category_mark, 0)
       end
+    end
+    for _, p in ipairs(room.players) do
+      room:setPlayerMark(p, category_mark, 0)
     end
   end,
 })

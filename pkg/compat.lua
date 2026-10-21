@@ -1,68 +1,10 @@
 local H = require "packages.hegemony.util"
+local FengsuiH = require "packages.fengsui.hegemony_util"
 
 -- Keep the extended transform contract inside Fengsui so the official
 -- hegemony package can remain untouched.
 function H.transformGeneral(room, player, isMain, isHidden, num, skillName)
-  local data = H.GeneralTransformedData:new{
-    isMain = isMain,
-    isHidden = isHidden,
-    num = num,
-    skillName = skillName,
-  }
-  if room.logic:trigger(H.GeneralTransforming, player, data) then return false end
-  isMain, isHidden, num = data.isMain, data.isHidden, data.num
-  local orig = isMain and player.general or player.deputyGeneral
-  data.origName = orig
-  num = num or 1
-  if not orig then return false end
-  if orig == "anjiang" then
-    player:revealGeneral(not isMain, true)
-    orig = isMain and player.general or player.deputyGeneral
-  end
-
-  local kingdom = player:getMark("__heg_kingdom")
-  local generals
-  if kingdom == "wild" then
-    generals = room:findGenerals(function(name)
-      local general = Fk.generals[name]
-      return general and general.kingdom ~= "wild" and general.subkingdom ~= "wild"
-    end, num)
-  else
-    generals = room:findGenerals(function(name)
-      local general = Fk.generals[name]
-      return general and (general.kingdom == kingdom or general.subkingdom == kingdom)
-    end, num)
-  end
-  if #generals == 0 then return false end
-
-  local general = #generals == 1 and generals[1] or room:askToChooseGeneral(player, {
-    generals = generals,
-    n = 1,
-    no_convert = true,
-  })
-  if not general or general == "" then
-    room:returnToGeneralPile(generals)
-    return false
-  end
-
-  table.removeOne(generals, general)
-  if orig ~= "" and orig ~= "anjiang" and not orig:startsWith("blank_") then
-    table.insertIfNeed(generals, orig)
-  end
-  room:returnToGeneralPile(generals)
-  room:changeHero(player, general, false, not isMain, not isHidden, false, false)
-  if isHidden then
-    player:hideGeneral(not isMain)
-    room:sendLog{
-      type = "#ChangeHiddenGeneral",
-      from = player.id,
-      arg = isMain and "mainGeneral" or "deputyGeneral",
-      toast = true,
-    }
-  end
-  room:setPlayerMark(player, isMain and "__heg_general" or "__heg_deputy", general)
-  room.logic:trigger(H.GeneralTransformed, player, data)
-  return true
+  return FengsuiH.transformGeneral(room, player, isMain, isHidden, num, skillName)
 end
 
 function H.wildChooseKingdom(player, generalName)
@@ -118,6 +60,33 @@ if not H._fengsuiOriginalInFormationRelation then
   end
 end
 
+if not H._fengsuiOriginalInSiegeRelation then
+  H._fengsuiOriginalInSiegeRelation = H.inSiegeRelation
+  H.inSiegeRelation = function(player, target, victim)
+    if H._fengsuiOriginalInSiegeRelation(player, target, victim) then return true end
+    if not player or not target or not victim or victim == player or victim == target or
+      victim.kingdom == "unknown" or H.compareKingdomWith(player, victim) or
+      not H.compareKingdomWith(player, target) then return false end
+    return table.find(player.room.alive_players, function(p)
+      return p:hasSkill("fengsui_heg__chenji") and H.compareKingdomWith(p, player)
+    end) ~= nil
+  end
+end
+
+-- 戚举会把部分角色暂时置为“未确定势力”。官方阵法召唤技的
+-- canUse 仍会用该势力去索引已确定势力人数表，得到 nil 后直接与
+-- 人数比较，AI 在生成响应时就会报 “attempt to compare nil with number”。
+-- 未确定势力本身不能发动这类阵法召唤技，因此在风随兼容层提前拒绝，
+-- 不改动 packages/hegemony 的源文件。
+if H.ArraySummonSkill and not H.ArraySummonSkill._fengsuiUnknownKingdomGuard then
+  local originalArraySummonCanUse = H.ArraySummonSkill.canUse
+  H.ArraySummonSkill.canUse = function(self, player, card)
+    if not player or player.kingdom == "unknown" then return false end
+    return originalArraySummonCanUse(self, player, card)
+  end
+  H.ArraySummonSkill._fengsuiUnknownKingdomGuard = true
+end
+
 if Room and not Room._fengsuiKnownBothWrapped then
   local originalAskToChoice = Room.askToChoice
   Room.askToChoice = function(self, player, params)
@@ -131,8 +100,20 @@ if Room and not Room._fengsuiKnownBothWrapped then
   Room._fengsuiKnownBothWrapped = true
 end
 
+-- 麒麟弓等旧技能使用 card_data 选择牌时没有传 prompt；AI 的卡牌选择
+-- 处理器会对 prompt 做字符串解析，因此必须补一个稳定的默认提示。
+if Room and not Room._fengsuiChooseCardPromptWrapped then
+  local originalAskToChooseCard = Room.askToChooseCard
+  Room.askToChooseCard = function(self, player, params)
+    if params and not params.prompt then params.prompt = "#fengsui-card-choose" end
+    return originalAskToChooseCard(self, player, params)
+  end
+  Room._fengsuiChooseCardPromptWrapped = true
+end
+
 Fk:loadTranslationTable{
   ["#ChangeHiddenGeneral"] = "%from 变更了 %arg（暗置）",
+  ["#fengsui-card-choose"] = "请选择一张牌",
 }
 
 return H

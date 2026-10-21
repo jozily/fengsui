@@ -32,21 +32,31 @@ juangu:addEffect(fk.TargetSpecified, {
   can_trigger = function(self, event, target, player, data)
     if not target or not isEligibleCard(data.card) or not data.to or not player:hasSkill(juangu.name) or
       target.room.current ~= target or
-      table.contains(player:getTableMark(used_mark), target.id) or
-      #data:getAllTargets() ~= 1 then
+      table.contains(player:getTableMark(used_mark), target.id) then
       return false
     end
-    return hasCompanionAcross(target, data.to)
+    local current = target.room.logic:getCurrentEvent():findParent(GameEvent.UseCard, true)
+    local first = target.room.logic:getEventsOfScope(GameEvent.UseCard, 1, function(e)
+      return e.data.from == target and isEligibleCard(e.data.card)
+    end, Player.HistoryTurn)
+    return current and first[1] == current and hasCompanionAcross(target, data.to)
   end,
   on_cost = function(self, event, target, player, data)
-    player.room:addTableMarkIfNeed(player, used_mark, target.id)
-    return player.room:askToSkillInvoke(player, {
+    local room = player.room
+    if not room:askToSkillInvoke(player, {
       skill_name = juangu.name,
       prompt = "#fengsui_heg__juangu-invoke::" .. target.id .. ":" .. data.to.id,
+    }) then return false end
+    room:addTableMarkIfNeed(player, used_mark, target.id)
+    local choice = room:askToChoice(player, {
+      choices = { "fengsui_heg__juangu_draw", "fengsui_heg__juangu_twice" },
+      skill_name = juangu.name, prompt = "#fengsui_heg__juangu-choice",
     })
+    event:setCostData(self, choice)
+    return true
   end,
   on_use = function(self, event, target, player, data)
-    if target == data.to then
+    if event:getCostData(self) == "fengsui_heg__juangu_twice" then
       data.use.additionalEffect = (data.use.additionalEffect or 0) + 1
     else
       if target:isAlive() then target:drawCards(1, juangu.name) end
@@ -61,5 +71,7 @@ juangu:addTest(function(room, me)
   lu.assertFalse(isEligibleCard(Fk:cloneCard("crossbow")))
   lu.assertFalse(isEligibleCard(Fk:cloneCard("indulgence")))
 end)
+
+require("packages.fengsui.pkg.checklist_regressions")(juangu)
 
 return juangu

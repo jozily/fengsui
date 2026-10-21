@@ -1,0 +1,350 @@
+[
+  {
+    "skill": "juangu",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__juangu.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__juangu_remake.lua",
+    "sha256": "e108aaf63603e09f96768f6a24888f0dcd0d926672c65fcf1999c6709e8e37d2"
+  },
+  {
+    "skill": "shenqing",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__shenqing.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__shenqing_remake.lua",
+    "sha256": "dc17d091095a9887b193a07d39cf13aec72ec558dbaa40a96efddfa9f66a8f58"
+  },
+  {
+    "skill": "weihou",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__weihou.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__weihou_remake.lua",
+    "sha256": "31a5e0d5bff70f624a3353eb55937210044828c56fc681f0d4246a5b3eaf0268"
+  },
+  {
+    "skill": "jincai",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__jincai.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__jincai_remake.lua",
+    "sha256": "04a74ee78d5377dc4bda66300315e4eb0fd4ecc02d69ce3bca7e77a81c1b5113"
+  },
+  {
+    "skill": "lianxi",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__lianxi.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__lianxi_remake.lua",
+    "sha256": "7e84c5aeaead2de2a29266446624719ff4b9a85c3c59261487ff8ad5495eb5f8"
+  },
+  {
+    "skill": "hejue",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__hejue.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__hejue_remake.lua",
+    "sha256": "219026a294b14be1320f80e3fa79935c080ec635a6c61ba0cb658fe1bd06fd83"
+  },
+  {
+    "skill": "hexi",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__hexi.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__hexi_remake.lua",
+    "sha256": "0ef18aa74da70c98d65abda2a5ff9cadf7a9e18e9a63e0beedf95e287f3e9c3e"
+  },
+  {
+    "skill": "ruwu",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__ruwu.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__ruwu_remake.lua",
+    "sha256": "bf91206bf84a49e3f6d8a3f98067d60fa1861527085f4f7e48f063e66f9ec68c"
+  },
+  {
+    "skill": "yuchen",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__yuchen.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__yuchen_remake.lua",
+    "sha256": "05e09c8af2e62d082baf5c9745219e0432cf7ed66fd03b97e075fb3a6c02e290"
+  },
+  {
+    "skill": "xiarong",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__xiarong.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__xiarong_remake.lua",
+    "sha256": "861dfd31a84a828a2101ac8389e008e785c8bc534e68755072a6373e499d94d1"
+  },
+  {
+    "skill": "yisang",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__yisang.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__yisang_remake.lua",
+    "sha256": "fe39b25af845df82bae1f46e80f4d485c0f8da079a2915f976368eda94c3afc4"
+  },
+  {
+    "skill": "chaohua",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__chaohua.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__chaohua_remake.lua",
+    "sha256": "063a3a2b6f9d3efe1d3b5d495ee606a5e28370b7582cdc1a56add31b5511f824"
+  },
+  {
+    "skill": "dexiang",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__dexiang.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__dexiang_remake.lua",
+    "sha256": "411530f7c3dc250d0be006615d4cfaaa078fc66a660eaa451c6e1426b56c5b72"
+  },
+  {
+    "skill": "juanyi",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__juanyi.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__juanyi_remake.lua",
+    "sha256": "a4f8deac12891bf18c9c1f0e0ee9ee6137d607a2ee89ffdb3d9be1069a423510"
+  },
+  {
+    "skill": "lishi",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__lishi.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__lishi_remake.lua",
+    "sha256": "a971a40d3ab6c6d050f3fc427a78f3a28ad4a06b2dee9bb841b791f382aca78c"
+  },
+  {
+    "skill": "jiaosu",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__jiaosu.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__jiaosu_remake.lua",
+    "sha256": "14061d322a57144e3f68e13193aea4c2fddaa9663dd1aa4677d8170885c7d59d"
+  },
+  {
+    "skill": "yaoming",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__yaoming.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__yaoming_remake.lua",
+    "sha256": "8e8b365f4a3f1701b5480a88764da27e979efab2c3d17ee3562d09f0f85f9bc8"
+  },
+  {
+    "skill": "chuguang",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__chuguang.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__chuguang_remake.lua",
+    "sha256": "270fe3a6353ad1cb0791ec56fd220a83e3d9abce3c6327be7d5fdba9ad7f5e45"
+  },
+  {
+    "skill": "beiqiu",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__beiqiu.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__beiqiu_remake.lua",
+    "sha256": "2b94d7e7b4002b46b9e962135098f0177af45b0ba73f8c8b86d77c376d261ade"
+  },
+  {
+    "skill": "daoli",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__daoli.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__daoli_remake.lua",
+    "sha256": "58762637da1bf2b8f1e383b202c64593985ebe901c8aa90e4e0aadf524071945"
+  },
+  {
+    "skill": "choutao",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__choutao.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__choutao_remake.lua",
+    "sha256": "a923b6e17105ccacdeb11b4d58d2fa775eb7468e02a30d3d537ea02794193cf6"
+  },
+  {
+    "skill": "yongfan",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__yongfan.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__yongfan_remake.lua",
+    "sha256": "d11990a4f970f9fab61a4ad988a3465e9cab30adba8d745723c937f214e9ee75"
+  },
+  {
+    "skill": "baizu",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__baizu.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__baizu_remake.lua",
+    "sha256": "36b436b58998d981a37a3d406c7f76d12fae1dc4999bde0427f88faa925ccc9c"
+  },
+  {
+    "skill": "junwei",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__junwei.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__junwei_remake.lua",
+    "sha256": "5bf693f4742ca0f9443509d2c36a70dc48cf8e435f0e2f25f0d073de4769451d"
+  },
+  {
+    "skill": "chenji",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__chenji.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__chenji_remake.lua",
+    "sha256": "09f5ee612d9fbe307d47baf12061f7e7f875bcf6706056be753f7a8b25b8f28c"
+  },
+  {
+    "skill": "zhouwang",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__zhouwang.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__zhouwang_remake.lua",
+    "sha256": "eb1de5c902363f171fb063d83742b7e14f6327d0424b43205a595be55929aeea"
+  },
+  {
+    "skill": "fuyin",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__fuyin.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__fuyin_remake.lua",
+    "sha256": "e3b9429188b50b0f1b9d0ad2f9232106a35d361c5c97ababa7cacd2acc8d1446"
+  },
+  {
+    "skill": "baoguo",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__baoguo.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__baoguo_remake.lua",
+    "sha256": "0fec98101f2302990626611e3c035f3fa83918fddefa339cc00b6428c644b047"
+  },
+  {
+    "skill": "yunxing",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__yunxing.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__yunxing_remake.lua",
+    "sha256": "0cdbe63f2ced77ad35e2e1a48ea7335a451ba09d88bee08506609a64a18406e9"
+  },
+  {
+    "skill": "cangjuan",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__cangjuan.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__cangjuan_remake.lua",
+    "sha256": "ce6f778be32b9d46a2da323e53c977dcc506f3dd82de15b3397a960d1ae7e705"
+  },
+  {
+    "skill": "yinbing",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__yinbing.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__yinbing_remake.lua",
+    "sha256": "8a9a4a66c89f8411fdcced9cb76c96302dedb896eb0c4909bd08a5e50c9259aa"
+  },
+  {
+    "skill": "xiangkui",
+    "source": "pkg/fengsui_liwu/skills/fengsui_heg__xiangkui.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__xiangkui_remake.lua",
+    "sha256": "05785bdcc3aea6827240d1ae3f9151fb591a912c5e3358121b6389f1520d6126"
+  },
+  {
+    "skill": "yangming",
+    "source": "pkg/fengsui_liwu/skills/fengsui_heg__yangming.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__yangming_remake.lua",
+    "sha256": "bf3ed53c61645c5df10ab12e6e73a4d56e21caeae5b1594958a26fbcecbaa332"
+  },
+  {
+    "skill": "yinyu",
+    "source": "pkg/fengsui_liwu/skills/fengsui_heg__yinyu.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__yinyu_remake.lua",
+    "sha256": "f68a784f9ced6712eaf9c7581f060f76a583995dd015c8ba7daeab9c8a405924"
+  },
+  {
+    "skill": "shuge",
+    "source": "pkg/fengsui_liwu/skills/fengsui_heg__shuge.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__shuge_remake.lua",
+    "sha256": "985d1c1fa14a9ee18794fb1f7e262fb05a6cda6f445372e65fcbb8a254e49afa"
+  },
+  {
+    "skill": "qingshi_jx",
+    "source": "pkg/fengsui_liwu/skills/fengsui_heg__qingshi_jx.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__qingshi_jx_remake.lua",
+    "sha256": "e19a6ee9bb1fe57ce64e8f8dd05e32280a64d2753fe26da0867a765653e50c94"
+  },
+  {
+    "skill": "anshi",
+    "source": "pkg/fengsui_liwu/skills/fengsui_heg__anshi.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__anshi_remake.lua",
+    "sha256": "1ec7a8fde94052a830710d0775405d846081fd7ae6c4c0bfe83dbde09f325fd6"
+  },
+  {
+    "skill": "qujian",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__qujian.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__qujian_remake.lua",
+    "sha256": "70ca3f35f30b455fb7100a1ddc8ed763bfcd06bfc18a05c0fb25576ee1e2deeb"
+  },
+  {
+    "skill": "weiluan",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__weiluan.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__weiluan_remake.lua",
+    "sha256": "531b9e21a6987a480acd38288b35033de2e93e957fe867947e685206cc7ad09d"
+  },
+  {
+    "skill": "duxin",
+    "source": "pkg/fengsui_shiyi/skills/fengsui_toaru__heg__duxin.lua",
+    "backup": "backups/checklist_20261018/fengsui_toaru__heg__duxin_remake.lua",
+    "sha256": "4f47eca980fc01f6a13ac7808e1d18ccaa1a8370d403988b613cebd626aafdf0"
+  },
+  {
+    "skill": "yandu",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__yandu.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__yandu_remake.lua",
+    "sha256": "4e471ed4c905002b113e9e7663f5733c8d4cfde221391ba88ff90473b694668e"
+  },
+  {
+    "skill": "chongjing",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__chongjing.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__chongjing_remake.lua",
+    "sha256": "de09b958a9eafcd08e58a2c10aacfbdaa34af4142685d3f17508f02328eee6de"
+  },
+  {
+    "skill": "aishan",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__aishan.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__aishan_remake.lua",
+    "sha256": "b69f8144229890cf13173b8033faff72e5c64ccf1b03e00b0607051a49db5bf1"
+  },
+  {
+    "skill": "bahuan",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__bahuan.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__bahuan_remake.lua",
+    "sha256": "0c616590886a1d6179f1afa1408ebc26be4fa0129e23a4f22c3fdbd38bb3acb8"
+  },
+  {
+    "skill": "youhuan",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__youhuan.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__youhuan_remake.lua",
+    "sha256": "99a1bd3fe186338c380b0d7a3f433838bcb3515dbb1902e20ddb3bf4935625e7"
+  },
+  {
+    "skill": "lieying",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__lieying.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__lieying_remake.lua",
+    "sha256": "87b715be5b3dd6a53cc5eda55d1eab703de6852b8083178bd577a4537da24aaf"
+  },
+  {
+    "skill": "xiangchen",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__xiangchen.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__xiangchen_remake.lua",
+    "sha256": "556fc79acd0dd144f8667d1017c8cfe8a98de07749e2c0e32fbfe0478b916ea1"
+  },
+  {
+    "skill": "buge",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__buge.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__buge_remake.lua",
+    "sha256": "c7b34508af0ca0ba521c708ae1931ea1958c1721f343694fdbd2af529832e0a9"
+  },
+  {
+    "skill": "jiezhi",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__jiezhi.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__jiezhi_remake2.lua",
+    "sha256": "9c99d52d95698ea503224aa6ea75b6266394c0965ade661dd82520f24e9d4e46"
+  },
+  {
+    "skill": "qingsong",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__qingsong.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__qingsong_remake2.lua",
+    "sha256": "e8161fc26354b4749404a911b975876513ca39362953eb67a80c3380c3c2855e"
+  },
+  {
+    "skill": "huaixiang",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__huaixiang.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__huaixiang_remake2.lua",
+    "sha256": "19313c5b2bca23fc442b4782d6d8efde517d00a7cc881826167325ad60e75b81"
+  },
+  {
+    "skill": "liusu",
+    "source": "pkg/fengsui_hebi/skills/fengsui_heg__liusu.lua",
+    "backup": "backups/checklist_20261018/fengsui_heg__liusu_remake2.lua",
+    "sha256": "c650abe10c15c2c49afc827ca7543a10caf999df20c4ab51f50e625d12856c0d"
+  },
+  {
+    "skill": "pkg_compat",
+    "source": "pkg/compat.lua",
+    "backup": "backups/checklist_20261018/pkg_compat_remake.lua",
+    "sha256": "85a13dd3b8c2628c646ded54e27e5a6f68eb1c68027b16eff830aea41542cfc8"
+  },
+  {
+    "skill": "hegemony_util",
+    "source": "hegemony_util.lua",
+    "backup": "backups/checklist_20261018/hegemony_util_remake.lua",
+    "sha256": "538bfe9067ef332873cdc9cf30a12858d9ffdc39649421fac39529fcd887ce0f"
+  },
+  {
+    "skill": "init_hebi",
+    "source": "pkg/fengsui_hebi/init.lua",
+    "backup": "backups/checklist_20261018/fengsui_hebi_init_remake2.lua",
+    "sha256": "9893e0077277aa7afcfb13db655b27e1a0ef674e115a45820a40fbc306a1d946"
+  },
+  {
+    "skill": "init_liwu",
+    "source": "pkg/fengsui_liwu/init.lua",
+    "backup": "backups/checklist_20261018/fengsui_liwu_init_remake2.lua",
+    "sha256": "e36cead64ec6228ab85bb02187df206475639cdf0d0828b2e3c21c32704425a7"
+  },
+  {
+    "skill": "asset_panyue_image",
+    "source": "image/generals/fengsui_heg__panan.jpg",
+    "backup": "backups/checklist_20261018/fengsui_heg__panyue.jpg",
+    "sha256": "ef86d244447df3c66f74ddffae38b09e97ad7a5d60c908040b7e5679103e685d"
+  },
+  {
+    "skill": "asset_panyue_death_audio",
+    "source": "audio/death/fengsui_heg__panan.mp3",
+    "backup": "backups/checklist_20261018/fengsui_heg__panyue.mp3",
+    "sha256": "41b67659e4dd8a4fbccf0075dad40ebdf87a91f58ae61b0d53d6536d2044bd80"
+  }
+]

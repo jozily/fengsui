@@ -14,6 +14,7 @@ if not modern.__fengsui_mark_hooked then
       player.room.logic:trigger(compat.HegMarkChanged, player, {
         markName = markName,
         number = number or 1,
+        action = "gain",
       })
     end
     return result
@@ -31,7 +32,9 @@ function compat.addHegMark(roomOrPlayer, playerOrMark, markOrNumber, number)
       local skill = mark == "fengsui_heg_ascend" and "fengsui_heg_ascend_skill&" or "fengsui_heg__descend_skill&"
       room:addPlayerMark(player, key, n)
       room:handleAddLoseSkills(player, skill)
-      if room.logic then room.logic:trigger(compat.HegMarkChanged, player, { markName = mark, number = n }) end
+      if room.logic then room.logic:trigger(compat.HegMarkChanged, player, {
+        markName = mark, number = n, action = "gain",
+      }) end
       return
     end
     return modern.addHegMark(roomOrPlayer, playerOrMark, markOrNumber)
@@ -43,38 +46,77 @@ function compat.addHegMark(roomOrPlayer, playerOrMark, markOrNumber, number)
     local skill = mark == "fengsui_heg_ascend" and "fengsui_heg_ascend_skill&" or "fengsui_heg__descend_skill&"
     room:addPlayerMark(player, key, n)
     room:handleAddLoseSkills(player, skill)
-    if room.logic then room.logic:trigger(compat.HegMarkChanged, player, { markName = mark, number = n }) end
+    if room.logic then room.logic:trigger(compat.HegMarkChanged, player, {
+      markName = mark, number = n, action = "gain",
+    }) end
     return
   end
   return modern.addHegMark(playerOrMark, markOrNumber, number)
 end
 
 function compat.removeHegMark(room, player, markName, number)
+  local amount = number or 1
+  local key = markName == "fengsui_heg_ascend" and "@!!fengsui_heg_ascend" or
+    markName == "fengsui_heg__descend" and "@!!fengsui_heg__descend" or
+    "@!!" .. markName
+  local before = player and player:getMark(key) or 0
   if markName == "fengsui_heg_ascend" or markName == "fengsui_heg__descend" then
     local key = markName == "fengsui_heg_ascend" and "@!!fengsui_heg_ascend" or "@!!fengsui_heg__descend"
     local skill = markName == "fengsui_heg_ascend" and "fengsui_heg_ascend_skill&" or "fengsui_heg__descend_skill&"
-    room:removePlayerMark(player, key, number or 1)
+    room:removePlayerMark(player, key, amount)
     if player:getMark(key) == 0 then room:handleAddLoseSkills(player, "-" .. skill) end
-    return
+  else
+    modern.removeHegMark(room, player, markName, amount)
   end
-  return modern.removeHegMark(room, player, markName, number)
+  local used = math.min(before, amount)
+  if used > 0 and room.logic then
+    room.logic:trigger(compat.HegMarkChanged, player, {
+      markName = markName, number = -used, action = "use",
+    })
+  end
+end
+
+-- 本局变更过的武将牌不能再次作为变更副将或合璧候选；场上暗置的
+-- 武将牌也视为已占用，不能因为暂时看不见而再次选入。
+local transformedGeneralsTag = "fengsui_heg__transformed_generals"
+
+local function wasTransformed(room, general)
+  local used = room:getTag(transformedGeneralsTag) or {}
+  return used[general] == true
+end
+
+local function recordTransformed(room, general)
+  if not general or general == "" or general == "anjiang" then return end
+  local used = room:getTag(transformedGeneralsTag) or {}
+  used[general] = true
+  room:setTag(transformedGeneralsTag, used)
+end
+
+local function isGeneralOnField(room, general)
+  for _, p in ipairs(room.players) do
+    if p.general == general or p.deputyGeneral == general or
+        p:getMark("__heg_general") == general or p:getMark("__heg_deputy") == general then
+      return true
+    end
+  end
+  return false
+end
+
+local function findFreshGenerals(room, kingdom, num)
+  return room:findGenerals(function(name)
+    local general = Fk.generals[name]
+    if not general or wasTransformed(room, name) or isGeneralOnField(room, name) then return false end
+    if kingdom == "wild" then
+      return general.kingdom ~= "wild" and general.subkingdom ~= "wild"
+    end
+    return general.kingdom == kingdom or general.subkingdom == kingdom
+  end, num)
 end
 
 -- The official helper is already random when it receives one candidate. For
 -- Fengsui callers that request a multi-candidate choice, keep the same pool
 -- and event contract but select one candidate directly.
 function compat.transformGeneral(room, player, isMain, isHidden, num, skillName)
-  if (num or 1) <= 1 then
-    local original = modern.getActualGeneral(player, not isMain)
-    local result = modern.transformGeneral(room, player, isMain, isHidden, num, skillName)
-    local current = modern.getActualGeneral(player, not isMain)
-    if original and original ~= current and original ~= "" and original ~= "anjiang" and
-        not original:startsWith("blank_") then
-      room:findGenerals(function(name) return name == original end, 1)
-    end
-    return result
-  end
-
   local data = modern.GeneralTransformedData:new{
     isMain = isMain,
     isHidden = isHidden,
@@ -93,16 +135,21 @@ function compat.transformGeneral(room, player, isMain, isHidden, num, skillName)
   end
 
   local kingdom = player:getMark("__heg_kingdom")
-  local generals = room:findGenerals(function(name)
-    local general = Fk.generals[name]
-    if not general then return false end
-    if kingdom == "wild" then
-      return general.kingdom ~= "wild" and general.subkingdom ~= "wild"
-    end
-    return general.kingdom == kingdom or general.subkingdom == kingdom
-  end, 1)
-  local general = generals[1]
-  if not general then return false end
+  if kingdom == 0 or kingdom == "" or kingdom == nil then kingdom = player.kingdom end
+  local count = math.max(1, num or 1)
+  local generals = findFreshGenerals(room, kingdom, count)
+  if #generals == 0 then return false end
+  local general = count == 1 and generals[1] or room:askToChooseGeneral(player, {
+    generals = generals,
+    n = math.min(count, #generals),
+    no_convert = true,
+  })
+  if not general then
+    room:returnToGeneralPile(generals)
+    return false
+  end
+  table.removeOne(generals, general)
+  if #generals > 0 then room:returnToGeneralPile(generals) end
 
   room:changeHero(player, general, false, not isMain, not isHidden, false, false)
   if isHidden then
@@ -115,6 +162,8 @@ function compat.transformGeneral(room, player, isMain, isHidden, num, skillName)
     }
   end
   room:setPlayerMark(player, isMain and "__heg_general" or "__heg_deputy", general)
+  recordTransformed(room, data.origName)
+  recordTransformed(room, general)
   room.logic:trigger(modern.GeneralTransformed, player, data)
   return true
 end
@@ -136,6 +185,8 @@ local function changeGeneral(room, player, general, isMain, isHidden, data)
     }
   end
   room:setPlayerMark(player, isMain and "__heg_general" or "__heg_deputy", general)
+  recordTransformed(room, data.origName)
+  recordTransformed(room, general)
   room.logic:trigger(modern.GeneralTransformed, player, data)
 end
 
@@ -149,7 +200,8 @@ function compat.askToHebiOrTransform(room, player, skillName, cancelable)
 
   local companions = room:findGenerals(function(name)
     local general = Fk.generals[name]
-    return general and general.kingdom ~= "wild" and general.subkingdom ~= "wild" and
+    return general and not wasTransformed(room, name) and not isGeneralOnField(room, name) and
+      general.kingdom ~= "wild" and general.subkingdom ~= "wild" and
       (main:isCompanionWith(general) or general:isCompanionWith(main))
   end, #(room.general_pile or {}))
 
@@ -158,7 +210,7 @@ function compat.askToHebiOrTransform(room, player, skillName, cancelable)
     return compat.transformGeneral(room, player, false, false, 1, skillName)
   end
 
-  local choices = { "fengsui_hebi_choice", "fengsui_transform" }
+  local choices = { "fengsui_hebi_choice" }
   if cancelable then table.insert(choices, "Cancel") end
   local choice = room:askToChoice(player, {
     choices = choices,
@@ -197,7 +249,7 @@ function compat.askToHebiOrTransform(room, player, skillName, cancelable)
 end
 
 Fk:loadTranslationTable{
-  ["#fengsui-hebi-or-transform"] = "请选择合璧或变更副将",
+  ["#fengsui-hebi-or-transform"] = "请选择合璧；若无可用配对对象则自动变更副将",
 }
 
 return compat

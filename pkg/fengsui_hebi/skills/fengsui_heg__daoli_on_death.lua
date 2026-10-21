@@ -21,13 +21,13 @@ local function collectSkills(target)
   return result
 end
 
-local daoli_on_death = fk.CreateSkill { name = "fengsui_heg__daoli_on_death" }
+local daoli_on_death = fk.CreateSkill { name = "#fengsui_heg__daoli_on_death", mute = true }
 daoli_on_death:addEffect(fk.Death, {
   global = true,
   can_trigger = function(self, _, target, player)
     return target == player and
-      (player:hasShownSkill("fengsui_heg__daoli") or
-        player:hasShownSkill("fengsui_heg__beiqiu"))
+      (player:hasSkill("fengsui_heg__daoli", true, true) or
+        player:hasSkill("fengsui_heg__beiqiu", true, true))
   end,
   on_use = function(self, _, _, player)
     local room = player.room
@@ -35,16 +35,19 @@ daoli_on_death:addEffect(fk.Death, {
       return H.compareKingdomWith(player, p)
     end)
     if #candidates == 0 then return end
-    local chooser = candidates[1]
-    local tos = room:askToChoosePlayers(chooser, {
+    local tos = room:askToChoosePlayers(player, {
       targets = candidates, min_num = 1, max_num = 1,
-      skill_name = "fengsui_heg__daoli", prompt = "#fengsui_heg__daoli-clean",
-      cancelable = false,
+      skill_name = "fengsui_heg__beiqiu", prompt = "#fengsui_heg__beiqiu-daoli",
+      cancelable = true,
     })
     local receiver = tos and tos[1]
     if not receiver then return end
     D.prepare(room, receiver, player)
   end,
 })
+
+for _, spec in ipairs(daoli_on_death.effect_spec_list) do
+  if type(spec[3]) == "table" then spec[3].mute = true end
+end
 
 return daoli_on_death

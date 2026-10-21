@@ -27,10 +27,17 @@ tishi:addEffect(fk.HpChanged, {
   end,
 })
 tishi:addEffect(fk.RoundStart, { global = true,
-  can_refresh = function() return true end,
-  on_refresh = function(self, _, target)
-    for _, n in ipairs({ 1, 2, 3 }) do target.room:setPlayerMark(target, "fengsui_heg__tishi-" .. n .. "-round", 0) end
-    updateVisible(target.room, target)
+  can_refresh = function(self, _, target, player)
+    return target ~= nil and player:hasSkill(self.name, true)
+  end,
+  on_refresh = function(self, _, target, player)
+    local room = player.room
+    for _, p in ipairs(room.players) do
+      if p:hasSkill(self.name, true) then
+        for _, n in ipairs({ 1, 2, 3 }) do room:setPlayerMark(p, "fengsui_heg__tishi-" .. n .. "-round", 0) end
+        updateVisible(room, p)
+      end
+    end
   end,
 })
 return tishi

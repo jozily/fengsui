@@ -3,21 +3,24 @@ local H = require "packages.fengsui.hegemony_util"
 local quchi = fk.CreateSkill { name = "fengsui_heg__quchi" }
 
 local function invoke(self, event, _, player)
+  local place = U.getSkillPlace(player, self.name)
+  if place == nil then return false end
   local cards = player.room:askToCards(player, {
     min_num = 2, max_num = 2, include_equip = true, cancelable = true,
     skill_name = self.name, prompt = "#fengsui_heg__quchi-recast",
   })
   if #cards ~= 2 then return false end
-  event:setCostData(self, {cards = cards})
+  event:setCostData(self, {cards = cards, place = place})
   return true
 end
 
 local function resolve(self, event, _, player)
   local room = player.room
-  local place = U.getSkillPlace(player, self.name)
+  local cost = event:getCostData(self) or {}
+  local place = cost.place
   if place == nil then return end
   player:hideGeneral(place)
-  room:recastCard(event:getCostData(self).cards, player, self.name)
+  room:recastCard(cost.cards, player, self.name)
   if player.dead then return end
 
   local judged, colors = {}, {}

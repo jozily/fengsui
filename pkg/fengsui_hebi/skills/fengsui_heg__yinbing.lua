@@ -1,43 +1,32 @@
-local H = require "packages.fengsui.hegemony_util"
-
-local yinbing = fk.CreateSkill{
+local yinbing = fk.CreateSkill {
   name = "fengsui_heg__yinbing",
-  tags = { Skill.Compulsory, Skill.MainPlace },
+  tags = { Skill.Compulsory, Skill.DeputyPlace },
 }
 
-local function uniqueBigKingdom(player)
-  if not H.isBigKingdomPlayer(player) then return false end
-  local kingdom = H.getKingdom(player)
-  for _, p in ipairs(player.room.alive_players) do
-    if p ~= player and H.isBigKingdomPlayer(p) and H.getKingdom(p) ~= kingdom then return false end
-  end
-  return true
+local function zhaoshuCards(player)
+  return player:getPile("@[zhaoshu]")
 end
 
-local function currentCardUser(room)
-  if not room or not room.logic then return nil end
-  local event = room.logic:getCurrentEvent():findParent(GameEvent.UseCard, true)
-  return event and event.data and event.data.from
-end
-
-yinbing:addEffect("prohibit", {
-  global = true,
-  prohibit_response = function(self, responder, card)
-    local room = responder.room or Fk:currentRoom()
-    if not room then return false end
-    local source = currentCardUser(room)
-    if not source or source == responder then return false end
-    for _, owner in ipairs(room.alive_players) do
-      if owner:hasSkill(yinbing.name) and owner:hasShownSkill(yinbing.name) then
-        if responder == owner and uniqueBigKingdom(owner) and H.compareKingdomWith(source, owner) then
-          return true
-        end
-        if source == owner and H.isSmallKingdomPlayer(owner) and H.isBigKingdomPlayer(responder) then
-          return true
-        end
-      end
+yinbing:addEffect(fk.TargetConfirmed, {
+  is_delay_effect = true,
+  can_trigger = function(self, event, target, player, data)
+    return target == player and player:hasShownSkill(yinbing.name) and data.use and data.card and
+      #data.use.tos > 1
+  end,
+  on_use = function(self, event, target, player, data)
+    local room = player.room
+    local pile = zhaoshuCards(player)
+    local ids = table.filter(pile, function(id)
+      return Fk:getCardById(id).name ~= "heg_zhaoshu"
+    end)
+    if #ids > 0 then
+      room:obtainCard(player, ids, true, fk.ReasonPrey, player, yinbing.name)
+      data.use.nullifiedTargets = data.use.nullifiedTargets or {}
+      table.insertIfNeed(data.use.nullifiedTargets, player)
+    else
+      data.use.additionalEffectToPlayer = data.use.additionalEffectToPlayer or {}
+      data.use.additionalEffectToPlayer[player] = (data.use.additionalEffectToPlayer[player] or 0) + 1
     end
-    return false
   end,
 })
 

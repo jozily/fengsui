@@ -1,6 +1,6 @@
-local quchi_empty = fk.CreateSkill { name = "fengsui_heg__quchi_empty" }
+local quchi_empty = fk.CreateSkill { name = "#fengsui_heg__quchi_empty", tags = { Skill.Compulsory }, mute = true }
 quchi_empty:addEffect(fk.AfterCardsMove,{global=true,can_trigger=function(self,_,target,player,data)
-  if not player:hasShownSkill("fengsui_heg__quchi") or player:getMark("fengsui_heg__quchi_empty-turn")~=0 or not data then return false end
+  if not player:hasSkill("fengsui_heg__quchi", true, true) or player:getMark("fengsui_heg__quchi_empty-turn")~=0 or not data then return false end
   return table.find(data,function(m)
     if m.from ~= player or not m.moveInfo then return false end
     for _, info in ipairs(m.moveInfo) do

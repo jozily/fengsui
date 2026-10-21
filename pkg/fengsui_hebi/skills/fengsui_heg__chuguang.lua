@@ -1,7 +1,5 @@
 local H = require "packages.fengsui.hegemony_util"
-local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 local chuguang = fk.CreateSkill { name = "fengsui_heg__chuguang", tags = { Skill.Compulsory } }
-local lockMark = "fengsui_heg__chuguang_locked_place"
 local disabledMark = "@fengsui_heg__chuguang_disabled-round"
 local function sameKingdomPlayers(player)
   return table.filter(player.room.alive_players, function(p) return H.compareKingdomWith(player, p) end)
@@ -19,23 +17,8 @@ chuguang:addEffect(fk.AfterSkillEffect, {
     local room = player.room
     local n = #sameKingdomPlayers(player)
     local skillName = data and data.skill and data.skill:getSkeleton().name
-    if skillName then room:setPlayerMark(player, disabledMark, skillName) end
-    room:setPlayerMark(player, self.name .. "-round", 1)
-    for _, deputy in ipairs({false, true}) do
-      if H.hasGeneral(player, deputy) and (deputy and player.deputyGeneral or player.general) == "anjiang" then
-        player:revealGeneral(deputy)
-      end
-    end
-    if player.dead then return end
-    local place = U.getSkillPlace(player, self.name)
-    if place ~= nil then
-      player:hideGeneral(place)
-      local slot = place and "d" or "m"
-      -- Use the engine's position-specific reveal lock, retaining other skills' locks.
-      room:addTableMark(player, MarkEnum.RevealProhibited, slot)
-      room:addTableMark(player, "@fengsui_heg__ban_reveal-round", Fk:translate(self.name) .. " 禁亮" .. Fk:translate(H.getActualGeneral(player, place)))
-      room:setPlayerMark(player, lockMark, slot)
-    end
+    room:setPlayerMark(player, disabledMark, "蓄势待发")
+    room:setPlayerMark(player, self.name .. "-round",  "蓄势待发")
     local candidates = sameKingdomPlayers(player)
     if #candidates == 0 then return end
     local tos = room:askToChoosePlayers(player, {targets = candidates, min_num = 1, max_num = 1,
@@ -47,26 +30,47 @@ chuguang:addEffect(fk.AfterSkillEffect, {
 chuguang:addEffect("invalidity", {
   global = true,
   invalidity_func = function(self, from, skill)
-    return from and from:getMark(disabledMark) == skill.name and
+    return from and from:getMark(disabledMark) > 0 and
       (skill.name == "fengsui_heg__jiaosu" or skill.name == "fengsui_heg__yaoming")
   end,
 })
 
-chuguang:addEffect(fk.RoundStart, {
+-- 皎宿/曜暝的后半段效果统一由黜光处理，避免两个技能各自重复结算。
+chuguang:addEffect(fk.AfterDying, {
   global = true,
-  can_refresh = function(self, event, target, player) return target == player end,
-  on_refresh = function(self, _, target, player)
+  can_trigger = function(self, _, target, player)
+    return target and target:getMark("fengsui_heg__jiaosu_target") > 0 and
+      player:hasShownSkill(chuguang.name)
+  end,
+  on_use = function(self, _, target, player)
     local room = player.room
-    for _, p in ipairs(room.players) do
-      local slot = p:getMark(lockMark)
-      if type(slot) == "string" then
-        local locks = p:getTableMark(MarkEnum.RevealProhibited)
-        table.removeOne(locks, slot)
-        room:setPlayerMark(p, MarkEnum.RevealProhibited, #locks > 0 and locks or 0)
-        room:setPlayerMark(p, lockMark, 0)
-      end
-      room:setPlayerMark(p, disabledMark, 0)
+    room:setPlayerMark(target, "@fengsui_heg__jiaosu_target", 0)
+    room:setPlayerMark(target, "fengsui_heg__jiaosu_target", 0)
+    if target:isAlive() then
+      target:reset()
+      local turn = room.logic:getCurrentEvent():findParent(GameEvent.Turn, true)
+      if turn then turn:addExitFunc(function()
+        if target:isAlive() then target:gainAnExtraPhase(Player.Play, chuguang.name, false) end
+      end) end
     end
   end,
 })
+
+chuguang:addEffect(fk.Death, {
+  global = true,
+  can_trigger = function(self, _, target, player)
+    return target and target:getMark("fengsui_heg__yaoming_target") > 0 and
+      player:hasShownSkill(chuguang.name)
+  end,
+  on_use = function(self, _, target, player)
+    local room = player.room
+    room:setPlayerMark(target, "@fengsui_heg__yaoming_target", 0)
+    room:setPlayerMark(target, "fengsui_heg__yaoming_target", 0)
+    if player:isAlive() then
+      room:loseHp(player, 1, chuguang.name)
+      if player:isAlive() then H.transformGeneral(room, player, false, true, 1, chuguang.name) end
+    end
+  end,
+})
+
 return chuguang

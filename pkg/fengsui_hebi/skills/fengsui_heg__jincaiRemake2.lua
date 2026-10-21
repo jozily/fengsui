@@ -1,10 +1,10 @@
 local H = require "packages.fengsui.hegemony_util"
 
 local jincai = fk.CreateSkill{
-  name = "fengsui_heg__jincai",
+  name = "fengsui_heg__jincaiRemake2",
 }
 
-local damage_sources_mark = "fengsui_heg__jincai_damage_sources-round"
+local damage_sources_mark = "fengsui_heg__jincaiRemake2_damage_sources-round"
 
 jincai:addEffect(fk.CardUseFinished, {
   anim_type = "control",
@@ -20,7 +20,7 @@ jincai:addEffect(fk.CardUseFinished, {
       max_num = 1,
       targets = player.room.alive_players,
       skill_name = jincai.name,
-      prompt = "#fengsui_heg__jincai-choose",
+      prompt = "#fengsui_heg__jincaiRemake2-choose",
       cancelable = true,
     })
     if #chosen > 0 then
@@ -31,18 +31,18 @@ jincai:addEffect(fk.CardUseFinished, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     local to = event:getCostData(self).to
-    local all_choices = { "fengsui_heg__jincai_draw", "fengsui_heg__jincai_red" }
-    local choices = { "fengsui_heg__jincai_red" }
+    local all_choices = { "fengsui_heg__jincaiRemake2_draw", "fengsui_heg__jincaiRemake2_red" }
+    local choices = { "fengsui_heg__jincaiRemake2_red" }
     if H.allGeneralsRevealed(to) then
-      table.insert(choices, 1, "fengsui_heg__jincai_draw")
+      table.insert(choices, 1, "fengsui_heg__jincaiRemake2_draw")
     end
     local choice = room:askToChoice(to, {
       choices = choices,
       all_choices = all_choices,
       skill_name = jincai.name,
-      prompt = "#fengsui_heg__jincai-choice::" .. player.id,
+      prompt = "#fengsui_heg__jincaiRemake2-choice::" .. player.id,
     })
-    if choice == "fengsui_heg__jincai_draw" then
+    if choice == "fengsui_heg__jincaiRemake2_draw" then
       to:drawCards(2, jincai.name)
       if to:isAlive() then
         local hidden_place = H.doHideGeneral(room, to, to, jincai.name)
@@ -51,9 +51,9 @@ jincai:addEffect(fk.CardUseFinished, {
         room:setPlayerMark(to, MarkEnum.RevealProhibited .. "-turn", record)
       end
       room:addTableMarkIfNeed(player, damage_sources_mark, to.id)
-      room:setPlayerMark(to, "@fengsui_heg__jincai-round", player.id)
+      room:setPlayerMark(to, "@fengsui_heg__jincaiRemake2-round", player.id)
     else
-      room:setPlayerMark(to, "fengsui_heg__jincai_red-turn", 1)
+      room:setPlayerMark(to, "fengsui_heg__jincaiRemake2_red-turn", 1)
     end
   end,
 })
@@ -70,8 +70,8 @@ jincai:addEffect(fk.DamageInflicted, {
     local sources = player:getTableMark(damage_sources_mark)
     table.removeOne(sources, data.from.id)
     player.room:setPlayerMark(player, damage_sources_mark, #sources > 0 and sources or 0)
-    if data.from:getMark("@fengsui_heg__jincai-round") == player.id then
-      player.room:setPlayerMark(data.from, "@fengsui_heg__jincai-round", 0)
+    if data.from:getMark("@fengsui_heg__jincaiRemake2-round") == player.id then
+      player.room:setPlayerMark(data.from, "@fengsui_heg__jincaiRemake2-round", 0)
     end
   end,
 })
@@ -79,13 +79,13 @@ jincai:addEffect(fk.DamageInflicted, {
 jincai:addEffect("prohibit", {
   global = true,
   prohibit_use = function(self, player, card)
-    return player:getMark("fengsui_heg__jincai_red-turn") > 0 and
+    return player:getMark("fengsui_heg__jincaiRemake2_red-turn") > 0 and
       card and card.color == Card.Red
   end,
 })
 
 Fk:loadTranslationTable{
-  ["@fengsui_heg__jincai-round"] = "矜才：",
+  ["@fengsui_heg__jincaiRemake2-round"] = "矜才：",
 }
 
 return jincai

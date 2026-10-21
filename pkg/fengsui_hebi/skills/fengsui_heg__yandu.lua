@@ -1,12 +1,21 @@
 local yandu = fk.CreateSkill { name = "fengsui_heg__yandu" }
 
-yandu:addEffect(fk.GeneralShown, {
-  can_trigger = function(self, _, target, player)
-    return target == player and player:hasShownSkill(self.name) and #player:getCardIds("he") > 0
+Fk:loadTranslationTable{
+  ["fengsui_heg__yandu_type_1"] = "基本牌",
+  ["fengsui_heg__yandu_type_2"] = "锦囊牌",
+  ["fengsui_heg__yandu_type_3"] = "装备牌",
+}
+
+yandu:addEffect(fk.GeneralRevealed, {
+  can_trigger = function(self, _, target, player, data)
+    local H = require "packages.fengsui.hegemony_util"
+    local place = H.inGeneralSkills(player, self.name)
+    return target == player and player:hasSkill(self.name) and data and
+      ((place == "m" and data.m) or (place == "d" and data.d)) and #player:getCardIds("he") > 0
   end,
   on_use = function(self, _, _, player)
     local room, used = player.room, {}
-    while not player:isNude() do
+    while player:isAlive() and not player:isNude() do
       local available = {}
       for _, id in ipairs(player:getCardIds("he")) do
         local typ = Fk:getCardById(id).type

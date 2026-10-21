@@ -1,0 +1,178 @@
+[
+  {
+    "file": "pkg/fengsui_mode/skills/hegemony_rule.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.019 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_liwu/skills/fengsui_heg__dianmo.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.016 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_liwu/skills/fengsui_heg__dilie.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.018 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_liwu/skills/fengsui_heg__dongxin.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.020 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_liwu/skills/fengsui_heg__jieshu.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.032 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_liwu/skills/fengsui_heg__pingjian.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.020 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_liwu/skills/fengsui_heg__wumei.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.033 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_liwu/skills/fengsui_heg__xiangkuiRemake.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.028 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_liwu/skills/fengsui_heg__yangming.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.025 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_liwu/skills/fengsui_heg__yangmingRemake2.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.027 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_liwu/skills/fengsui_heg__yingmen.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.037 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_hebi/skills/fengsui_heg__beiqiu.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.034 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_hebi/skills/fengsui_heg__dunmeng.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.030 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_hebi/skills/fengsui_heg__fumiao.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.021 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_hebi/skills/fengsui_heg__juangu.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.024 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_hebi/skills/fengsui_heg__juanguRemake.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.030 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_hebi/skills/fengsui_heg__juexun.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.032 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_hebi/skills/fengsui_heg__kunshi.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.045 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_hebi/skills/fengsui_heg__laoyan.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.049 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_hebi/skills/fengsui_heg__shenqing.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.033 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_hebi/skills/fengsui_heg__yuyuan.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.033 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  },
+  {
+    "file": "pkg/fengsui_cards/skills/fengsui__taikangzhizhi.lua",
+    "exit": 0,
+    "summary": [
+      "Ran 1 tests in 0.127 seconds, 1 success, 0 failures"
+    ],
+    "output": ""
+  }
+]

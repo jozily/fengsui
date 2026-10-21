@@ -19,7 +19,12 @@ end
 local function availableSkills(general, target)
   return table.filter(general:getSkillNameList(true), function(skill_name)
     local skill = Fk.skills[skill_name]
+    local description = Fk:translate(":" .. skill_name)
+    local forbidden = type(description) == "string" and
+      (description:find("移除此武将牌", 1, true) ~= nil or
+        description:find("变更此武将牌", 1, true) ~= nil)
     return skill and not skill:hasTag(Skill.Lord) and
+      not forbidden and
       not target:hasSkill(skill_name, true, true)
   end)
 end

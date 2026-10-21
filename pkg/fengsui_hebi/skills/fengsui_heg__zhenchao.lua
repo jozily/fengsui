@@ -57,15 +57,24 @@ zhenchao:addEffect(fk.CardShown, {
     local room = player.room
     local original = data.cardIds[1]
     local area = room:getCardArea(original)
-    local source = data.from or target
+    -- CardShown 的 from 在不同展示路径中并不总是填写；优先使用实际
+    -- 持有者，避免把牌堆底的牌移动到 nil 角色而导致区域状态损坏。
+    local source = data.from or room:getCardOwner(original) or target
     local id = room.draw_pile[#room.draw_pile]
     if not id then return end
     -- 先将底牌交到原牌所在区域，再取得原牌；后续展示事件读取替代牌。
-    room:moveCards {
-      ids = {id}, to = (area == Card.PlayerHand or area == Card.PlayerEquip) and source or nil, toArea = area,
-      moveReason = fk.ReasonJustMove, skillName = self.name, moveVisible = true,
+    -- 判定区和处理区没有玩家归属，不能强行填写 to。
+    local move = {
+      ids = {id}, toArea = area, moveReason = fk.ReasonJustMove,
+      skillName = self.name, moveVisible = true,
     }
+    if source and (area == Card.PlayerHand or area == Card.PlayerEquip or
+        area == Card.PlayerJudge or area == Card.PlayerSpecial) then
+      move.to = source
+    end
+    room:moveCards(move)
     data.cardIds = {id}
+    if data.card then data.card = Fk:getCardById(id) end
     room:obtainCard(player, original, true, fk.ReasonPrey, player, self.name)
     putBottom(self, player)
   end,

@@ -24,19 +24,6 @@ local function skillGeneralRevealed(player)
   return false
 end
 
-local function grantIgnoringPlace(room, player, is_deputy)
-  local general_name = H.getActualGeneral(player, is_deputy)
-  local general = Fk.generals[general_name]
-  if not general then return end
-  for _, skill_name in ipairs(general:getSkillNameList()) do
-    if not player:hasSkill(skill_name) then
-      room:handleAddLoseSkills(player, skill_name)
-      room:addTableMarkIfNeed(player, "fengsui_heg__junwei_acquired", skill_name)
-    end
-  end
-  room:setPlayerMark(player, "@fengsui_heg__junwei-round", 1)
-end
-
 junwei:addEffect(fk.TurnStart, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
@@ -63,31 +50,20 @@ junwei:addEffect(fk.TurnStart, {
         prompt = "#fengsui_heg__junwei-hide"})
       local hide_deputy = choice == "fengsui_heg__junwei_deputy"
       target:hideGeneral(hide_deputy)
-      grantIgnoringPlace(room, target, not hide_deputy)
-    else
-      if target.general == "anjiang" then target:revealGeneral(false) end
-      if target.deputyGeneral == "anjiang" then target:revealGeneral(true) end
-      H.addHegMark(target, "yinyangfish", 1)
-    end
-  end,
-})
-
-junwei:addEffect(fk.TurnStart, {
-  global = true,
-  mute = true,
-  can_refresh = function(self, event, target, player, data)
-    return #player:getTableMark("fengsui_heg__junwei_acquired") > 0 and
-      player:getMark("@fengsui_heg__junwei-round") == 0
-  end,
-  on_refresh = function(self, event, target, player, data)
-    local room = player.room
-    for _, skill_name in ipairs(player:getTableMark("fengsui_heg__junwei_acquired")) do
-      local place = H.inGeneralSkills(player, skill_name)
-      if not place or not player:canAttachSkill(skill_name, place) then
-        room:handleAddLoseSkills(player, "-" .. skill_name)
+      if not target:hasSkill("heg__fushou", true) then
+        room:handleAddLoseSkills(target, "heg__fushou")
+        local turn = room.logic:getCurrentEvent():findParent(GameEvent.Turn, true)
+        if turn then turn:addCleaner(function()
+          room:handleAddLoseSkills(target, "-heg__fushou")
+        end) end
       end
+    else
+      local choices = hiddenChoices(target)
+      local choice = room:askToChoice(target, { choices = choices, skill_name = junwei.name,
+        prompt = "#fengsui_heg__junwei-reveal" })
+      target:revealGeneral(choice == "fengsui_heg__junwei_deputy")
+      room:drawCards(target, 2, junwei.name)
     end
-    room:setPlayerMark(player, "fengsui_heg__junwei_acquired", 0)
   end,
 })
 
