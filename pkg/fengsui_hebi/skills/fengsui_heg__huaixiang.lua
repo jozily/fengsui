@@ -43,8 +43,8 @@ huaixiang:addEffect(fk.AfterCardsMove, {
     local room = player.room
     local current = room.current
     return player:hasSkill(self.name) and current and current.phase ~= Player.NotActive and
-      current.kingdom ~= "unknown" and player.kingdom ~= "unknown" and
-      H.compareKingdomWith(current, player) and #getEligibleCards(room, player, data) > 0
+      (current == player or (current.kingdom ~= "unknown" and player.kingdom ~= "unknown" and
+        H.compareKingdomWith(current, player))) and #getEligibleCards(room, player, data) > 0
   end,
   on_cost = function(self, event, target, player, data)
     local room = player.room
