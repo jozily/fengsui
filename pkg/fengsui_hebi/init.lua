@@ -452,7 +452,7 @@ Fk:loadTranslationTable{
   ["cv:fengsui_heg__yanrou"] = "暂无",
   ["fengsui_heg__choutao"] = "仇讨",
   [":fengsui_heg__choutao"] = "其他角色的回合结束阶段，若你于此回合内受到过伤害且获得牌的数量大于受到的伤害值，你可以对该角色造成一点伤害。",
-  ["#fengsui_heg__choutao-invoke"] = "仇讨：你可以对 %dest 使用一张无距离限制的【杀】",
+  ["#fengsui_heg__choutao-invoke"] = "仇讨：是否对 %dest 造成1点伤害？",
   ["#fengsui_heg__choutao-use"] = "仇讨：请对 %dest 使用一张无距离限制的【杀】",
   ["fengsui_heg__yongfan"] = "雍番",
   [":fengsui_heg__yongfan"] = "当你受到或造成伤害后，你可以视为使用一张仅指定你与目标或伤害来源的【以逸待劳】。",

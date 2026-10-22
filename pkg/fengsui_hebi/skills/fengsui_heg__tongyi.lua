@@ -16,6 +16,7 @@ tongyi:addEffect("viewas", {
   view_as = function(self, player, cards)
     local card = Fk:cloneCard("peach")
     card.skillName = tongyi.name
+    card:setVSPattern(tongyi.name, player)
     return card
   end,
   before_use = function(self, player, use)

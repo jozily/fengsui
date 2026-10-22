@@ -46,7 +46,6 @@ for _, event in ipairs({ fk.Damage, fk.Damaged }) do
     anim_type = "support",
     can_trigger = function(self, _, target, player, data)
       if target ~= player or not player:hasSkill(self.name) or
-        player:usedSkillTimes(self.name, Player.HistoryTurn) > 0 or
         not data or data.damageType == fk.NormalDamage then
         return false
       end
