@@ -430,7 +430,7 @@ Fk:loadTranslationTable{
   [":fengsui_heg__neixi"] = "出牌阶段限一次，你可以令任意名同势力角色依次展示一张手牌，若颜色或类别均相等，其可摸X张牌并使用此牌（X为其明置武将牌数）。",
   ["fengsui_heg__wuli"] = "忤礼",
   [":fengsui_heg__wuli"] = "锁定技，当你受到伤害后，若你的武将牌均明置，你暗置另一张武将牌且本轮你不能响应同伤害来源势力角色的牌。",
-  ["@fengsui_heg__wuli_kingdoms-round"] = "忤礼禁响：",
+  ["@fengsui_heg__wuli_kingdoms-round"] = "忤礼",
   ["$fengsui_heg__neixi1"] = "广望观风暖，诸君共戏否？",
   ["$fengsui_heg__neixi2"] = "朱履踢鞠起，诸君...接稳了！",
     ["$fengsui_heg__neixi3"] = "陵云台月高，此时不戏更待何时！",

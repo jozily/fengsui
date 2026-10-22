@@ -51,6 +51,13 @@ wuli:addEffect(fk.CardUsing, {
   end,
   on_refresh = function(self, event, target, player, data)
     updateResponseBlock(player.room, player, 1)
+    local kingdom = H.getKingdom(player)
+    data.disresponsiveList = data.disresponsiveList or {}
+    for _, p in ipairs(player.room.alive_players) do
+      if table.contains(p:getTableMark(forbid_mark), kingdom) then
+        table.insertIfNeed(data.disresponsiveList, p)
+      end
+    end
   end,
 })
 
