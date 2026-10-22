@@ -31,12 +31,16 @@ yuyuan:addEffect(fk.PreCardUse, {
     if card.type ~= Card.TypeBasic and not card:isCommonTrick() then return false end
     if #data.tos ~= 1 then return false end
     return table.find(player.room.alive_players, function(p)
-      return p ~= player and p.kingdom == "unknown" and not table.contains(data.tos, p)
+      return p ~= player and p.kingdom == "unknown" and not table.contains(data.tos, p) and
+        not player:isProhibited(p, card) and
+        card.skill:modTargetFilter(player, p, data.tos, card, data.extra_data or {})
     end) ~= nil
   end,
   on_cost = function(self, event, target, player, data)
     local candidates = table.filter(player.room.alive_players, function(p)
-      return p ~= player and p.kingdom == "unknown" and not table.contains(data.tos, p)
+      return p ~= player and p.kingdom == "unknown" and not table.contains(data.tos, p) and
+        not player:isProhibited(p, data.card) and
+        data.card.skill:modTargetFilter(player, p, data.tos, data.card, data.extra_data or {})
     end)
     local chosen = player.room:askToChoosePlayers(player, {
       targets = candidates,

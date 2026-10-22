@@ -7,7 +7,9 @@ aishan:addEffect(fk.HpChanged, {
   can_trigger = function(self, _, target, player, data)
     return target and player:hasSkill(self.name) and
       target.hp <= player.hp and H.getGeneralsRevealedNum(player) == 2 and
-      not table.contains(player:getTableMark("@fengsui_heg__aishan_kingdom-round"), H.getKingdom(target))
+      H.getKingdom(target) ~= "unknown" and
+      not table.contains(player:getTableMark("@fengsui_heg__aishan_kingdom-round"), H.getKingdom(target)) and
+      not target:isKongcheng() and (target ~= player or target:getHandcardNum() >= 2)
   end,
   on_cost = function(self, _, target, player)
     return player.room:askToSkillInvoke(player, {skill_name = self.name, prompt = "#fengsui_heg__aishan-invoke::" .. target.id})

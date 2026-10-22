@@ -1,39 +1,34 @@
 local H = require "packages.fengsui.hegemony_util"
 
-local huaixiang = fk.CreateSkill{
+local huaixiang = fk.CreateSkill {
   name = "fengsui_heg__huaixiang",
 }
 
 local original_kingdom_mark = "fengsui_heg__huaixiang_original_kingdom-turn"
 local category_mark = "@fengsui_heg__huaixiang_category-turn"
 
-local function entersDiscardPileByDiscard(move)
-  return move.toArea == Card.DiscardPile and
-    (move.moveReason == fk.ReasonDiscard or move.moveReason == fk.ReasonRecast)
+local function categoryText(card)
+  if card.type == Card.TypeBasic then return "基"
+  elseif card.type == Card.TypeTrick then return "锦"
+  elseif card.type == Card.TypeEquip then return "装" end
 end
 
-local function getEligibleCards(room, data)
-  local discarded_types = {}
-  local current_event = room.logic:getCurrentEvent():findParent(GameEvent.MoveCards, true)
-  room.logic:getEventsOfScope(GameEvent.MoveCards, 1, function(event)
-    if not current_event or event.id ~= current_event.id then
-      for _, move in ipairs(event.data) do
-        if entersDiscardPileByDiscard(move) then
-          for _, info in ipairs(move.moveInfo) do
-            discarded_types[Fk:getCardById(info.cardId).type] = true
-          end
-        end
-      end
-    end
-  end, Player.HistoryPhase)
+local function entersDiscard(move)
+  return move.toArea == Card.DiscardPile and #move.moveInfo > 0
+end
 
+local function getEligibleCards(room, player, data)
+  local used = player:getMark(category_mark)
+  if type(used) ~= "string" then used = "" end
   local ids = {}
   for _, move in ipairs(data) do
-    if entersDiscardPileByDiscard(move) then
+    if entersDiscard(move) then
       for _, info in ipairs(move.moveInfo) do
-        local card = Fk:getCardById(info.cardId)
-        if not discarded_types[card.type] and room:getCardArea(info.cardId) == Card.DiscardPile then
-          table.insertIfNeed(ids, info.cardId)
+        local id = info.cardId
+        local card = Fk:getCardById(id)
+        local category = categoryText(card)
+        if category and not used:find(category, 1, true) and room:getCardArea(id) == Card.DiscardPile then
+          table.insertIfNeed(ids, id)
         end
       end
     end
@@ -44,21 +39,21 @@ end
 huaixiang:addEffect(fk.AfterCardsMove, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
-    local current = player.room.current
-    return player:hasSkill(huaixiang.name) and current and
-      current.phase ~= Player.NotActive and
+    local room = player.room
+    local current = room.current
+    return player:hasSkill(self.name) and current and current.phase ~= Player.NotActive and
       current.kingdom ~= "unknown" and player.kingdom ~= "unknown" and
-      H.compareKingdomWith(current, player) and #getEligibleCards(player.room, data) > 0 and
-      table.find(player.room.alive_players, function(p) return p.kingdom ~= "unknown" end) ~= nil
+      H.compareKingdomWith(current, player) and #getEligibleCards(room, player, data) > 0
   end,
   on_cost = function(self, event, target, player, data)
     local room = player.room
-    local ids = getEligibleCards(room, data)
+    local ids = getEligibleCards(room, player, data)
+    if #ids == 0 then return false end
     local cards = room:askToCards(player, {
       min_num = 1,
       max_num = 1,
-      skill_name = huaixiang.name,
-      pattern = tostring(Exppattern{ id = ids }),
+      skill_name = self.name,
+      pattern = tostring(Exppattern { id = ids }),
       prompt = "#fengsui_heg__huaixiang-card",
       expand_pile = ids,
       cancelable = true,
@@ -68,32 +63,30 @@ huaixiang:addEffect(fk.AfterCardsMove, {
       min_num = 1,
       max_num = 1,
       targets = table.filter(room.alive_players, function(p) return p.kingdom ~= "unknown" end),
-      skill_name = huaixiang.name,
+      skill_name = self.name,
       prompt = "#fengsui_heg__huaixiang-target",
       cancelable = true,
     })
     if #tos > 0 then
-      event:setCostData(self, {cards = cards, tos = tos})
+      event:setCostData(self, { cards = cards, tos = tos })
       return true
     end
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
     local cost = event:getCostData(self)
+    local id = cost.cards[1]
     local to = cost.tos[1]
-    if room:getCardArea(cost.cards[1]) == Card.DiscardPile then
-      room:obtainCard(player, cost.cards[1], true, fk.ReasonPrey, player, huaixiang.name)
-    end
+    if room:getCardArea(id) ~= Card.DiscardPile then return end
+    local card = Fk:getCardById(id)
+    local category = categoryText(card)
+    if not category then return end
+    local used = player:getMark(category_mark)
+    if type(used) ~= "string" then used = "" end
+    if used:find(category, 1, true) then return end
+    room:obtainCard(player, id, true, fk.ReasonPrey, player, self.name)
+    room:setPlayerMark(player, category_mark, used .. category)
     if to:isAlive() and to.kingdom ~= "unknown" then
-      local card_type = Fk:getCardById(cost.cards[1]).type
-      local type_text = card_type == Card.TypeBasic and "基" or
-        card_type == Card.TypeTrick and "锦" or
-        card_type == Card.TypeEquip and "装" or ""
-      local old_categories = player:getMark(category_mark)
-      if type(old_categories) ~= "string" then old_categories = "" end
-      if type_text ~= "" and not old_categories:find(type_text, 1, true) then
-        room:setPlayerMark(player, category_mark, old_categories .. type_text)
-      end
       room:setPlayerMark(to, original_kingdom_mark, to.kingdom)
       room:setPlayerMark(to, "@fengsui_heg__huaixiang-turn", "")
       room:setPlayerProperty(to, "kingdom", "unknown")
@@ -117,10 +110,7 @@ huaixiang:addEffect(fk.TurnEnd, {
         room:setPlayerProperty(p, "kingdom", kingdom)
         room:setPlayerMark(p, original_kingdom_mark, 0)
         room:setPlayerMark(p, "@fengsui_heg__huaixiang-turn", 0)
-        room:setPlayerMark(p, category_mark, 0)
       end
-    end
-    for _, p in ipairs(room.players) do
       room:setPlayerMark(p, category_mark, 0)
     end
   end,
