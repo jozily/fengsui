@@ -1091,7 +1091,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__jiawu"] = "公冶长风",
   ["cv:fengsui_heg__jiawu"] = "暂无",
   ["fengsui_heg__huaixiang"] = "怀香",
-  [":fengsui_heg__huaixiang"] = "同势力角色的回合内，当牌进入弃牌堆后，你可以获得其中一张本回合尚未获得过类别的牌，并令一名确定势力的角色本回合视为未确定势力；每次仅能以此法获得一张牌。",
+  [":fengsui_heg__huaixiang"] = "同势力角色的回合内，当一张牌不因使用或打出而进入弃牌堆后，你可以获得其中一张本回合尚未获得过类别的牌，并令一名确定势力的角色本回合视为未确定势力；每次仅能以此法获得一张牌。",
   ["#fengsui_heg__huaixiang-card"] = "怀香：选择一张本次进入弃牌堆且本回合未获得过类别的牌",
   ["#fengsui_heg__huaixiang-target"] = "怀香：令一名确定势力的角色本回合视为未确定势力",
   ["@fengsui_heg__huaixiang-turn"] = "怀香",

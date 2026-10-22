@@ -14,7 +14,8 @@ local function categoryText(card)
 end
 
 local function entersDiscard(move)
-  return move.toArea == Card.DiscardPile and #move.moveInfo > 0
+  return move.toArea == Card.DiscardPile and #move.moveInfo > 0 and
+    move.moveReason ~= fk.ReasonUse and move.moveReason ~= fk.ReasonResponse
 end
 
 local function getEligibleCards(room, player, data)
