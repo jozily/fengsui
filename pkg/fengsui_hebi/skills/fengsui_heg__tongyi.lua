@@ -44,22 +44,20 @@ tongyi:addEffect(fk.AskForPeaches, {
 tongyi:addEffect("active", {
   anim_type = "defensive",
   card_num = 0,
-  target_num = 1,
+  target_num = 0,
   can_use = function(self, player)
-    return player.phase == Player.Play and player:hasSkill(self.name) and H.allGeneralsRevealed(player)
+    return player.phase == Player.Play and player:hasSkill(self.name) and
+      H.allGeneralsRevealed(player) and player:isWounded()
   end,
   card_filter = function() return false end,
-  target_filter = function(self, to_select, selected, cards, player)
-    return #selected == 0 and to_select:isAlive() and to_select:isWounded()
-  end,
   on_use = function(self, room, effect)
-    resolveTongyi(effect.from, effect.tos[1])
+    resolveTongyi(effect.from, effect.from)
   end,
 })
 
 Fk:loadTranslationTable {
   ["#fengsui_heg__tongyi-invoke"] = "通意：是否暗置此武将牌并判定救援 %dest？",
-  ["#fengsui_heg__tongyi"] = "通意：选择一名受伤角色",
+  ["#fengsui_heg__tongyi"] = "通意：暗置此武将牌并判定，成功后对自己使用转化的【桃】",
 }
 
 return tongyi
