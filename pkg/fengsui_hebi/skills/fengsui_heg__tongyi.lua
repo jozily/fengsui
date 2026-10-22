@@ -10,6 +10,9 @@ tongyi:addEffect("viewas", {
   pattern = "peach",
   prompt = "#fengsui_heg__tongyi",
   card_filter = function() return false end,
+  feasible = function(self, player, selected)
+    return #selected > 0
+  end,
   view_as = function(self, player, cards)
     local card = Fk:cloneCard("peach")
     card.skillName = tongyi.name
@@ -23,7 +26,7 @@ tongyi:addEffect("viewas", {
     if judge.card and judge.card.color == Card.Black then
       return
     end
-    local target = use.tos and use.tos[1]
+    local target = use.tos and use.tos[1] or player
     if target and target:isAlive() then
       room:damage {
         from = player,

@@ -7,6 +7,7 @@ local wuli = fk.CreateSkill{
 }
 
 local forbid_mark = "fengsui_heg__wuli_kingdoms-round"
+local forbid_visible_mark = "@fengsui_heg__wuli_kingdoms-round"
 local response_block_mark = "fengsui_heg__wuli_response_block"
 
 wuli:addEffect(fk.Damaged, {
@@ -24,6 +25,7 @@ wuli:addEffect(fk.Damaged, {
       local kingdoms = player:getTableMark(forbid_mark)
       table.insertIfNeed(kingdoms, H.getKingdom(data.from))
       room:setPlayerMark(player, forbid_mark, kingdoms)
+      room:setPlayerMark(player, forbid_visible_mark, kingdoms)
     end
   end,
 })
