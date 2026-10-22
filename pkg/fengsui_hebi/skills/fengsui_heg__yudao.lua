@@ -46,7 +46,7 @@ for _, event in ipairs({ fk.Damage, fk.Damaged }) do
     anim_type = "support",
     can_trigger = function(self, _, target, player, data)
       if target ~= player or not player:hasSkill(self.name) or
-        not data or data.damageType == fk.NormalDamage then
+        not data or data._fengsui_yudao_handled or data.damageType == fk.NormalDamage then
         return false
       end
       local source, victim = participants(event, player, data)
@@ -60,6 +60,7 @@ for _, event in ipairs({ fk.Damage, fk.Damaged }) do
       })
     end,
     on_use = function(self, event, target, player, data)
+      data._fengsui_yudao_handled = true
       local source, victim = participants(event, player, data)
       if source and source:isAlive() and H.compareKingdomWith(player, source) then
         H.askToHebiOrTransform(player.room, source, self.name, false)
