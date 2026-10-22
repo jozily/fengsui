@@ -54,18 +54,33 @@ for _, event in ipairs({ fk.Damage, fk.Damaged }) do
         (victim and victim:isAlive() and H.compareKingdomWith(player, victim))
     end,
     on_cost = function(self, event, target, player, data)
-      return player.room:askToSkillInvoke(player, {
-        skill_name = self.name,
-        prompt = "#fengsui_heg__yudao-invoke",
-      })
+      local source, victim = participants(event, player, data)
+      local cost = {}
+      if source and source:isAlive() and H.compareKingdomWith(player, source) then
+        cost.source = player.room:askToSkillInvoke(player, {
+          skill_name = self.name,
+          prompt = "#fengsui_heg__yudao-source::" .. source.id,
+        })
+      end
+      if victim and victim:isAlive() and H.compareKingdomWith(player, victim) then
+        cost.victim = player.room:askToSkillInvoke(player, {
+          skill_name = self.name,
+          prompt = "#fengsui_heg__yudao-victim::" .. victim.id,
+        })
+      end
+      if cost.source or cost.victim then
+        event:setCostData(self, cost)
+        return true
+      end
     end,
     on_use = function(self, event, target, player, data)
       data._fengsui_yudao_handled = true
       local source, victim = participants(event, player, data)
-      if source and source:isAlive() and H.compareKingdomWith(player, source) then
+      local cost = event:getCostData(self) or {}
+      if cost.source and source and source:isAlive() and H.compareKingdomWith(player, source) then
         H.askToHebiOrTransform(player.room, source, self.name, false)
       end
-      if victim and victim:isAlive() and H.compareKingdomWith(player, victim) then
+      if cost.victim and victim and victim:isAlive() and H.compareKingdomWith(player, victim) then
         arrangeXunxun(victim)
       end
     end,
@@ -73,7 +88,8 @@ for _, event in ipairs({ fk.Damage, fk.Damaged }) do
 end
 
 Fk:loadTranslationTable {
-  ["#fengsui_heg__yudao-invoke"] = "熨道：是否令符合条件的角色发动效果？",
+  ["#fengsui_heg__yudao-source"] = "熨道：是否令伤害来源 %dest 合璧？",
+  ["#fengsui_heg__yudao-victim"] = "熨道：是否令受伤角色 %dest 发动“恂恂”并获得牌堆底两张牌？",
 }
 
 return yudao
