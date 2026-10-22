@@ -1126,7 +1126,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__hanshou"] = "公冶长风",
   ["cv:fengsui_heg__hanshou"] = "暂无",
   ["fengsui_heg__yuyuan"] = "逾垣",
-  [":fengsui_heg__yuyuan"] = "你于每回合使用的首张单体基本牌或普通锦囊牌可以额外指定任意名未确定势力角色为目标（无距离限制），若其中没有角色受到伤害且你的武将牌均明置，你暗置此武将牌。",
+  [":fengsui_heg__yuyuan"] = "你于每回合使用的首张单体基本牌或普通锦囊牌可以额外指定任意名未确定势力角色为目标，若其中没有角色受到伤害且你的武将牌均明置，你暗置此武将牌。",
   ["#fengsui_heg__yuyuan-extra"] = "逾垣：额外指定未确定势力角色为目标",
   ["fengsui_heg__ruxiang"] = "濡香",
   [":fengsui_heg__ruxiang"] = "当你明置此武将牌时，你可以使用一张牌（不计入次数）；当你受到或造成伤害后，你可以重铸至多等同于此伤害值张牌。",
@@ -1388,9 +1388,9 @@ Fk:loadTranslationTable{
     [":fengsui_heg__lishi"]="当一名同势力角色一次性失去至少两张牌后，若其手牌数不大于体力值，你可以交给其一张牌并摸一张牌。",
     [":fengsui_heg__qinghuang"]="当一名其他同势力角色于其回合内使用一张牌结算结束后，若此牌与其本回合使用的上一张牌颜色相同且类别不同，你可以与其副将<a href='heg__yiwei'>易位</a>，然后你与其各摸一张牌。",
     [":fengsui_heg__pinliu"]="锁定技，当此武将牌与其他角色的武将牌<a href='heg__yiwei'>易位</a>后，易位前后控制此武将牌的角色各展示一张手牌。点数较大的角色选择一项：1.获得另一名角色展示的牌，然后摸两张牌；2.令另一名角色变更副将。",
-    [":fengsui_heg__jiaosu"]="主将技，当一名同势力角色成为不同势力角色使用的单体目标牌的目标后，你可以主副将<a href='heg__yiwei'>易位</a>并取消此目标，然后其摸一张牌。",
-    [":fengsui_heg__chuguang"]="锁定技，当你于一轮内第X次发动“皎宿”或“曜暝”后，你令一名同势力角色摸X张牌然后“皎宿”或“曜暝”失效直至本轮结束；当一名成为过“皎宿”/“曜暝”目标的角色脱离濒死状态后/死亡后，其复原武将牌并于此回合结束后获得一个额外的出牌阶段/你失去一点体力并暗置变更副将（X为同势力角色数）。",
-    [":fengsui_heg__yaoming"]="副将技，当一名同势力角色使用单体目标牌指定不同势力角色为目标后，你可以主副将<a href='heg__yiwei'>易位</a>为此牌增加一名合法目标，然后其摸一张牌。",
+    [":fengsui_heg__jiaosu"]="主将技，当一名同势力角色成为不同势力角色使用的单体目标牌的目标后，你可以主副将<a href='heg__yiwei'>易位</a>并取消之。",
+    [":fengsui_heg__chuguang"]="锁定技，当你于一轮内第X次发动“皎宿”或“曜暝”后，你令该同势力角色摸X张牌；当一名成为过“皎宿”/“曜暝”目标的角色脱离濒死状态后/死亡后，你令其/你暗置变更副将（X为“皎宿”或“曜暝”发动次数，若X等于同势力角色数，“皎宿”和“曜暝”本轮失效）。",
+    [":fengsui_heg__yaoming"]="副将技，当一名同势力角色使用单体目标牌指定不同势力角色为目标后，你可以主副将<a href='heg__yiwei'>易位</a>为此牌增加一名合法目标。",
     [":fengsui_heg__qusheng"]='当一张基本牌或普通锦囊牌因使用而进入弃牌堆后，若弃牌堆有与此牌牌名相同且颜色不同的另一张牌，你可以获得之，然后将原牌置于牌堆顶。',
     [":fengsui_heg__jinshi"]='锁定技，当你明置另一张武将牌后，你失去一点体力值并暗置此武将牌。你下次明置此武将牌时将手牌摸至体力上限。',
     [":fengsui_heg__nizi"]='当一名与你势力相同的角色于其回合内使用的基本牌或普通锦囊牌结算后，你可以弃置任意枚名字字数之和等于此牌牌名字数的国战标记，视为使用此牌，然后若你的武将牌均明置，你暗置此武将牌。',
@@ -1401,7 +1401,7 @@ Fk:loadTranslationTable{
     ["#fengsui_heg__siji-invoke"]="思疾：是否发动？",
 
     ["#fengsui_heg__daoli-clean"]="悼离：选择一名同势力角色承接此技能",
-    ["#fengsui_heg__jiaosu-invoke"]="皎宿：是否发动？",
+    ["#fengsui_heg__jiaosu-invoke"]="皎宿：是否易位并取消此目标？",
     ["#fengsui_heg__yaoming-add"]="曜暝：是否令此牌额外指定一名合法目标？",
     ["#fengsui_heg__qiongbu-invoke"]="穷逋：是否发动？",
     ["#fengsui_heg__juanyi-target"]="眷易：选择一名一次性获得至少两张牌的角色", ["#fengsui_heg__juanyi-recipient"]="眷易：选择交牌对象",
@@ -1641,3 +1641,4 @@ require "packages.fengsui.pkg.fengsui_hebi.option_translations"
 local visible_generals = table.filter(extension.generals, function(g) return not g.hidden end)
 assert(#visible_generals == 12, "fengsui_hebi must register exactly 12 visible generals")
 return extension
+

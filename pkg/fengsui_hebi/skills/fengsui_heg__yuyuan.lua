@@ -28,19 +28,23 @@ yuyuan:addEffect(fk.PreCardUse, {
       return false
     end
     local card = data.card
+    local extra_data = table.simpleClone(data.extra_data or {})
+    extra_data.bypass_distances = true
     if card.type ~= Card.TypeBasic and not card:isCommonTrick() then return false end
     if #data.tos ~= 1 then return false end
     return table.find(player.room.alive_players, function(p)
       return p ~= player and p.kingdom == "unknown" and not table.contains(data.tos, p) and
         not player:isProhibited(p, card) and
-        card.skill:modTargetFilter(player, p, data.tos, card, data.extra_data or {})
+        card.skill:modTargetFilter(player, p, data.tos, card, extra_data)
     end) ~= nil
   end,
   on_cost = function(self, event, target, player, data)
+    local extra_data = table.simpleClone(data.extra_data or {})
+    extra_data.bypass_distances = true
     local candidates = table.filter(player.room.alive_players, function(p)
       return p ~= player and p.kingdom == "unknown" and not table.contains(data.tos, p) and
         not player:isProhibited(p, data.card) and
-        data.card.skill:modTargetFilter(player, p, data.tos, data.card, data.extra_data or {})
+        data.card.skill:modTargetFilter(player, p, data.tos, data.card, extra_data)
     end)
     local chosen = player.room:askToChoosePlayers(player, {
       targets = candidates,
@@ -57,6 +61,7 @@ yuyuan:addEffect(fk.PreCardUse, {
   end,
   on_use = function(self, event, target, player, data)
     data.extra_data = data.extra_data or {}
+    data.extra_data.bypass_distances = true
     data.extra_data.fengsui_heg__yuyuan_targets = {}
     for _, p in ipairs(event:getCostData(self).tos) do
       data:addTarget(p)

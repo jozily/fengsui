@@ -1,6 +1,7 @@
 local H = require "packages.fengsui.hegemony_util"
 local chuguang = fk.CreateSkill { name = "fengsui_heg__chuguang", tags = { Skill.Compulsory } }
 local disabledMark = "@fengsui_heg__chuguang_disabled-round"
+local targetMark = "fengsui_heg__chuguang_target-round"
 local function sameKingdomPlayers(player)
   return table.filter(player.room.alive_players, function(p) return H.compareKingdomWith(player, p) end)
 end
@@ -9,21 +10,19 @@ chuguang:addEffect(fk.AfterSkillEffect, {
   global = true,
   can_trigger = function(self, _, target, player, data)
     local skillName = data and data.skill and data.skill:getSkeleton().name
-    return target == player and player:hasShownSkill(self.name) and player:getMark(self.name .. "-round") == 0 and
+    return target == player and player:hasShownSkill(self.name) and
       (skillName == "fengsui_heg__jiaosu" or skillName == "fengsui_heg__yaoming") and
-      player:getMark("fengsui_heg__chuguang_count-round") == #sameKingdomPlayers(player)
+      player:getMark("fengsui_heg__chuguang_count-round") > 0 and
+      player:getMark(targetMark) ~= 0
   end,
   on_use = function(self, _, _, player, data)
     local room = player.room
-    local n = #sameKingdomPlayers(player)
-    local skillName = data and data.skill and data.skill:getSkeleton().name
-    room:setPlayerMark(player, disabledMark, "蓄势待发")
-    room:setPlayerMark(player, self.name .. "-round",  "蓄势待发")
-    local candidates = sameKingdomPlayers(player)
-    if #candidates == 0 then return end
-    local tos = room:askToChoosePlayers(player, {targets = candidates, min_num = 1, max_num = 1,
-      skill_name = self.name, prompt = "#fengsui_heg__chuguang-target", cancelable = false})
-    if #tos > 0 then room:drawCards(tos[1], n, self.name) end
+    local x = player:getMark("fengsui_heg__chuguang_count-round")
+    local kingdomCount = #sameKingdomPlayers(player)
+    local target = table.find(room.alive_players, function(p) return p.id == player:getMark(targetMark) end)
+    if target and target:isAlive() then room:drawCards(target, x, self.name) end
+    if x == kingdomCount then room:setPlayerMark(player, disabledMark, "蓄势待发") end
+    room:setPlayerMark(player, targetMark, 0)
   end,
 })
 
@@ -35,12 +34,10 @@ chuguang:addEffect("invalidity", {
   end,
 })
 
--- 皎宿/曜暝的后半段效果统一由黜光处理，避免两个技能各自重复结算。
 chuguang:addEffect(fk.AfterDying, {
   global = true,
   can_trigger = function(self, _, target, player)
-    return target and target:getMark("fengsui_heg__jiaosu_target") > 0 and
-      player:hasShownSkill(chuguang.name)
+    return target and target:getMark("fengsui_heg__jiaosu_target") > 0 and player:hasShownSkill(self.name)
   end,
   on_use = function(self, _, target, player)
     local room = player.room
@@ -59,8 +56,7 @@ chuguang:addEffect(fk.AfterDying, {
 chuguang:addEffect(fk.Death, {
   global = true,
   can_trigger = function(self, _, target, player)
-    return target and target:getMark("fengsui_heg__yaoming_target") > 0 and
-      player:hasShownSkill(chuguang.name)
+    return target and target:getMark("fengsui_heg__yaoming_target") > 0 and player:hasShownSkill(self.name)
   end,
   on_use = function(self, _, target, player)
     local room = player.room
@@ -72,5 +68,4 @@ chuguang:addEffect(fk.Death, {
     end
   end,
 })
-
 return chuguang
