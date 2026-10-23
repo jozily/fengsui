@@ -1,7 +1,6 @@
 local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 local kangying = fk.CreateSkill { name = "fengsui_heg__kangying" }
-local firstMainMark = "fengsui_heg__kangying_first_main"
 local firstDeputyMark = "fengsui_heg__kangying_first_deputy"
 local damageMark = "fengsui_heg__kangying_damage-turn"
 local damageVisible = "@fengsui_heg__kangying_damage-turn"
@@ -21,20 +20,23 @@ local function displayRole(player)
   return table.concat(shown, " ")
 end
 
-local function isZutiMainFirst(player)
-  return player and player:isAlive() and player.general ~= "anjiang" and
-    H.getActualGeneral(player, false) == "fengsui_heg__zuti" and
-    player:getMark(firstMainMark) > 0 and
-    H.getActualGeneral(player, true) == player:getMark(firstDeputyMark)
+local function isZutiFirstDeputy(player)
+  local first = player and player:getMark(firstDeputyMark)
+  if not player or not player:isAlive() or player.deputyGeneral == "anjiang" or
+      first == 0 or first == "" or first == nil then
+    return false
+  end
+  local main = H.getActualGeneral(player, false)
+  local deputy = H.getActualGeneral(player, true)
+  return deputy == first and (main == "fengsui_heg__zuti" or deputy == "fengsui_heg__zuti")
 end
 
 kangying:addEffect(fk.GeneralShown, {
   can_refresh = function(self, _, target, player, data)
-    return target == player and data and data.m and player:getMark(firstMainMark) == 0 and
-      H.getActualGeneral(player, false) == "fengsui_heg__zuti" and player.deputyGeneral == "anjiang"
+    return target == player and data and data.d and player:getMark(firstDeputyMark) == 0 and
+      H.getActualGeneral(player, true) ~= "anjiang"
   end,
   on_refresh = function(self, _, target, player)
-    player.room:setPlayerMark(player, firstMainMark, 1)
     player.room:setPlayerMark(player, firstDeputyMark, H.getActualGeneral(player, true))
   end,
 })
@@ -43,7 +45,7 @@ kangying:addEffect(fk.DamageCaused, {
   global = true,
   anim_type = "support",
   can_trigger = function(self, _, target, player)
-    if target ~= player or not isZutiMainFirst(player) or player.deputyGeneral == "anjiang" then return false end
+    if target ~= player or not isZutiFirstDeputy(player) then return false end
     return table.find(player.room.alive_players, function(p)
       return p ~= player and H.compareKingdomWith(p, player) and U.hasGeneral(p, true)
     end) ~= nil
@@ -67,7 +69,7 @@ kangying:addEffect(fk.DamageCaused, {
   on_use = function(self, event, _, player)
     local room = player.room
     local other = event:getCostData(self).target
-    if not other or not other:isAlive() or player.deputyGeneral == "anjiang" then return end
+    if not other or not other:isAlive() or not isZutiFirstDeputy(player) then return end
     H.swapDeputy(room, other, player)
     room:setPlayerMark(other, damageMark, 1)
     room:setPlayerMark(other, damageVisible, "亢膺 加伤")
