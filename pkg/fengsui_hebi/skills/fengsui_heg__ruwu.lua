@@ -32,7 +32,7 @@ local function resolve(player, target, markName)
   if choice == "fengsui_heg__ruwu_yinyang" then
     local cards = room:askToDiscard(player, {
       min_num = amount, max_num = amount, include_equip = true,
-      skill_name = ruwu.name, prompt = "#fengsui_heg__ruwu-drop::" .. amount,
+      skill_name = ruwu.name, prompt = "#fengsui_heg__ruwu-drop:::" .. amount,
       cancelable = false,
     })
     if #cards == amount and player:isAlive() then
@@ -49,7 +49,7 @@ ruwu:addEffect(H.HegMarkChanged, {
   global = true,
   anim_type = "drawcard",
   can_trigger = function(self, _, target, player, data)
-    return target and player:hasSkill(ruwu.name) and player:getMark(resolvingMark) == 0 and data and
+    return target and target:isAlive() and player:isAlive() and player:hasSkill(ruwu.name) and player:getMark(resolvingMark) == 0 and data and
       data.markName and (data.action == "gain" or data.action == "use")
   end,
   on_use = function(self, _, target, player, data)

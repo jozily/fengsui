@@ -10,7 +10,7 @@ chuguang:addEffect(fk.AfterSkillEffect, {
   global = true,
   can_trigger = function(self, _, target, player, data)
     local skillName = data and data.skill and data.skill:getSkeleton().name
-    return target == player and player:hasShownSkill(self.name) and
+    return target == player and player:isAlive() and player:hasShownSkill(self.name) and
       (skillName == "fengsui_heg__jiaosu" or skillName == "fengsui_heg__yaoming") and
       player:getMark("fengsui_heg__chuguang_count-round") > 0 and
       player:getMark(targetMark) ~= 0
@@ -29,7 +29,7 @@ chuguang:addEffect(fk.AfterSkillEffect, {
 chuguang:addEffect("invalidity", {
   global = true,
   invalidity_func = function(self, from, skill)
-    return from and from:getMark(disabledMark) > 0 and
+    return from and skill and from:getMark(disabledMark) > 0 and
       (skill.name == "fengsui_heg__jiaosu" or skill.name == "fengsui_heg__yaoming")
   end,
 })
@@ -37,7 +37,7 @@ chuguang:addEffect("invalidity", {
 chuguang:addEffect(fk.AfterDying, {
   global = true,
   can_trigger = function(self, _, target, player)
-    return target and target:getMark("fengsui_heg__jiaosu_target") > 0 and player:hasShownSkill(self.name)
+    return target and target:isAlive() and player:isAlive() and target:getMark("fengsui_heg__jiaosu_target") > 0 and player:hasShownSkill(self.name)
   end,
   on_use = function(self, _, target, player)
     local room = player.room
@@ -56,7 +56,7 @@ chuguang:addEffect(fk.AfterDying, {
 chuguang:addEffect(fk.Death, {
   global = true,
   can_trigger = function(self, _, target, player)
-    return target and target:getMark("fengsui_heg__yaoming_target") > 0 and player:hasShownSkill(self.name)
+    return target and player:isAlive() and target:getMark("fengsui_heg__yaoming_target") > 0 and player:hasShownSkill(self.name)
   end,
   on_use = function(self, _, target, player)
     local room = player.room

@@ -87,6 +87,40 @@ if H.ArraySummonSkill and not H.ArraySummonSkill._fengsuiUnknownKingdomGuard the
   H.ArraySummonSkill._fengsuiUnknownKingdomGuard = true
 end
 
+-- 军巍临时获得“付授”时，官方实现会直接索引暗将名 anjiang，
+-- 导致首亮或暗置过程中 getInvalidity/技能刷新报错。保留官方逻辑，
+-- 但跳过当前仍为暗将的位置。
+local fushou = Fk.skills and Fk.skills["heg__fushou"]
+if fushou and not fushou._fengsuiSafeSync then
+  local function sync(player, losing)
+    local room = player and player.room
+    if not room then return end
+    local Heg = require "packages.hegemony.util"
+    local targets = table.filter(room.alive_players, function(p)
+      return Heg.compareKingdomWith(p, player)
+    end)
+    for _, p in ipairs(targets) do
+      local main = p.general ~= "anjiang" and Fk.generals[p.general] or nil
+      local deputy = p.deputyGeneral ~= "anjiang" and Fk.generals[p.deputyGeneral] or nil
+      for _, g in ipairs({main, deputy}) do
+        if g then
+          for _, name in ipairs(g:getSkillNameList()) do
+            local sk = Fk.skill_skels[name]
+            local isDeputySkill = sk and sk:hasTag(Skill.DeputyPlace)
+            local isMainSkill = sk and sk:hasTag(Skill.MainPlace)
+            if (g == main and isDeputySkill) or (g == deputy and isMainSkill) then
+              room:handleAddLoseSkills(p, losing and ("-" .. name) or name, nil, true, false)
+            end
+          end
+        end
+      end
+    end
+  end
+  fushou.on_acquire = function(player) sync(player, false) end
+  fushou.on_lose = function(player) sync(player, true) end
+  fushou._fengsuiSafeSync = true
+end
+
 if Room and not Room._fengsuiKnownBothWrapped then
   local originalAskToChoice = Room.askToChoice
   Room.askToChoice = function(self, player, params)

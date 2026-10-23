@@ -8,7 +8,7 @@ end
 s:addEffect(fk.GeneralShown, {
   can_trigger = function(self, event, target, player, data)
     local place = H.inGeneralSkills(player, s.name)
-    return target == player and player:hasShownSkill(s.name) and player:getMark(s.name .. "_target") == 0 and
+    return target == player and player:isAlive() and player:hasShownSkill(s.name) and player:getMark(s.name .. "_target") == 0 and
       place ~= nil and data and ((place == "m" and data.m) or (place == "d" and data.d))
   end,
   on_use = function(self, event, target, player, data)
@@ -18,7 +18,7 @@ s:addEffect(fk.GeneralShown, {
     })
     if #tos > 0 then
       player.room:setPlayerMark(player, s.name .. "_target", tos[1].id)
-      player.room:setPlayerMark(tos[1], "@fengsui_heg__yanshi_target", 1)
+      player.room:setPlayerMark(tos[1], "@fengsui_heg__yanshi_target", "")
     end
   end,
 })
@@ -30,7 +30,7 @@ end
 s:addEffect(fk.DamageCaused, {
   global = true,
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasShownSkill(s.name) and data.to and isMarkedPair(player, data.to) and
+    return target == player and player:isAlive() and player:hasShownSkill(s.name) and data.to and isMarkedPair(player, data.to) and
       player:getMark(s.name .. "_out-round") == 0
   end,
   on_use = function(self, event, target, player, data)
@@ -42,7 +42,7 @@ s:addEffect(fk.DamageCaused, {
 s:addEffect(fk.DamageInflicted, {
   global = true,
   can_trigger = function(self, event, target, player, data)
-    return player:hasShownSkill(s.name) and target == player and data.from and isMarkedPair(player, data.from) and
+    return player:isAlive() and player:hasShownSkill(s.name) and target == player and data.from and isMarkedPair(player, data.from) and
       player:getMark(s.name .. "_in-round") == 0
   end,
   on_use = function(self, event, target, player, data)
@@ -62,7 +62,7 @@ s:addEffect(fk.DamageInflicted, {
 
 s:addEffect(fk.DamageInflicted, {
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasShownSkill(s.name) and #damageCards(player) > 0
+    return target == player and player:isAlive() and player:hasShownSkill(s.name) and #damageCards(player) > 0
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room

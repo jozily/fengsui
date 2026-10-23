@@ -8,7 +8,7 @@ local duanyuan = fk.CreateSkill {
 duanyuan:addEffect(fk.TurnStart, {
   global = true,
   can_trigger = function(self, _, target, player)
-    return target == player and player.seat == 1 and player:hasShownSkill(self.name) and
+    return target and player:hasShownSkill(self.name) and
       player:getMark("fengsui_heg__duanyuan_used") == 0
   end,
   on_use = function(self, _, _, player)

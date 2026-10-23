@@ -10,7 +10,9 @@ local function slashCard(data)
 end
 
 local function discardUniqueMost(room, user, skillName)
-  if not user or user:isKongcheng() then return end
+  if not user then return end
+  if not user:isKongcheng() then room:showCards(user:getCardIds("h"), user, user) end
+  if user:isKongcheng() then return end
   local counts = {}
   for _, id in ipairs(user:getCardIds("h")) do
     local name = Fk:getCardById(id).trueName
@@ -31,7 +33,7 @@ end
 zhouwang:addEffect(fk.TargetSpecified, {
   global = true,
   can_trigger = function(self, _, target, player, data)
-    return target == player and player:hasShownSkill(zhouwang.name) and slashCard(data)
+    return target == player and player:isAlive() and player:hasShownSkill(zhouwang.name) and slashCard(data)
   end,
   on_use = function(self, _, _, player)
     discardUniqueMost(player.room, player, zhouwang.name)
@@ -41,7 +43,7 @@ zhouwang:addEffect(fk.TargetSpecified, {
 zhouwang:addEffect(fk.TargetConfirmed, {
   global = true,
   can_trigger = function(self, _, target, player, data)
-    return target == player and player:hasShownSkill(zhouwang.name) and slashCard(data) and
+    return target == player and player:isAlive() and player:hasShownSkill(zhouwang.name) and slashCard(data) and
       data.from and data.from ~= player
   end,
   on_use = function(self, _, _, player, data)

@@ -28,7 +28,7 @@ junwei:addEffect(fk.TurnStart, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
     return player:hasSkill(junwei.name) and skillGeneralRevealed(player) and target and
-      H.inFormationRelation(target, player)
+      (target == player or H.inFormationRelation(target, player))
   end,
   on_cost = function(self, event, target, player, data)
     local choices = {}

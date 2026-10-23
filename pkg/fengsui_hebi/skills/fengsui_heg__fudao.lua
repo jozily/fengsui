@@ -102,6 +102,8 @@ fudao:addEffect(fk.CardUseFinished, {
           tos = {player},
           card = Fk:getCardById(id),
           extraUse = true,
+          bypass_times = true,
+          bypass_distances = true,
         }
       end
     end

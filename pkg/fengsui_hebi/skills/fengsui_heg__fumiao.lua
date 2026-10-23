@@ -14,8 +14,9 @@ local function getUnusedBasicNames(player)
   -- Skill availability is also evaluated by the client, where player.room is absent.
   if not room or not room.logic then return names end
   room.logic:getEventsOfScope(GameEvent.UseCard, 999, function(e)
-    if e.data.card.type == Card.TypeBasic then
-      used[e.data.card.trueName] = true
+    local card = e.data and e.data.card
+    if card and (card.type == Card.TypeBasic or (card.isBasicCard and card:isBasicCard())) then
+      used[card.trueName] = true
     end
     return false
   end, Player.HistoryTurn)

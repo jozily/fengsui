@@ -49,6 +49,22 @@ local function determineKingdom(room, player)
   loseNeutralSkills(room, player)
 end
 
+local function makeFourthKingdomWild(room, player, oldKingdom)
+  if oldKingdom ~= "unknown" or player.kingdom == "wild" then return end
+  local kingdoms = {}
+  for _, p in ipairs(room.alive_players) do
+    local k = p.kingdom
+    if k ~= "unknown" and k ~= neutralKingdom and k ~= neutralAllKingdom then
+      table.insertIfNeed(kingdoms, k)
+    end
+  end
+  if #kingdoms >= 4 then
+    room:setPlayerMark(player, "__heg_wild", 1)
+    room:setPlayerProperty(player, "kingdom", "wild")
+    room:setPlayerProperty(player, "role", "wild")
+  end
+end
+
 neutralRule:addEffect(fk.GeneralShown, {
   global = true,
   priority = 20,
@@ -77,8 +93,10 @@ neutralRule:addEffect(fk.GeneralShown, {
     else
       -- 先亮正常势力牌或同时亮两张时，不触发中立特效，
       -- 但仍按正常势力确定当前角色势力。
+      local oldKingdom = player.kingdom
       room:setPlayerMark(player, "@fengsui_neutral", 0)
       determineKingdom(room, player)
+      makeFourthKingdomWild(room, player, oldKingdom)
     end
   end,
 })

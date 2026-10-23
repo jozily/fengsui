@@ -1,7 +1,9 @@
 local H = require "packages.hegemony.util"
 local s = fk.CreateSkill { name = "fengsui_heg__xinren", tags = { Skill.Compulsory } }
 
-local function damageCard(card) return card and card.is_damage_card end
+local function damageCard(card)
+  return card and (card.is_damage_card or card.trueName == "fire_attack" or card.name == "fire_attack")
+end
 local function damageIds(player)
   return table.filter(player:getCardIds("h"), function(id)
     local card = Fk:getCardById(id)
@@ -44,18 +46,22 @@ local function useAgainstYanshiTarget(self, _, target, player)
   if victim and victim:isAlive() then
     for _, id in ipairs(damageIds(player)) do
       if player:isAlive() and room:getCardArea(id) == Card.PlayerHand then
-        local use = room:askToUseRealCard(player, {
-          pattern = tostring(Exppattern { id = { id } }), expand_pile = { id },
-          skill_name = s.name, cancelable = false, skip = true,
-          extra_data = { exclusive_targets = { victim.id }, bypass_times = true,
-            bypass_distances = true, extraUse = true },
-        })
-        if use then room:useCard(use) end
+        local card = Fk:getCardById(id)
+        -- 这是衅刃的强制结算，不能再被“红色伤害牌不可使用”这一
+        -- 常规限制拦截；火攻也在这里按伤害牌处理。
+        room:useCard{
+          from = player, tos = { victim }, card = card,
+          extraUse = true, bypass_times = true, bypass_distances = true,
+        }
       end
     end
   end
   local place = H.inGeneralSkills(player, s.name)
-  if place then H.removeGeneral(player, place == "d") end
+  if place then
+    room:setPlayerMark(player, "fengsui_heg__yanshi_target", 0)
+    if victim then room:setPlayerMark(victim, "@fengsui_heg__yanshi_target", 0) end
+    H.removeGeneral(player, place == "d")
+  end
 end
 
 s:addEffect(fk.GeneralRevealed, {
