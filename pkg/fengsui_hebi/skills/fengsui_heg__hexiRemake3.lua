@@ -7,7 +7,8 @@ hexi:addEffect(fk.AfterCardsMove, {
   can_trigger = function(self, _, _, player, data)
     return player:hasSkill(self.name) and player.phase ~= Player.Draw and
       table.find(data or {}, function(move)
-        return move.to == player and move.toArea == Card.PlayerHand and move.moveInfo and #move.moveInfo > 0
+        return move.to == player and move.moveInfo and #move.moveInfo > 0
+        and move.toArea == Card.PlayerHand
       end) ~= nil and #player:getCardIds("e") > 0
   end,
   on_cost = function(self, event, _, player)
@@ -64,3 +65,4 @@ Fk:loadTranslationTable {
 }
 
 return hexi
+
