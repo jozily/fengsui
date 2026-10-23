@@ -21,7 +21,7 @@ chuguang:addEffect(fk.AfterSkillEffect, {
     local kingdomCount = #sameKingdomPlayers(player)
     local target = table.find(room.alive_players, function(p) return p.id == player:getMark(targetMark) end)
     if target and target:isAlive() then room:drawCards(target, x, self.name) end
-    if x == kingdomCount then room:setPlayerMark(player, disabledMark, "蓄势待发") end
+    if x == kingdomCount then room:setPlayerMark(player, disabledMark, 1) end
     room:setPlayerMark(player, targetMark, 0)
   end,
 })

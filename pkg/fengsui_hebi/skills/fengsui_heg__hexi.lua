@@ -5,9 +5,12 @@ local hexi = fk.CreateSkill { name = "fengsui_heg__hexi" }
 hexi:addEffect(fk.AfterCardsMove, {
   anim_type = "control",
   can_trigger = function(self, _, _, player, data)
-    return player:hasSkill(self.name) and player.phase ~= Player.Draw and
+    return player:isAlive() and player:hasSkill(self.name) and player.phase ~= Player.Draw and
       table.find(data or {}, function(move)
-        return move.to == player and move.moveInfo and #move.moveInfo > 0
+        -- “获得牌”限定为实际进入手牌区；进入装备区、判定区或其他区域
+        -- 的移动不再触发合隙。
+        return move.to == player and move.toArea == Card.PlayerHand and
+          move.moveInfo and #move.moveInfo > 0
       end) ~= nil
   end,
   on_cost = function(self, event, _, player)
