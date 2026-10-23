@@ -60,7 +60,7 @@ local function useAgainstYanshiTarget(self, _, target, player)
   if place then
     room:setPlayerMark(player, "fengsui_heg__yanshi_target", 0)
     if victim then room:setPlayerMark(victim, "@fengsui_heg__yanshi_target", 0) end
-    H.removeGeneral(player, place == "d")
+    H.removeGeneral(player, place == "d", s.name)
   end
 end
 

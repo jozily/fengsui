@@ -121,6 +121,20 @@ if fushou and not fushou._fengsuiSafeSync then
   fushou._fengsuiSafeSync = true
 end
 
+-- 允许风随技能给移除武将事件补充触发技能名，完整走官方的
+-- GeneralRemoving/GeneralRemoved 特效链，同时保持旧的两参数调用兼容。
+if H.removeGeneral and not H._fengsuiRemoveGeneralWithSkill then
+  local originalRemoveGeneral = H.removeGeneral
+  H.removeGeneral = function(player, isDeputy, skillName)
+    if not skillName then return originalRemoveGeneral(player, isDeputy) end
+    local data = H.GeneralRemoveData:new{ who = player, isDeputy = isDeputy or false, skillName = skillName }
+    local event = H.GameEvent.RemoveGeneral:create(data)
+    local _, ret = event:exec()
+    return ret
+  end
+  H._fengsuiRemoveGeneralWithSkill = true
+end
+
 if Room and not Room._fengsuiKnownBothWrapped then
   local originalAskToChoice = Room.askToChoice
   Room.askToChoice = function(self, player, params)
