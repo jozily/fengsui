@@ -1,52 +1,97 @@
 local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
+local kangying = fk.CreateSkill { name = "fengsui_heg__kangying" }
+local firstMainMark = "fengsui_heg__kangying_first_main"
+local firstDeputyMark = "fengsui_heg__kangying_first_deputy"
+local damageMark = "fengsui_heg__kangying_damage-turn"
+local damageVisible = "@fengsui_heg__kangying_damage-turn"
+local deputyVisible = "@fengsui_heg__kangying_deputy-turn"
 
-local kangying = fk.CreateSkill{
-  name = "fengsui_heg__kangying",
-}
+local function displayRole(player)
+  local shown = {}
+  if player.general ~= "anjiang" then
+    local name = H.getActualGeneral(player, false)
+    if name then table.insert(shown, Fk:translate(name)) end
+  end
+  if player.deputyGeneral ~= "anjiang" then
+    local name = H.getActualGeneral(player, true)
+    if name then table.insert(shown, Fk:translate(name)) end
+  end
+  if #shown == 0 then return "座次" .. tostring(player.seat) .. "号位" end
+  return table.concat(shown, " ")
+end
 
-kangying:addEffect(fk.Damage, {
-  global = true,
-  anim_type = "support",
-  can_trigger = function(self, event, target, player, data)
-    return target and target ~= player and target:isAlive() and player:isAlive() and
-      player:hasSkill(kangying.name) and H.compareKingdomWith(target, player)
-  end,
-  on_cost = function(self, event, target, player, data)
-    return target.room:askToSkillInvoke(target, {
-      skill_name = kangying.name,
-      prompt = "#fengsui_heg__kangying-invoke::" .. player.id,
-    })
-  end,
-  on_use = function(self, event, target, player, data)
-    local room = player.room
-    H.swapDeputy(room, target, player)
-    local owner = table.find(room.alive_players, function(p)
-      return U.hasGeneralName(p, "fengsui_heg__zuti")
-    end)
-    if owner then
-      room:addPlayerMark(owner, "fengsui_heg__kangying_range-turn", 1)
-      room:addPlayerMark(owner, "fengsui_heg__kangying_damage", 1)
-    end
-  end,
-})
+local function isZutiMainFirst(player)
+  return player and player:isAlive() and player.general ~= "anjiang" and
+    H.getActualGeneral(player, false) == "fengsui_heg__zuti" and
+    player:getMark(firstMainMark) > 0 and
+    H.getActualGeneral(player, true) == player:getMark(firstDeputyMark)
+end
 
-kangying:addEffect("atkrange", {
-  global = true,
-  correct_func = function(self, from, to)
-    return from:getMark("fengsui_heg__kangying_range-turn")
+kangying:addEffect(fk.GeneralShown, {
+  can_refresh = function(self, _, target, player, data)
+    return target == player and data and data.m and player:getMark(firstMainMark) == 0 and
+      H.getActualGeneral(player, false) == "fengsui_heg__zuti" and player.deputyGeneral == "anjiang"
+  end,
+  on_refresh = function(self, _, target, player)
+    player.room:setPlayerMark(player, firstMainMark, 1)
+    player.room:setPlayerMark(player, firstDeputyMark, H.getActualGeneral(player, true))
   end,
 })
 
 kangying:addEffect(fk.DamageCaused, {
   global = true,
-  can_trigger = function(self, event, target, player, data)
-    return target == player and player:getMark("fengsui_heg__kangying_damage") > 0
+  anim_type = "support",
+  can_trigger = function(self, _, target, player)
+    if target ~= player or not isZutiMainFirst(player) or player.deputyGeneral == "anjiang" then return false end
+    return table.find(player.room.alive_players, function(p)
+      return p ~= player and H.compareKingdomWith(p, player) and U.hasGeneral(p, true)
+    end) ~= nil
   end,
-  on_use = function(self, event, target, player, data)
-    data:changeDamage(1)
-    player.room:removePlayerMark(player, "fengsui_heg__kangying_damage")
+  on_cost = function(self, event, _, player)
+    local room = player.room
+    local candidates = table.filter(room.alive_players, function(p)
+      return p ~= player and H.compareKingdomWith(p, player) and U.hasGeneral(p, true)
+    end)
+    local chosen = room:askToChoosePlayers(player, {
+      targets = candidates, min_num = 1, max_num = 1, cancelable = true,
+      skill_name = kangying.name, prompt = "#fengsui_heg__kangying-choose",
+    })
+    if not chosen[1] then return false end
+    if not room:askToSkillInvoke(chosen[1], {
+      skill_name = kangying.name, prompt = "#fengsui_heg__kangying-invoke::" .. player.id,
+    }) then return false end
+    event:setCostData(self, { target = chosen[1] })
+    return true
+  end,
+  on_use = function(self, event, _, player)
+    local room = player.room
+    local other = event:getCostData(self).target
+    if not other or not other:isAlive() or player.deputyGeneral == "anjiang" then return end
+    H.swapDeputy(room, other, player)
+    room:setPlayerMark(other, damageMark, 1)
+    room:setPlayerMark(other, damageVisible, "亢膺 加伤")
+    room:setPlayerMark(other, deputyVisible, "亢膺 " .. displayRole(player))
   end,
 })
 
+kangying:addEffect(fk.DamageCaused, {
+  global = true,
+  can_trigger = function(self, _, target, player)
+    return target == player and player:isAlive() and player:getMark(damageMark) > 0
+  end,
+  on_use = function(self, _, _, player, data)
+    data:changeDamage(1)
+    player.room:setPlayerMark(player, damageMark, 0)
+    player.room:setPlayerMark(player, damageVisible, 0)
+    player.room:setPlayerMark(player, deputyVisible, 0)
+  end,
+})
+
+Fk:loadTranslationTable {
+  ["#fengsui_heg__kangying-choose"] = "亢膺：选择一名同势力角色与你副将易位",
+  ["#fengsui_heg__kangying-invoke"] = "亢膺：是否与你副将易位，并获得本轮下一次造成的伤害+1？",
+  ["@fengsui_heg__kangying_damage-turn"] = "亢膺 加伤",
+  ["@fengsui_heg__kangying_deputy-turn"] = "亢膺",
+}
 return kangying
