@@ -11,6 +11,12 @@ local xinyou_visible = "@fengsui_heg__xinyou"
 local kingdom_visible = "@fengsui_heg__yuandi"
 local recorded_kingdoms = "fengsui_heg__yuandi_kingdoms"
 
+local function isWildOrigin(player)
+  return player.role == "wild" or player:getMark("__heg_wild") > 0 or
+    player:getMark("__heg_join_wild") > 0 or player:getMark("__heg_construct_wild") > 0 or
+    player:getMark("_wild_gained") > 0 or player:getMark("__heg_init_kingdom") == "wild"
+end
+
 local function updateXinyou(room, owner)
   room:setPlayerMark(owner, xinyou_visible, tostring(owner:getMark(xinyou_count)))
 end
@@ -113,8 +119,7 @@ yuandi:addEffect(fk.AfterSkillEffect, {
   can_trigger = function(self, _, target, player, data)
     return target and data and data.skill and data.skill.name == "vanguard_skill&" and
       player:hasShownSkill(yuandi.name) and H.getKingdom(target) ~= "wild" and
-      target:getMark("__heg_wild") == 0 and target:getMark("__heg_join_wild") == 0 and
-      target:getMark("__heg_construct_wild") == 0
+      not isWildOrigin(target)
   end,
   on_use = function(self, _, target, player)
     local room = player.room

@@ -546,7 +546,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__zhupeilan"] = "暂无",
   ["cv:fengsui_heg__zhupeilan"] = "暂无",
   ["fengsui_heg__tiaomu"] = "迢目",
-  [":fengsui_heg__tiaomu"] = "锁定技，当你成为一张牌的目标后，若你不在此牌使用者的攻击范围内且你的武将牌均明置，你暗置另一张武将牌并令其摸一张牌，然后此牌对你无效；当你受到伤害后，若你不在伤害来源的攻击范围内，你明置一张武将牌恢复一点体力。",
+  [":fengsui_heg__tiaomu"] = "锁定技，当你成为一张非装备牌的目标后，若你不在此牌使用者的攻击范围内且你的武将牌均明置，你暗置另一张武将牌并令其摸一张牌，然后此牌对你无效；当你受到伤害后，若你不在伤害来源的攻击范围内，你明置一张武将牌恢复一点体力。",
   ["fengsui_heg__kuili"] = "睽离",
   [":fengsui_heg__kuili"] = "锁定技，当因“迢目”摸过牌的其他角色死亡后，若你的武将牌均明置，你暗置此武将牌，否则你移除此武将牌。",
   ["@fengsui_heg__tiaomu"] = "迢目",
