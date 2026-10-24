@@ -67,6 +67,13 @@ zhanghuai.gender = General.Female
 zhanghuai:addCompanions("ld__lukang")
 zhanghuai:addSkills { "fengsui_heg__laoyan", "fengsui_heg__jueyan" }
 
+-- 吴国武将之后
+local xielingyu = General:new(extension, "fengsui_heg__xielingyu", "jin", 3, 3, General.Female)
+xielingyu:addSkills { "fengsui_heg__xinyou", "fengsui_heg__yuandi" }
+
+local zhupeilan = General:new(extension, "fengsui_heg__zhupeilan", "jin", 3, 3, General.Female)
+zhupeilan:addSkills { "fengsui_heg__tiaomu", "fengsui_heg__kuili" }
+
 local gongsunxiu = General:new(extension, "fengsui_heg__gongsunxiu", "qun", 4)
 gongsunxiu:addCompanions("ld__gongsunyuan")
 gongsunxiu:addSkills { "fengsui_heg__kuizhen", "fengsui_heg__niejiang" }
@@ -511,7 +518,43 @@ Fk:loadTranslationTable{
   ["#fengsui_heg__anshi-choice"] = "谙世：是否令 %dest 选择调整手牌，或令你获得额外回合并失去谙世？",
 }
 
-assert(#extension.generals == 55, "fengsui_liwu must register exactly 55 generals")
+Fk:loadTranslationTable{
+  ["fengsui_heg__xielingyu"] = "谢灵毓",
+  ["#fengsui_heg__xielingyu"] = "落木为安",
+  ["designer:fengsui_heg__xielingyu"] = "公冶长风",
+  ["illustrator:fengsui_heg__xielingyu"] = "暂无",
+  ["cv:fengsui_heg__xielingyu"] = "暂无",
+  ["fengsui_heg__xinyou"] = "心幽",
+  [":fengsui_heg__xinyou"] = "锁定技，每回合你的前【0】张基本牌以重铸方式使用，然后你本回合只能使用同名牌。",
+  ["fengsui_heg__yuandi"] = "元嫡",
+  [":fengsui_heg__yuandi"] = "锁定技，除了首个明置的角色外，每个势力首个明置武将牌的角色均获得一枚【先驱】；当其使用其【先驱】后，你令“心幽”数字+1。",
+  ["@fengsui_heg__xinyou"] = "心幽",
+  ["@fengsui_heg__yuandi"] = "元嫡",
+  ["~fengsui_heg__xielingyu"] = "落木有声，幽思难平……",
+  ["$fengsui_heg__xinyou1"] = "幽思入骨，落笔成章。",
+  ["$fengsui_heg__xinyou2"] = "心有微澜，何妨重来。",
+  ["$fengsui_heg__yuandi1"] = "嫡脉既承，当为诸贤先驱。",
+  ["$fengsui_heg__yuandi2"] = "各守一方，共济晋室。",
+
+  ["fengsui_heg__zhupeilan"] = "朱佩兰",
+  ["#fengsui_heg__zhupeilan"] = "迩香杳杳",
+  ["designer:fengsui_heg__zhupeilan"] = "公冶长风",
+  ["illustrator:fengsui_heg__zhupeilan"] = "暂无",
+  ["cv:fengsui_heg__zhupeilan"] = "暂无",
+  ["fengsui_heg__tiaomu"] = "迢目",
+  [":fengsui_heg__tiaomu"] = "当你成为一张多目标牌的目标后，若你不在此牌使用者的攻击范围内，你可以令其摸一张牌然后此牌对你无效。",
+  ["#fengsui_heg__tiaomu-invoke"] = "迢目：是否令牌使用者摸一张牌且此牌对你无效？",
+  ["fengsui_heg__kuili"] = "睽离",
+  [":fengsui_heg__kuili"] = "锁定技，当因“迢目”摸过牌的其他角色死亡后，若你的武将牌均明置，你暗置此武将牌，否则你移除此武将牌。",
+  ["@fengsui_heg__tiaomu"] = "迢目",
+  ["~fengsui_heg__zhupeilan"] = "香消玉殒，徒留遗恨……",
+  ["$fengsui_heg__tiaomu1"] = "迢迢一目，隔尽千山。",
+  ["$fengsui_heg__tiaomu2"] = "香影既远，何必相逼？",
+  ["$fengsui_heg__kuili1"] = "生死睽离，终有一别。",
+  ["$fengsui_heg__kuili2"] = "此身既去，旧约难寻。",
+}
+
+assert(#extension.generals == 57, "fengsui_liwu must register exactly 57 generals")
 require "packages.fengsui.pkg.fengsui_liwu.option_translations"
 
 return extension
