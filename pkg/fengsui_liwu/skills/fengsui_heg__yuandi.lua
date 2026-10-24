@@ -2,7 +2,6 @@ local H = require "packages.fengsui.hegemony_util"
 
 local yuandi = fk.CreateSkill {
   name = "fengsui_heg__yuandi",
-  tags = { Skill.Compulsory },
 }
 
 local seen_player_mark = "fengsui_heg__yuandi_seen"
@@ -40,25 +39,41 @@ local function grantVanguardForKingdom(room, target)
   H.addHegMark(room, target, "vanguard", 1)
 end
 
-local function refreshVanguardTargets(room)
-  for _, target in ipairs(room.alive_players) do
-    if target.general ~= "anjiang" or target.deputyGeneral ~= "anjiang" then
-      grantVanguardForKingdom(room, target)
+local function updateKingdomVisible(room, owner)
+  if not owner:hasShownSkill(yuandi.name) then return end
+  local kingdoms = {}
+  for _, target in ipairs(room.players) do
+    if target:getMark("@!!vanguard") > 0 then
+      local kingdom = H.getKingdom(target)
+      if kingdom ~= "unknown" and kingdom ~= "wild" then
+        table.insertIfNeed(kingdoms, Fk:translate(kingdom))
+      end
     end
   end
+  table.sort(kingdoms)
+  room:setPlayerMark(owner, kingdom_visible, table.concat(kingdoms, " "))
 end
 
 yuandi:addEffect(fk.GeneralShown, {
   global = true,
   can_trigger = function(self, _, target, player, data)
-    return target and data and (data.m or data.d) and player:hasShownSkill(yuandi.name)
+    if not (target and data and (data.m or data.d) and player:hasSkill(yuandi.name)) then return false end
+    if target:getMark(seen_player_mark) > 0 then return false end
+    local kingdom = H.getKingdom(target)
+    return kingdom ~= "unknown" and kingdom ~= "wild" and kingdom ~= getFirstKingdom(player.room) and
+      not player.room:getTag("fengsui_heg__yuandi_seen_" .. kingdom)
+  end,
+  on_cost = function(self, _, target, player, data)
+    player.room:setPlayerMark(target, seen_player_mark, 1)
+    return player.room:askToSkillInvoke(player, {
+      skill_name = yuandi.name,
+      prompt = "#fengsui_heg__yuandi-invoke::" .. (data and (data.m or data.d) or ""),
+    })
   end,
   on_use = function(self, _, target, player)
     local room = player.room
-    if target:getMark(seen_player_mark) == 0 then
-      room:setPlayerMark(target, seen_player_mark, 1)
-      grantVanguardForKingdom(room, target)
-    end
+    grantVanguardForKingdom(room, target)
+    updateKingdomVisible(room, player)
   end,
 })
 
@@ -66,23 +81,22 @@ yuandi:addEffect(fk.AfterSkillEffect, {
   global = true,
   can_trigger = function(self, _, target, player, data)
     return target and data and data.skill and data.skill.name == "vanguard_skill&" and
-      player:hasShownSkill(yuandi.name)
+      player:hasSkill(yuandi.name)
   end,
   on_use = function(self, _, target, player)
     local room = player.room
     room:setPlayerMark(player, xinyou_count, player:getMark(xinyou_count) + 1)
-    updateXinyou(room, player)
+    if player:hasShownSkill(yuandi.name) then updateXinyou(room, player) end
   end,
 })
 
 yuandi:addEffect(fk.GeneralRevealed, {
   can_refresh = function(self, _, target, player)
     return target == player and player:hasShownSkill(yuandi.name) and
-      player:getMark(kingdom_visible) == 0 and H.getKingdom(player) ~= "unknown"
+      player:getMark(kingdom_visible) == 0
   end,
   on_refresh = function(self, _, target, player)
-    player.room:setPlayerMark(player, kingdom_visible, Fk:translate(H.getKingdom(player)))
-    refreshVanguardTargets(player.room)
+    updateKingdomVisible(player.room, player)
   end,
 })
 

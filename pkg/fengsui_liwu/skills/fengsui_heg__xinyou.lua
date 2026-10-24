@@ -59,8 +59,10 @@ xinyou:addEffect(fk.PreCardUse, {
 xinyou:addEffect("prohibit", {
   prohibit_use = function(self, player, card)
     local locked = player:getMark(name_mark)
-    return player:hasShownSkill(xinyou.name) and locked ~= 0 and card and
-      card.trueName ~= locked
+    local count = player:getMark(count_mark)
+    if not player:hasShownSkill(xinyou.name) or not card or card.type ~= Card.TypeBasic then return false end
+    if count == 0 then return true end
+    return locked ~= 0 and card.trueName ~= locked
   end,
 })
 
