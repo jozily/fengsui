@@ -2,6 +2,7 @@ local H = require "packages.fengsui.hegemony_util"
 
 local yuandi = fk.CreateSkill {
   name = "fengsui_heg__yuandi",
+  tags = { Skill.Compulsory },
 }
 
 local seen_player_mark = "fengsui_heg__yuandi_seen"
@@ -63,15 +64,9 @@ yuandi:addEffect(fk.GeneralShown, {
     return kingdom ~= "unknown" and kingdom ~= "wild" and kingdom ~= getFirstKingdom(player.room) and
       not player.room:getTag("fengsui_heg__yuandi_seen_" .. kingdom)
   end,
-  on_cost = function(self, _, target, player, data)
-    player.room:setPlayerMark(target, seen_player_mark, 1)
-    return player.room:askToSkillInvoke(player, {
-      skill_name = yuandi.name,
-      prompt = "#fengsui_heg__yuandi-invoke::" .. (data and (data.m or data.d) or ""),
-    })
-  end,
   on_use = function(self, _, target, player)
     local room = player.room
+    room:setPlayerMark(target, seen_player_mark, 1)
     grantVanguardForKingdom(room, target)
     updateKingdomVisible(room, player)
   end,
@@ -81,7 +76,7 @@ yuandi:addEffect(fk.AfterSkillEffect, {
   global = true,
   can_trigger = function(self, _, target, player, data)
     return target and data and data.skill and data.skill.name == "vanguard_skill&" and
-      player:hasSkill(yuandi.name)
+      player:hasSkill(yuandi.name) and H.getKingdom(target) ~= "wild"
   end,
   on_use = function(self, _, target, player)
     local room = player.room

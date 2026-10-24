@@ -43,26 +43,38 @@ xinyou:addEffect(fk.PreCardUse, {
     local limit = player:getMark(count_mark)
     local used = player:getMark(used_mark)
     if limit <= used or #Card:getIdList(data.card) == 0 then return false end
-    local locked = player:getMark(name_mark)
-    return locked == 0 or locked == data.card.trueName
+    return true
   end,
   on_use = function(self, _, target, player, data)
     local room = player.room
     local card_name = data.card.trueName
     room:setPlayerMark(player, used_mark, player:getMark(used_mark) + 1)
-    if player:getMark(name_mark) == 0 then room:setPlayerMark(player, name_mark, card_name) end
+    local names = player:getMark(name_mark)
+    if type(names) ~= "string" then names = "" end
+    if not string.find("|" .. names .. "|", "|" .. card_name .. "|", 1, true) then
+      names = names == "" and card_name or (names .. "|" .. card_name)
+      room:setPlayerMark(player, name_mark, names)
+    end
     room:recastCard(Card:getIdList(data.card), player, xinyou.name)
     room.logic:breakEvent()
   end,
 })
 
+xinyou:addEffect("targetmod", {
+  bypass_times = function(self, player, skill, scope, card)
+    return player:hasShownSkill(xinyou.name) and card and card.type == Card.TypeBasic and
+      player:getMark(used_mark) < player:getMark(count_mark)
+  end,
+})
+
 xinyou:addEffect("prohibit", {
   prohibit_use = function(self, player, card)
-    local locked = player:getMark(name_mark)
     local count = player:getMark(count_mark)
     if not player:hasShownSkill(xinyou.name) or not card or card.type ~= Card.TypeBasic then return false end
     if count == 0 then return true end
-    return locked ~= 0 and card.trueName ~= locked
+    if player:getMark(used_mark) < count then return false end
+    local names = player:getMark(name_mark)
+    return type(names) ~= "string" or not string.find("|" .. names .. "|", "|" .. card.trueName .. "|", 1, true)
   end,
 })
 
