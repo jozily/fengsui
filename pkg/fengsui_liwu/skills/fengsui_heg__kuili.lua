@@ -7,7 +7,8 @@ local kuili = fk.CreateSkill {
 
 kuili:addEffect(fk.Death, {
   can_trigger = function(self, _, target, player)
-    return target and target ~= player and target:getMark("@fengsui_heg__tiaomu") > 0 and
+    local mark = target and target:getMark("@fengsui_heg__tiaomu")
+    return target and target ~= player and mark ~= nil and mark ~= 0 and mark ~= "" and
       player:hasShownSkill(kuili.name)
   end,
   on_use = function(self, _, target, player)
