@@ -40,7 +40,7 @@ end
 
 local function recordKingdom(room, target)
   local kingdom = H.getKingdom(target)
-  if kingdom == "unknown" or kingdom == "wild" or kingdom == getFirstKingdom(room) then return end
+  if kingdom == "unknown" or kingdom == "wild" then return end
   local tag = "fengsui_heg__yuandi_seen_" .. kingdom
   if room:getTag(tag) then return end
   room:setTag(tag, true)
@@ -86,10 +86,10 @@ end
 yuandi:addEffect(fk.GeneralShown, {
   global = true,
   can_trigger = function(self, _, target, player, data)
-    if not (target and data and (data.m or data.d) and player:hasSkill(yuandi.name)) then return false end
+    if not (target and data and (data.m or data.d) and player:hasSkill(yuandi.name, true, true)) then return false end
     if target:getMark(seen_player_mark) > 0 then return false end
     local kingdom = H.getKingdom(target)
-    return kingdom ~= "unknown" and kingdom ~= "wild" and kingdom ~= getFirstKingdom(player.room) and
+    return kingdom ~= "unknown" and kingdom ~= "wild" and
       not player.room:getTag("fengsui_heg__yuandi_seen_" .. kingdom)
   end,
   on_use = function(self, _, target, player)
