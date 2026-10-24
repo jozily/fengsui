@@ -8,6 +8,7 @@ local xinyou = fk.CreateSkill {
 
 local count_mark = "fengsui_heg__xinyou_count"
 local used_mark = "fengsui_heg__xinyou_used-turn"
+local basic_used_mark = "fengsui_heg__xinyou_basic_used-turn"
 local name_mark = "fengsui_heg__xinyou_name-turn"
 local visible_mark = "@fengsui_heg__xinyou"
 
@@ -40,7 +41,21 @@ xinyou:addEffect(fk.TurnStart, {
   end,
   on_refresh = function(self, _, target, player)
     player.room:setPlayerMark(player, used_mark, 0)
+    player.room:setPlayerMark(player, basic_used_mark, 0)
     player.room:setPlayerMark(player, name_mark, 0)
+  end,
+})
+
+-- Count every basic card used this turn, including cards used while Xinyou is
+-- hidden or while its recast prompt is declined.  This prevents a later card
+-- from being mistaken for one of the first N basic cards.
+xinyou:addEffect(fk.PreCardUse, {
+  can_refresh = function(self, _, target, player, data)
+    return target == player and data and data.card and data.card.type == Card.TypeBasic and
+      player:hasSkill(xinyou.name, true, true)
+  end,
+  on_refresh = function(self, _, target, player)
+    player.room:setPlayerMark(player, basic_used_mark, player:getMark(basic_used_mark) + 1)
   end,
 })
 
@@ -49,8 +64,8 @@ xinyou:addEffect(fk.PreCardUse, {
     if target ~= player or not player:hasSkill(xinyou.name, true, true) or not data.card or
         data.card.type ~= Card.TypeBasic then return false end
     local limit = player:getMark(count_mark)
-    local used = player:getMark(used_mark)
-    if limit <= used or #Card:getIdList(data.card) == 0 then return false end
+    local basic_used = player:getMark(basic_used_mark)
+    if limit < basic_used or #Card:getIdList(data.card) == 0 then return false end
     return true
   end,
   on_cost = function(self, _, target, player, data)
