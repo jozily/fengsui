@@ -44,6 +44,18 @@ local function recordKingdom(room, target)
   room:setTag(recorded_kingdoms, kingdoms)
 end
 
+local function recordFirstKingdom(room, target)
+  local kingdom = H.getKingdom(target)
+  if kingdom == "unknown" or kingdom == "wild" then return end
+  local tag = "fengsui_heg__yuandi_seen_" .. kingdom
+  if room:getTag(tag) then return end
+  room:setTag(tag, true)
+  local kingdoms = room:getTag(recorded_kingdoms)
+  if type(kingdoms) ~= "table" then kingdoms = {} end
+  table.insertIfNeed(kingdoms, kingdom)
+  room:setTag(recorded_kingdoms, kingdoms)
+end
+
 local function updateKingdomVisible(room, owner)
   if not owner:hasShownSkill(yuandi.name) then return end
   local kingdoms = {}
@@ -77,7 +89,14 @@ yuandi:addEffect(fk.GeneralShown, {
   on_use = function(self, _, target, player)
     local room = player.room
     room:setPlayerMark(target, seen_player_mark, 1)
-    recordKingdom(room, target)
+    local first_player = room:getTag("TheFirstToShowRewarded") == target.id
+    if first_player then
+      -- The first revealed role is recorded, but does not receive Yuandi's Vanguard.
+      recordFirstKingdom(room, target)
+    else
+      recordKingdom(room, target)
+      H.addHegMark(room, target, "vanguard")
+    end
     updateKingdomVisible(room, player)
   end,
 })
