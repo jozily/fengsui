@@ -23,4 +23,18 @@ tiaomu:addEffect(fk.TargetConfirmed, {
   end,
 })
 
+tiaomu:addEffect(fk.Damaged, {
+  can_trigger = function(self, _, target, player, data)
+    return target == player and player:hasShownSkill(tiaomu.name) and data and data.from and
+      not data.from:inMyAttackRange(player) and
+      (player.general == "anjiang" or player.deputyGeneral == "anjiang")
+  end,
+  on_use = function(self, _, target, player)
+    local room = player.room
+    if U.revealOneGeneral(player) then
+      room:recover({ who = player, num = 1, skillName = tiaomu.name })
+    end
+  end,
+})
+
 return tiaomu

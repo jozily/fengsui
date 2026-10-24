@@ -36,7 +36,7 @@ xinyou:addEffect(fk.GeneralRevealed, {
 
 xinyou:addEffect(fk.TurnStart, {
   can_refresh = function(self, _, target, player)
-    return target == player and player:hasSkill(xinyou.name)
+    return target == player and player:hasSkill(xinyou.name, true, true)
   end,
   on_refresh = function(self, _, target, player)
     player.room:setPlayerMark(player, used_mark, 0)
@@ -46,7 +46,7 @@ xinyou:addEffect(fk.TurnStart, {
 
 xinyou:addEffect(fk.PreCardUse, {
   can_trigger = function(self, _, target, player, data)
-    if target ~= player or not player:hasSkill(xinyou.name) or not data.card or
+    if target ~= player or not player:hasSkill(xinyou.name, true, true) or not data.card or
         data.card.type ~= Card.TypeBasic then return false end
     local limit = player:getMark(count_mark)
     local used = player:getMark(used_mark)
