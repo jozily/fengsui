@@ -48,6 +48,7 @@ xinyou:addEffect(fk.PreCardUse, {
   on_use = function(self, _, target, player, data)
     local room = player.room
     local card_name = data.card.trueName
+    data.extraUse = true
     room:setPlayerMark(player, used_mark, player:getMark(used_mark) + 1)
     local names = player:getMark(name_mark)
     if type(names) ~= "string" then names = "" end
@@ -57,6 +58,13 @@ xinyou:addEffect(fk.PreCardUse, {
     end
     room:recastCard(Card:getIdList(data.card), player, xinyou.name)
     room.logic:breakEvent()
+  end,
+})
+
+xinyou:addEffect("targetmod", {
+  bypass_times = function(self, player, skill, scope, card)
+    return player:hasShownSkill(xinyou.name) and card and card.type == Card.TypeBasic and
+      player:getMark(used_mark) < player:getMark(count_mark)
   end,
 })
 

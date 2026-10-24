@@ -9,6 +9,7 @@ local seen_player_mark = "fengsui_heg__yuandi_seen"
 local xinyou_count = "fengsui_heg__xinyou_count"
 local xinyou_visible = "@fengsui_heg__xinyou"
 local kingdom_visible = "@fengsui_heg__yuandi"
+local recorded_kingdoms = "fengsui_heg__yuandi_kingdoms"
 
 local function updateXinyou(room, owner)
   room:setPlayerMark(owner, xinyou_visible, tostring(owner:getMark(xinyou_count)))
@@ -31,18 +32,27 @@ local function getFirstKingdom(room)
   return nil
 end
 
-local function grantVanguardForKingdom(room, target)
+local function recordKingdom(room, target)
   local kingdom = H.getKingdom(target)
   if kingdom == "unknown" or kingdom == "wild" or kingdom == getFirstKingdom(room) then return end
   local tag = "fengsui_heg__yuandi_seen_" .. kingdom
   if room:getTag(tag) then return end
   room:setTag(tag, true)
-  H.addHegMark(room, target, "vanguard", 1)
+  local kingdoms = room:getTag(recorded_kingdoms)
+  if type(kingdoms) ~= "table" then kingdoms = {} end
+  table.insertIfNeed(kingdoms, kingdom)
+  room:setTag(recorded_kingdoms, kingdoms)
 end
 
 local function updateKingdomVisible(room, owner)
   if not owner:hasShownSkill(yuandi.name) then return end
   local kingdoms = {}
+  local recorded = room:getTag(recorded_kingdoms)
+  if type(recorded) == "table" then
+    for _, kingdom in ipairs(recorded) do
+      table.insertIfNeed(kingdoms, Fk:translate(kingdom))
+    end
+  end
   for _, target in ipairs(room.players) do
     if target:getMark("@!!vanguard") > 0 then
       local kingdom = H.getKingdom(target)
@@ -67,7 +77,7 @@ yuandi:addEffect(fk.GeneralShown, {
   on_use = function(self, _, target, player)
     local room = player.room
     room:setPlayerMark(target, seen_player_mark, 1)
-    grantVanguardForKingdom(room, target)
+    recordKingdom(room, target)
     updateKingdomVisible(room, player)
   end,
 })

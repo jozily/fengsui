@@ -527,7 +527,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__xinyou"] = "心幽",
   [":fengsui_heg__xinyou"] = "锁定技，每回合你的前【0】张基本牌以重铸方式使用且无次数限制，且你本回合只能使用以此法使用过的同名牌。回合结束时，若你未以此法使用过基本牌且你的武将牌均明置，你暗置此武将牌。",
   ["fengsui_heg__yuandi"] = "元嫡",
-  [":fengsui_heg__yuandi"] = "锁定技，除了首个明置的角色外，每个势力首个明置武将牌的角色均获得一枚【先驱】；当其使用其【先驱】后，你令“心幽”数字+1。",
+  [":fengsui_heg__yuandi"] = "锁定技，除首个明置角色所属势力外，每个势力首个明置武将牌后，你记录该势力；当“先驱”被使用后，你令“心幽”数字+1。",
   ["@fengsui_heg__xinyou"] = "心幽",
   ["@fengsui_heg__yuandi"] = "元嫡",
   ["~fengsui_heg__xielingyu"] = "落木有声，幽思难平……",
