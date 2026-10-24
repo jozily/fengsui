@@ -83,16 +83,15 @@ local function updateKingdomVisible(room, owner)
   room:setPlayerMark(owner, kingdom_visible, table.concat(kingdoms, " "))
 end
 
-yuandi:addEffect(fk.GeneralShown, {
-  global = true,
-  can_trigger = function(self, _, target, player, data)
-    if not (target and data and (data.m or data.d) and player:hasSkill(yuandi.name, true, true)) then return false end
+local function canHandleReveal(target, player, data)
+  if not (target and data and (data.m or data.d) and player:hasSkill(yuandi.name, true, true)) then return false end
     if target:getMark(seen_player_mark) > 0 then return false end
     local kingdom = H.getKingdom(target)
     return kingdom ~= "unknown" and kingdom ~= "wild" and
       not player.room:getTag("fengsui_heg__yuandi_seen_" .. kingdom)
-  end,
-  on_use = function(self, _, target, player)
+end
+
+local function handleReveal(target, player)
     local room = player.room
     room:setPlayerMark(target, seen_player_mark, 1)
     local first_id = room:getTag("TheFirstToShowRewarded")
@@ -111,6 +110,27 @@ yuandi:addEffect(fk.GeneralShown, {
       H.addHegMark(room, target, "vanguard")
     end
     updateKingdomVisible(room, player)
+end
+
+yuandi:addEffect(fk.GeneralShown, {
+  global = true,
+  can_trigger = function(self, _, target, player, data)
+    return canHandleReveal(target, player, data)
+  end,
+  on_use = function(self, _, target, player)
+    handleReveal(target, player)
+  end,
+})
+
+-- Some reveal paths publish GeneralRevealed after the kingdom has been set.
+-- Handle it as a fallback; seen_player_mark makes the two events idempotent.
+yuandi:addEffect(fk.GeneralRevealed, {
+  global = true,
+  can_trigger = function(self, _, target, player, data)
+    return canHandleReveal(target, player, data)
+  end,
+  on_use = function(self, _, target, player)
+    handleReveal(target, player)
   end,
 })
 
