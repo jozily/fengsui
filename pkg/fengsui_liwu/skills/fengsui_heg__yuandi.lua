@@ -84,11 +84,21 @@ local function updateKingdomVisible(room, owner)
 end
 
 local function canHandleReveal(target, player, data)
-  if not (target and data and (data.m or data.d) and player:hasSkill(yuandi.name, true, true)) then return false end
+  local has_reveal_data = data and (data.m or data.d or (type(data) == "table" and #data > 0))
+  if not (target and has_reveal_data and player:hasSkill(yuandi.name, true, true)) then return false end
     if target:getMark(seen_player_mark) > 0 then return false end
     local kingdom = H.getKingdom(target)
-    return kingdom ~= "unknown" and kingdom ~= "wild" and
-      not player.room:getTag("fengsui_heg__yuandi_seen_" .. kingdom)
+    if kingdom == "unknown" or kingdom == "wild" then return false end
+    -- The native rule rewards the first revealed player before this fallback
+    -- runs.  Record that player's kingdom so the same kingdom cannot receive
+    -- a second vanguard from Yuandi.
+    local first_kingdom = getFirstKingdom(player.room)
+    if first_kingdom == kingdom then
+      recordFirstKingdom(player.room, target)
+      player.room:setPlayerMark(target, seen_player_mark, 1)
+      return false
+    end
+    return not player.room:getTag("fengsui_heg__yuandi_seen_" .. kingdom)
 end
 
 local function handleReveal(target, player)
@@ -138,13 +148,13 @@ yuandi:addEffect(fk.AfterSkillEffect, {
   global = true,
   can_trigger = function(self, _, target, player, data)
     return target and data and data.skill and data.skill.name == "vanguard_skill&" and
-      player:hasShownSkill(yuandi.name) and H.getKingdom(target) ~= "wild" and
+      player:hasSkill(yuandi.name, true, true) and H.getKingdom(target) ~= "wild" and
       not isWildOrigin(target)
   end,
   on_use = function(self, _, target, player)
     local room = player.room
     room:setPlayerMark(player, xinyou_count, player:getMark(xinyou_count) + 1)
-    if player:hasShownSkill(yuandi.name) then updateXinyou(room, player) end
+    updateXinyou(room, player)
   end,
 })
 
