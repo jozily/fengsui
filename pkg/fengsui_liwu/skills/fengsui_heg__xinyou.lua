@@ -11,7 +11,7 @@ local name_mark = "fengsui_heg__xinyou_name-turn"
 local visible_mark = "@fengsui_heg__xinyou"
 
 local function updateVisible(room, player)
-  room:setPlayerMark(player, visible_mark, "心幽 " .. tostring(player:getMark(count_mark)))
+  room:setPlayerMark(player, visible_mark, tostring(player:getMark(count_mark)))
 end
 
 xinyou:addEffect(fk.GeneralRevealed, {

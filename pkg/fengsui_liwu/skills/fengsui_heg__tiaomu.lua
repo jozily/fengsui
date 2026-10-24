@@ -1,18 +1,22 @@
-local tiaomu = fk.CreateSkill { name = "fengsui_heg__tiaomu" }
+local H = require "packages.fengsui.hegemony_util"
+local U = require "packages.fengsui.pkg.fengsui_liwu.util"
+local tiaomu = fk.CreateSkill {
+  name = "fengsui_heg__tiaomu",
+  tags = { Skill.Compulsory },
+}
 local target_mark = "@fengsui_heg__tiaomu"
 
 tiaomu:addEffect(fk.TargetConfirmed, {
-  anim_type = "support",
   can_trigger = function(self, _, target, player, data)
     return target == player and player:hasShownSkill(tiaomu.name) and data.use and data.from and
-      #data.use.tos > 1 and not data.from:inMyAttackRange(player)
-  end,
-  on_cost = function(self, event, _, player)
-    if player.room:askToSkillInvoke(player, { skill_name = tiaomu.name,
-        prompt = "#fengsui_heg__tiaomu-invoke" }) then return true end
+      #data.use.tos > 1 and H.allGeneralsRevealed(player) and
+      not data.from:inMyAttackRange(player)
   end,
   on_use = function(self, _, target, player, data)
     local room = player.room
+    local place = U.getSkillPlace(player, tiaomu.name)
+    if place == nil then return end
+    player:hideGeneral(not place)
     room:drawCards(data.from, 1, tiaomu.name)
     data:setNullified(player)
     room:setPlayerMark(data.from, target_mark, 1)
