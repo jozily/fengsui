@@ -9,7 +9,7 @@ local target_mark = "@fengsui_heg__tiaomu"
 tiaomu:addEffect(fk.TargetConfirmed, {
   can_trigger = function(self, _, target, player, data)
     return target == player and player:hasShownSkill(tiaomu.name) and data.use and data.from and
-      #data.use.tos > 1 and H.allGeneralsRevealed(player) and
+      H.allGeneralsRevealed(player) and
       not data.from:inMyAttackRange(player)
   end,
   on_use = function(self, _, target, player, data)
