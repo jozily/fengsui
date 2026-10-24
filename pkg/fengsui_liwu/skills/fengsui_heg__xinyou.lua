@@ -11,13 +11,20 @@ local used_mark = "fengsui_heg__xinyou_used-turn"
 local name_mark = "fengsui_heg__xinyou_name-turn"
 local visible_mark = "@fengsui_heg__xinyou"
 
+local function skillRevealed(player)
+  local place = U.getSkillPlace(player, xinyou.name)
+  if place == nil then return false end
+  return place and player.deputyGeneral ~= "anjiang" or
+    (not place and player.general ~= "anjiang")
+end
+
 local function updateVisible(room, player)
   room:setPlayerMark(player, visible_mark, tostring(player:getMark(count_mark)))
 end
 
 xinyou:addEffect(fk.GeneralRevealed, {
   can_refresh = function(self, _, target, player)
-    return target == player and player:hasShownSkill(xinyou.name) and
+    return target == player and skillRevealed(player) and
       player:getMark(visible_mark) == 0
   end,
   on_refresh = function(self, _, target, player)
@@ -29,7 +36,7 @@ xinyou:addEffect(fk.GeneralRevealed, {
 
 xinyou:addEffect(fk.TurnStart, {
   can_refresh = function(self, _, target, player)
-    return target == player and player:hasShownSkill(xinyou.name)
+    return target == player and player:hasSkill(xinyou.name)
   end,
   on_refresh = function(self, _, target, player)
     player.room:setPlayerMark(player, used_mark, 0)
@@ -47,7 +54,7 @@ xinyou:addEffect(fk.PreCardUse, {
     return true
   end,
   on_cost = function(self, _, target, player, data)
-    if player:hasShownSkill(xinyou.name) then return true end
+    if skillRevealed(player) then return true end
     local room = player.room
     local invoke = room:askToSkillInvoke(player, {
       skill_name = xinyou.name,
@@ -74,14 +81,14 @@ xinyou:addEffect(fk.PreCardUse, {
 
 xinyou:addEffect("targetmod", {
   bypass_times = function(self, player, skill, scope, card)
-    return player:hasShownSkill(xinyou.name) and card and card.type == Card.TypeBasic and
+    return skillRevealed(player) and card and card.type == Card.TypeBasic and
       player:getMark(used_mark) < player:getMark(count_mark)
   end,
 })
 
 xinyou:addEffect(fk.TurnEnd, {
   can_trigger = function(self, _, target, player)
-    return target == player and player:hasShownSkill(xinyou.name) and
+    return target == player and skillRevealed(player) and
       player:getMark(used_mark) == 0 and H.allGeneralsRevealed(player)
   end,
   on_use = function(self, _, _, player)
@@ -92,7 +99,7 @@ xinyou:addEffect(fk.TurnEnd, {
 xinyou:addEffect("prohibit", {
   prohibit_use = function(self, player, card)
     local count = player:getMark(count_mark)
-    if not player:hasShownSkill(xinyou.name) or not card or card.type ~= Card.TypeBasic then return false end
+    if not skillRevealed(player) or not card or card.type ~= Card.TypeBasic then return false end
     if count == 0 then return true end
     if player:getMark(used_mark) < count then return false end
     local names = player:getMark(name_mark)
