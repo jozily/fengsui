@@ -76,7 +76,7 @@ yuandi:addEffect(fk.AfterSkillEffect, {
   global = true,
   can_trigger = function(self, _, target, player, data)
     return target and data and data.skill and data.skill.name == "vanguard_skill&" and
-      player:hasSkill(yuandi.name) and H.getKingdom(target) ~= "wild"
+      player:hasShownSkill(yuandi.name) and H.getKingdom(target) ~= "wild"
   end,
   on_use = function(self, _, target, player)
     local room = player.room

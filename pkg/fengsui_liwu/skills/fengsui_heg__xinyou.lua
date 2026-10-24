@@ -60,10 +60,13 @@ xinyou:addEffect(fk.PreCardUse, {
   end,
 })
 
-xinyou:addEffect("targetmod", {
-  bypass_times = function(self, player, skill, scope, card)
-    return player:hasShownSkill(xinyou.name) and card and card.type == Card.TypeBasic and
-      player:getMark(used_mark) < player:getMark(count_mark)
+xinyou:addEffect(fk.TurnEnd, {
+  can_trigger = function(self, _, target, player)
+    return target == player and player:hasShownSkill(xinyou.name) and
+      player:getMark(used_mark) == 0 and H.allGeneralsRevealed(player)
+  end,
+  on_use = function(self, _, _, player)
+    H.hideBySkillName(player, xinyou.name)
   end,
 })
 
