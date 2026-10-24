@@ -6,7 +6,6 @@ local yuandi = fk.CreateSkill {
 }
 
 local seen_player_mark = "fengsui_heg__yuandi_seen"
-local granted_mark = "fengsui_heg__yuandi_granted"
 local xinyou_count = "fengsui_heg__xinyou_count"
 local xinyou_visible = "@fengsui_heg__xinyou"
 local kingdom_visible = "@fengsui_heg__yuandi"
@@ -15,19 +14,30 @@ local function updateXinyou(room, owner)
   room:setPlayerMark(owner, xinyou_visible, tostring(owner:getMark(xinyou_count)))
 end
 
-local function isFirstShown(room, target)
+local function getFirstKingdom(room)
+  local cached = room:getTag("fengsui_heg__yuandi_first_kingdom")
+  if cached and cached ~= "unknown" then return cached end
   local first = room:getTag("TheFirstToShowRewarded")
-  return first == target.id or tostring(first) == tostring(target.id)
+  for _, p in ipairs(room.players) do
+    if first == p.id or tostring(first) == tostring(p.id) then
+      local kingdom = H.getKingdom(p)
+      if kingdom ~= "unknown" then
+        room:setTag("fengsui_heg__yuandi_first_kingdom", kingdom)
+        return kingdom
+      end
+      break
+    end
+  end
+  return nil
 end
 
 local function grantVanguardForKingdom(room, target)
   local kingdom = H.getKingdom(target)
-  if kingdom == "unknown" or isFirstShown(room, target) then return end
+  if kingdom == "unknown" or kingdom == "wild" or kingdom == getFirstKingdom(room) then return end
   local tag = "fengsui_heg__yuandi_seen_" .. kingdom
   if room:getTag(tag) then return end
   room:setTag(tag, true)
   H.addHegMark(room, target, "vanguard", 1)
-  room:setPlayerMark(target, granted_mark, target:getMark(granted_mark) + 1)
 end
 
 local function refreshVanguardTargets(room)
@@ -56,11 +66,10 @@ yuandi:addEffect(fk.AfterSkillEffect, {
   global = true,
   can_trigger = function(self, _, target, player, data)
     return target and data and data.skill and data.skill.name == "vanguard_skill&" and
-      player:hasShownSkill(yuandi.name) and target:getMark(granted_mark) > 0
+      player:hasShownSkill(yuandi.name)
   end,
   on_use = function(self, _, target, player)
     local room = player.room
-    room:setPlayerMark(target, granted_mark, target:getMark(granted_mark) - 1)
     room:setPlayerMark(player, xinyou_count, player:getMark(xinyou_count) + 1)
     updateXinyou(room, player)
   end,
