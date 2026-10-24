@@ -550,6 +550,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__kuili"] = "睽离",
   [":fengsui_heg__kuili"] = "锁定技，当因“迢目”摸过牌的其他角色死亡后，若你的武将牌均明置，你暗置此武将牌，否则你移除此武将牌。",
   ["@fengsui_heg__tiaomu"] = "迢目",
+  ["#fengsui_heg__xinyou-reveal"] = "心幽：是否明置此武将牌并以此牌重铸？",
   ["~fengsui_heg__zhupeilan"] = "佳人薄命，红颜丧于虎狼之口。",
   ["$fengsui_heg__tiaomu1"] = "我所知者，女红之术、书画之艺，难承社稷之重。",
   ["$fengsui_heg__tiaomu2"] = "诸公皆国之柱石，居后宫者鄙，不必以事咨我。",

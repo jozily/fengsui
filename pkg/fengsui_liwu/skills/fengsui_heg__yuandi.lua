@@ -89,7 +89,14 @@ yuandi:addEffect(fk.GeneralShown, {
   on_use = function(self, _, target, player)
     local room = player.room
     room:setPlayerMark(target, seen_player_mark, 1)
-    local first_player = room:getTag("TheFirstToShowRewarded") == target.id
+    local first_id = room:getTag("TheFirstToShowRewarded")
+    local first_player = first_id == target.id or tostring(first_id) == tostring(target.id)
+    if not first_id then
+      -- The mode rule may set this tag later in the same reveal event. Keep
+      -- Yuandi's first-reveal exception deterministic regardless of priority.
+      room:setTag("TheFirstToShowRewarded", target.id)
+      first_player = true
+    end
     if first_player then
       -- The first revealed role is recorded, but does not receive Yuandi's Vanguard.
       recordFirstKingdom(room, target)

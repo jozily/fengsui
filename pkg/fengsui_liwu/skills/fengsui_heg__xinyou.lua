@@ -1,4 +1,5 @@
 local H = require "packages.fengsui.hegemony_util"
+local U = require "packages.fengsui.pkg.fengsui_liwu.util"
 
 local xinyou = fk.CreateSkill {
   name = "fengsui_heg__xinyou",
@@ -38,12 +39,22 @@ xinyou:addEffect(fk.TurnStart, {
 
 xinyou:addEffect(fk.PreCardUse, {
   can_trigger = function(self, _, target, player, data)
-    if target ~= player or not player:hasShownSkill(xinyou.name) or not data.card or
+    if target ~= player or not player:hasSkill(xinyou.name) or not data.card or
         data.card.type ~= Card.TypeBasic then return false end
     local limit = player:getMark(count_mark)
     local used = player:getMark(used_mark)
     if limit <= used or #Card:getIdList(data.card) == 0 then return false end
     return true
+  end,
+  on_cost = function(self, _, target, player, data)
+    if player:hasShownSkill(xinyou.name) then return true end
+    local room = player.room
+    local invoke = room:askToSkillInvoke(player, {
+      skill_name = xinyou.name,
+      prompt = "#fengsui_heg__xinyou-reveal",
+    })
+    if not invoke then return false end
+    return U.revealSkillGeneral(player, xinyou.name)
   end,
   on_use = function(self, _, target, player, data)
     local room = player.room

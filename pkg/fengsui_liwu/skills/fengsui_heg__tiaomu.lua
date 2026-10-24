@@ -19,7 +19,7 @@ tiaomu:addEffect(fk.TargetConfirmed, {
     player:hideGeneral(not place)
     room:drawCards(data.from, 1, tiaomu.name)
     data:setNullified(player)
-    room:setPlayerMark(data.from, target_mark, 1)
+    room:setPlayerMark(data.from, target_mark, "迢目")
   end,
 })
 
