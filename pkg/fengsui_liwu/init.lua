@@ -68,10 +68,10 @@ zhanghuai:addCompanions("ld__lukang")
 zhanghuai:addSkills { "fengsui_heg__laoyan", "fengsui_heg__jueyan" }
 
 -- 吴国武将之后
-local xielingyu = General:new(extension, "fengsui_heg__xielingyu", "jin", 3, 3, General.Female)
+local xielingyu = General:new(extension, "fengsui_heg__xielingyu", "wu", 3, 3, General.Female)
 xielingyu:addSkills { "fengsui_heg__xinyou", "fengsui_heg__yuandi" }
 
-local zhupeilan = General:new(extension, "fengsui_heg__zhupeilan", "jin", 3, 3, General.Female)
+local zhupeilan = General:new(extension, "fengsui_heg__zhupeilan", "wu", 3, 3, General.Female)
 zhupeilan:addSkills { "fengsui_heg__tiaomu", "fengsui_heg__kuili" }
 
 local gongsunxiu = General:new(extension, "fengsui_heg__gongsunxiu", "qun", 4)
