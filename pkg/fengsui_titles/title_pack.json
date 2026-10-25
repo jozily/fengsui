@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "name": "fengsui_titles",
+  "description": "自用称号定义；私人称号由管理员发放，纯手动包不带自动规则。",
+  "styles": {
+    "fengsui_titles.satenruiko": "佐天泪子",
+    "fengsui_titles.rainbowfamily": "彩虹家族",
+    "fengsui_titles.dreamingsaint": "大梦仙尊",
+    "fengsui_titles.bigdreamingsaint": "极大梦仙尊",
+    "fengsui_titles.misakamikoto": "御坂美琴",
+    "fengsui_titles.shiningrainbowfamily": "闪光彩虹家族",
+    "fengsui_titles.dynsatenruiko": "动·佐天泪子",
+    "fengsui_titles.dynmisakamikoto": "动·御坂美琴",
+    "fengsui_titles.dyndreamingsaint": "动·大梦仙尊",
+    "fengsui_titles.dynrainbowfamily": "动·彩虹家族",
+    "fengsui_titles.qingmengguichen": "情梦归尘",
+    "fengsui_titles.qiexianglang": "窃香郎",
+    "fengsui_titles.dynqingmengguichen": "动·情梦归尘",
+    "fengsui_titles.dynqiexianglang": "动·窃香郎",
+    "fengsui_titles.hongzhilingkong": "鸿志凌空",
+    "fengsui_titles.dynhongzhilingkong": "动·鸿志凌空"
+  },
+  "titles": [
+    {
+      "id": "satenruiko",
+      "title": "佐天泪子",
+      "style": "fengsui_titles.satenruiko"
+    },
+    {
+      "id": "rainbowfamily",
+      "title": "彩虹家族",
+      "style": "fengsui_titles.rainbowfamily"
+    },
+    {
+      "id": "dreamingsaint",
+      "title": "大梦仙尊",
+      "style": "fengsui_titles.dreamingsaint"
+    },
+    {
+      "id": "bigdreamingsaint",
+      "title": "极大梦仙尊",
+      "style": "fengsui_titles.bigdreamingsaint"
+    },
+    {
+      "id": "misakamikoto",
+      "title": "御坂美琴",
+      "style": "fengsui_titles.misakamikoto"
+    },
+    {
+      "id": "shiningrainbowfamily",
+      "title": "闪光彩虹家族",
+      "style": "fengsui_titles.shiningrainbowfamily"
+    },
+    {
+      "id": "dynsatenruiko",
+      "title": "动·佐天泪子",
+      "style": "fengsui_titles.dynsatenruiko"
+    },
+    {
+      "id": "dynmisakamikoto",
+      "title": "动·御坂美琴",
+      "style": "fengsui_titles.dynmisakamikoto"
+    },
+    {
+      "id": "dyndreamingsaint",
+      "title": "动·大梦仙尊",
+      "style": "fengsui_titles.dyndreamingsaint"
+    },
+    {
+      "id": "dynrainbowfamily",
+      "title": "动·彩虹家族",
+      "style": "fengsui_titles.dynrainbowfamily"
+    },
+    {
+      "id": "qingmengguichen",
+      "title": "情梦归尘",
+      "style": "fengsui_titles.qingmengguichen"
+    },
+    {
+      "id": "qiexianglang",
+      "title": "窃香郎",
+      "style": "fengsui_titles.qiexianglang"
+    },
+    {
+      "id": "dynqingmengguichen",
+      "title": "动·情梦归尘",
+      "style": "fengsui_titles.dynqingmengguichen"
+    },
+    {
+      "id": "dynqiexianglang",
+      "title": "动·窃香郎",
+      "style": "fengsui_titles.dynqiexianglang"
+    },
+    {
+      "id": "hongzhilingkong",
+      "title": "鸿志凌空",
+      "style": "fengsui_titles.hongzhilingkong"
+    },
+    {
+      "id": "dynhongzhilingkong",
+      "title": "动·鸿志凌空",
+      "style": "fengsui_titles.dynhongzhilingkong"
+    }
+  ]
+}

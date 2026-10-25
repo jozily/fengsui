@@ -11,6 +11,7 @@ Fk:loadTranslationTable{
   ["fengsui_cards"] = "<font color='red'>烽燧燎原卡牌</font>",
   ["fengsui_mode"] = "<font color='green'>燎原之战</font>",
   ["fengsui_effect"] = "烽燧燎原-特效",
+  ["fengsui_titles"] = "烽燧燎原-称号",
 }
 
 require "packages/fengsui/pkg/compat"
@@ -22,6 +23,7 @@ local fengsui_liwu = require "packages/fengsui/pkg/fengsui_liwu"
 local fengsui_shiyi = require "packages/fengsui/pkg/fengsui_shiyi"
 local fengsui_effect = require "packages/fengsui/pkg/fengsui_effect"
 local fengsui_mode = require "packages/fengsui/pkg/fengsui_mode"
+local fengsui_titles = require "packages/fengsui/pkg/fengsui_titles"
 
 require("packages/fengsui/pkg/audio_overlay")(hegemonyPackages, fengsui_cards)
 require "packages/fengsui/pkg/runtime_translations"
@@ -148,6 +150,7 @@ return {
   fengsui_shiyi,
   fengsui_effect,
   fengsui_mode,
+  fengsui_titles,
 }
 
 
