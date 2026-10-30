@@ -1,73 +1,80 @@
 local H = require "packages.fengsui.hegemony_util"
 
-local canyun = fk.CreateSkill{
+local canyun = fk.CreateSkill {
   name = "fengsui_heg__canyun",
   tags = { Skill.Compulsory },
 }
 
+local function damageSources(room, dead)
+  local sources = {}
+  for _, e in ipairs(room.logic:getEventsOfScope(GameEvent.Damage, 9999, function() return true end, Player.HistoryGame)) do
+    local damage = e.data
+    if e.exec_ret == true and damage and damage.to == dead and damage.from and damage.from:isAlive() then
+      table.insertIfNeed(sources, damage.from)
+    end
+  end
+  return sources
+end
+
 canyun:addEffect(fk.Death, {
   global = true,
-  can_trigger = function(self, event, target, player, data)
+  can_trigger = function(self, _, target, player)
     if target ~= player or not player:hasSkill(canyun.name, false, true) then return false end
-    return (data.damage and data.damage.from and data.damage.from:isAlive()) or
-      table.find(player.room.alive_players, function(p) return p.kingdom == "wild" end) ~= nil
+    local room = player.room
+    return #damageSources(room, player) > 0 or
+      table.find(room.alive_players, function(p) return H.getKingdom(p) == "wild" end) ~= nil
   end,
-  on_use = function(self, event, target, player, data)
+  on_use = function(self, _, target, player)
     local room = player.room
     local kingdom = H.getKingdom(player)
-    local affected = {}
-    if data.damage and data.damage.from and data.damage.from:isAlive() then
-      table.insert(affected, data.damage.from)
-    end
+    local affected = damageSources(room, player)
     for _, p in ipairs(room:getAlivePlayers()) do
-      if p.kingdom == "wild" then table.insertIfNeed(affected, p) end
+      if H.getKingdom(p) == "wild" then table.insertIfNeed(affected, p) end
     end
     for _, p in ipairs(affected) do
-        local choices = {"fengsui_heg__canyun_damage"}
-        if H.hasGeneral(p, true) then table.insert(choices, "fengsui_heg__canyun_remove") end
-        local choice = room:askToChoice(p, {
-          choices = choices,
-          skill_name = canyun.name,
-          prompt = "#fengsui_heg__canyun-choice",
-        })
-        if choice == "fengsui_heg__canyun_damage" then
-          room:setPlayerMark(p, "@fengsui_heg__canyun_damage", kingdom)
-        else
-          if p:isAlive() and H.hasGeneral(p, true) then H.removeGeneral(p, true) end
-          room:setPlayerMark(p, "@fengsui_heg__canyun_nochange", 1)
+      local choices = { "fengsui_heg__canyun_damage" }
+      if H.hasGeneral(p, true) then table.insert(choices, "fengsui_heg__canyun_remove") end
+      local choice = room:askToChoice(p, {
+        choices = choices,
+        skill_name = canyun.name,
+        prompt = "#fengsui_heg__canyun-choice",
+      })
+      if choice == "fengsui_heg__canyun_remove" then
+        -- @! 图章标记用于客户端 Photo 换 abolished 士兵图（picMarks 同步）。
+        room:setPlayerMark(p, "@!fengsui_abolish_deputy", 1)
+        H.removeGeneral(p, true, canyun.name)
+        room:setPlayerMark(p, "fengsui_heg__abolish_deputy_state", 1)
+      else
+        for _, ally in ipairs(room:getAlivePlayers()) do
+          -- 残愠在死亡结算完成前触发，死亡角色本身仍属于场上角色；
+          -- 选项一因此也包括伤害来源/野心家自己。
+          if H.getKingdom(ally) == kingdom then
+            room:damage { from = ally, to = p, damage = 1, skillName = canyun.name }
+          end
         end
+      end
     end
   end,
 })
 
-canyun:addEffect(fk.DamageCaused, {
-  global = true,
-  can_trigger = function(self, event, target, player, data)
-    local mark = data.to and data.to:getMark("@fengsui_heg__canyun_damage") or 0
-    return data.from == target and type(mark) == "string" and mark ~= "" and
-      H.getKingdom(data.from) == mark
-  end,
-  on_use = function(self, event, target, player, data)
-    data:changeDamage(1)
-  end,
-})
-
+-- 废除副将后的通用限制：副将已经由士兵替代，之后任何变更副将的请求都被拦截。
 canyun:addEffect(H.GeneralTransforming, {
   global = true,
-  can_trigger = function(self, event, target, player, data)
-    return target:getMark("@fengsui_heg__canyun_nochange") > 0 and not data.isMain
+  can_trigger = function(self, _, target, _, data)
+    return target and data and not data.isMain and
+      (target:getMark("fengsui_heg__abolish_deputy_state") > 0 or
+        target:getMark("@fengsui_heg__canyun_nochange") > 0 or
+        target:getMark("@fengsui_heg__xunyun_nochange") > 0)
   end,
-  on_use = function(self, event, target, player, data)
-    return true
-  end,
+  on_use = function() return true end,
 })
 
-Fk:loadTranslationTable{
+Fk:loadTranslationTable {
   ["#fengsui_heg__canyun-choice"] = "残愠：请选择一项",
-  ["fengsui_heg__canyun_damage"] = "贾褒同势力角色对你造成的伤害+1",
-  ["fengsui_heg__canyun_remove"] = "移除副将且无法再变更",
-  ["@fengsui_heg__canyun_damage"] = "残愠：伤害+1",
-  ["@fengsui_heg__canyun_nochange"] = "残愠：无法变更副将",
+  ["fengsui_heg__canyun_damage"] = "令与你势力相同的角色依次对你造成一点伤害",
+  ["fengsui_heg__canyun_remove"] = "废除副将",
+  ["@fengsui_heg__abolish_deputy"] = "废除副将",
+  ["@fengsui_heg__canyun_nochange"] = "废除副将",
 }
 
 return canyun

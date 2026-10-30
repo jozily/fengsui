@@ -14,11 +14,13 @@ xunyun:addEffect(fk.EnterDying, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     local from = data.damage and data.damage.from
-    if from and from:isAlive() then
+    if from and from:isAlive() and H.hasGeneral(from, true) then
+      -- @! 图章标记用于客户端 Photo 换 abolished 士兵图（picMarks 同步）。
+      room:setPlayerMark(from, "@!fengsui_abolish_deputy", 1)
       if H.getActualGeneral(from, true) and H.getActualGeneral(from, true) ~= "" then
-        H.removeGeneral(from, true)
+        H.removeGeneral(from, true, xunyun.name)
       end
-      room:setPlayerMark(from, "@fengsui_heg__xunyun_nochange", 1)
+      room:setPlayerMark(from, "fengsui_heg__abolish_deputy_state", 1)
     end
 
     local candidates = table.filter(room.alive_players, function(p)
@@ -31,7 +33,7 @@ xunyun:addEffect(fk.EnterDying, {
       max_num = 1,
       skill_name = xunyun.name,
       prompt = "#fengsui_heg__xunyun-change",
-      cancelable = true,
+      cancelable = false,
     })
     if #chosen > 0 then
       H.askToHebiOrTransform(room, chosen[1], xunyun.name, false)
@@ -42,7 +44,8 @@ xunyun:addEffect(fk.EnterDying, {
 xunyun:addEffect(H.GeneralTransforming, {
   global = true,
   can_trigger = function(self, event, target, player, data)
-    return target:getMark("@fengsui_heg__xunyun_nochange") > 0 and not data.isMain
+    return (target:getMark("@fengsui_heg__xunyun_nochange") > 0 or
+      target:getMark("fengsui_heg__abolish_deputy_state") > 0) and not data.isMain
   end,
   on_use = function(self, event, target, player, data)
     return true
@@ -51,7 +54,7 @@ xunyun:addEffect(H.GeneralTransforming, {
 
 Fk:loadTranslationTable{
   ["#fengsui_heg__xunyun-change"] = "勋殒：令另一名同势力角色合璧",
-  ["@fengsui_heg__xunyun_nochange"] = "勋殒禁变更",
+  ["@fengsui_heg__xunyun_nochange"] = "废除副将",
 }
 
 return xunyun

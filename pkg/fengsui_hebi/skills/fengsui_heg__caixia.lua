@@ -1,4 +1,5 @@
 local H = require "packages.fengsui.hegemony_util"
+local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local caixia = fk.CreateSkill{
   name = "fengsui_heg__caixia",
@@ -23,7 +24,9 @@ local caixia_trigger = {
     end)
     player:drawCards(n, caixia.name)
     if player:isAlive() then
-      H.doHideGeneral(room, player, player, caixia.name)
+      -- 才瑕所在武将牌保持明置，暗置另一张武将牌。
+      local skill_place = U.getSkillPlace(player, caixia.name)
+      if skill_place ~= nil then player:hideGeneral(not skill_place) end
     end
   end,
 }

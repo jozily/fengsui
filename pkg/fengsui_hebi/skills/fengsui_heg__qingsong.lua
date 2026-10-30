@@ -30,7 +30,7 @@ qingsong:addEffect(fk.TargetConfirmed, {
   global = true,
   anim_type = "defensive",
   can_trigger = function(self, _, target, player, data)
-    return target == player and hasActualSkill(player) and
+    return target == player and not player.dead and hasActualSkill(player) and
       canTriggerCard(data and data.card) and not player:isKongcheng() and
       table.find(player:getCardIds("h"), function(id)
         local card = Fk:getCardById(id)
@@ -44,19 +44,21 @@ qingsong:addEffect(fk.TargetConfirmed, {
       return hand_card.type ~= card.type and
         canTriggerCard(hand_card)
     end)
-    local selected = U.chooseCardsFromList(player.room, player, candidates, 1, 1,
-      "#fengsui_heg__qingsong-give", self.name, true)
-    if #selected == 0 then return false end
-    local tos = player.room:askToChoosePlayers(player, {
+    -- 一次请求同时选择要交出的牌和接收角色；取消即取消发动，
+    -- 不再先弹“是否发动”再弹目标框。
+    local tos, cards = player.room:askToChooseCardsAndPlayers(player, {
       targets = player.room:getOtherPlayers(player),
       min_num = 1,
       max_num = 1,
+      min_card_num = 1,
+      max_card_num = 1,
+      pattern = tostring(Exppattern { id = candidates }),
       skill_name = self.name,
-      prompt = "#fengsui_heg__qingsong-to",
+      prompt = "#fengsui_heg__qingsong-give",
       cancelable = true,
     })
-    if #tos == 0 then return false end
-    event:setCostData(self, { card = selected[1], to = tos[1] })
+    if #tos == 0 or #cards == 0 then return false end
+    event:setCostData(self, { card = cards[1], to = tos[1] })
     return true
   end,
   on_use = function(self, event, _, player)
@@ -83,18 +85,6 @@ qingsong:addEffect(fk.TurnEnd, {
     -- 青松拥有者的记录，而不是要求阶段角色就是青松拥有者。
     return target and #player:getTableMark(pendingMark) > 0
   end,
-  on_cost = function(self, _, _, player)
-    local room = player.room
-    local invoke = room:askToSkillInvoke(player, {
-      skill_name = self.name,
-      prompt = "#fengsui_heg__qingsong-use",
-    })
-    if not invoke then
-      room:setPlayerMark(player, pendingMark, 0)
-      room:setPlayerMark(player, pendingVisibleMark, 0)
-    end
-    return invoke
-  end,
   on_use = function(self, _, _, player)
     local room = player.room
     local batches = 0
@@ -109,21 +99,10 @@ qingsong:addEffect(fk.TurnEnd, {
         local use = room:askToUseVirtualCard(player, {
           name = name,
           skill_name = self.name,
-          prompt = "#fengsui_heg__qingsong-use",
-          cancelable = false,
+          cancelable = true,
           skip = true,
           extra_data = { bypass_times = true, extraUse = true, bypass_distances = true },
         })
-        if not use then
-          local card = Fk:cloneCard(name)
-          local extra = { bypass_times = true, extraUse = true, bypass_distances = true }
-          if player:canUse(card, extra) then
-            local tos = card:getDefaultTarget(player, extra)
-            if tos and #tos > 0 then
-              use = { from = player, tos = tos, card = card, extraUse = true }
-            end
-          end
-        end
         if use and player:isAlive() then
           room:useCard(use)
           if player:isAlive() then player:drawCards(1, self.name) end

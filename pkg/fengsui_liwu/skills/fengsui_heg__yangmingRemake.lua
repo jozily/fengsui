@@ -3,7 +3,7 @@ local s = fk.CreateSkill { name = "fengsui_heg__yangmingRemake" }
 local function kingdomCount(room)
   local kingdoms = {}
   for _, p in ipairs(room.alive_players) do
-    if p.kingdom ~= "unknown" and p.kingdom ~= "fengsui_neutral" and p.kingdom ~= "fengsui_neutralall" then
+    if p.kingdom ~= "unknown" and p.kingdom ~= "fengsui_neutral_old" and p.kingdom ~= "fengsui_neutral" then
       table.insertIfNeed(kingdoms, p.kingdom)
     end
   end
@@ -43,7 +43,7 @@ s:addEffect(fk.TurnEnd, {
     for _ = 1, x do
       if player.dead or player:isKongcheng() then break end
       local targets = table.filter(room:getOtherPlayers(player), function(p)
-        return p:isAlive() and p.kingdom ~= "unknown" and p.kingdom ~= "fengsui_neutral" and p.kingdom ~= "fengsui_neutralall" and
+        return p:isAlive() and p.kingdom ~= "unknown" and p.kingdom ~= "fengsui_neutral_old" and p.kingdom ~= "fengsui_neutral" and
           not table.contains(chosenKingdoms, p.kingdom)
       end)
       if #targets == 0 then break end

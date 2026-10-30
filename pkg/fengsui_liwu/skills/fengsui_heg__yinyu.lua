@@ -6,7 +6,7 @@ s:addEffect(fk.GeneralRevealed, {
     local place = H.inGeneralSkills(player, s.name)
     return target == player and player:hasShownSkill(s.name) and player:getMark(s.name) == 0 and
       place ~= nil and data and ((place == "m" and data.m) or (place == "d" and data.d)) and
-      player.kingdom ~= "unknown" and player.kingdom ~= "fengsui_neutral" and player.kingdom ~= "fengsui_neutralall"
+      player.kingdom ~= "unknown" and player.kingdom ~= "fengsui_neutral_old" and player.kingdom ~= "fengsui_neutral"
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room

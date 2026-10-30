@@ -273,6 +273,47 @@ hegRule:addEffect(fk.GeneralRevealed, {
         end
 })
 
+-- 出牌阶段主动亮将次数（设置项：fengsui_reveal_count，下拉预设 0/1/3/5/10/无限）
+-- 0：本局出牌阶段移除亮将按钮；>0：每名角色每出牌阶段可主动亮将该次数，亮将按钮上显示剩余次数，用尽后按钮不可用
+-- 无限(-1)：不限次数，亮将按钮不显示次数
+-- 仅统计出牌阶段通过亮将按钮(reveal_skill&)的主动亮将；回合开始时的主动亮将、死亡/同势力等强制亮将不计入
+-- 注意：priority 必须为 0。若与其他效果同为 >0 的优先级且同时可触发，引擎会弹"选择发动的技能"框
+-- （此技能所有效果实例的显示名都是"亮将"，会弹出多个"亮将"按钮）；priority<=0 走引擎静默自动触发路径，不弹任何框
+hegRule:addEffect(fk.EventPhaseStart, {
+    mute = true,
+    priority = 0,
+    can_trigger = function(self, event, target, player, data)
+      return target == player and player.phase == Player.Play
+    end,
+    on_trigger = function(self, event, target, player, data)
+      local room = player.room
+      local v = room:getSettings("fengsui_reveal_count")
+      local n = (v == "无限") and -1 or (tonumber(v) or 0)
+      if n == 0 then
+        room:setPlayerMark(player, "fengsui_reveal_max", 0)
+        room:setPlayerMark(player, "fengsui_reveal_remain", 0)
+        return
+      end
+      room:setPlayerMark(player, "fengsui_reveal_max", n)
+      room:setPlayerMark(player, "fengsui_reveal_remain", n > 0 and n or -1)
+    end,
+  })
+
+hegRule:addEffect(fk.GeneralRevealed, {
+    mute = true,
+    priority = 0,
+    can_trigger = function(self, event, target, player, data)
+      return target == player and player.phase == Player.Play
+    end,
+    on_trigger = function(self, event, target, player, data)
+      local room = player.room
+      if (player:getMark("fengsui_reveal_max") or 0) <= 0 then return end
+      local remain = player:getMark("fengsui_reveal_remain")
+      if remain <= 0 then return end
+      room:setPlayerMark(player, "fengsui_reveal_remain", remain - 1)
+    end,
+  })
+
 hegRule:addEffect(fk.EventPhaseStart, {
     mute = true,
     priority = 0.001,
@@ -394,6 +435,34 @@ hegRule:addEffect(fk.GeneralShown, {
         end
     end,
     })
+
+-- 出牌阶段主动亮将次数：给核心 reveal_skill& 挂上角标/禁用闸门的服务端兜底补丁
+-- （客户端角标由 fengsuihegemony.lua 顶层补丁提供，此处防懒加载时序问题；有 __fengsui_reveal_patched 防重入）
+-- priority 同样必须为 0，理由同上
+hegRule:addEffect(fk.GameStart, {
+    mute = true,
+    priority = 0,
+    can_trigger = function() return true end,
+    on_trigger = function(self, event, target, player, data)
+      local revealSkill = Fk.skills["reveal_skill&"]
+      if revealSkill and revealSkill.canUse and not revealSkill.__fengsui_reveal_patched then
+        local origCanUse = revealSkill.canUse
+        revealSkill.canUse = function(self2, p, card, extra_data)
+          if (p:getMark("fengsui_reveal_max") or 0) <= 0 then
+            return origCanUse(self2, p, card, extra_data)
+          end
+          if p.phase ~= Player.Play then return false end
+          if (p:getMark("fengsui_reveal_remain") or 0) <= 0 then return false end
+          return origCanUse(self2, p, card, extra_data)
+        end
+        revealSkill.times = function(self2, p)
+          if (p:getMark("fengsui_reveal_max") or 0) <= 0 then return -1 end
+          return p:getMark("fengsui_reveal_remain")
+        end
+        revealSkill.__fengsui_reveal_patched = true
+      end
+    end,
+  })
 
 hegRule:addEffect(fk.GameStart, {
     mute = true,

@@ -9,8 +9,8 @@ zeyu:addEffect(H.KillRewardExecuting, {
   can_trigger = function(self, _, target, player, data)
     local victim, killer = data and data.victim, data and data.killer
     return target == killer and killer and killer:isAlive() and not data.replaced and victim and
-      player:hasShownSkill(zeyu.name) and H.compareKingdomWith(killer, player) and
-      not H.compareKingdomWith(killer, victim)
+      player:hasShownSkill(zeyu.name) and H.compareRewardKingdom(killer, player) and
+      not H.compareRewardKingdom(killer, victim)
   end,
   on_cost = function(self, _, target, player)
     return player.room:askToSkillInvoke(player, {

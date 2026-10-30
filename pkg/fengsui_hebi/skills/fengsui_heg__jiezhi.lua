@@ -44,7 +44,7 @@ end
 -- 其他角色获得节枝持有者的牌后，先展示这些牌，再检查后半段效果。
 jiezhi:addEffect(fk.AfterCardsMove, {
   can_trigger = function(self, _, _, player, data)
-    if not player:hasSkill(self.name, true, true) then return false end
+    if not player:hasSkill(self.name, true) then return false end
     return #gainedCards(player, data) > 0
   end,
   on_use = function(self, _, _, player, data)

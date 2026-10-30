@@ -11,6 +11,9 @@ tiaomu:addEffect(fk.TargetConfirmed, {
     return target == player and player:hasShownSkill(tiaomu.name) and data.use and data.from and
       data.use.card and data.use.card.type ~= Card.TypeEquip and
       H.allGeneralsRevealed(player) and
+      player.maxHp == data.from.maxHp and
+      ((U.getSkillPlace(player, tiaomu.name) and data.from.deputyGeneral ~= "anjiang") or
+        (not U.getSkillPlace(player, tiaomu.name) and data.from.general ~= "anjiang")) and
       not data.from:inMyAttackRange(player)
   end,
   on_use = function(self, _, target, player, data)
@@ -21,20 +24,6 @@ tiaomu:addEffect(fk.TargetConfirmed, {
     room:drawCards(data.from, 1, tiaomu.name)
     data:setNullified(player)
     room:setPlayerMark(data.from, target_mark, "迢目")
-  end,
-})
-
-tiaomu:addEffect(fk.Damaged, {
-  can_trigger = function(self, _, target, player, data)
-    return target == player and player:hasShownSkill(tiaomu.name) and data and data.from and
-      not data.from:inMyAttackRange(player) and
-      (player.general == "anjiang" or player.deputyGeneral == "anjiang")
-  end,
-  on_use = function(self, _, target, player)
-    local room = player.room
-    if U.revealOneGeneral(player) then
-      room:recover({ who = player, num = 1, skillName = tiaomu.name })
-    end
   end,
 })
 

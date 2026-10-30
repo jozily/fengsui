@@ -112,4 +112,18 @@ return {
     fontSize = 13, width = 110, height = 30,
     component = "packages/fengsui/pkg/fengsui_titles/qml/DynHongzhiTitle.qml",
   },
+  ["fengsui_titles.qingkui"] = {
+    backgroundMode = "component",
+    title = "青魁幽梦",
+    border = "#4db89b", background = "#0a2330", color = "#eafff7",
+    fontSize = 13, width = 110, height = 30,
+    component = "packages/fengsui/pkg/fengsui_titles/qml/QingkuiTitle.qml",
+  },
+  ["fengsui_titles.dynqingkui"] = {
+    backgroundMode = "component",
+    title = "动·青魁幽梦",
+    border = "#4db89b", background = "#0a2330", color = "#eafff7",
+    fontSize = 13, width = 110, height = 30,
+    component = "packages/fengsui/pkg/fengsui_titles/qml/QingkuiDynTitle.qml",
+  },
 }

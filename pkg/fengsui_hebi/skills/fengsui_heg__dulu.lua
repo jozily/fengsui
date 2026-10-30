@@ -1,7 +1,7 @@
 local H = require "packages.fengsui.hegemony_util"
 local Util = require "packages.fengsui.pkg.fengsui_hebi.util"
 local dufa = fk.CreateSkill { name = "fengsui_heg__dulu" }
-  dufa:addEffect(fk.DamageCaused, { can_trigger = function(self, _, target, player, data) return target == player and player:hasShownSkill(self.name) and data and data.to and data.to:isAlive() and data.damage and H.getGeneralsRevealedNum(player) ~= H.getGeneralsRevealedNum(data.to) end,
+  dufa:addEffect(fk.DamageCaused, { can_trigger = function(self, _, target, player, data) return target == player and player:hasSkill(self.name, true) and data and data.to and data.to:isAlive() and data.damage and H.getGeneralsRevealedNum(player) ~= H.getGeneralsRevealedNum(data.to) end,
     on_use = function(self, _, _, player, data)
       local room=data.to.room
       local choices={"fengsui_heg__dulu_draw"}

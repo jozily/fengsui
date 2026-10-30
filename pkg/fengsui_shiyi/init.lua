@@ -22,30 +22,30 @@ liuhui:addSkills { "fengsui_heg__jieshu" }
 local wanghuifeng = General:new(extension, "fengsui_heg__wanghuifeng", "jin", 4, 4, General.Female)
 wanghuifeng:addSkills { "fengsui_heg__dilie" }
 
-local jiaxu = General:new(extension, "fengsui_heg__jiaxu", "fengsui_neutralall", 3)
+local jiaxu = General:new(extension, "fengsui_heg__jiaxu", "fengsui_neutral", 3)
 jiaxu:addCompanions("hs__jiaxu")
 jiaxu:addSkill("fengsui_heg__qingshi_jx")
 jiaxu:addSkill("fengsui_heg__anshi")
 jiaxu:addSkill("fengsui_heg__shuge")
 
-local lusu = General:new(extension, "fengsui_heg__lusu", "fengsui_neutralall", 3)
+local lusu = General:new(extension, "fengsui_heg__lusu", "fengsui_neutral", 3)
 lusu:addCompanions("hs__lusu")
 lusu:addSkill("fengsui_heg__xiangkui")
 lusu:addSkill("fengsui_heg__yangming")
 
-local xushu = General:new(extension, "fengsui_heg__xushu", "fengsui_neutralall", 4)
+local xushu = General:new(extension, "fengsui_heg__xushu", "fengsui_neutral", 4)
 xushu.mainMaxHpAdjustedValue = -1
 xushu:addCompanions("ld__xushu")
 xushu:addSkill("fengsui_heg__jiange")
 xushu:addSkill("fengsui_heg__xiawang")
 xushu:addSkill("fengsui_heg__yinyu")
 
-local zhaoe = General:new(extension, "fengsui_heg__zhaoe", "fengsui_neutralall", 3)
+local zhaoe = General:new(extension, "fengsui_heg__zhaoe", "fengsui_neutral", 3)
 zhaoe.gender = General.Female
 zhaoe:addSkill("fengsui_heg__yanshi")
 zhaoe:addSkill("fengsui_heg__xinren")
 
-local xushao = General:new(extension, "fengsui_heg__xushao", "fengsui_neutralall", 3)
+local xushao = General:new(extension, "fengsui_heg__xushao", "fengsui_neutral", 3)
 xushao:addCompanions("fengsui_heg__xujing")
 xushao:addSkill("fengsui_heg__yingmen")
 xushao:addSkill("fengsui_heg__pingjian")
@@ -69,16 +69,16 @@ xiahoushi:addCompanions("hs__zhangfei")
 xiahoushi:addSkills { "fengsui_heg__qiaoshi", "fengsui_heg__xinmai" }
 
 
-local frenda = General:new(extension, "fengsui_toaru__heg__frenda", "fengsui_neutralall", 3, 3, General.Female)
+local frenda = General:new(extension, "fengsui_toaru__heg__frenda", "fengsui_neutral", 3, 3, General.Female)
 frenda:addSkills { "fengsui_toaru__heg__yinxian" }
 
-local shokuhou = General:new(extension, "fengsui_toaru__heg__shokuhou", "fengsui_neutralall", 3, 3, General.Female)
+local shokuhou = General:new(extension, "fengsui_toaru__heg__shokuhou", "fengsui_neutral", 3, 3, General.Female)
 shokuhou:addSkills { "fengsui_toaru__heg__duxin", "fengsui_toaru__heg__piruan" }
 
-local misaka = General:new(extension, "fengsui_toaru__heg__misaka", "fengsui_neutralall", 4, 4, General.Female)
+local misaka = General:new(extension, "fengsui_toaru__heg__misaka", "fengsui_neutral", 4, 4, General.Female)
 misaka:addSkills { "fengsui_toaru__heg__cipao", "fengsui_toaru__heg__junshi" }
 
-local shirai = General:new(extension, "fengsui_toaru__heg__shirai", "fengsui_neutralall", 3, 3, General.Female)
+local shirai = General:new(extension, "fengsui_toaru__heg__shirai", "fengsui_neutral", 3, 3, General.Female)
 shirai:addSkills { "fengsui_toaru__heg__shunyi", "fengsui_toaru__heg__fengji" }
 
 -- Remake 备份也会作为技能骨架加载；校验官方骨架至少完整即可。

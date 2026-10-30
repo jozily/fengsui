@@ -228,6 +228,10 @@ effectDeputy:addEffect(H.GeneralTransformed, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
+    if data and H.recordTransformed then
+      H.recordTransformed(room, data.origName)
+      H.recordTransformed(room, H.getActualGeneral(player, data.isMain == true))
+    end
     local payload = transformPayload(player, data)
     local box = stash[room]
     if box ~= nil then
@@ -236,6 +240,62 @@ effectDeputy:addEffect(H.GeneralTransformed, {
       return
     end
     play(room, "TransformDeputy.qml", payload, CFG.full_ms, payload.tier)
+  end,
+})
+
+-- 在移除副将的动画阶段显示效果。此时事件数据仍保留原副将，
+-- 因此普通移除和废除都能正常显示，废除图章覆盖最终的士兵副将框。
+-- 废除技能白名单用前缀匹配：触发子技能（如 #fengsui_heg__anliu_3_trig）
+-- 传入的 skillName 带子技能后缀，精确匹配会漏。
+local abolishSkillPrefixes = { "fengsui_heg__canyun", "fengsui_heg__xunyun", "fengsui_heg__anliu" }
+local function isAbolishSkillName(name)
+  if type(name) ~= "string" then return false end
+  for _, prefix in ipairs(abolishSkillPrefixes) do
+    if name == prefix or name:startsWith(prefix) then return true end
+  end
+  return false
+end
+
+effectDeputy:addEffect(H.GeneralRemoving, {
+  global = true,
+  mute = true,
+  priority = 20,
+  can_trigger = function(self, event, target, player, data)
+    fk.qWarning("[fengsui-effect] GeneralRemoving trigger, deputy=" .. tostring(data and data.isDeputy) ..
+      " origName=" .. tostring(data and data.origName) ..
+      " skillName=" .. tostring(data and data.skillName))
+    if not target or target ~= player or not data or not data.isDeputy or
+      not data.origName then return false end
+    local abolish_skill = isAbolishSkillName(data.skillName)
+    local room = player.room
+    local ok = room and modeOk(room) and effectLevel(room) > 0 and data.origName ~= "" and
+      not data.origName:startsWith("blank_")
+    fk.qWarning("[fengsui-effect] can_trigger=" .. tostring(ok) ..
+      " modeOk=" .. tostring(room and modeOk(room)) ..
+      " level=" .. tostring(room and effectLevel(room)) ..
+      " isAbolishSkill=" .. tostring(abolish_skill))
+    return ok
+  end,
+  on_use = function(self, event, target, player, data)
+    local old = Fk.generals[data.origName]
+    local abolish = isAbolishSkillName(data.skillName)
+    if abolish then
+      local soldier = old and old.gender == General.Female and "blank_nvshibing" or "blank_shibing"
+      play(player.room, "AbolishDeputy.qml", {
+        general = soldier,
+        removed = data.origName,
+        title = Fk:translate("#fengsui_effect_abolish_deputy"),
+        tier = "full",
+      }, CFG.full_ms, "full")
+    else
+      local soldier = old and old.gender == General.Female and "blank_nvshibing" or "blank_shibing"
+      play(player.room, "TransformDeputy.qml", {
+        seat = player.seat, playerId = player.id,
+        main = data.origName, deputy = soldier,
+        changed = "deputy", isHidden = false, kingdom = kingdomOf(player),
+        title = Fk:translate("#fengsui_effect_remove_deputy"), tier = "full",
+      }, CFG.full_ms, "full")
+    end
   end,
 })
 
@@ -248,6 +308,8 @@ Fk:loadTranslationTable{
   ["#fengsui_effect_change_deputy_hidden"] = "变更副将·暗置",
   ["#fengsui_effect_change_main"]          = "主将变更",
   ["#fengsui_effect_hebi"]                 = "珠联璧合",
+  ["#fengsui_effect_abolish_deputy"]       = "废除副将",
+  ["#fengsui_effect_remove_deputy"]        = "移除副将",
 }
 
 return effectDeputy

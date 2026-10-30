@@ -136,10 +136,19 @@ Fk:loadTranslationTable{
   ["$ld__qice_fengsui_heg__lujii1"] = "笼天地于形内，挫万物于笔端。",
   ["$ld__qice_fengsui_heg__lujii2"] = "入洛非为虚名，当以奇谋匡济时艰。",
   ["~fengsui_heg__lujii"] = "华亭鹤唳，可复闻乎？",
-  ["$heg__bingxin_fengsui_heg__huoyi1"] = "南疆霜众，报国丹心未曾冷却；",
-  ["$heg__bingxin_fengsui_heg__huoyi2"] = "心如寒玉，纵易旌旗，不易臣节。",
+  ["$heg__bingxin_fengsui_heg__huoyi1"] = "南疆霜重，报国丹心未曾冷却；",
+  ["$heg__bingxin_fengsui_heg__huoyi2"] = "心虽如寒玉，烈魂独照吾心！",
+  ["$heg__bingxin_fengsui_heg__huoyi3"] = "心若冰壶澄澈，何惧世道浊流！",
+  ["$heg__bingxin_fengsui_heg__huoyi4"] = "寒锋可摧玉骨，不可折吾忠魂！",
   ["$niaoxiang_fengsui_heg__huoyi1"] = "诸军分翼而进，合围勿纵！",
-  ["$niaoxiang_fengsui_heg__huoyi2"] = "断其归路，一击定南疆！",
+  ["$niaoxiang_fengsui_heg__huoyi2"] = "斩势断其路，一击定南疆！",
+  ["$niaoxiang_fengsui_heg__huoyi3"] = "鹰击长空万里，何惧风雨如晦！",
+  ["$niaoxiang_fengsui_heg__huoyi4"] = "鹏翼乘风起，一举越千山！",
+  -- 出牌阶段由国战规则临时挂上的「合纵」。原译文在 hegemony 的 strategic_advantage 子包里，
+  -- 本模式若没加载到那份，技能按钮会因取不到名字而显示成【 】空框，这里补一份兜底。
+  ["alliance&"] = "合纵",
+  [":alliance&"] = "出牌阶段限一次，你可将有“合”标记的至多三张手牌交给与你势力不同或未确定势力的一名角色，若你以此法交给与你势力不同的角色牌，你摸等量的牌。",
+  ["#alliance&"] = "合纵：你可将至多3张有“合”标记的手牌交给势力不同或无势力的角色，前者你摸等量的牌",
 }
 
 

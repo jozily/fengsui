@@ -1,6 +1,6 @@
 # fengsui_titles · 自用称号包
 
-独立二创包，不影响官方 `player_titles`。当前包含十六条私人称号（含七条动态「动·」系列）：
+独立二创包，不影响官方 `player_titles`。当前包含十八条私人称号（含八条动态「动·」系列）：
 
 | 稳定ID | 称号文字 | 样式 | 来源 |
 | --- | --- | --- | --- |
@@ -20,6 +20,8 @@
 | `dynqiexianglang` | 动·窃香郎 | `fengsui_titles.dynqiexianglang` | `images/qiexiang_banner.png`（2167x726 RGBA，原字节保留）；动态版由 `images/dynqiexiang_atlas.png`（36 帧「暖金光晕（茶盏/香炉）+ 细碎金粉上浮」图集，6×6 网格 440×120）+ `dynqiexiang_poster.png` 组成，循环 3.0s、`zoom` 0.9 |
 | `hongzhilingkong` | 鸿志凌空 | `fengsui_titles.hongzhilingkong` | `images/hongzhi3_banner.png`（2143x734 RGBA，原字节保留，墨卷云山版）；`zoom` 0.9 框内略缩小留边 |
 | `dynhongzhilingkong` | 动·鸿志凌空 | `fengsui_titles.dynhongzhilingkong` | `images/hongzhi3_banner.png`（2143x734 RGBA，原字节保留）；动态版由 `images/dynhongzhi_atlas.png`（36 帧「水墨晕染」图集，6×6 网格 440×120）+ `dynhongzhi_poster.png` 组成，循环 3.0s、`zoom` 0.9 |
+| `qingkui` | 青魁幽梦 | `fengsui_titles.qingkui` | `images/qingkui_banner.png`（1920x640 RGBA，由用户剪贴板 JPG 边缘泛洪抠白底转透明，内部白云/月亮保留，alpha 边缘 0.8px 羽化）；静态版，`cropBias` 0.4、`zoom` 0.9 |
+| `dynqingkui` | 动·青魁幽梦 | `fengsui_titles.dynqingkui` | 同 `qingkui_banner.png`；翡翠流光+金粉上浮版（QML 程序化动画，无图集）：画面本体静止；三团青绿软雾（RadialGradient）原地明灭+缓慢漂移 + 15° 翡翠细光带（0.24 框宽）6.5s 匀速单向扫过（歇 1.2s，显式 from 修复循环重启）+ 12 粒金粉自底部错峰上浮渐隐（2.8~3.8s/粒，#f2d98c/#ffe9b8），`motionEnabled`=false 时静止 |
 
 显示方式：四个组件设计尺寸均与统一显示框一致（110x30），横幅按宽度铺满整框，
 垂直方向利用透明留边吸收溢出，各组件用 `cropBias` 微调裁切位置：

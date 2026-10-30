@@ -40,7 +40,7 @@ fuzhu:addEffect(fk.AfterCardTargetDeclared, {
     local room = player.room
     local to = event:getCostData(self).to
     U.hideSkillGeneral(player, fuzhu.name)
-    data.use.extraUse = true
+    data.extraUse = true
     data.nullifiedTargets = data.nullifiedTargets or {}
     table.insertIfNeed(data.nullifiedTargets, to)
     if to.dead then return end

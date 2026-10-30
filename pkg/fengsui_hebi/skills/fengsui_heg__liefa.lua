@@ -17,7 +17,8 @@ end
 local function refreshBorrowed(room, owner)
   local formation = H.inFormationRelation(owner, owner)
   for _, p in ipairs(room.alive_players) do
-    local should = p ~= owner and formation and H.inFormationRelation(owner, p)
+    -- 烈伐的阵列效果包含技能拥有者自己；拥有者也是阵列中的角色。
+    local should = formation and H.inFormationRelation(owner, p)
     local mark = "fengsui_heg__liefa_bingxin_" .. owner.id
     if should and p:getMark(mark) == 0 then
       if not p:hasSkill("heg__bingxin") then room:handleAddLoseSkills(p, "heg__bingxin") end

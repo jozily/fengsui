@@ -8,7 +8,7 @@ local INITIALIZED_MARK = "fengsui_heg__yingmen_initialized"
 local function kingdomCount(room)
   local kingdoms = {}
   for _, p in ipairs(room.alive_players) do
-    if p.kingdom ~= "unknown" and p.kingdom ~= "fengsui_neutral" and p.kingdom ~= "fengsui_neutralall" then
+    if p.kingdom ~= "unknown" and p.kingdom ~= "fengsui_neutral_old" and p.kingdom ~= "fengsui_neutral" then
       table.insertIfNeed(kingdoms, p.kingdom)
     end
   end
@@ -26,8 +26,8 @@ local function xushaoRevealed(player)
 end
 
 local function allowedVisitor(general)
-  return general and general.kingdom ~= "wild" and general.kingdom ~= "fengsui_neutral" and
-    general.kingdom ~= "fengsui_neutralall"
+  return general and general.kingdom ~= "wild" and general.kingdom ~= "fengsui_neutral_old" and
+    general.kingdom ~= "fengsui_neutral"
 end
 
 local function collectShownGenerals(room)
@@ -41,6 +41,7 @@ end
 
 local function eligibleSkill(skill, isDeputy)
   if not skill then return false end
+  if FU.isGeneralStateSkill(skill) then return false end
   if isDeputy == nil then return false end
   if skill:hasTag(Skill.MainPlace) and isDeputy then return false end
   if skill:hasTag(Skill.DeputyPlace) and not isDeputy then return false end

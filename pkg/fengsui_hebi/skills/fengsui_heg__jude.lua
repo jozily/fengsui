@@ -28,15 +28,14 @@ jude:addEffect(fk.AfterAskForCardResponse, {
   on_use = function(self, event, target, player, data)
     local room, owner = player.room, event:getCostData(self).owner
     if not owner or owner.dead then return end
-    local choice = room:askToChoice(owner, { choices = { "fengsui_heg__jude_draw", "fengsui_heg__jude_mark" }, skill_name = jude.name })
+    local choice = room:askToChoice(owner, { choices = { "fengsui_heg__jude_draw", "fengsui_heg__jude_transform" }, skill_name = jude.name })
     if choice == "fengsui_heg__jude_draw" then
       local id = room.draw_pile[1]
       if id then room:showCards({ id }, owner); room:obtainCard(owner, id, true, fk.ReasonPrey, owner, jude.name) end
+    else
       if owner:isAlive() and H.hasGeneral(owner, true) then
         H.transformGeneral(room, owner, false, false, 1, jude.name)
       end
-    else
-      H.addHegMark(owner, "yinyangfish")
     end
   end,
 })

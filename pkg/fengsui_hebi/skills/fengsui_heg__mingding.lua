@@ -18,7 +18,12 @@ mingding:addEffect(fk.EnterDying, {
     local room = player.room
     room:setPlayerMark(player, "fengsui_heg__mingding_used", 1)
 
-    -- 命定检查并移除的是曾因“相谶”获得技能的角色的副将。
+    -- 先记下相谶技能，再移除副将；副将上的相谶技能会随之消失，
+    -- 需要在移除后重新作为永久技能加入。
+    local pool = target:getTableMark("fengsui_heg__xiangchen_skills")
+    local native = table.filter(pool, function(skill_name)
+      return H.inGeneralSkills(target, skill_name) ~= nil
+    end)
     U.removeGeneralByName(target, H.getActualGeneral(target, true))
     room:recover {
       who = target,
@@ -27,13 +32,15 @@ mingding:addEffect(fk.EnterDying, {
       skillName = self.name,
     }
 
-    local pool = target:getTableMark("fengsui_heg__xiangchen_skills")
-    if #pool > 0 then
-      local choices = table.filter(pool, function(skill_name)
-        return Fk.skills[skill_name] and not target:hasSkill(skill_name, true, true)
-      end)
-      if #choices > 0 then
-        room:handleAddLoseSkills(target, choices[math.random(#choices)])
+    local retained = #native > 0 and native or
+      (#pool > 0 and { pool[math.random(#pool)] } or {})
+    local remaining = table.filter(pool, function(skill_name)
+      return not table.contains(retained, skill_name)
+    end)
+    target:setMark("fengsui_heg__xiangchen_skills", remaining)
+    for _, skill_name in ipairs(retained) do
+      if Fk.skills[skill_name] and not target:hasSkill(skill_name, true, true) then
+        room:handleAddLoseSkills(target, skill_name)
       end
     end
   end,

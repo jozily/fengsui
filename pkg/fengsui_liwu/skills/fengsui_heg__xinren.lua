@@ -1,5 +1,5 @@
 local H = require "packages.hegemony.util"
-local s = fk.CreateSkill { name = "fengsui_heg__xinren", tags = { Skill.Compulsory } }
+local s = fk.CreateSkill { name = "fengsui_heg__xinren", tags = { Skill.Compulsory, Skill.Limited } }
 
 local function damageCard(card)
   return card and (card.is_damage_card or card.trueName == "fire_attack" or card.name == "fire_attack")
@@ -39,6 +39,10 @@ end
 
 local function useAgainstYanshiTarget(self, _, target, player)
   local room = player.room
+  -- 该效果由明置/确定势力事件直接触发，不经过 SkillEffect；手动补齐
+  -- 限定技的发动记录与大招特效。
+  player:addSkillUseHistory(s.name, 1)
+  room:notifySkillInvoked(player, s.name)
   room:setPlayerMark(player, s.name .. "_used", 1)
   local targetId = tonumber(player:getMark("fengsui_heg__yanshi_target"))
   local victim = targetId and room:getPlayerById(targetId) or nil

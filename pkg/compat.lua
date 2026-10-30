@@ -126,6 +126,8 @@ end
 if H.removeGeneral and not H._fengsuiRemoveGeneralWithSkill then
   local originalRemoveGeneral = H.removeGeneral
   H.removeGeneral = function(player, isDeputy, skillName)
+    fk.qWarning("[fengsui-remove] removeGeneral player=" .. tostring(player and player.id) ..
+      " deputy=" .. tostring(isDeputy) .. " skillName=" .. tostring(skillName))
     if not skillName then return originalRemoveGeneral(player, isDeputy) end
     local data = H.GeneralRemoveData:new{ who = player, isDeputy = isDeputy or false, skillName = skillName }
     local event = H.GameEvent.RemoveGeneral:create(data)
@@ -133,6 +135,9 @@ if H.removeGeneral and not H._fengsuiRemoveGeneralWithSkill then
     return ret
   end
   H._fengsuiRemoveGeneralWithSkill = true
+  fk.qWarning("[fengsui-remove] removeGeneral skillName wrapper installed")
+elseif not H.removeGeneral then
+  fk.qWarning("[fengsui-remove] H.removeGeneral nil, wrapper NOT installed")
 end
 
 if Room and not Room._fengsuiKnownBothWrapped then

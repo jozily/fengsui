@@ -63,7 +63,7 @@ jiyuan:addEffect(fk.AfterDying, {
   global = true,
   mute = true,
   can_trigger = function(self, event, target, player, data)
-    return player:getMark("@fengsui_heg__jiyuan_peach") > 0
+    return player:isAlive() and player:getMark("@fengsui_heg__jiyuan_peach") > 0
   end,
   on_use = function(self, event, target, player, data)
     player.room:setPlayerMark(player, "@fengsui_heg__jiyuan_peach", 0)

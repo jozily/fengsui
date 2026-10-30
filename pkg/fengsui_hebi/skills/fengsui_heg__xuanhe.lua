@@ -1,53 +1,42 @@
+local H = require "packages.fengsui.hegemony_util"
+local U = require "packages.fengsui.pkg.fengsui_hebi.util"
+
 local xuanhe = fk.CreateSkill{
   name = "fengsui_heg__xuanhe",
   tags = { Skill.Compulsory, Skill.MainPlace },
 }
 
-local type_mark = "fengsui_heg__xuanhe_types-turn"
+-- 本回合使用牌无距离和次数限制
+local free_mark = "fengsui_heg__xuanhe_free-turn"
 
-xuanhe:addEffect(fk.CardUseFinished, {
+xuanhe:addEffect(fk.GeneralRevealed, {
   anim_type = "control",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(xuanhe.name) and
-      player:usedSkillTimes(xuanhe.name, Player.HistoryTurn) == 0 and #data.tos > 0
+    if target ~= player or not player:hasShownSkill(xuanhe.name) then return false end
+    local place = H.inGeneralSkills(player, xuanhe.name)
+    return (place == "m" and data.m) or (place == "d" and data.d)
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
-    for _, to in ipairs(data.tos) do
-      if to:isAlive() then
-        player.room:addTableMarkIfNeed(to, type_mark, data.card.type)
-      end
+    local room = player.room
+    room:addPlayerMark(player, free_mark, 1)
+    -- 回合外明置：夺走当前回合角色的所有牌，然后易位
+    local current = room.current
+    if not current or current == player or current.dead then return end
+    local ids = current:getCardIds("hej")
+    if #ids > 0 then
+      room:obtainCard(player, ids, true, fk.ReasonPrey, player, xuanhe.name)
     end
+    if player:isAlive() then U.swapGenerals(room, player) end
   end,
 })
 
-xuanhe:addEffect(fk.TargetConfirming, {
-  global = true,
-  anim_type = "defensive",
-  can_trigger = function(self, event, target, player, data)
-    if not (target == player and player:hasSkill(xuanhe.name) and data.from and data.from ~= player) then
-      return false
-    end
-    local use_event = player.room.logic:getCurrentEvent():findParent(GameEvent.UseCard, true)
-    if not use_event then return false end
-    local events = player.room.logic:getEventsOfScope(GameEvent.UseCard, 1, function(e)
-      return e.data.from == data.from
-    end, Player.HistoryTurn)
-    return #events == 1 and events[1].id == use_event.id
+xuanhe:addEffect("targetmod", {
+  bypass_times = function(self, player, skill, scope, card)
+    return player:getMark(free_mark) > 0
   end,
-  on_cost = Util.TrueFunc,
-  on_use = function(self, event, target, player, data)
-    data:cancelTarget(player)
-  end,
-})
-
-xuanhe:addEffect("prohibit", {
-  global = true,
-  prohibit_use = function(self, player, card)
-    return table.contains(player:getTableMark(type_mark), card.type)
-  end,
-  prohibit_response = function(self, player, card)
-    return table.contains(player:getTableMark(type_mark), card.type)
+  bypass_distances = function(self, player, skill, card)
+    return player:getMark(free_mark) > 0
   end,
 })
 

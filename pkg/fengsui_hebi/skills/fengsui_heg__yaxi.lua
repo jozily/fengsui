@@ -5,7 +5,7 @@ local yaxi = fk.CreateSkill { name = "fengsui_heg__yaxi" }
 yaxi:addEffect(fk.AfterSkillEffect, {
   global = true,
   can_trigger = function(self, _, target, player, data)
-    if not target or target == player or not player:hasShownSkill(yaxi.name) or
+    if not target or not player:hasShownSkill(yaxi.name) or
       player:getMark(yaxi.name .. "-round") > 0 or
       not data or not data.skill or data.skill.is_delay_effect or
       H.getGeneralsRevealedNum(target) ~= 2 then return false end

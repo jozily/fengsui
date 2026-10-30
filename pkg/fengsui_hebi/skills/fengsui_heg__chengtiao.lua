@@ -24,7 +24,7 @@ chengtao:addEffect(H.HegMarkChanged, {
   global = true,
   can_trigger = function(self, _, target, player, data)
     return target and data and (data.number or 0) > 0 and
-      hasActualSkill(player) and markLength[data.markName] ~= nil
+      not player.dead and hasActualSkill(player) and markLength[data.markName] ~= nil
   end,
   on_use = function(self, _, target, player, data)
     local room = player.room

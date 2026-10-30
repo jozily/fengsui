@@ -28,7 +28,7 @@ juexun:addEffect(fk.AfterCardsMove, {
 juexun:addEffect(fk.PreDamage, {
   global = true,
   can_trigger = function(self, _, target, player, data)
-    return player:getMark("fengsui_heg__juexun_ready") > 0 and data and data.damage
+    return player:isAlive() and player:getMark("fengsui_heg__juexun_ready") > 0 and data and data.damage
   end,
   on_use = function(self, _, target, player, data)
     data.damageType = fk.FireDamage
@@ -41,7 +41,7 @@ juexun:addEffect(fk.PreDamage, {
 juexun:addEffect(fk.Damaged, {
   global = true,
   can_trigger = function(self, _, target, player, data)
-    return target == player and data and data.extra_data and
+    return target == player and player:isAlive() and data and data.extra_data and
       data.extra_data.fengsui_heg__juexun_owner == player.id and
       data.damageType == fk.FireDamage
   end,

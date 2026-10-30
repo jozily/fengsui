@@ -61,7 +61,7 @@ yunie:addEffect(fk.AskForRetrial, {
 yunie:addEffect(fk.AfterCardsMove, {
   global = true,
   can_trigger = function(self, event, target, player, data)
-    if not player:hasSkill(yunie.name, true, true) then return false end
+    if not player:hasSkill(yunie.name, true) then return false end
     local is_deputy = U.getSkillPlace(player, yunie.name)
     if is_deputy == nil then return false end
     if (is_deputy and player.deputyGeneral ~= "anjiang") or

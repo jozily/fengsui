@@ -14,7 +14,7 @@ end
 dunmeng:addEffect(H.KillRewardExecuting, {
   can_trigger = function(self, _, target, player, data)
     return target and data and not data.replaced and data.killer == target and
-      target:isAlive() and target.kingdom ~= "unknown" and
+      target:isAlive() and H.getRewardKingdom(target) ~= "unknown" and
       player:hasShownSkill(dunmeng.name) and
       player:usedSkillTimes(dunmeng.name, Player.HistoryGame) == 0 and
       player:getMark("fengsui_heg__dunmeng_used") == 0

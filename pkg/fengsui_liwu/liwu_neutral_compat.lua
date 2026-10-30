@@ -1,10 +1,27 @@
 local Compat = {}
 
 local installed = false
-local neutralKingdom = "fengsui_neutral"
-local neutralAllKingdom = "fengsui_neutralall"
+local neutralKingdom = "fengsui_neutral_old"
+local neutralAllKingdom = "fengsui_neutral"
 local sweepingKingdom = "fengsui_sweeping"
 local baseKingdoms = { "wei", "shu", "wu", "qun", "jin" }
+local warlordsMode = false
+
+local function settingOn(room, key)
+  local value = room:getSettings(key)
+  return value == true or value == 1 or value == "1" or value == "true"
+end
+
+-- 群雄割据开关的动态读取：优先模块内显式旗标（服务端 chooseGenerals 赋值），
+-- 其次读当前房间设置（服务端与客户端均可；读不到时视为关闭，不影响主玩法）。
+local function warlordsActive()
+  if Fk._fengsuiWarlords ~= nil then return Fk._fengsuiWarlords end
+  local ok, room = pcall(function() return Fk:currentRoom() end)
+  if ok and room and room.getSettings then
+    return settingOn(room, "fengsui_warlords")
+  end
+  return false
+end
 
 local function generalKingdoms(general)
   local kingdoms = {}
@@ -23,6 +40,14 @@ end
 
 local function canPair(general, deputy)
   if not general or not deputy or general == deputy then return false end
+  if warlordsMode or warlordsActive() then
+    local function ordinary(g)
+      return g.kingdom ~= "wild" and g.kingdom ~= neutralKingdom and
+        g.kingdom ~= neutralAllKingdom and g.kingdom ~= sweepingKingdom and
+        table.find(generalKingdoms(g), function(k) return table.contains(baseKingdoms, k) end) ~= nil
+    end
+    return ordinary(general) and ordinary(deputy)
+  end
   if general.name == "fengsui_toaru__heg__xunyu" then return false end
   if deputy.kingdom == "wild" then return false end
   if deputy.name == "fengsui_toaru__heg__xunyu" then
@@ -53,6 +78,20 @@ local function canPair(general, deputy)
   return table.find(generalKingdoms(general), function(kingdom)
     return table.contains(generalKingdoms(deputy), kingdom)
   end) ~= nil
+end
+
+-- 群雄割据允许常规势力之间自由组合，但中立者与野心家不进入牌堆配对。
+local function canPairForRoom(general, deputy, room)
+  if room and settingOn(room, "fengsui_warlords") then
+    if not general or not deputy or general == deputy then return false end
+    local function ordinary(g)
+      return g.kingdom ~= "wild" and g.kingdom ~= neutralKingdom and
+        g.kingdom ~= neutralAllKingdom and g.kingdom ~= sweepingKingdom and
+        table.find(generalKingdoms(g), function(k) return table.contains(baseKingdoms, k) end) ~= nil
+    end
+    return ordinary(general) and ordinary(deputy)
+  end
+  return canPair(general, deputy)
 end
 
 local function sweepingPairKingdoms(general, deputy, enabledKingdoms)
@@ -147,6 +186,7 @@ end
 local function chooseGenerals(self)
   local room = self and self.room
   if not room then return end
+  warlordsMode = settingOn(room, "fengsui_warlords")
   local generalNum = math.max(room:getSettings("generalNum"), 5)
   room:doBroadcastNotify("ShowToast", Fk:translate("#HegInitialNotice"))
 
@@ -162,6 +202,19 @@ local function chooseGenerals(self)
   table.removeOne(allKingdoms, sweepingKingdom)
   table.removeOne(allKingdoms, neutralKingdom)
   table.removeOne(allKingdoms, neutralAllKingdom)
+  if settingOn(room, "fengsui_warlords") then
+    for i = #room.general_pile, 1, -1 do
+      local g = Fk.generals[room.general_pile[i]]
+      if g and (g.kingdom == "wild" or g.kingdom == neutralKingdom or
+          g.kingdom == neutralAllKingdom or g.kingdom == sweepingKingdom) then
+        table.remove(room.general_pile, i)
+      end
+    end
+    allKingdoms = {}
+    table.forEach(room.general_pile, function(name)
+      table.insertTableIfNeed(allKingdoms, generalKingdoms(Fk.generals[name]))
+    end)
+  end
   if #allKingdoms > 4 and not room:getSettings("notBanToFourKingdoms") then
     local kingdoms = table.random(allKingdoms, 4)
     local unused = table.filter(allKingdoms, function(kingdom)
@@ -197,7 +250,7 @@ local function chooseGenerals(self)
   local fallbackPairs = {}
   for i = 1, #generals - 1 do
     for j = i + 1, #generals do
-      if canPair(Fk.generals[generals[i]], Fk.generals[generals[j]]) then
+      if canPairForRoom(Fk.generals[generals[i]], Fk.generals[generals[j]], room) then
         table.insert(fallbackPairs, { generals[i], generals[j] })
       end
     end
@@ -208,7 +261,7 @@ local function chooseGenerals(self)
     table.sort(choices, function(a, b) return Fk.generals[a].kingdom > Fk.generals[b].kingdom end)
     for i = 1, #choices - 1 do
       for j = i + 1, #choices do
-        if canPair(Fk.generals[choices[i]], Fk.generals[choices[j]]) then
+        if canPairForRoom(Fk.generals[choices[i]], Fk.generals[choices[j]], room) then
           req:setDefaultReply(player, { choices[i], choices[j] })
           break
         end
@@ -226,7 +279,7 @@ local function chooseGenerals(self)
   for _, player in ipairs(players) do
     local result = req:getResult(player)
     if type(result) ~= "table" or #result ~= 2 or
-      not canPair(Fk.generals[result[1]], Fk.generals[result[2]]) then
+      not canPairForRoom(Fk.generals[result[1]], Fk.generals[result[2]], room) then
       result = req.default_reply[player.id]
     end
     assert(type(result) == "table" and #result == 2, "no legal hegemony general pair was offered")
@@ -268,6 +321,11 @@ local function chooseGenerals(self)
       kingdoms = table.filter(generalKingdoms(general), function(kingdom)
         return table.contains(allKingdoms, kingdom)
       end)
+    elseif settingOn(room, "fengsui_warlords") then
+      kingdoms = table.filter(table.connect(generalKingdoms(general), generalKingdoms(deputy)), function(kingdom)
+        return table.contains(baseKingdoms, kingdom) and table.contains(allKingdoms, kingdom)
+      end)
+      table.insertTableIfNeed(kingdoms, table.filter(allKingdoms, function(k) return not table.contains(kingdoms, k) end))
     else
       local deputyKingdoms = generalKingdoms(deputy)
       kingdoms = table.filter(generalKingdoms(general), function(kingdom)
@@ -301,6 +359,16 @@ function Compat.install()
     local originalGetKingdomInHegemony = Fk.getKingdomInHegemony
     local originalCanMatchInHegemony = Fk.canMatchInHegemony
     Fk.getKingdomInHegemony = function(self, general, deputy, enabledKingdoms)
+      if warlordsActive() then
+        -- 群雄割据：常规势力自由组合，候选势力取主副将势力并集与基础势力的交集。
+        local g = self.generals[general]
+        local d = self.generals[deputy or ""]
+        if not g or not d or not canPair(g, d) then return {} end
+        return table.filter(table.connect(generalKingdoms(g), generalKingdoms(d)), function(k)
+          return table.contains(baseKingdoms, k) and
+            (not enabledKingdoms or #enabledKingdoms == 0 or table.contains(enabledKingdoms, k))
+        end)
+      end
       local xunyuKingdoms = xunyuDeputyKingdoms(self.generals[general], self.generals[deputy or ""], enabledKingdoms)
       if xunyuKingdoms ~= nil then return xunyuKingdoms end
       local sweeping = sweepingPairKingdoms(self.generals[general], self.generals[deputy or ""], enabledKingdoms)
@@ -310,6 +378,9 @@ function Compat.install()
       return originalGetKingdomInHegemony(self, general, deputy, enabledKingdoms)
     end
     Fk.canMatchInHegemony = function(self, general, deputy, enabledKingdoms)
+      if warlordsActive() then
+        return canPair(self.generals[general], self.generals[deputy])
+      end
       if general == "fengsui_toaru__heg__xunyu" then return false end
       if self.generals[deputy] and self.generals[deputy].kingdom == "wild" then return false end
       if deputy == "fengsui_toaru__heg__xunyu" then

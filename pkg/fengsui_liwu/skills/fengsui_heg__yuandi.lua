@@ -10,6 +10,7 @@ local xinyou_count = "fengsui_heg__xinyou_count"
 local xinyou_visible = "@fengsui_heg__xinyou"
 local kingdom_visible = "@fengsui_heg__yuandi"
 local recorded_kingdoms = "fengsui_heg__yuandi_kingdoms"
+local owner_first_vanguard = "fengsui_heg__yuandi_owner_first_vanguard"
 
 local function isWildOrigin(player)
   return player.role == "wild" or player:getMark("__heg_wild") > 0 or
@@ -84,8 +85,11 @@ local function updateKingdomVisible(room, owner)
 end
 
 local function canHandleReveal(target, player, data)
+  -- 拥有者自己的明置由下方"拥有者保底"效果独家处理，
+  -- 否则这里与保底各发一枚先驱，拥有者会拿到两枚。
+  if target == player then return false end
   local has_reveal_data = data and (data.m or data.d or (type(data) == "table" and #data > 0))
-  if not (target and has_reveal_data and player:hasSkill(yuandi.name, true, true)) then return false end
+  if not (target and has_reveal_data and player:hasSkill(yuandi.name, true)) then return false end
     if target:getMark(seen_player_mark) > 0 then return false end
     local kingdom = H.getKingdom(target)
     if kingdom == "unknown" or kingdom == "wild" then return false end
@@ -98,7 +102,15 @@ local function canHandleReveal(target, player, data)
       player.room:setPlayerMark(target, seen_player_mark, 1)
       return false
     end
-    return not player.room:getTag("fengsui_heg__yuandi_seen_" .. kingdom)
+    -- 该角色只要已经亮过一张武将牌，就应被记录为该势力的已处理角色。
+    -- 即使该势力此前已被其他角色记录，也要写入 seen_player_mark，
+    -- 否则此人随后亮出第二张武将牌时会再次进入本技能。
+    local kingdom_tag = "fengsui_heg__yuandi_seen_" .. kingdom
+    if player.room:getTag(kingdom_tag) then
+      player.room:setPlayerMark(target, seen_player_mark, 1)
+      return false
+    end
+    return true
 end
 
 local function handleReveal(target, player)
@@ -148,7 +160,7 @@ yuandi:addEffect(fk.AfterSkillEffect, {
   global = true,
   can_trigger = function(self, _, target, player, data)
     return target and data and data.skill and data.skill.name == "vanguard_skill&" and
-      player:hasSkill(yuandi.name, true, true) and H.getKingdom(target) ~= "wild" and
+      player:hasSkill(yuandi.name, true) and H.getKingdom(target) ~= "wild" and
       not isWildOrigin(target)
   end,
   on_use = function(self, _, target, player)
@@ -166,6 +178,34 @@ yuandi:addEffect(fk.GeneralRevealed, {
   on_refresh = function(self, _, target, player)
     updateKingdomVisible(player.room, player)
   end,
+})
+
+-- 元嫡拥有者首次明置自己带有本技能的武将牌时，也获得一枚先驱。
+-- 单独处理该效果，避免全场首亮的势力排除逻辑把拥有者一并跳过。
+local function ownerFirstReveal(self, _, target, player)
+  return target == player and player:hasShownSkill(self.name) and
+    player:getMark(owner_first_vanguard) == 0
+end
+
+local function grantOwnerFirstVanguard(self, _, target, player)
+  local room = player.room
+  room:setPlayerMark(player, owner_first_vanguard, 1)
+  -- 补上原本由全局处理器完成的两件事：标记该角色已处理、
+  -- 记录其势力（此后同势力角色明置不再从元嫡获得先驱）。
+  room:setPlayerMark(player, seen_player_mark, 1)
+  recordKingdom(room, player)
+  H.addHegMark(room, player, "vanguard")
+  updateKingdomVisible(room, player)
+end
+
+yuandi:addEffect(fk.GeneralShown, {
+  can_trigger = ownerFirstReveal,
+  on_use = grantOwnerFirstVanguard,
+})
+
+yuandi:addEffect(fk.GeneralRevealed, {
+  can_trigger = ownerFirstReveal,
+  on_use = grantOwnerFirstVanguard,
 })
 
 return yuandi

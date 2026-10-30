@@ -18,7 +18,9 @@
     "fengsui_titles.dynqingmengguichen": "动·情梦归尘",
     "fengsui_titles.dynqiexianglang": "动·窃香郎",
     "fengsui_titles.hongzhilingkong": "鸿志凌空",
-    "fengsui_titles.dynhongzhilingkong": "动·鸿志凌空"
+    "fengsui_titles.dynhongzhilingkong": "动·鸿志凌空",
+    "fengsui_titles.qingkui": "青魁幽梦",
+    "fengsui_titles.dynqingkui": "动·青魁幽梦"
   },
   "titles": [
     {
@@ -100,6 +102,16 @@
       "id": "dynhongzhilingkong",
       "title": "动·鸿志凌空",
       "style": "fengsui_titles.dynhongzhilingkong"
+    },
+    {
+      "id": "qingkui",
+      "title": "青魁幽梦",
+      "style": "fengsui_titles.qingkui"
+    },
+    {
+      "id": "dynqingkui",
+      "title": "动·青魁幽梦",
+      "style": "fengsui_titles.dynqingkui"
     }
   ]
 }

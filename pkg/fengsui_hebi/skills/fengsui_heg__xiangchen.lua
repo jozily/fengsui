@@ -5,7 +5,7 @@ local xiangchen = fk.CreateSkill { name = "fengsui_heg__xiangchen" }
 
 local function forbidden(general)
   return not general or general.kingdom == "wild" or
-    general.kingdom == "fengsui_neutral" or general.kingdom == "fengsui_neutralall"
+    general.kingdom == "fengsui_neutral_old" or general.kingdom == "fengsui_neutral"
 end
 
 local function currentKingdomCount(room, kingdom)
@@ -16,16 +16,40 @@ local function currentKingdomCount(room, kingdom)
   return n
 end
 
-local function availableSkills(general, target)
+local function fieldGeneralsAndSkills(room)
+  local generals, skills = {}, {}
+  for _, p in ipairs(room.players) do
+    for _, is_deputy in ipairs({ false, true }) do
+      local name = H.getActualGeneral(p, is_deputy)
+      if name and name ~= "" and name ~= "anjiang" then
+        generals[name] = true
+        local general = Fk.generals[name]
+        if general then
+          for _, skill_name in ipairs(general:getSkillNameList(true)) do
+            skills[skill_name] = true
+          end
+        end
+      end
+    end
+  end
+  return generals, skills
+end
+
+local function availableSkills(general, target, history, field_skills)
   return table.filter(general:getSkillNameList(true), function(skill_name)
     local skill = Fk.skills[skill_name]
     local description = Fk:translate(":" .. skill_name)
-    local forbidden = type(description) == "string" and
-      (description:find("移除此武将牌", 1, true) ~= nil or
-        description:find("变更此武将牌", 1, true) ~= nil)
-    return skill and not skill:hasTag(Skill.Lord) and
-      not forbidden and
-      not target:hasSkill(skill_name, true, true)
+    local position_changing = type(description) == "string" and (
+      (description:find("移除", 1, true) and description:find("武将牌", 1, true)) or
+      (description:find("变更", 1, true) and description:find("武将牌", 1, true)) or
+      description:find("暗置此武将牌", 1, true) or
+      description:find("暗置另一张武将牌", 1, true) or
+      description:find("明置此武将牌", 1, true) or
+      description:find("明置另一张武将牌", 1, true)
+    )
+    return skill and not skill:hasTag(Skill.Lord) and not position_changing and
+      not target:hasSkill(skill_name, true, true) and
+      not table.contains(history, skill_name) and not field_skills[skill_name]
   end)
 end
 
@@ -51,7 +75,6 @@ local function cleanup(room, target)
   target:setMark("fengsui_heg__xiangchen_skills", {})
   target:setMark("fengsui_heg__xiangchen_mark", 0)
   target:setMark("fengsui_heg__xiangchen_wait", 0)
-  target:setMark("fengsui_heg__xiangchen_ready", 0)
   if #skills > 0 then
     room:drawCards(target, #skills, xiangchen.name)
   end
@@ -62,13 +85,12 @@ xiangchen:addEffect(fk.HpChanged, {
   can_trigger = function(self, _, target, player)
     local current = player.room.current
     local currentKingdom = current and H.getKingdom(current)
+    local same_unknown = player ~= target and player.kingdom == "unknown" and
+      target.kingdom == "unknown"
     return target and player:hasShownSkill(self.name) and
-      H.compareKingdomWith(player, target) and current and
-      player:getMark(self.name .. "-turn") == 0 and
-      current.kingdom ~= "unknown" and current.kingdom ~= "wild" and
-      currentKingdom ~= "unknown" and currentKingdom ~= "wild" and
-      currentKingdom ~= "fengsui_neutral" and
-      currentKingdom ~= "fengsui_neutralall"
+      (H.compareKingdomWith(player, target) or same_unknown) and current and
+      currentKingdom ~= "fengsui_neutral_old" and
+      currentKingdom ~= "fengsui_neutral"
   end,
   on_cost = function(self, event, _, player, data)
     if player.room:askToSkillInvoke(player, {
@@ -85,11 +107,20 @@ xiangchen:addEffect(fk.HpChanged, {
     if not current then return end
 
     local currentKingdom = H.getKingdom(current)
-    local count = math.max(1, currentKingdomCount(room, currentKingdom))
+    -- 野心家和未确定势力没有固定候选势力；此时从所有正常势力中随机取牌。
+    -- 野心家的 getKingdom() 会被官方转换成 role，因此必须同时检查原始 kingdom。
+    local random_kingdom = current.kingdom == "wild" or current.kingdom == "unknown" or
+      currentKingdom == "unknown"
+    local field_generals, field_skills = fieldGeneralsAndSkills(room)
+    local history = target:getTableMark("fengsui_heg__xiangchen_history_skills")
+    -- X 按相谶拥有者所属势力计算，而不是按当前回合角色所属势力计算。
+    local count = math.max(1, currentKingdomCount(room, H.getKingdom(player)))
     local candidates = room:findGenerals(function(general_name)
       local general = Fk.generals[general_name]
-      return general and not forbidden(general) and
-        general.kingdom == currentKingdom and
+      local kingdom_ok = random_kingdom or
+        general and general.kingdom == currentKingdom
+      return general and not field_generals[general_name] and not forbidden(general) and
+        kingdom_ok and
         general.maxHp == current.maxHp
     end, count)
     if #candidates == 0 then return end
@@ -97,7 +128,7 @@ xiangchen:addEffect(fk.HpChanged, {
     local skill_choices = {}
     for _, general_name in ipairs(candidates) do
       local general = Fk.generals[general_name]
-      local skills = availableSkills(general, target)
+      local skills = availableSkills(general, target, history, field_skills)
       table.insert(skill_choices, skills)
     end
 
@@ -139,45 +170,21 @@ xiangchen:addEffect(fk.HpChanged, {
 
     room:handleAddLoseSkills(target, skill_name)
     room:addTableMark(target, "fengsui_heg__xiangchen_skills", skill_name)
+    room:addTableMark(target, "fengsui_heg__xiangchen_history_skills", skill_name)
     room:addPlayerMark(target, "fengsui_heg__xiangchen_mark", 1)
-    room:setPlayerMark(player, self.name .. "-turn", 1)
     room:setPlayerMark(target, "fengsui_heg__xiangchen_wait", 1)
   end,
 })
 
--- “其下个回合结束后”不是当前回合结束：先在其下个回合开始时挂起清除，
--- 再在该回合结束时锁定移除所有“谶”技能并摸等量牌。
-xiangchen:addEffect(fk.TurnStart, {
+-- 在目标下一个结束阶段清理；若目标在本回合出牌阶段获得技能，
+-- 则本回合结束阶段就会失去技能。
+xiangchen:addEffect(fk.EventPhaseStart, {
   global = true,
   is_delay_effect = true,
   mute = true,
-  can_trigger = function(self, _, target)
-    return target and target:getMark("fengsui_heg__xiangchen_wait") > 0 and
-      target:getMark("fengsui_heg__xiangchen_ready") == 0
-  end,
-  on_use = function(self, _, target)
-    target.room:setPlayerMark(target, "fengsui_heg__xiangchen_ready", 1)
-  end,
-})
-
-xiangchen:addEffect(fk.TurnStart, {
-  global = true,
-  can_refresh = function(self, _, target)
-    return target ~= nil
-  end,
-  on_refresh = function(self, _, target)
-    for _, p in ipairs(target.room.alive_players) do
-      target.room:setPlayerMark(p, self.name .. "-turn", 0)
-    end
-  end,
-})
-
-xiangchen:addEffect(fk.TurnEnd, {
-  global = true,
-  is_delay_effect = true,
-  mute = true,
-  can_trigger = function(self, _, target)
-    return target and target:getMark("fengsui_heg__xiangchen_ready") > 0
+  can_trigger = function(self, _, target, player)
+    return target and target == player and target.phase == Player.Finish and
+      target:getMark("fengsui_heg__xiangchen_wait") > 0
   end,
   on_use = function(self, _, target)
     cleanup(target.room, target)

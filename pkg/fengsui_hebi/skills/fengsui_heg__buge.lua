@@ -13,7 +13,7 @@ local function gain(player)
   H.addHegMark(player, marks[math.random(#marks)])
 end
 buge:addEffect(fk.Damaged, {
-  can_trigger = function(self, _, target, player) return target == player and player:hasSkill(self.name, true, true) end,
+  can_trigger = function(self, _, target, player) return target == player and player:hasSkill(self.name, true) end,
   on_cost = function(self, _, _, player) return player.room:askToSkillInvoke(player, { skill_name = self.name }) end,
   on_use = function(self, _, _, player) gain(player) end,
 })
@@ -21,7 +21,7 @@ buge:addEffect(fk.GeneralRevealed, {
   global = true,
   can_trigger = function(self, _, target, player, data)
     if target ~= player then return false end
-    if not data or (not data.m and not data.d) or not player:hasSkill(self.name, true, true) then
+    if not data or (not data.m and not data.d) or not player:hasSkill(self.name, true) then
       return false
     end
     -- GeneralRevealed 可能同时带有 m/d；只在承载“不隔”的那张武将牌

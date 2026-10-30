@@ -6,6 +6,23 @@ compat.HegMarkChanged = TriggerEvent:subclass("FengsuiHegMarkChanged")
 -- Fengsui 奖惩即将执行时；替换摸牌和弃牌两种分支，保留死亡的其他后续。
 compat.KillRewardExecuting = TriggerEvent:subclass("FengsuiKillRewardExecuting")
 
+-- 怀香、绝嗣把势力暂时显示为未确定，但击杀奖惩仍使用原势力。
+function compat.getRewardKingdom(player)
+  if not player then return "unknown" end
+  if player.kingdom == "unknown" then
+    local original = player:getMark("fengsui_heg__huaixiang_original_kingdom-turn")
+    if type(original) ~= "string" or original == "" then
+      original = player:getMark("fengsui_heg__juesi_original_kingdom")
+    end
+    if type(original) == "string" and original ~= "" then return original end
+  end
+  return compat.getKingdom(player)
+end
+
+function compat.compareRewardKingdom(first, second)
+  return compat.getRewardKingdom(first) == compat.getRewardKingdom(second)
+end
+
 if not modern.__fengsui_mark_hooked then
   local addHegMark = modern.addHegMark
   modern.addHegMark = function(player, markName, number)
@@ -91,6 +108,8 @@ local function recordTransformed(room, general)
   used[general] = true
   room:setTag(transformedGeneralsTag, used)
 end
+
+compat.recordTransformed = recordTransformed
 
 local function isGeneralOnField(room, general)
   for _, p in ipairs(room.players) do

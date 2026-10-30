@@ -1,7 +1,7 @@
 local H = require "packages.fengsui.hegemony_util"
 local beiqiu = fk.CreateSkill { name = "fengsui_heg__beiqiu", tags = { Skill.Compulsory } }
 local function handleShown(self, _, target, player, data)
-  if not target or not player:hasSkill(self.name, true, true) then return false end
+  if not target or not player:hasSkill(self.name, true) then return false end
   return true
 end
 local function resolve(self, target, player)

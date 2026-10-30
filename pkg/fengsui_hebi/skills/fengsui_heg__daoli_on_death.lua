@@ -38,7 +38,7 @@ daoli_on_death:addEffect(fk.Death, {
     local tos = room:askToChoosePlayers(player, {
       targets = candidates, min_num = 1, max_num = 1,
       skill_name = "fengsui_heg__beiqiu", prompt = "#fengsui_heg__beiqiu-daoli",
-      cancelable = true,
+      cancelable = false,
     })
     local receiver = tos and tos[1]
     if not receiver then return end

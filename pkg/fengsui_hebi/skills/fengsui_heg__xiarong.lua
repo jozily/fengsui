@@ -4,7 +4,7 @@ local xiarong = fk.CreateSkill {name = "fengsui_heg__xiarong"}
 xiarong:addEffect(fk.Damaged, {
   global = true,
   can_trigger = function(self, _, target, player)
-    return player:hasSkill(self.name) and target and H.compareKingdomWith(player, target) and
+    return player:hasSkill(self.name) and target and target ~= player and
       H.allGeneralsRevealed(player) and H.allGeneralsRevealed(target)
   end,
   on_cost = function(self, _, target, player)

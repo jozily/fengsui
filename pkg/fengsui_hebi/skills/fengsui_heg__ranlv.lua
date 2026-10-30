@@ -11,7 +11,10 @@ ranlv:addEffect(fk.Damaged, { can_trigger = function(self, _, target, player, da
       if wasChained then
         local tos = table.filter(room.alive_players, function(p) return H.compareKingdomWith(p, player) end)
         if #tos > 0 then
-          local selected = room:askToChoosePlayers(player, { targets = tos, min_num = 1, max_num = 1, skill_name = self.name, cancelable = true })
+          local selected = room:askToChoosePlayers(player, {
+            targets = tos, min_num = 1, max_num = 1, skill_name = self.name,
+            prompt = "#fengsui_heg__ranlv-change", cancelable = true,
+          })
           if selected and selected[1] then H.askToHebiOrTransform(room, selected[1], self.name, false) end
         end
       else room:setPlayerMark(player, "fengsui_heg__ranlv_used", 1) end

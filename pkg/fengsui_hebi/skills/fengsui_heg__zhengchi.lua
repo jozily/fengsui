@@ -1,65 +1,80 @@
-local H = require "packages.fengsui.hegemony_util"
-local U = require "packages.fengsui.pkg.fengsui_hebi.util"
-
-local zhengchi = fk.CreateSkill{
+local zhengchi = fk.CreateSkill {
   name = "fengsui_heg__zhengchi",
 }
 
-zhengchi:addEffect(fk.TargetSpecified, {
-  anim_type = "control",
+local function movedHandCards(move)
+  if not move or move.toArea ~= Card.PlayerHand then return {} end
+  return table.map(move.moveInfo or {}, function(info) return info.cardId end)
+end
+
+local function ownerGave(player, move)
+  return move.from == player and move.to and move.to ~= player and #movedHandCards(move) > 0
+end
+
+local function ownerReceived(player, move)
+  return move.to == player and move.from and move.from ~= player and #movedHandCards(move) > 0
+end
+
+zhengchi:addEffect(fk.AfterCardsMove, {
   can_trigger = function(self, event, target, player, data)
-    if not data.firstTarget or not player:hasSkill(zhengchi.name) or not target or
-      not H.compareKingdomWith(player, target) or not H.allGeneralsRevealed(player) or
-      player:isKongcheng() then return false end
-    if data.card.type ~= Card.TypeBasic and not data.card:isCommonTrick() then return false end
-    local current_targets = data.use:getAllTargets()
-    return table.find(player.room.alive_players, function(p)
-      return p ~= player and p ~= target and not p:isKongcheng() and
-        not table.contains(current_targets, p)
-    end) ~= nil
+    if not player:hasSkill(self.name, true) then return false end
+    for _, move in ipairs(data or {}) do
+      if ownerGave(player, move) or ownerReceived(player, move) then return true end
+    end
+    return false
   end,
   on_cost = function(self, event, target, player, data)
-    local current_targets = data.use:getAllTargets()
-    local candidates = table.filter(player.room.alive_players, function(p)
-      return p ~= player and p ~= target and not p:isKongcheng() and
-        not table.contains(current_targets, p)
-    end)
-    local chosen = player.room:askToChoosePlayers(player, {
-      targets = candidates,
-      min_num = 1,
-      max_num = 1,
-      prompt = "#fengsui_heg__zhengchi-invoke",
-      skill_name = zhengchi.name,
-      cancelable = true,
-    })
-    if #chosen > 0 then
-      event:setCostData(self, {to = chosen[1]})
-      return true
+    local room = player.room
+    local options = {}
+    for _, move in ipairs(data or {}) do
+      if ownerGave(player, move) then
+        table.insert(options, { kind = "damage", to = move.to, ids = movedHandCards(move) })
+      elseif ownerReceived(player, move) then
+        local ids = movedHandCards(move)
+        local other = table.filter(player:getCardIds("h"), function(id) return not table.contains(ids, id) end)
+        if #other > 0 then table.insert(options, { kind = "recover", to = move.from, ids = ids, other = other }) end
+      end
     end
+    if #options == 0 then return false end
+    local cost = options[1]
+    if not room:askToSkillInvoke(player, {
+      skill_name = self.name,
+      prompt = cost.kind == "damage" and
+        "#fengsui_heg__zhengchi-damage::" .. cost.to.id or
+        "#fengsui_heg__zhengchi-recover",
+    }) then return false end
+    event:setCostData(self, cost)
+    return true
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local opponent = event:getCostData(self).to
-    U.hideSkillGeneral(player, zhengchi.name)
-    if player.dead or opponent.dead then return end
-    local result = player:pindian({opponent}, zhengchi.name).results[opponent]
-    local winner = result and result.winner
-    if not winner then return end
-    data.from = winner
-    local winning_card = winner == player and result.fromCard or result.toCard
-    if winner:isAlive() and H.compareKingdomWith(winner, player) and
-      room:askToSkillInvoke(player, {
-        skill_name = zhengchi.name,
-        prompt = "#fengsui_heg__zhengchi-reveal::" .. winner.id .. ":" .. winning_card.number,
-      }) then
-      U.revealSkillGeneral(player, zhengchi.name)
-      data.card.number = winning_card.number
+    local cost = event:getCostData(self)
+    if cost.kind == "damage" then
+      local to = cost.to
+      if to and to:isAlive() then
+        room:damage { from = to, to = player, damage = 1, skillName = self.name }
+        local ids = table.filter(cost.ids, function(id) return room:getCardArea(id) == Card.PlayerHand and
+          table.contains(to:getCardIds("h"), id) end)
+        if #ids > 0 then room:throwCard(ids, self.name, to, player) end
+      end
+    else
+      local ids = room:askToCards(player, {
+        min_num = 1, max_num = #cost.other, include_equip = false,
+        skill_name = self.name, pattern = tostring(Exppattern{ id = cost.other }),
+        prompt = "#fengsui_heg__zhengchi-discard",
+      })
+      if #ids > 0 then
+        room:throwCard(ids, self.name, player, player)
+        room:recover { who = player, num = 1, recoverBy = player, skillName = self.name }
+      end
     end
   end,
 })
 
-Fk:loadTranslationTable{
-  ["#fengsui_heg__zhengchi-invoke"] = "正斥：暗置此武将牌并与一名非此牌目标角色拼点",
+Fk:loadTranslationTable {
+  ["#fengsui_heg__zhengchi-damage"] = "正斥：是否令 %dest 对你造成1点伤害并弃置获得的牌？",
+  ["#fengsui_heg__zhengchi-recover"] = "正斥：是否弃置其他手牌并回复1点体力？",
+  ["#fengsui_heg__zhengchi-discard"] = "正斥：请选择要弃置的其他手牌",
 }
 
 return zhengchi

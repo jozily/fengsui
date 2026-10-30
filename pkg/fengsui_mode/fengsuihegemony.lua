@@ -3,7 +3,7 @@ local heg_description = [==[
 
 本模式用于加入晋势力武将(紫气东来、金印紫绶)的多势力国战模式。
 
-**游戏开始时，会随机禁用一个势力，此势力的武将将不会在本局游戏中出现**
+**游戏开始时，可选择随机禁用一个势力，此势力的武将将不会在本局游戏中出现**
 
 其余规则与全扩国战模式规则一致。
 
@@ -123,8 +123,8 @@ function HegLogic:chooseGenerals()
   table.forEach(room.general_pile, function(name)
     table.insertIfNeed(allKingdoms, Fk.generals[name].kingdom) -- 假设不会有只出现在副势力的势力
   end)
+  table.removeOne(allKingdoms, "fengsui_neutral_old")
   table.removeOne(allKingdoms, "fengsui_neutral")
-  table.removeOne(allKingdoms, "fengsui_neutralall")
   table.removeOne(allKingdoms, "fengsui_sweeping")
   table.removeOne(allKingdoms, "wild")
   if #allKingdoms > 4 and not room:getSettings("notBanToFourKingdoms") then
@@ -158,10 +158,26 @@ function HegLogic:chooseGenerals()
   end
     table.sort(allKingdoms)
 
+  -- 群雄割据：常规势力之间自由组合，中立者/野心家/横扫武将不进入本局选将牌堆。
+  local warlordsOn = (function()
+    local value = room:getSettings("fengsui_warlords")
+    return value == true or value == 1 or value == "1" or value == "true"
+  end)()
+  if warlordsOn then
+    for i = #room.general_pile, 1, -1 do
+      local g = Fk.generals[room.general_pile[i]]
+      if g and (g.kingdom == "wild" or g.kingdom == "fengsui_neutral_old" or
+        g.kingdom == "fengsui_neutral" or g.kingdom == "fengsui_sweeping") then
+        table.remove(room.general_pile, i)
+      end
+    end
+    room:sendLog{ type = "#fengsui_warlords_filter", toast = true }
+  end
+
   -- 可选：从常规中立者与野心家中随机保留指定数量，作为本局可用武将。
   local randomNeutral = tonumber(room:getSettings("fengsui_random_neutral")) or 0
   local randomWild = tonumber(room:getSettings("fengsui_random_wild")) or 0
-  if randomNeutral > 0 or randomWild > 0 then
+  if not warlordsOn and (randomNeutral > 0 or randomWild > 0) then
     local regularNeutral = {
       fengsui_heg__jiaxu = true, fengsui_heg__lusu = true, fengsui_heg__xushu = true,
       fengsui_heg__zhaoe = true, fengsui_heg__xushao = true,
@@ -341,8 +357,12 @@ function HegLogic:attachSkillToPlayers()
       end
     end
 
-    if hasRevealSkill then
+    local revealVal = room:getSettings("fengsui_reveal_count")
+    local revealCount = (revealVal == "无限") and -1 or (tonumber(revealVal) or 0)
+    if hasRevealSkill and revealCount ~= 0 then
       p:addFakeSkill("reveal_skill&")
+      room:setPlayerMark(p, "fengsui_reveal_max", revealCount)
+      room:setPlayerMark(p, "fengsui_reveal_remain", revealCount > 0 and revealCount or -1)
     end
   end
 
@@ -494,6 +514,23 @@ heg = fk.CreateGameMode{
   end,
   reward_punish = function (self, victim, killer)
     local room = victim.room
+    -- 怀香/绝嗣只改变本回合的显示势力，奖惩仍按其原势力结算。
+    local function rewardKingdom(p)
+      if not p then return "unknown" end
+      if p.kingdom == "unknown" then
+        local original = p:getMark("fengsui_heg__huaixiang_original_kingdom-turn")
+        if type(original) ~= "string" or original == "" then
+          original = p:getMark("fengsui_heg__juesi_original_kingdom")
+        end
+        if type(original) == "string" and original ~= "" then return original end
+      end
+      return H.getKingdom(p)
+    end
+    local function sameKingdomCount(p)
+      local kingdom = rewardKingdom(p)
+      if kingdom == "unknown" then return 0 end
+      return #table.filter(room.alive_players, function(x) return rewardKingdom(x) == kingdom end)
+    end
     local reward = {victim = victim, killer = killer, replaced = false}
     local shangmuReward = victim:getMark("fengsui_heg__shangmu_reward")
     if killer and shangmuReward > 0 then
@@ -511,11 +548,11 @@ heg = fk.CreateGameMode{
       room:setPlayerMark(victim, "fengsui_toaru__heg__duoshou_reward", 0)
       return
     end
-    if killer and killer:isAlive() and killer.kingdom ~= "unknown" then
+    if killer and killer:isAlive() and rewardKingdom(killer) ~= "unknown" then
       room.logic:trigger(H.KillRewardExecuting, killer, reward)
     end
     if killer and not reward.replaced then
-      if killer.kingdom ~= "unknown" and not killer.dead then
+      if rewardKingdom(killer) ~= "unknown" and not killer.dead then
         local times = 1
         if room:getBanner("additional_reward") then --贾充
           times = 1 + room:getBanner("additional_reward")
@@ -523,12 +560,12 @@ heg = fk.CreateGameMode{
         -- 因为建国，修改奖惩；如果还没建国
         if killer.kingdom == "wild" and killer:getMark("__heg_construct_wild") == 0 and killer:getMark("__heg_join_wild") == 0 then
           killer:drawCards(times * 3, "kill")
-        elseif H.compareKingdomWith(killer, victim) then
+        elseif rewardKingdom(killer) == rewardKingdom(victim) then
           if not (room.logic:getCurrentEvent():findParent(GameEvent.Death, true).data.extra_data or {}).ignorePunishment then --朱灵
           killer:throwAllCards("he")
           end
         else
-          killer:drawCards(times * (H.getSameKingdomPlayersNum(room, victim) + 1), "kill")
+          killer:drawCards(times * (sameKingdomCount(victim) + 1), "kill")
         end
       end
     end
@@ -637,6 +674,16 @@ heg.ui_settings = {
       title = "heg_enter_battle_royal_on_first_shuffle",
     },
 
+    W.SwitchRow {
+      _settingsKey = "notBanToFourKingdoms",
+      title = "fengsui_no_ban_kingdom",
+    },
+
+    W.SwitchRow {
+      _settingsKey = "fengsui_warlords",
+      title = "fengsui_warlords",
+    },
+
     W.ComboRow {
       _settingsKey = "fengsui_random_neutral",
       title = "fengsui_random_neutral",
@@ -647,6 +694,12 @@ heg.ui_settings = {
       _settingsKey = "fengsui_random_wild",
       title = "fengsui_random_wild",
       model = { "0", "1", "2", "3", "4", "5" },
+    },
+
+    W.ComboRow {
+      _settingsKey = "fengsui_reveal_count",
+      title = "fengsui_reveal_count",
+      model = { "0", "1", "3", "5", "10", "无限" },
     },
 
     W.SwitchRow {
@@ -672,6 +725,7 @@ Fk:loadTranslationTable{
   ["revealAll"] = "全部明置",
   ["@heg_bankingdom"] = "禁用势力  ",
   ["#KingdomFiltered"] = "本局禁用势力为: %arg",
+  ["#fengsui_warlords_filter"] = "群雄割据：中立者与野心家武将已退出本局选将",
 
   ["hegemony_special_rule"] = "特殊规则",
   ["heg_settings__lordconvert"] = "君主替换",
@@ -684,14 +738,20 @@ Fk:loadTranslationTable{
   ["help: heg_old_battle_royal"] = "进入鏖战后，牌堆中的【桃】视为【杀】或【闪】",
   ["heg_watch_next_deputy"] = "观看下家副将",
   ["help: heg_watch_next_deputy"] = "游戏开始前观看下家的副将",
+  ["fengsui_no_ban_kingdom"] = "关闭开局禁用一个势力",
+  ["help: fengsui_no_ban_kingdom"] = "勾选后，开局不再随机禁用一个势力。默认不勾选，开局照常随机禁用一个势力。",
+  ["fengsui_warlords"] = "群雄割据",
+  ["help: fengsui_warlords"] = "开启后可自由组合不同势力的武将，禁用中立者和野心家武将；同一势力人数达到全场人数的三分之一后，该势力的下一名角色成为野心家。",
   ["fengsui_random_neutral"] = "随机中立者武将数量",
   ["fengsui_random_wild"] = "随机野心家武将数量",
   ["@&enable_neutral_generals"] = "本局中立者",
   ["@&enable_wildgenerals"] = "本局野心家",
   ["#wild-choose"] = "野心家建国：选择你要成为的势力！",
   ["#wild_join-choose"] = "加入建国",
-  ["help: fengsui_random_neutral"] = "本局从常规中立者中随机保留指定数量（0至5）。<br><a href='fengsui_neutral_rule_help'>查看中立者机制</a>",
+  ["help: fengsui_random_neutral"] = "本局从常规中立者中随机保留指定数量（0至5）。<br>中立者可与任意势力武将组合，和双势力组合开局需自选势力，不可与野心家或另一名中立者组合；单独明置时仍视为未确定势力，亮出另一张武将牌后确定势力。",
   ["help: fengsui_random_wild"] = "本局从野心家武将中随机保留指定数量（0至5）。",
+  ["fengsui_reveal_count"] = "出牌阶段主动亮将次数",
+  ["help: fengsui_reveal_count"] = "0 表示本局出牌阶段不出现亮将按钮；1/3/5/10 表示每名角色每出牌阶段可主动亮将的次数，亮将按钮上显示本阶段剩余次数，用尽后按钮不可用；无限表示不限次数，亮将按钮不显示次数。回合开始时的主动亮将不计入。",
   ["fengsui_neutral_rule_help"] = "中立者机制：中立者可与魏、蜀、吴、群、晋势力武将组合；单独明置时仍视为未确定势力，亮出另一张武将牌后确定势力；不可与野心家或另一名中立者组合。",
   ["help: fengsui_neutral_rule_help"] = "中立者机制：中立者可与魏、蜀、吴、群、晋势力武将组合；单独明置时仍视为未确定势力，亮出另一张武将牌后确定势力；不可与野心家或另一名中立者组合。",
   ["fengsui_remove_fuli"] = "删除【赋礼】事件",
@@ -701,5 +761,28 @@ Fk:loadTranslationTable{
 
   ["#fengsuihegInitialNotices"] = notice
 }
+
+-- 出牌阶段主动亮将次数：给核心 reveal_skill& 挂上右上角剩余次数角标与用尽禁用闸门
+-- 此顶层代码在客户端与服务端加载本文件时都会执行，使角标在客户端也能显示
+-- 不改动核心文件；仅在 fengsui 模式（fengsui_reveal_max > 0）时生效，非 fengsui 模式不影响原行为
+do
+  local revealSkill = Fk.skills["reveal_skill&"]
+  if revealSkill and revealSkill.canUse and not revealSkill.__fengsui_reveal_patched then
+    local origCanUse = revealSkill.canUse
+    revealSkill.canUse = function(self, player, card, extra_data)
+      if (player:getMark("fengsui_reveal_max") or 0) <= 0 then
+        return origCanUse(self, player, card, extra_data)
+      end
+      if player.phase ~= Player.Play then return false end
+      if (player:getMark("fengsui_reveal_remain") or 0) <= 0 then return false end
+      return origCanUse(self, player, card, extra_data)
+    end
+    revealSkill.times = function(self, player)
+      if (player:getMark("fengsui_reveal_max") or 0) <= 0 then return -1 end
+      return player:getMark("fengsui_reveal_remain")
+    end
+    revealSkill.__fengsui_reveal_patched = true
+  end
+end
 
 return heg

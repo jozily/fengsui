@@ -2,6 +2,19 @@ local H = require "packages.fengsui.hegemony_util"
 
 local U = {}
 
+-- 访客技能不允许改变武将牌状态，避免借来的技能留下无法回收的武将牌效果。
+function U.isGeneralStateSkill(skill)
+  if not skill then return false end
+  local skeleton = skill.getSkeleton and skill:getSkeleton() or skill
+  local description = Fk:translate(":" .. skeleton.name)
+  if not description or description == ":" .. skeleton.name then return false end
+  if not description:find("武将牌", 1, true) then return false end
+  for _, word in ipairs({ "明置", "暗置", "移除", "变更" }) do
+    if description:find(word, 1, true) then return true end
+  end
+  return false
+end
+
 function U.getMajorKingdoms(room)
   local kingdoms = {}
   for _, player in ipairs(room.alive_players) do
