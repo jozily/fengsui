@@ -4,7 +4,10 @@ local yanyu = fk.CreateSkill { name = "fengsui_heg__yanyu" }
 
 yanyu:addEffect(fk.GeneralRevealed, {
   can_trigger = function(self, _, target, player)
-    return target and player:hasShownSkill(yanyu.name) and
+    -- 阵亡者的亮将由国战规则在 GameOverJudge 中强制公开，不属延誉的结算范围。
+    -- 若不排除，会向尸体询问选择、并由尸体摸两张。
+    return target and target:isAlive() and player:isAlive() and
+      player:hasShownSkill(yanyu.name) and
       H.getGeneralsRevealedNum(player) == 2 and
       H.compareKingdomWith(player, target)
   end,

@@ -88,6 +88,9 @@ local function canHandleReveal(target, player, data)
   -- 拥有者自己的明置由下方"拥有者保底"效果独家处理，
   -- 否则这里与保底各发一枚先驱，拥有者会拿到两枚。
   if target == player then return false end
+  -- 国战规则在 GameOverJudge 中会公开阵亡者的武将牌，同样触发亮将时机。
+  -- 死者的势力不该被记入元嫡，也不该拿到先驱。
+  if not target or not target:isAlive() or not player:isAlive() then return false end
   local has_reveal_data = data and (data.m or data.d or (type(data) == "table" and #data > 0))
   if not (target and has_reveal_data and player:hasSkill(yuandi.name, true)) then return false end
     if target:getMark(seen_player_mark) > 0 then return false end

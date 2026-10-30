@@ -342,6 +342,9 @@ hegRule:addEffect(fk.GeneralShown, {
     can_trigger = can_trigger,
     on_trigger = function(self, event, target, player, data)
       local room = player.room
+      -- 阵亡者的武将牌由本规则在 GameOverJudge 中强制公开，同样会走到这里。
+      -- 这类亮将既不该占用全场首亮名额，也不该再走一遍野人拉拢。
+      if not player:isAlive() then return end
       if not room:getTag("TheFirstToShowRewarded") then
         room:setTag("TheFirstToShowRewarded", player.id)
       end

@@ -1,7 +1,13 @@
 local H = require "packages.fengsui.hegemony_util"
 local beiqiu = fk.CreateSkill { name = "fengsui_heg__beiqiu", tags = { Skill.Compulsory } }
+-- 亮将判定。两条效果共用，故单独抽出。
+-- 必须排除阵亡者：国战规则在 fk.GameOverJudge（Death:main 里、fk.Death 之前）会
+-- 调用 victim:revealGeneral 把阵亡者的武将牌公开给全场看，这条路径同样会走
+-- GeneralRevealed。若不判存活，任何角色一死就白送悲秋一次摸/弃。
 local function handleShown(self, _, target, player, data)
-  if not target or not player:hasSkill(self.name, true) then return false end
+  if not target or not player then return false end
+  if not target:isAlive() or not player:isAlive() then return false end
+  if not player:hasSkill(self.name, true) then return false end
   return true
 end
 local function resolve(self, target, player)

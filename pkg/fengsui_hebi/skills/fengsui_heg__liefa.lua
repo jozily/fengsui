@@ -64,7 +64,10 @@ liefa:addEffect(fk.GeneralRevealed, {
   global = true,
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
-    if not target or not player:hasSkill(liefa.name) or not H.compareKingdomWith(target, player) then return false end
+    -- 阵亡者的武将牌由国战规则在 GameOverJudge 中公开，同样会走本时机。
+    -- 对尸体发动换将会重新弹出选将框，故须排除。
+    if not target or not target:isAlive() or not player:isAlive() then return false end
+    if not player:hasSkill(liefa.name) or not H.compareKingdomWith(target, player) then return false end
     return H.inFormationRelation(player, player) == formsSiege(player)
   end,
   on_cost = function(self, event, target, player, data)
