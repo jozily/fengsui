@@ -1,5 +1,4 @@
 local H = require "packages.fengsui.hegemony_util"
-local Util = require "packages.fengsui.pkg.fengsui_hebi.util"
 local zhanjue = fk.CreateSkill { name = "fengsui_heg__zhanjue" }
 local ZNAME = "fengsui_heg__zhanjue"
 zhanjue:addEffect("active", { card_num = 0, target_num = 1,

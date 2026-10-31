@@ -6,7 +6,7 @@ chaohua:addEffect("active", {
   can_use = function(self, player)
     return player.phase == Player.Play and player:usedSkillTimes(self.name, Player.HistoryPhase) < 2
   end,
-  card_filter = U.FalseFunc,
+  card_filter = Util.FalseFunc,
   target_filter = function(self, player, to, selected)
     return #selected == 0 and H.allGeneralsRevealed(to)
   end,

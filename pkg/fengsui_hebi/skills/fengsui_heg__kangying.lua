@@ -47,13 +47,13 @@ kangying:addEffect(fk.DamageCaused, {
   can_trigger = function(self, _, target, player)
     if target ~= player or not isZutiFirstDeputy(player) then return false end
     return table.find(player.room.alive_players, function(p)
-      return p ~= player and H.compareKingdomWith(p, player) and U.hasGeneral(p, true)
+      return p ~= player and H.compareKingdomWith(p, player) and H.hasGeneral(p, true)
     end) ~= nil
   end,
   on_cost = function(self, event, _, player)
     local room = player.room
     local candidates = table.filter(room.alive_players, function(p)
-      return p ~= player and H.compareKingdomWith(p, player) and U.hasGeneral(p, true)
+      return p ~= player and H.compareKingdomWith(p, player) and H.hasGeneral(p, true)
     end)
     local chosen = room:askToChoosePlayers(player, {
       targets = candidates, min_num = 1, max_num = 1, cancelable = true,

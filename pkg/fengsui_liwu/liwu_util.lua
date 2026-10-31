@@ -16,6 +16,7 @@ Liwu.generals = {
   "fengsui_toaru__heg__shokuhou",
   "fengsui_toaru__heg__misaka",
   "fengsui_toaru__heg__shirai",
+  "fengsui_toaru__heg__saten",
 }
 
 Liwu.neutralSkills = {}

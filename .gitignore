@@ -4,3 +4,7 @@ docx_extract.txt
 freekill.server.log
 package_roster_validation.log
 xun_zhuge_extract.txt
+
+# 本地产物：立绘备份与临时校验脚本，不纳入仓库
+tools/skin_backup/
+tools/check_module_calls.py

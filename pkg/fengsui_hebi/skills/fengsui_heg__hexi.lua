@@ -67,7 +67,7 @@ hexi:addEffect(fk.AfterCardsMove, {
 Fk:loadTranslationTable {
   ["#fengsui_heg__hexi-choose"] = "合隙：选择一名其他角色",
   ["fengsui_heg__hexi_damage"] = "令当前回合角色对其造成1点伤害",
-  ["fengsui_heg__hexi_hide"] = "若其武将牌均明置，暗置其一张武将牌且本回合无法明置",
+  ["fengsui_heg__hexi_hide"] = "暗置一张武将牌且本回合无法明置",
   ["fengsui_heg__hexi_main"] = "暗置主将",
   ["fengsui_heg__hexi_deputy"] = "暗置副将",
   ["#fengsui_heg__hexi-place"] = "合隙：选择暗置的武将牌",

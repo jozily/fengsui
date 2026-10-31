@@ -22,7 +22,7 @@ end
 baizu:addEffect("active", {
   card_num = 0,
   target_num = function(self, player) return #selectableKingdoms(player) end,
-  card_filter = U.FalseFunc,
+  card_filter = Util.FalseFunc,
   target_filter = function(self, player, to_select, selected)
     local kingdom = H.getKingdom(to_select)
     return to_select ~= player  and kingdom ~= "unknown" and

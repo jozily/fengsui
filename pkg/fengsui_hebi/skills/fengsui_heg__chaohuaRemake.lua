@@ -3,7 +3,7 @@ local Util = require "packages.fengsui.pkg.fengsui_hebi.util"
 local chaohua = fk.CreateSkill { name = "fengsui_heg__chaohuaRemake" }
 chaohua:addEffect("active", { card_num=0,target_num=1,
   can_use=function(self,p) return p:hasShownSkill(self.name) and p:usedSkillTimes(self.name,Player.HistoryPhase)==0 end,
-  card_filter=Util.FalseFunc,
+  card_filter=function() return false end,
   target_filter=function(self,p,to,sel) return #sel==0 and to~=p and H.getGeneralsRevealedNum(to)==2 end,
   on_use=function(self,room,effect)
     local t=effect.tos[1]

@@ -81,6 +81,9 @@ misaka:addSkills { "fengsui_toaru__heg__cipao", "fengsui_toaru__heg__junshi" }
 local shirai = General:new(extension, "fengsui_toaru__heg__shirai", "fengsui_neutral", 3, 3, General.Female)
 shirai:addSkills { "fengsui_toaru__heg__shunyi", "fengsui_toaru__heg__fengji" }
 
+local saten = General:new(extension, "fengsui_toaru__heg__saten", "fengsui_neutral", 4, 4, General.Female)
+saten:addSkills { "fengsui_toaru__heg__xianqun", "fengsui_toaru__heg__juben" }
+
 -- Remake 备份也会作为技能骨架加载；校验官方骨架至少完整即可。
 assert(#extension.skill_skels >= 18, "fengsui_shiyi must load the official skill skeletons")
 
@@ -144,9 +147,11 @@ Fk:loadTranslationTable{
   ["fengsui_toaru__heg__shokuhou"] = "食蜂操祈",
   ["fengsui_toaru__heg__misaka"] = "御坂美琴",
   ["fengsui_toaru__heg__shirai"] = "白井黑子",
+  ["fengsui_toaru__heg__saten"] = "佐天泪子",
+  ["#fengsui_toaru__heg__saten"] = "泪爷",
 }
 
-assert(#extension.generals == 19, "fengsui_shiyi must register exactly 19 generals")
+assert(#extension.generals == 20, "fengsui_shiyi must register exactly 20 generals")
 
 -- 番外武将默认隐藏；五名常规中立者必须进入正常选将池。
 local visible_neutral = {

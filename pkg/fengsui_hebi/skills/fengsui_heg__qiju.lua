@@ -1,5 +1,4 @@
 local H = require "packages.fengsui.hegemony_util"
-local Util = require "packages.fengsui.pkg.fengsui_hebi.util"
 local qiju = fk.CreateSkill { name = "fengsui_heg__qiju", tags = { Skill.Limited } }
 local function getOwner(room)
   if not room or not room.alive_players then return nil end

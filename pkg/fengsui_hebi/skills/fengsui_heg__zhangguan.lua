@@ -1,3 +1,4 @@
+local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local zhangguan = fk.CreateSkill {
@@ -74,7 +75,7 @@ zhangguan:addEffect(fk.DamageCaused, {
     local use_event = room.logic:getCurrentEvent():findParent(GameEvent.UseCard, true)
     local use = use_event and use_event.data
     if use then use.extra_data.fengsui_heg__zhangguan_hidden = true end
-    if player:isAlive() and U.allGeneralsRevealed(player) then U.hideSkillGeneral(player, self.name) end
+    if player:isAlive() and H.allGeneralsRevealed(player) then U.hideSkillGeneral(player, self.name) end
   end,
 })
 

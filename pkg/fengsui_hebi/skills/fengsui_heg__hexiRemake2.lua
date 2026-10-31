@@ -76,6 +76,9 @@ hexi:addEffect(fk.AfterCardsMove, {
 })
 
 Fk:loadTranslationTable{
+  ["#fengsui_heg__hexiRemake2-move"] = "貉隙：选择装备区的一张牌",
+  ["#fengsui_heg__hexiRemake2-choose"] = "貉隙：选择一名其他角色",
+  ["#fengsui_heg__hexiRemake2-choice"] = "貉隙：请选择一项",
   ["fengsui_heg__hexiRemake2_reveal_damage"] = "明置一张武将牌并对当前回合角色造成1点伤害",
   ["fengsui_heg__hexiRemake2_hide_draw"] = "暗置一张武将牌并摸两张牌（本回合不能明置）",
 }

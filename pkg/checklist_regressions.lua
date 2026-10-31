@@ -215,11 +215,42 @@ return function(suite)
   end)
   suite:addTest(function()
     local siji_events = Fk.skill_skels["fengsui_heg__siji"].effect_spec_list
-    local found_turn_end = false
+    local found_turn_end, found_turn_start = false, false
     for _, effect in ipairs(siji_events) do
       if effect[1] == fk.TurnEnd then found_turn_end = true end
+      if effect[1] == fk.TurnStart then found_turn_start = true end
     end
     lu.assertTrue(found_turn_end)
+    lu.assertTrue(found_turn_start)
+  end)
+  suite:addTest(function()
+    -- 思疾的显示标记按净值书写：+1-1 合并为 0，不再出现“手牌上限+1/-1”。
+    local callback = spec("siji", fk.TurnStart)
+    local owner = actor()
+    owner.mark[MarkEnum.AddMaxCardsInTurn] = 2
+    owner.mark[MarkEnum.MinusMaxCardsInTurn] = 1
+    owner.room = {
+      players = {owner},
+      setPlayerMark = function(_, p, key, value) p.mark[key] = value end,
+    }
+    callback.on_refresh(nil, nil, owner, nil, {})
+    lu.assertEquals(owner.mark["@fengsui_heg__siji"], "手牌上限+1")
+    owner.mark[MarkEnum.MinusMaxCardsInTurn] = 3
+    callback.on_refresh(nil, nil, owner, nil, {})
+    lu.assertEquals(owner.mark["@fengsui_heg__siji"], "手牌上限-1")
+    owner.mark[MarkEnum.MinusMaxCardsInTurn] = 2
+    callback.on_refresh(nil, nil, owner, nil, {})
+    lu.assertEquals(owner.mark["@fengsui_heg__siji"], 0)
+  end)
+  suite:addTest(function()
+    -- 相谶技能被结束阶段回收后，命定仍应认可“获得过技能”的历史记录。
+    local callback = spec("mingding", fk.EnterDying)
+    local owner, target = actor(), actor()
+    owner.room = {alive_players = {owner, target}, players = {owner, target}}
+    target.mark["fengsui_heg__xiangchen_history_skills"] = {"kurou"}
+    lu.assertTrue(callback.can_trigger(skill("mingding"), nil, target, owner, {}))
+    target.mark["fengsui_heg__xiangchen_history_skills"] = nil
+    lu.assertFalse(callback.can_trigger(skill("mingding"), nil, target, owner, {}))
   end)
   suite:addTest(function()
     local callback = spec("siji", fk.Damaged)

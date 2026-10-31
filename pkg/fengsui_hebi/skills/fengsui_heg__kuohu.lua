@@ -11,7 +11,7 @@ kuohu:addEffect("active", {
       player:getMark(disabledMark) == 0 and
       player:usedSkillTimes(self.name, Player.HistoryPhase) == 0
   end,
-  card_filter = U.FalseFunc,
+  card_filter = Util.FalseFunc,
   target_filter = function(self, player, to_select, selected)
     return #selected == 0 and to_select ~= player and to_select:isAlive() and
       player:inMyAttackRange(to_select)
