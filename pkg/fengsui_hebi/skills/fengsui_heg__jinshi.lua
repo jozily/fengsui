@@ -61,7 +61,7 @@ jinshi:addEffect(fk.GeneralRevealed, {
   on_use = function(self, _, _, player)
     local room = player.room
     room:setPlayerMark(player, readyMark, 0)
-    local n = player:getMaxCards() - player:getHandcardNum()
+    local n = player.maxHp - player:getHandcardNum()
     if n > 0 then room:drawCards(player, n, jinshi.name) end
   end,
 })

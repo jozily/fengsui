@@ -15,7 +15,7 @@ s:addEffect("active", {
       {skill_name = s.name, prompt = "#fengsui_heg__anshi-choice::" .. to.id}) then return end
     local choice = room:askToChoice(to, {choices = {"anshi_adjust", "anshi_extra_turn"}, skill_name = s.name})
     if choice == "anshi_adjust" then
-      local n = to.maxHp - to:getHandcardNum()
+      local n = to.hp - to:getHandcardNum()
       if n > 0 then to:drawCards(n, s.name)
       elseif n < 0 then room:askToDiscard(to, {min_num = -n, max_num = -n, include_equip = false,
         skill_name = s.name, cancelable = false}) end
