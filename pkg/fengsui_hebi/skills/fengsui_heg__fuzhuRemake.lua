@@ -77,6 +77,8 @@ fuzhu:addEffect(fk.TurnEnd, {
   global = true,
   mute = true,
   can_trigger = function(self, event, target, player, data)
+    -- 伏诛发动时会暗置武将牌、技能随之隐藏，若此处仍要求 hasSkill 为真，
+    -- 回合结束结算延迟牌时会被判 false 而不结算，故只判 pending 标记。
     return #player:getTableMark(pending_mark) > 0
   end,
   on_use = function(self, event, target, player, data)

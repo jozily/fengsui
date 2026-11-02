@@ -1,59 +1,62 @@
-local H = require "packages.fengsui.hegemony_util"
-
 local ruwu = fk.CreateSkill {
   name = "fengsui_heg__ruwu",
 }
 
+-- 国战标记：先驱 / 阴阳鱼 / 珠联璧合 / 野心家
+local HEG_MARKS = { "@!!vanguard", "@!!yinyangfish", "@!!companion", "@!!wild" }
+
+local function hasHegMark(p)
+  for _, mark in ipairs(HEG_MARKS) do
+    if p:getMark(mark) > 0 then return true end
+  end
+  return false
+end
+
 local function hasPileChange(data)
-  return data and table.find(data, function(move)
-    return move.toArea == Card.DrawPile or
-      (move.fromArea == Card.DiscardPile and move.toArea ~= Card.DiscardPile)
+  if not data then return false end
+  return table.find(data, function(move)
+    -- 牌堆牌数量增加：有牌进入牌堆
+    if move.toArea == Card.DrawPile then return true end
+    -- 弃牌堆牌数量减少：有牌从弃牌堆离开（逐张判断 moveInfo.fromArea）
+    if move.moveInfo then
+      for _, info in ipairs(move.moveInfo) do
+        if info.fromArea == Card.DiscardPile then return true end
+      end
+    end
+    return false
   end) ~= nil
 end
 
 ruwu:addEffect(fk.AfterCardsMove, {
   can_trigger = function(self, _, _, player, data)
-    return player:isAlive() and player:hasShownSkill(self.name) and hasPileChange(data)
+    if not (player:isAlive() and player:hasShownSkill(self.name) and hasPileChange(data)) then
+      return false
+    end
+    return table.find(player.room.alive_players, hasHegMark) ~= nil
   end,
   on_use = function(self, _, _, player)
     local room = player.room
-    local choices = {}
-    local place = H.inGeneralSkills(player, self.name)
-    if place and H.allGeneralsRevealed(player) and H.hasGeneral(player, true) then
-      table.insert(choices, "fengsui_heg__ruwu_hebi")
-    end
-    local targets = table.filter(room.alive_players, function(p)
-      return p:getMark("@!!companion") > 0
-    end)
-    if #targets > 0 then table.insert(choices, "fengsui_heg__ruwu_draw") end
-    if #choices == 0 then return end
-    local choice = room:askToChoice(player, {
-      choices = choices,
+    local targets = table.filter(room.alive_players, hasHegMark)
+    if #targets == 0 then return end
+    local chosen = room:askToChoosePlayers(player, {
+      targets = targets,
+      min_num = 1,
+      max_num = 1,
       skill_name = self.name,
-      prompt = "#fengsui_heg__ruwu-choice",
+      prompt = "#fengsui_heg__ruwu-target",
+      cancelable = false,
     })
-    if choice == "fengsui_heg__ruwu_hebi" then
-      player:hideGeneral(place == "m")
-      H.askToHebiOrTransform(room, player, self.name, false)
-    else
-      local chosen = room:askToChoosePlayers(player, {
-        targets = targets,
-        min_num = 1,
-        max_num = 1,
-        skill_name = self.name,
-        prompt = "#fengsui_heg__ruwu-target",
-        cancelable = false,
-      })
-      if #chosen > 0 and chosen[1]:isAlive() then room:drawCards(chosen[1], 1, self.name) end
-    end
+    if #chosen == 0 then return end
+    local to = chosen[1]
+    if not to:isAlive() then return end
+    -- 有珠联璧合标记则摸两张，否则摸一张
+    local n = to:getMark("@!!companion") > 0 and 2 or 1
+    room:drawCards(to, n, self.name)
   end,
 })
 
 Fk:loadTranslationTable {
-  ["#fengsui_heg__ruwu-choice"] = "如晤：请选择一项",
-  ["#fengsui_heg__ruwu-target"] = "如晤：选择一名有珠联璧合标记的角色摸一张牌",
-  ["fengsui_heg__ruwu_hebi"] = "暗置另一张武将牌并合璧",
-  ["fengsui_heg__ruwu_draw"] = "令一名有珠联璧合标记的角色摸一张牌",
+  ["#fengsui_heg__ruwu-target"] = "如晤：选择一名有国战标记的角色摸牌",
 }
 
 return ruwu

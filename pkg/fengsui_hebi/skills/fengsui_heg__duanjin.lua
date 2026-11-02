@@ -9,7 +9,9 @@ local function addDuanjinEffect(triggerEvent)
 duanjin:addEffect(triggerEvent, {
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:isAlive() and player:hasShownSkill(duanjin.name) and data.origName == "fengsui_heg__caocen" and
+    -- 注意：GeneralRemoved / GeneralTransformed 触发前，曹涔的技能已经被卸掉，
+    -- 此处的 hasShownSkill 永远为 false，会把技能卡死，故不能保留该判断。
+    return target == player and player:isAlive() and data.origName == "fengsui_heg__caocen" and
       H.hasGeneral(player, true)
   end,
   on_cost = function(self, event, target, player, data)

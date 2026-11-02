@@ -77,15 +77,15 @@ juben:addEffect(fk.TargetSpecified, {
     local top = room:getNCards(1)[1]
     if not top or not origin then return end
     local number = Fk:getCardById(top).number or 0
+    room:showCards({ top })
     local options = buildOptions(use, number)
     if #options == 0 then return end
     room:setPlayerMark(player, used_mark, 1)
-    room:showCards({ top })
     local choices = table.map(options, function(o) return o.key .. "::" .. o.target.id end)
     local chosen = room:askToChoice(player, {
       choices = choices,
       skill_name = juben.name,
-      prompt = "#fengsui_toaru__heg__juben-choose::" .. number,
+      prompt = "剧本：牌堆顶为 " .. number .. " 点，选择如何改动目标",
     })
     local picked
     for i, choice in ipairs(choices) do

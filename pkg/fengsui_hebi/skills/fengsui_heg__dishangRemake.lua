@@ -1,3 +1,5 @@
+-- 抵殇原版存档：保留“围攻角色或被围攻角色均可发动、只弃置双方相同装备栏”的旧实现。
+-- 现役版本见 fengsui_heg__dishang.lua，此文件未挂载到任何武将，仅作回退备份。
 local H = require "packages.fengsui.hegemony_util"
 
 local dishang = fk.CreateSkill{

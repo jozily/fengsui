@@ -8,127 +8,79 @@ local dishang = fk.CreateSkill{
 -- 阵法技的主动按钮仅用于发起阵法召唤。
 dishang:addEffect("arraysummon", { array_type = "siege" })
 
-local function commonSlots(from, to)
-  local slots = {}
+-- 判定区与五个装备副区域中，双方都有牌的区域
+local function commonZones(from, to)
+  local zones = {}
+  if #from:getCardIds("j") > 0 and #to:getCardIds("j") > 0 then
+    table.insert(zones, { kind = "judge", key = "fengsui_heg__dishang_judge" })
+  end
   for slot = 1, 5 do
     if #from:getEquipments(slot) > 0 and #to:getEquipments(slot) > 0 then
-      table.insert(slots, slot)
+      table.insert(zones, { kind = "equip", slot = slot, key = "fengsui_heg__dishang_equip" .. slot })
     end
   end
-  return slots
-end
-
-local function getOtherBesieger(attacker, victim)
-  local other
-  if attacker:getNextAlive() == victim then
-    other = victim:getNextAlive()
-  elseif victim:getNextAlive() == attacker then
-    other = victim:getLastAlive()
-  end
-  if other and H.inSiegeRelation(attacker, other, victim) then
-    return other
-  end
-end
-
-local function getEligibleActors(owner, attacker, victim)
-  local other = getOtherBesieger(attacker, victim)
-  if not other then return {} end
-
-  local result = {}
-  for _, actor in ipairs({ attacker, other, victim }) do
-    if H.compareKingdomWith(actor, owner) then
-      local counterparts = actor == victim and { attacker, other } or { victim }
-      counterparts = table.filter(counterparts, function(p)
-        return #commonSlots(actor, p) > 0
-      end)
-      if #counterparts > 0 then
-        table.insert(result, { actor = actor, counterparts = counterparts })
-      end
-    end
-  end
-  return result
+  return zones
 end
 
 dishang:addEffect(fk.TargetSpecified, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
-    return target and data.to and player:hasSkill(dishang.name) and
-      player:hasShownSkill(dishang.name) and #player.room.alive_players > 3 and
-      data.card and data.card.is_damage_card and
-      #getEligibleActors(player, target, data.to) > 0
+    if not (target and data.to and data.card) then return false end
+    if not player:hasShownSkill(dishang.name) then return false end
+    if #player.room.alive_players <= 3 then return false end
+    if not data.card.is_damage_card then return false end
+    -- 使用者须为与本技能拥有者同势力的围攻角色
+    if not H.compareKingdomWith(target, player) then return false end
+    if not H.inSiegeRelation(target, target, data.to) then return false end
+    return #commonZones(target, data.to) > 0
   end,
   on_cost = function(self, event, target, player, data)
-    local room = player.room
-    local entries = getEligibleActors(player, target, data.to)
-    local actors = table.map(entries, function(entry) return entry.actor end)
-    room:sortByAction(actors)
-
-    for _, actor in ipairs(actors) do
-      local entry = table.find(entries, function(item) return item.actor == actor end)
-      local prompt
-      if actor == data.to then
-        prompt = "#fengsui_heg__dishang-invoke-victim"
-      else
-        prompt = "#fengsui_heg__dishang-invoke::" .. data.to.id
-      end
-      if room:askToSkillInvoke(actor, { skill_name = dishang.name, prompt = prompt }) then
-        event:setCostData(self, entry)
-        return true
-      end
-    end
+    return player.room:askToSkillInvoke(target, {
+      skill_name = dishang.name,
+      prompt = "#fengsui_heg__dishang-invoke::" .. data.to.id,
+    })
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local cost = event:getCostData(self)
-    local actor = cost.actor
-    local counterparts = table.filter(cost.counterparts, function(p)
-      return p:isAlive() and #commonSlots(actor, p) > 0
-    end)
-    if actor.dead or #counterparts == 0 then return end
+    local actor, victim = target, data.to
+    if actor.dead or victim.dead then return end
 
-    local counterpart = counterparts[1]
-    if #counterparts > 1 then
-      counterpart = room:askToChoosePlayers(actor, {
-        targets = counterparts,
-        min_num = 1,
-        max_num = 1,
+    local zones = commonZones(actor, victim)
+    if #zones == 0 then return end
+    local zone = zones[1]
+    if #zones > 1 then
+      local choice = room:askToChoice(actor, {
+        choices = table.map(zones, function(z) return z.key end),
         skill_name = dishang.name,
-        prompt = "#fengsui_heg__dishang-counterpart",
-        cancelable = false,
-      })[1]
+        prompt = "#fengsui_heg__dishang-slot::" .. victim.id,
+      })
+      zone = table.find(zones, function(z) return z.key == choice end) or zones[1]
     end
 
-    local choices = table.map(commonSlots(actor, counterpart), function(slot)
-      return "fengsui_heg__dishang_equip" .. slot
-    end)
-    if #choices == 0 then return end
-    local choice = room:askToChoice(actor, {
-      choices = choices,
-      skill_name = dishang.name,
-      prompt = "#fengsui_heg__dishang-slot::" .. counterpart.id,
-    })
-    local slot = tonumber(choice:match("(%d+)$"))
-    local actorCard = actor:getEquipments(slot)[1]
-    local counterpartCard = counterpart:getEquipments(slot)[1]
-    if not actorCard or not counterpartCard then return end
+    local actorCard, victimCard
+    if zone.kind == "judge" then
+      if #actor:getCardIds("j") == 0 or #victim:getCardIds("j") == 0 then return end
+      actorCard = room:askToChooseCard(actor, {
+        target = actor,
+        flag = "j",
+        skill_name = dishang.name,
+        prompt = "#fengsui_heg__dishang-pick-own",
+      })
+      victimCard = room:askToChooseCard(actor, {
+        target = victim,
+        flag = "j",
+        skill_name = dishang.name,
+        prompt = "#fengsui_heg__dishang-pick::" .. victim.id,
+      })
+    else
+      actorCard = actor:getEquipments(zone.slot)[1]
+      victimCard = victim:getEquipments(zone.slot)[1]
+    end
+    if not actorCard or not victimCard then return end
 
-    room:moveCards(
-      {
-        ids = { actorCard },
-        from = actor,
-        toArea = Card.DiscardPile,
-        moveReason = fk.ReasonDiscard,
-        proposer = actor,
-        skillName = dishang.name,
-      },
-      {
-        ids = { counterpartCard },
-        from = counterpart,
-        toArea = Card.DiscardPile,
-        moveReason = fk.ReasonDiscard,
-        proposer = actor,
-        skillName = dishang.name,
-      }
+    room:moveCardTo(
+      { actorCard, victimCard }, Card.DiscardPile, nil,
+      fk.ReasonDiscard, dishang.name, nil, true, actor
     )
     data.disresponsive = true
   end,
