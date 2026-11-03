@@ -1,7 +1,7 @@
 local H = require "packages.fengsui.hegemony_util"
 
 local yudao = fk.CreateSkill {
-  name = "fengsui_heg__yudao",
+  name = "fengsui_heg__yundao",
 }
 
 local function arrangeXunxun(player)
@@ -59,13 +59,13 @@ for _, event in ipairs({ fk.Damage, fk.Damaged }) do
       if source and source:isAlive() and H.compareKingdomWith(player, source) then
         cost.source = player.room:askToSkillInvoke(player, {
           skill_name = self.name,
-          prompt = "#fengsui_heg__yudao-source::" .. source.id,
+          prompt = "#fengsui_heg__yundao-source::" .. source.id,
         })
       end
       if victim and victim:isAlive() and H.compareKingdomWith(player, victim) then
         cost.victim = player.room:askToSkillInvoke(player, {
           skill_name = self.name,
-          prompt = "#fengsui_heg__yudao-victim::" .. victim.id,
+          prompt = "#fengsui_heg__yundao-victim::" .. victim.id,
         })
       end
       if cost.source or cost.victim then
@@ -88,8 +88,8 @@ for _, event in ipairs({ fk.Damage, fk.Damaged }) do
 end
 
 Fk:loadTranslationTable {
-  ["#fengsui_heg__yudao-source"] = "熨道：是否令伤害来源 %dest 合璧？",
-  ["#fengsui_heg__yudao-victim"] = "熨道：是否令受伤角色 %dest 发动“恂恂”并获得牌堆底两张牌？",
+  ["#fengsui_heg__yundao-source"] = "熨道：是否令伤害来源 %dest 合璧？",
+  ["#fengsui_heg__yundao-victim"] = "熨道：是否令受伤角色 %dest 发动“恂恂”并获得牌堆底两张牌？",
 }
 
 return yudao

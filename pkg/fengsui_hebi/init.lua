@@ -8,7 +8,7 @@ extension:loadSkillSkelsByPath("./packages/fengsui/pkg/fengsui_hebi/skills")
 local xuncan = General:new(extension, "fengsui_heg__xuncan", "wei", 3)
 xuncan:addCompanions("hs__xunyu")
 xuncan:addCompanions("fengsui_heg__caocen")
-xuncan:addSkills { "fengsui_heg__yudao", "fengsui_heg__tongyi" }
+xuncan:addSkills { "fengsui_heg__yundao", "fengsui_heg__tongyi" }
 
 local caocen = General:new(extension, "fengsui_heg__caocen", "wei", 3)
 caocen:addCompanions("fengsui_heg__xuncan")
@@ -354,19 +354,19 @@ Fk:loadTranslationTable{
   ["designer:fengsui_heg__xuncan"] = "公冶长风",
   ["illustrator:fengsui_heg__xuncan"] = "公冶长风",
   ["cv:fengsui_heg__xuncan"] = "暂无",
-  ["fengsui_heg__yudao"] = "熨道",
-  [":fengsui_heg__yudao"] = "当你受到或造成属性伤害后，若伤害来源与你势力相同，你可令其<a href='heg__hebi'>合璧</a>；若受伤角色与你势力相同，你可令其发动一次“<a href=':hs__xunxun'>恂恂</a>”并获得牌堆底两张牌。",
-  ["#fengsui_heg__yudao-source"] = "熨道：是否令伤害来源 %dest 合璧？",
-  ["#fengsui_heg__yudao-victim"] = "熨道：是否令受伤角色 %dest 发动“恂恂”并获得牌堆底两张牌？",
+  ["fengsui_heg__yundao"] = "熨道",
+  [":fengsui_heg__yundao"] = "当你受到或造成属性伤害后，若伤害来源与你势力相同，你可令其<a href='heg__hebi'>合璧</a>；若受伤角色与你势力相同，你可令其发动一次“<a href=':hs__xunxun'>恂恂</a>”并获得牌堆底两张牌。",
+  ["#fengsui_heg__yundao-source"] = "熨道：是否令伤害来源 %dest 合璧？",
+  ["#fengsui_heg__yundao-victim"] = "熨道：是否令受伤角色 %dest 发动“恂恂”并获得牌堆底两张牌？",
   ["fengsui_heg__tongyi"] = "通意",
   [":fengsui_heg__tongyi"] = "当你需要使用【桃】时，若你的武将牌均明置，你可暗置此武将牌并进行一次判定，若结果为黑色，你视为使用之，否则你受到一点无来源的雷属性伤害。",
   ["#fengsui_heg__tongyi"] = "通意：将此技能视为转化的【桃】使用",
   ["hs__xunxun"] = "恂恂",
   [":hs__xunxun"] = "摸牌阶段开始时，你可以观看牌堆顶的四张牌，将其中两张牌以任意顺序置于牌堆顶，其余以任意顺序置于牌堆底。",
-  ["$fengsui_heg__yudao1"] = "此卿遗我于人间之相思物乎？",
-  ["$fengsui_heg__yudao2"] = "与卿为好之心，似冬风抚面而不寒。",
-  ["$fengsui_heg__yudao3"] = "此心哀，如涸泽之鲋，无沫相融。",
-  ["$fengsui_heg__yudao4"] = "此心痛，如刀俎犁腹，欲哭无声。",
+  ["$fengsui_heg__yundao1"] = "此卿遗我于人间之相思物乎？",
+  ["$fengsui_heg__yundao2"] = "与卿为好之心，似冬风抚面而不寒。",
+  ["$fengsui_heg__yundao3"] = "此心哀，如涸泽之鲋，无沫相融。",
+  ["$fengsui_heg__yundao4"] = "此心痛，如刀俎犁腹，欲哭无声。",
   ["$fengsui_heg__tongyi1"] = "我所蹈之节，可以此生践之。",
   ["$fengsui_heg__tongyi2"] = "衷其情而恪其节，此荀门之教也。",
   ["$fengsui_heg__tongyi3"] = "春芽不砺冬寒，其必难引暖风归还。",
