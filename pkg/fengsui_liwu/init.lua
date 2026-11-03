@@ -340,6 +340,7 @@ Fk:loadTranslationTable{
   [":fengsui_heg__jieshu"] = "当你于回合内使用牌指定目标后，你可视为使用一张与原牌合法目标相同的普通锦囊牌，然后此技能失效直至你使用奇珍牌或一张与此牌合法目标相同的实体牌。",
   ["#fengsui_heg__jieshu"] = "解术：你可以使用一张与原牌合法目标相同的普通锦囊牌",
   ["@fengsui_heg__jieshu"] = "解术失效",
+  ["@fengsui_heg__jieshu_name"] = "解术·",
       ["$fengsui_heg__jieshu1"] = "累乘除以成九数者，可以加减解之。",
     ["$fengsui_heg__jieshu2"] = "数有其理，见筹一可知沙数。",
   ["$fengsui_heg__jieshu3"] = "万法虽繁，皆可归于一算。",

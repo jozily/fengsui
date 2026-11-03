@@ -23,9 +23,19 @@ local function getMatchingTrickNames(player, targetIds)
   end)
 end
 
-local function clearJieshu(room, player)
+local function releasesLock(player, card, targetIds)
+  return isCurio(card) or
+    (not card:isVirtual() and sameTargetIds(targetIds, getLegalTargetIds(player, card)))
+end
+
+local function clearJieshu(room, player, releaseId)
   room:setPlayerMark(player, "@fengsui_heg__jieshu", 0)
   room:setPlayerMark(player, "fengsui_heg__jieshu_legal_targets", 0)
+  for _, label in ipairs(player:getTableMark("@fengsui_heg__jieshu_name")) do
+    room:removeTableMark(player, "@fengsui_heg__jieshu_name", label)
+  end
+  -- 解除限制的这张牌本身延迟到下一张牌才能再次触发
+  room:setPlayerMark(player, "fengsui_heg__jieshu_released_id", releaseId or 0)
 end
 
 jieshu:addEffect(fk.CardUseFinished, {
@@ -33,6 +43,10 @@ jieshu:addEffect(fk.CardUseFinished, {
   can_trigger = function(self, event, target, player, data)
     if target ~= player or not player:hasSkill(jieshu.name) or player:getMark("@fengsui_heg__jieshu") > 0 or
       player.room.current == nil or #data.tos == 0 then
+      return false
+    end
+    -- 刚解除限制的那张牌不能立即再触发，从下一张牌起恢复
+    if player:getMark("fengsui_heg__jieshu_released_id") == data.card:getEffectiveId() then
       return false
     end
     local targetIds = getLegalTargetIds(player, data.card)
@@ -55,23 +69,33 @@ jieshu:addEffect(fk.CardUseFinished, {
     end
   end,
   on_use = function(self, event, target, player, data)
+    local room = player.room
     local cost = event:getCostData(self)
-    player.room:setPlayerMark(player, "@fengsui_heg__jieshu", 1)
-    player.room:setPlayerMark(player, "fengsui_heg__jieshu_legal_targets", cost.targetIds)
+    room:setPlayerMark(player, "@fengsui_heg__jieshu", 1)
+    room:setPlayerMark(player, "fengsui_heg__jieshu_legal_targets", cost.targetIds)
+    room:setPlayerMark(player, "fengsui_heg__jieshu_released_id", 0)
+    room:addTableMark(player, "@fengsui_heg__jieshu_name", Fk:translate(data.card.name))
     cost.use.extraUse = true
-    player.room:useCard(cost.use)
+    room:useCard(cost.use)
   end,
 })
 
 jieshu:addEffect(fk.CardUseFinished, {
   can_refresh = function(self, event, target, player, data)
-    local targetIds = player:getMark("fengsui_heg__jieshu_legal_targets")
-    return target == player and player:getMark("@fengsui_heg__jieshu") > 0 and
-      (isCurio(data.card) or not data.card:isVirtual() and
-        sameTargetIds(targetIds, getLegalTargetIds(player, data.card)))
+    if target ~= player then return false end
+    if player:getMark("@fengsui_heg__jieshu") > 0 then
+      local targetIds = player:getMark("fengsui_heg__jieshu_legal_targets")
+      return targetIds ~= 0 and releasesLock(player, data.card, targetIds)
+    end
+    -- 未处于失效状态时，顺带清理过期的延迟标记
+    return player:getMark("fengsui_heg__jieshu_released_id") ~= 0
   end,
   on_refresh = function(self, event, target, player, data)
-    clearJieshu(player.room, player)
+    if player:getMark("@fengsui_heg__jieshu") > 0 then
+      clearJieshu(player.room, player, data.card:getEffectiveId())
+    else
+      player.room:setPlayerMark(player, "fengsui_heg__jieshu_released_id", 0)
+    end
   end,
 })
 
