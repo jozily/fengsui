@@ -1,73 +1,49 @@
+-- 尘牍（李密）
+-- 当你于回合外交给其他角色牌后，若其与你势力相同，其可以变更副将。
 local H = require "packages.fengsui.hegemony_util"
-local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local chendu = fk.CreateSkill{
   name = "fengsui_heg__chendu",
 }
 
-local function getSwapMates(room, target)
-  return table.filter(room.alive_players, function(p)
-    if p == target or not H.compareKingdomWith(p, target) then return false end
-    return H.hasGeneral(target, true) and H.hasGeneral(p, true)
-  end)
-end
-
-local function getChoices(room, target)
-  local choices = {}
-  if H.hasGeneral(target, false) and H.hasGeneral(target, true) then
-    table.insert(choices, "fengsui_heg__chendu_self")
+-- 本回合外由 player 交给其他角色的牌的收牌人（同势力、存活）
+local function giveTargets(room, player, data)
+  local tos = {}
+  local current = room.current
+  if not current or current == player then return tos end -- 仅回合外
+  for _, move in ipairs(data) do
+    if move.from == player and move.to and move.to ~= player and
+      move.toArea == Card.PlayerHand and move.to:isAlive() and
+      move.moveReason == fk.ReasonGive and H.compareKingdomWith(move.to, player) then
+      for _, info in ipairs(move.moveInfo) do
+        if info.fromArea == Card.PlayerHand then
+          table.insertIfNeed(tos, move.to)
+          break
+        end
+      end
+    end
   end
-  if #getSwapMates(room, target) > 0 then
-    table.insert(choices, "fengsui_heg__chendu_other")
-  end
-  return choices
+  return tos
 end
 
-local function swapMain(room, first, second)
-  if not U.swapGenerals(room, first) or not U.swapGenerals(room, second) then return end
-  H.swapDeputy(room, first, second)
-  U.swapGenerals(room, first)
-  U.swapGenerals(room, second)
-end
-
-chendu:addEffect(H.GeneralTransformed, {
-  global = true,
+chendu:addEffect(fk.AfterCardsMove, {
   can_trigger = function(self, event, target, player, data)
-    return target and target:isAlive() and data.isMain == false and player:hasShownSkill(chendu.name) and
-      H.compareKingdomWith(target, player) and #getChoices(player.room, target) > 0
-  end,
-  on_cost = function(self, event, target, player, data)
-    return player.room:askToSkillInvoke(player, {
-      skill_name = chendu.name,
-      prompt = "#fengsui_heg__chendu-invoke::" .. target.id,
-    })
+    if player.dead or not player:hasSkill(chendu.name) then return false end
+    return #giveTargets(player.room, player, data) > 0
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local choices = getChoices(room, target)
-    if #choices == 0 then return end
-    local choice = #choices == 1 and choices[1] or room:askToChoice(target, {
-      choices = choices,
-      skill_name = chendu.name,
-      prompt = "#fengsui_heg__chendu-choice",
-    })
-    if choice == "fengsui_heg__chendu_self" then
-      U.swapGenerals(room, target)
-      return
+    for _, to in ipairs(giveTargets(room, player, data)) do
+      if to:isAlive() then
+        local confirmed = room:askToSkillInvoke(to, {
+          skill_name = chendu.name,
+          prompt = "#fengsui_heg__chendu-invoke",
+        })
+        if confirmed then
+          H.transformGeneral(room, to, false, false, 1, chendu.name)
+        end
+      end
     end
-    local mates = getSwapMates(room, target)
-    if #mates == 0 then return end
-    local selected = room:askToChoosePlayers(target, {
-      targets = mates,
-      min_num = 1,
-      max_num = 1,
-      skill_name = chendu.name,
-      prompt = "#fengsui_heg__chendu-swap",
-      cancelable = false,
-    })
-    local mate = selected[1]
-    if not mate then return end
-    H.swapDeputy(room, target, mate)
   end,
 })
 

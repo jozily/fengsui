@@ -1,14 +1,18 @@
+-- 延誉（贾谧）
+-- 当一名同势力角色明置武将牌后，你可以令其选择一项：1.摸两张牌；
+-- 2.本回合使用牌无次数距离限制。
 local H = require "packages.fengsui.hegemony_util"
-local U = require "packages.fengsui.pkg.fengsui_hebi.util"
+
 local yanyu = fk.CreateSkill { name = "fengsui_heg__yanyu" }
+
+-- 本回合使用牌无次数距离限制
+local free_mark = "fengsui_heg__yanyu_free-turn"
 
 yanyu:addEffect(fk.GeneralRevealed, {
   can_trigger = function(self, _, target, player)
     -- 阵亡者的亮将由国战规则在 GameOverJudge 中强制公开，不属延誉的结算范围。
-    -- 若不排除，会向尸体询问选择、并由尸体摸两张。
     return target and target:isAlive() and player:isAlive() and
       player:hasShownSkill(yanyu.name) and
-      H.getGeneralsRevealedNum(player) == 2 and
       H.compareKingdomWith(player, target)
   end,
   on_cost = function(self, _, target, player)
@@ -19,30 +23,25 @@ yanyu:addEffect(fk.GeneralRevealed, {
   end,
   on_use = function(self, _, target, player)
     local room = player.room
-    local choices = {"fengsui_heg__yanyu_draw"}
-    if not player:isNude() then table.insert(choices, "fengsui_heg__yanyu_mark") end
     local choice = room:askToChoice(target, {
-      choices = choices,
-      skill_name = yanyu.name, prompt = "#fengsui_heg__yanyu-choice",
+      choices = { "fengsui_heg__yanyu_draw", "fengsui_heg__yanyu_free" },
+      skill_name = yanyu.name,
+      prompt = "#fengsui_heg__yanyu-choice",
     })
     if choice == "fengsui_heg__yanyu_draw" then
-      for _, deputy in ipairs({false, true}) do
-        if H.hasGeneral(target, deputy) then
-          U.prohibitReveal(target, deputy, yanyu.name, "round", "延誉 禁亮")
-        end
-      end
       target:drawCards(2, yanyu.name)
     else
-      H.addHegMark(target, "yinyangfish")
-      if not player.dead and not player:isNude() then
-        room:askToDiscard(player, {
-          min_num = 1, max_num = 1, include_equip = true,
-          cancelable = false, skill_name = yanyu.name,
-          prompt = "#fengsui_heg__yanyu-discard",
-        })
-      end
-      if not player.dead then U.hideSkillGeneral(player, yanyu.name) end
+      room:addPlayerMark(target, free_mark, 1)
     end
+  end,
+})
+
+yanyu:addEffect("targetmod", {
+  bypass_times = function(self, player, skill, scope, card)
+    return player:getMark(free_mark) > 0
+  end,
+  bypass_distances = function(self, player, skill, card)
+    return player:getMark(free_mark) > 0
   end,
 })
 

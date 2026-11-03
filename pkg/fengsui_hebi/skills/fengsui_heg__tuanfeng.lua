@@ -1,11 +1,11 @@
+-- 抟风（周处）
+-- 当你受到或造成伤害后，若你的武将牌均明置，你可以暗置另一张武将牌
+-- 并获得本回合进入弃牌堆的不同花色的牌各一张。
 local H = require "packages.fengsui.hegemony_util"
-local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local tuanfeng = fk.CreateSkill{
   name = "fengsui_heg__tuanfeng",
 }
-
-local handlimit_mark = "@fengsui_heg__tuanfeng_handlimit"
 
 -- 本回合进入弃牌堆、且此刻仍留在弃牌堆中的牌，按花色分组
 local function discardIdsBySuit(room)
@@ -31,25 +31,43 @@ local function discardIdsBySuit(room)
   return by_suit
 end
 
--- 每个花色随机取一张
-local function pickOnePerSuit(room)
+local function doTuanfeng(self, player)
+  local room = player.room
+  -- 暗置另一张武将牌：周处所在武将牌之外的那张
+  local hideDeputy = player.general == "fengsui_heg__zhouchu"
+  player:hideGeneral(hideDeputy)
+  room:sendLog{
+    type = "#ChangeHiddenGeneral",
+    from = player.id,
+    arg = hideDeputy and "deputyGeneral" or "mainGeneral",
+    toast = true,
+  }
+  -- 每个花色随机获得一张
   local by_suit = discardIdsBySuit(room)
-  local suits = {}
-  for suit in pairs(by_suit) do table.insert(suits, suit) end
-  table.sort(suits)
-  local picked = {}
-  for _, suit in ipairs(suits) do
-    local id = room:tableRandomPick(by_suit[suit], 1)[1]
-    if id then table.insert(picked, id) end
+  local gained = {}
+  for _, ids in pairs(by_suit) do
+    local avail = table.filter(ids, function(id)
+      return room:getCardArea(id) == Card.DiscardPile
+    end)
+    if #avail > 0 then
+      table.insert(gained, avail[math.random(1, #avail)])
+    end
   end
-  return picked
+  if #gained > 0 then
+    room:obtainCard(player, gained, true, fk.ReasonPrey, player, tuanfeng.name)
+  end
 end
 
-tuanfeng:addEffect(fk.Damaged, {
+local function canTuanfeng(self, player)
+  return player:hasSkill(tuanfeng.name) and H.allGeneralsRevealed(player) and
+    next(discardIdsBySuit(player.room)) ~= nil
+end
+
+tuanfeng:addEffect(fk.Damage, {
   anim_type = "drawcard",
+  global = true,
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasShownSkill(tuanfeng.name) and
-      H.allGeneralsRevealed(player) and #pickOnePerSuit(player.room) > 0
+    return data and data.from == player and canTuanfeng(self, player)
   end,
   on_cost = function(self, event, target, player, data)
     return player.room:askToSkillInvoke(player, {
@@ -58,50 +76,25 @@ tuanfeng:addEffect(fk.Damaged, {
     })
   end,
   on_use = function(self, event, target, player, data)
-    local room = player.room
-    local ids = pickOnePerSuit(room)
-    if #ids == 0 then return end
-    U.hideSkillGeneral(player, tuanfeng.name)
-    room:obtainCard(player, ids, true, fk.ReasonPrey, player, tuanfeng.name)
+    doTuanfeng(self, player)
   end,
 })
 
-tuanfeng:addEffect(fk.Damage, {
-  anim_type = "support",
+tuanfeng:addEffect(fk.Damaged, {
+  anim_type = "drawcard",
+  global = true,
   can_trigger = function(self, event, target, player, data)
-    return data and data.from == player and player:hasShownSkill(tuanfeng.name) and
-      player.room.current ~= nil
+    return target == player and canTuanfeng(self, player)
   end,
   on_cost = function(self, event, target, player, data)
     return player.room:askToSkillInvoke(player, {
       skill_name = tuanfeng.name,
-      prompt = "#fengsui_heg__tuanfeng-handlimit::" .. player.room.current.id,
+      prompt = "#fengsui_heg__tuanfeng-invoke",
     })
   end,
   on_use = function(self, event, target, player, data)
-    local room = player.room
-    local current = room.current
-    if not current then return end
-    room:addPlayerMark(current, MarkEnum.AddMaxCardsInTurn, 2)
-    local total = math.floor(current:getMark(MarkEnum.AddMaxCardsInTurn))
-    room:setPlayerMark(current, handlimit_mark, "手牌上限+" .. total)
-    room:broadcastProperty(current, "MaxCards")
+    doTuanfeng(self, player)
   end,
 })
-
-tuanfeng:addEffect(fk.TurnEnd, {
-  global = true,
-  can_refresh = function(self, event, target, player, data)
-    return target and target:getMark(handlimit_mark) ~= 0
-  end,
-  on_refresh = function(self, event, target, player, data)
-    target.room:setPlayerMark(target, handlimit_mark, 0)
-  end,
-})
-
--- 标记名留空，界面上只显示标记值本身（如“手牌上限+4”），避免与数值重复
-Fk:loadTranslationTable{
-  ["@fengsui_heg__tuanfeng_handlimit"] = "",
-}
 
 return tuanfeng

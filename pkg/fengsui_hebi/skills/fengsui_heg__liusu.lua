@@ -1,3 +1,5 @@
+local H = require "packages.fengsui.hegemony_util"
+
 local liusu = fk.CreateSkill{
   name = "fengsui_heg__liusu",
 }
@@ -5,10 +7,11 @@ local liusu = fk.CreateSkill{
 local unknown_num_mark = "fengsui_heg__liusu_unknown-turn"
 local visible_mark = "@fengsui_heg__liusu_unknown-turn"
 
+-- 合法目标中的未确定势力角色或同势力角色
 local function getUnknownTargets(player, card)
   if player:prohibitUse(card) or not player:canUse(card) then return {} end
   return table.filter(card:getAvailableTargets(player), function(p)
-    return p.kingdom == "unknown"
+    return p.kingdom == "unknown" or H.compareKingdomWith(p, player)
   end)
 end
 

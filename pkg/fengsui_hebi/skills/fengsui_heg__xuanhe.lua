@@ -1,5 +1,7 @@
+-- 悬河（周处）
+-- 主将技，锁定技，你计算体力上限时减少一个单独的阴阳鱼。当你明置武将牌后，
+-- 你于本回合使用牌无距离和次数限制，若此时为你的回合外，你重铸所有手牌并失去此技能。
 local H = require "packages.fengsui.hegemony_util"
-local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local xuanhe = fk.CreateSkill{
   name = "fengsui_heg__xuanhe",
@@ -12,22 +14,22 @@ local free_mark = "fengsui_heg__xuanhe_free-turn"
 xuanhe:addEffect(fk.GeneralRevealed, {
   anim_type = "control",
   can_trigger = function(self, event, target, player, data)
-    if target ~= player or not player:hasShownSkill(xuanhe.name) then return false end
-    local place = H.inGeneralSkills(player, xuanhe.name)
-    return (place == "m" and data.m) or (place == "d" and data.d)
+    if target ~= player or not player:hasSkill(xuanhe.name) then return false end
+    -- 明置任意一张武将牌均触发
+    return data and (data.m or data.d)
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
     local room = player.room
     room:addPlayerMark(player, free_mark, 1)
-    -- 回合外明置：夺走当前回合角色的所有牌，然后易位
+    -- 回合外明置：重铸所有手牌并失去此技能
     local current = room.current
     if not current or current == player or current.dead then return end
-    local ids = current:getCardIds("hej")
+    local ids = player:getCardIds("h")
     if #ids > 0 then
-      room:obtainCard(player, ids, true, fk.ReasonPrey, player, xuanhe.name)
+      room:recastCard(ids, player, xuanhe.name)
     end
-    if player:isAlive() then U.swapGenerals(room, player) end
+    room:handleAddLoseSkills(player, "-" .. xuanhe.name, xuanhe.name, false, true)
   end,
 })
 

@@ -84,7 +84,7 @@ fudao:addEffect(fk.DamageCaused, {
 
 fudao:addEffect(fk.CardUseFinished, {
   is_delay_effect = true,
-  anim_type = "special",
+  anim_type = "support",
   can_trigger = function(self, event, target, player, data)
     local extra = data.extra_data or {}
     if extra.fengsui_heg__fudao_from ~= player.id or not extra.fengsui_heg__fudao_to then return false end
@@ -94,18 +94,18 @@ fudao:addEffect(fk.CardUseFinished, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     local to = room:getPlayerById(data.extra_data.fengsui_heg__fudao_to)
+    if player.dead or to.dead then return end
+    -- 结算后目标获得此X张伤害牌（本回合进入弃牌堆的不同牌名伤害牌，至多X张）
+    local x = data.extra_data.fengsui_heg__fudao_x or 0
+    local ids = {}
     for _, id in ipairs(getDiscardDamageCards(room)) do
-      if player.dead or to.dead then break end
+      if #ids >= x then break end
       if room:getCardArea(id) == Card.DiscardPile then
-        room:useCard{
-          from = to,
-          tos = {player},
-          card = Fk:getCardById(id),
-          extraUse = true,
-          bypass_times = true,
-          bypass_distances = true,
-        }
+        table.insert(ids, id)
       end
+    end
+    if #ids > 0 then
+      room:obtainCard(to, ids, true, fk.ReasonPrey, player, fudao.name)
     end
   end,
 })

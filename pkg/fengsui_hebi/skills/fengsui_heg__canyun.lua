@@ -1,3 +1,6 @@
+-- 残愠（贾褒）
+-- 锁定技，当你死亡时，你令所有伤害来源和野心家角色移除副将，
+-- 且与你势力相同的角色依次对其造成一点伤害。
 local H = require "packages.fengsui.hegemony_util"
 
 local canyun = fk.CreateSkill {
@@ -32,49 +35,18 @@ canyun:addEffect(fk.Death, {
       if H.getKingdom(p) == "wild" then table.insertIfNeed(affected, p) end
     end
     for _, p in ipairs(affected) do
-      local choices = { "fengsui_heg__canyun_damage" }
-      if H.hasGeneral(p, true) then table.insert(choices, "fengsui_heg__canyun_remove") end
-      local choice = room:askToChoice(p, {
-        choices = choices,
-        skill_name = canyun.name,
-        prompt = "#fengsui_heg__canyun-choice",
-      })
-      if choice == "fengsui_heg__canyun_remove" then
-        -- @! 图章标记用于客户端 Photo 换 abolished 士兵图（picMarks 同步）。
-        room:setPlayerMark(p, "@!fengsui_abolish_deputy", 1)
+      -- 移除副将（普通移除，非废除）
+      if H.hasGeneral(p, true) then
         H.removeGeneral(p, true, canyun.name)
-        room:setPlayerMark(p, "fengsui_heg__abolish_deputy_state", 1)
-      else
-        for _, ally in ipairs(room:getAlivePlayers()) do
-          -- 残愠在死亡结算完成前触发，死亡角色本身仍属于场上角色；
-          -- 选项一因此也包括伤害来源/野心家自己。
-          if H.getKingdom(ally) == kingdom then
-            room:damage { from = ally, to = p, damage = 1, skillName = canyun.name }
-          end
+      end
+      -- 与你势力相同的角色依次对其造成一点伤害（也包括其自身若同势力）
+      for _, ally in ipairs(room:getAlivePlayers()) do
+        if H.getKingdom(ally) == kingdom then
+          room:damage { from = ally, to = p, damage = 1, skillName = canyun.name }
         end
       end
     end
   end,
 })
-
--- 废除副将后的通用限制：副将已经由士兵替代，之后任何变更副将的请求都被拦截。
-canyun:addEffect(H.GeneralTransforming, {
-  global = true,
-  can_trigger = function(self, _, target, _, data)
-    return target and data and not data.isMain and
-      (target:getMark("fengsui_heg__abolish_deputy_state") > 0 or
-        target:getMark("@fengsui_heg__canyun_nochange") > 0 or
-        target:getMark("@fengsui_heg__xunyun_nochange") > 0)
-  end,
-  on_use = function() return true end,
-})
-
-Fk:loadTranslationTable {
-  ["#fengsui_heg__canyun-choice"] = "残愠：请选择一项",
-  ["fengsui_heg__canyun_damage"] = "令与你势力相同的角色依次对你造成一点伤害",
-  ["fengsui_heg__canyun_remove"] = "废除副将",
-  ["@fengsui_heg__abolish_deputy"] = "废除副将",
-  ["@fengsui_heg__canyun_nochange"] = "废除副将",
-}
 
 return canyun

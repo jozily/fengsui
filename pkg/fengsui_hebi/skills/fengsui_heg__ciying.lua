@@ -1,3 +1,6 @@
+-- 辞映（李密）
+-- 当你于回合外需要使用或打出一张基本牌或普通锦囊牌时，若当前回合角色未确定势力
+-- 或为大势力，你可以视为使用或打出之并交给其X张牌（X为本局游戏此技能发动次数）。
 local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 local CardNameUI = require "packages.fengsui.pkg.card_name_ui"
@@ -49,28 +52,11 @@ local function resolveCiying(player)
   local current = room.current
   local count = player:getMark("fengsui_heg__ciying_times") + 1
   room:setPlayerMark(player, "fengsui_heg__ciying_times", count)
-  local choices = {}
-  if current and current:isAlive() and #player:getCardIds("he") >= count then
-    table.insert(choices, "fengsui_heg__ciying_give")
-  end
-  if H.hasGeneral(player, true) and #(room.general_pile or room.generalPile or {}) > 0 then
-    table.insert(choices, "fengsui_heg__ciying_transform")
-  end
-  if #choices == 0 then return end
-  local choice = #choices == 1 and choices[1] or room:askToChoice(player, {
-    choices = choices,
-    skill_name = ciying.name,
-    prompt = "#fengsui_heg__ciying-choice:::" .. count,
-  })
-  if choice == "fengsui_heg__ciying_give" then
-    local cards = U.chooseCardsFromList(room, player, player:getCardIds("he"), count, count,
-      "#fengsui_heg__ciying-give:::" .. count, ciying.name, false)
-    room:moveCardTo(cards, Card.PlayerHand, current, fk.ReasonGive, ciying.name, nil, false, player)
-  else
-    if H.transformGeneral(room, player, false, false, 3, ciying.name) then
-      room:handleAddLoseSkills(player, "-" .. ciying.name .. "|fengsui_heg__ciying_deputy", nil, false, true)
-    end
-  end
+  if not current or current.dead or current == player then return end
+  if #player:getCardIds("he") < count then return end
+  local cards = U.chooseCardsFromList(room, player, player:getCardIds("he"), count, count,
+    "#fengsui_heg__ciying-give:::" .. count, ciying.name, false)
+  room:moveCardTo(cards, Card.PlayerHand, current, fk.ReasonGive, ciying.name, nil, false, player)
 end
 
 local finish_spec = {

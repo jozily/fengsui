@@ -63,7 +63,10 @@ huaixiang:addEffect(fk.AfterCardsMove, {
     local tos = room:askToChoosePlayers(player, {
       min_num = 1,
       max_num = 1,
-      targets = table.filter(room.alive_players, function(p) return p.kingdom ~= "unknown" end),
+      -- 「其他角色」：怀香不能指定自己
+      targets = table.filter(room.alive_players, function(p)
+        return p ~= player and p.kingdom ~= "unknown"
+      end),
       skill_name = self.name,
       prompt = "#fengsui_heg__huaixiang-target",
       cancelable = true,
