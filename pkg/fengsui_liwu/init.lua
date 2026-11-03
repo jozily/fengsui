@@ -218,7 +218,6 @@ lujii:addCompanions("ld__lukang")
 lujii:addSkills { "fengsui_heg__lingzhi", "fengsui_heg__ruluo" }
 
 local zhouchu = General:new(extension, "fengsui_heg__zhouchu", "jin", 4)
-zhouchu.mainMaxHpAdjustedValue = -1
 zhouchu.subkingdom = "wu"
 zhouchu:addSkills { "fengsui_heg__tuanfeng", "fengsui_heg__xuanhe" }
 

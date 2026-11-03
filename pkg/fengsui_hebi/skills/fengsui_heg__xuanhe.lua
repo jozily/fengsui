@@ -1,11 +1,11 @@
 -- 悬河（周处）
--- 主将技，锁定技，你计算体力上限时减少一个单独的阴阳鱼。当你明置武将牌后，
--- 你于本回合使用牌无距离和次数限制，若此时为你的回合外，你重铸所有手牌并失去此技能。
+-- 锁定技，当你明置武将牌后，你于本回合使用牌无距离和次数限制，
+-- 若此时为你的回合外，你重铸所有手牌并失去此技能。
 local H = require "packages.fengsui.hegemony_util"
 
 local xuanhe = fk.CreateSkill{
   name = "fengsui_heg__xuanhe",
-  tags = { Skill.Compulsory, Skill.MainPlace },
+  tags = { Skill.Compulsory },
 }
 
 -- 本回合使用牌无距离和次数限制
