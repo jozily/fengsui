@@ -1260,7 +1260,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__wangrong"] = "佚名",
   ["cv:fengsui_heg__wangrong"] = "暂无",
   ["fengsui_heg__fumiao"] = "浮邈",
-  [":fengsui_heg__fumiao"] = "每回合限一次，当你需要使用一张本回合所有角色未使用过的基本牌时，若你的武将牌均明置，你可以与牌堆底的牌拼点，若你赢，你视为使用之，若你没赢，你暗置此武将牌并将一张拼点牌置于牌堆顶。",
+  [":fengsui_heg__fumiao"] = "每回合限一次，当你需要使用一张本回合所有角色未使用过的基本牌时，若你的武将牌均明置，你可以与牌堆底的牌拼点，若你赢，你视为使用之，若你没赢，你暗置另一张武将牌并将一张拼点牌置于牌堆顶。",
   ["#fengsui_heg__fumiao-invoke"] = "浮邈：选择一种本回合未被使用过的基本牌",
   ["#fengsui_heg__fumiao-pindian"] = "浮邈：选择一张手牌与牌堆底的牌比较点数",
   ["#fengsui_heg__fumiao-top"] = "浮邈：选择一张拼点牌置于牌堆顶",

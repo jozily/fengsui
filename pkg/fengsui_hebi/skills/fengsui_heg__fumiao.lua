@@ -58,7 +58,16 @@ fumiao:addEffect("viewas", {
       return
     end
 
-    U.hideSkillGeneral(player, fumiao.name)
+    -- 暗置另一张武将牌（技能所在那张之外）
+    local skillOnDeputy = U.getSkillPlace(player, fumiao.name)
+    local hideDeputy = skillOnDeputy ~= true
+    player:hideGeneral(hideDeputy)
+    room:sendLog{
+      type = "#ChangeHiddenGeneral",
+      from = player.id,
+      arg = hideDeputy and "deputyGeneral" or "mainGeneral",
+      toast = true,
+    }
     local top = U.chooseCardsFromList(room, player, {hand, bottom}, 1, 1,
       "#fengsui_heg__fumiao-top", fumiao.name, false)[1]
     local discard = top == hand and bottom or hand
