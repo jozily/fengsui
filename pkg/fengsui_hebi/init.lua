@@ -108,7 +108,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__shantao"] = "公冶长风",
   ["cv:fengsui_heg__shantao"] = "暂无",
   ["fengsui_heg__linzhe"] = "遴哲",
-  [":fengsui_heg__linzhe"] = "限定技，出牌阶段，你可以令一名与你势力不同的其他角色，本局游戏除计算胜利外，其视为势力与你相同，然后你令所有同势力角色依次选择是否变更副将。",
+  [":fengsui_heg__linzhe"] = "限定技，出牌阶段，你可以选择一名与你势力不同的其他角色，本局游戏除计算胜利外，其视为势力与你相同，然后所有同势力角色依次选择是否变更副将。",
   ["#fengsui_heg__linzhe"] = "遴哲：选择一名角色，本局游戏其视为势力与你相同！",
   ["#fengsui_heg__linzhe-choice"] = "遴哲：%dest 发动〖遴哲〗，你是否变更副将？",
   ["@fengsui_heg__linzhe_target"] = "遴哲",
