@@ -13,26 +13,26 @@ end
 
 s:addEffect("prohibit", {
   prohibit_use = function(self, player, card)
-    return player:hasShownSkill(s.name) and damageCard(card) and card.color == Card.Red
+    return damageCard(card) and card.color == Card.Red
   end,
 })
 
 s:addEffect("maxcards", {
   exclude_from = function(self, player, card)
-    return player:hasShownSkill(s.name) and damageCard(card)
+    return damageCard(card)
   end,
 })
 
 s:addEffect("targetmod", {
   global = true,
   bypass_distances = function(self, player, skill, card)
-    return player:hasShownSkill(s.name) and damageCard(card) and card.color == Card.Black
+    return damageCard(card) and card.color == Card.Black
   end,
 })
 
 local function canTriggerAfterDetermined(self, _, target, player)
   local targetId = tonumber(player:getMark("fengsui_heg__yanshi_target"))
-  return target == player and player:hasShownSkill(s.name) and
+  return target == player and
     player:getMark(s.name .. "_used") == 0 and player.kingdom ~= "unknown" and
     targetId ~= nil and targetId ~= player.id
 end

@@ -26,7 +26,7 @@ end
 nizi:addEffect(fk.CardUseFinished, { global = true,
   can_trigger = function(self, _, target, player, data)
     local card = data and data.card
-    if not (player:hasShownSkill(self.name) and target and H.compareKingdomWith(player,target)
+    if not (target and H.compareKingdomWith(player,target)
       and player.room.current == target
       and player:getMark(self.name .. "-processing") == 0
       and card and (card.type == Card.TypeBasic or card:isCommonTrick())) then return false end

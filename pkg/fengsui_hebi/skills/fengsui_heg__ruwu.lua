@@ -2,28 +2,8 @@ local ruwu = fk.CreateSkill {
   name = "fengsui_heg__ruwu",
 }
 
-local H = require "packages.fengsui.hegemony_util"
-
 -- 国战标记：先驱 / 阴阳鱼 / 珠联璧合 / 野心家
 local HEG_MARKS = { "@!!vanguard", "@!!yinyangfish", "@!!companion", "@!!wild" }
-
-local function generalPosition(player)
-  for _, is_deputy in ipairs({false, true}) do
-    local general = Fk.generals[H.getActualGeneral(player, is_deputy)]
-    if general and table.contains(general:getSkillNameList(), ruwu.name) then
-      return is_deputy
-    end
-  end
-end
-
--- 本模式武将技全部以 fake skill 挂载，hasShownSkill 恒为 false，
--- 改为判断如晤所在武将牌是否明置。
-local function ruwuShown(player)
-  local is_deputy = generalPosition(player)
-  if is_deputy == nil then return false end
-  if is_deputy then return player.deputyGeneral ~= "anjiang" end
-  return player.general ~= "anjiang"
-end
 
 local function hasHegMark(p)
   for _, mark in ipairs(HEG_MARKS) do
@@ -49,7 +29,7 @@ end
 
 ruwu:addEffect(fk.AfterCardsMove, {
   can_trigger = function(self, _, _, player, data)
-    if not (player:isAlive() and ruwuShown(player) and hasPileChange(data)) then
+    if not (player:isAlive() and hasPileChange(data)) then
       return false
     end
     return table.find(player.room.alive_players, hasHegMark) ~= nil

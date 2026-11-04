@@ -26,7 +26,7 @@ zhuiji:addEffect("active", {
   anim_type = "draw", card_num = 0, target_num = 0, card_filter = Util.FalseFunc, target_filter = Util.FalseFunc,
   can_use = function(self, player)
     local last = player:getMark(ZNAME .. "-last")
-    return player.phase == Player.Play and player:hasShownSkill(ZNAME) and
+    return player.phase == Player.Play and
       player:getMark(ZNAME .. "-disabled") == 0 and type(last) == "string" and last ~= ""
   end,
   on_use = function(self, room, effect)
@@ -70,6 +70,6 @@ local function reduce(self, player)
     player.room:setPlayerMark(player, "@fengsui_heg__zhuiji", 0)
   end
 end
-zhuiji:addEffect(fk.Damage, { can_trigger = function(self, _, target, player, data) return target == player and player:hasShownSkill(ZNAME) and player:getMark(ZNAME .. "-damage") > 0 end, on_use = function(self, _, _, player) reduce(self, player) end })
-zhuiji:addEffect(fk.Damaged, { can_trigger = function(self, _, target, player, data) return target == player and player:hasShownSkill(ZNAME) and player:getMark(ZNAME .. "-damage") > 0 end, on_use = function(self, _, _, player) reduce(self, player) end })
+zhuiji:addEffect(fk.Damage, { can_trigger = function(self, _, target, player, data) return target == player and player:getMark(ZNAME .. "-damage") > 0 end, on_use = function(self, _, _, player) reduce(self, player) end })
+zhuiji:addEffect(fk.Damaged, { can_trigger = function(self, _, target, player, data) return target == player and player:getMark(ZNAME .. "-damage") > 0 end, on_use = function(self, _, _, player) reduce(self, player) end })
 return zhuiji

@@ -2,7 +2,7 @@ local H = require "packages.fengsui.hegemony_util"
 local zhanjue = fk.CreateSkill { name = "fengsui_heg__zhanjue" }
 local ZNAME = "fengsui_heg__zhanjue"
 zhanjue:addEffect("active", { card_num = 0, target_num = 1,
-    can_use = function(self, p) return p:hasShownSkill(self.name) and p:getHandcardNum() > 0 and p:usedSkillTimes(self.name, Player.HistoryPhase) == 0 end,
+    can_use = function(self, p) return p:getHandcardNum() > 0 and p:usedSkillTimes(self.name, Player.HistoryPhase) == 0 end,
     card_filter = Util.FalseFunc,
     target_filter = function(self, p, to, selected) return #selected == 0 and to ~= p and not H.compareKingdomWith(p, to) end,
   on_use = function(self, room, effect)

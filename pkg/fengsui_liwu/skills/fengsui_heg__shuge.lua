@@ -2,7 +2,7 @@ local s = fk.CreateSkill { name = "fengsui_heg__shuge" }
 
 s:addEffect(fk.Damaged, {
   can_trigger = function(self, event, target, player, data)
-    if target ~= player or not player:hasShownSkill(s.name) or
+    if target ~= player or
       not data.from or data.from.dead then return false end
     local cards = player:getCardIds("he")
     return #cards > 0 and table.find(player.room:getOtherPlayers(player), function(p)

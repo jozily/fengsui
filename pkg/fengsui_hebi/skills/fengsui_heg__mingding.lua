@@ -14,7 +14,7 @@ end
 
 mingding:addEffect(fk.EnterDying, {
   can_trigger = function(self, _, target, player)
-    return target and player:hasShownSkill(self.name) and
+    return target and
       player:getMark("fengsui_heg__mingding_used") == 0 and
       H.compareKingdomWith(player, target) and
       gainedByXiangchen(target) and

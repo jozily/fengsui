@@ -4,7 +4,7 @@ local s = fk.CreateSkill { name = "fengsui_heg__xiawang" }
 s:addEffect(fk.Damaged, {
   global = true,
   can_trigger = function(self, event, target, player, data)
-    return player:hasShownSkill(s.name) and player:usedSkillTimes(s.name, Player.HistoryRound) == 0 and
+    return player:usedSkillTimes(s.name, Player.HistoryRound) == 0 and
       target:distanceTo(player) <= 1 and data.from and data.from ~= player and
       table.find(player:getCardIds("h"), function(id) local c=Fk:getCardById(id); return c.is_damage_card and player:canUseTo(c, data.from, {bypass_distances=true}) end)
   end,

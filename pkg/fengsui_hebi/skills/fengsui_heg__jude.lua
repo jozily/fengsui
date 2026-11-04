@@ -5,7 +5,7 @@ jude:addEffect(fk.AfterAskForCardResponse, {
   can_trigger = function(self, event, target, player, data)
     local response = data and data.result
     local effect = response and response.responseToEvent
-    if not target or not target:isAlive() or not player:hasShownSkill(jude.name) or not response or not effect then
+    if not target or not target:isAlive() or not response or not effect then
       return false
     end
     -- 两种情况都要覆盖：你响应他人的牌，或他人响应你的牌。

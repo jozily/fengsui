@@ -22,7 +22,7 @@ end
 qusheng:addEffect(fk.AfterCardsMove, {
   global = true,
   can_trigger = function(self, _, target, player, data)
-    if not (U.hasGeneralName(player, "fengsui_heg__biyu") and player:hasShownSkill(self.name)) then return false end
+    if not U.hasGeneralName(player, "fengsui_heg__biyu") then return false end
     if player:getMark(self.name .. "-turn") > 0 then return false end
     if not data then return false end
     for _, move in ipairs(data) do

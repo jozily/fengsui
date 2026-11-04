@@ -8,7 +8,7 @@ local daoli = fk.CreateSkill {
 daoli:addEffect(fk.Death, {
   global = true,
   can_trigger = function(self, _, target, player)
-    return target and target ~= player and player:hasShownSkill(self.name) and
+    return target and target ~= player and
       H.compareKingdomWith(player, target) and
       player:usedSkillTimes(self.name, Player.HistoryGame) == 0
   end,

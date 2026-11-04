@@ -14,15 +14,6 @@ local function generalPosition(player)
   end
 end
 
--- 本模式武将技全部以 fake skill 挂载，hasShownSkill 恒为 false，
--- 改为判断告返所在武将牌是否明置。
-local function gaofanShown(player)
-  local is_deputy = generalPosition(player)
-  if is_deputy == nil then return false end
-  if is_deputy then return player.deputyGeneral ~= "anjiang" end
-  return player.general ~= "anjiang"
-end
-
 local function canSwap(owner, responder)
   local is_deputy = generalPosition(owner)
   return is_deputy ~= nil and H.hasGeneral(owner, is_deputy) and
@@ -35,7 +26,7 @@ local function findOwner(room, responder, source)
   end
   return table.find(room.alive_players, function(owner)
     local counterpart = owner == responder and source or responder
-    return owner:hasSkill(gaofan.name) and gaofanShown(owner) and
+    return owner:hasSkill(gaofan.name) and
       (owner == responder or owner == source) and
       H.compareKingdomWith(owner, counterpart) and canSwap(owner, counterpart)
   end)

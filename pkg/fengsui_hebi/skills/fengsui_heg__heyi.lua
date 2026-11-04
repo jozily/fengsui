@@ -21,7 +21,7 @@ local function replaceCard(player, gainTop)
 end
 
 local function canTrigger(player, mark)
-  return player:hasShownSkill(heyi.name) and player:getMark(mark) == 0
+  return player:getMark(mark) == 0
 end
 
 heyi:addEffect(fk.Damage, {

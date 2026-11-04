@@ -9,7 +9,7 @@ end
 s:addEffect(fk.TurnStart, {
   global = true,
   can_trigger = function(self, event, target, player, data)
-    return target and target ~= player and player:hasShownSkill(s.name) and not player:isNude() and not target:isNude()
+    return target and target ~= player and not player:isNude() and not target:isNude()
   end,
   on_cost = function(self, event, target, player, data)
     local room = player.room

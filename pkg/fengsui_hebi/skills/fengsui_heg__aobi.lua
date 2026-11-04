@@ -13,7 +13,7 @@ end
 aobi:addEffect(fk.CardUseFinished, {
   global = true,
   can_trigger = function(self, _, target, player, data)
-    return target and player:hasShownSkill(aobi.name) and player.room.current == player and data and data.tos
+    return target and player.room.current == player and data and data.tos
   end,
   on_use = function(self, _, target, player, data)
     local room = player.room
@@ -49,7 +49,7 @@ aobi:addEffect(fk.AfterCardsMove, {
 
 aobi:addEffect(fk.TurnEnd, {
   can_trigger = function(self, _, target, player)
-    return target == player and player:hasShownSkill(aobi.name)
+    return target == player
   end,
   on_use = function(self, _, _, player)
     local room = player.room

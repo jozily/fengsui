@@ -36,7 +36,7 @@ yuchen:addEffect("active", {
   anim_type = "support", prompt = "#fengsui_heg__yuchen-invoke",
   card_num = 0, target_num = 1,
   can_use = function(self, player)
-    return player.phase == Player.Play and player:hasShownSkill(self.name) and player:usedSkillTimes(self.name, Player.HistoryPhase) == 0 and
+    return player.phase == Player.Play and player:usedSkillTimes(self.name, Player.HistoryPhase) == 0 and
       H.getGeneralsRevealedNum(player) > 0
   end,
   card_filter = Util.FalseFunc,

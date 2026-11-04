@@ -9,7 +9,7 @@ end
 
 juexun:addEffect(fk.AfterCardsMove, {
   can_trigger = function(self, _, _, player, data)
-    return player:hasShownSkill(juexun.name) and player:getHandcardNum() == 0 and
+    return player:getHandcardNum() == 0 and
       player:getMark("fengsui_heg__juexun_ready") == 0 and
       player:getMark("fengsui_heg__juexun_asked-turn") == 0 and lostAllHand(data, player)
   end,

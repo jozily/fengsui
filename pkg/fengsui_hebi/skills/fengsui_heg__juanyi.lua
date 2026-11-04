@@ -11,7 +11,7 @@ local function gained(player, data)
 end
 juanyi:addEffect(fk.AfterCardsMove, {
   global = true,
-  can_trigger = function(self, _, _, player, data) return player:hasShownSkill(self.name) and #gained(player, data) > 0 end,
+  can_trigger = function(self, _, _, player, data) return #gained(player, data) > 0 end,
   on_cost = function(self, event, _, player, data)
     local tos = player.room:askToChoosePlayers(player, {targets = gained(player, data), min_num = 1, max_num = 1, skill_name = self.name, prompt = "#fengsui_heg__juanyi-target", cancelable = true})
     if #tos == 0 then return false end; event:setCostData(self, tos[1]); return true
