@@ -1852,7 +1852,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__lusu"] = "佚名",
   ["cv:fengsui_heg__lusu"] = "暂无",
   ["fengsui_heg__xiangkui"] = "飨馈",
-  [":fengsui_heg__xiangkui"] = "其他角色的回合开始时，其可以展示一张牌，然后你可以正面朝上交给其任意张与此牌类别不同的牌。",
+  [":fengsui_heg__xiangkui"] = "其他角色的回合开始时，若此武将牌已明置，其可以展示一张牌，然后你可以正面朝上交给其任意张与此牌类别不同的牌。",
   ["fengsui_heg__yangming"] = "扬名",
   [":fengsui_heg__yangming"] = "一名角色的回合结束后，若其与你势力相同或你本回合因“飨馈”交给其过牌，你可以摸X张牌（X为你本回合正面朝上离开手牌区的牌数且至多为5）。",
   ["$fengsui_heg__yangming1"] = "曹强则刘弱，刘弱则吴危，一州之地可购十年太平。",
