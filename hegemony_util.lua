@@ -8,8 +8,8 @@ local _compareKingdomWith = modern.compareKingdomWith
 function compat.compareKingdomWith(from, to, diff, ignore_gouni)
   if not ignore_gouni and from and to and from ~= to and
     from.getTableMark and to.getTableMark then
-    if table.contains(from:getTableMark(linzheMark), to) or
-      table.contains(to:getTableMark(linzheMark), from) then
+    if table.contains(from:getTableMark(linzheMark), to.id) or
+      table.contains(to:getTableMark(linzheMark), from.id) then
       local ret = true
       if diff then ret = not ret end
       return ret
@@ -17,6 +17,9 @@ function compat.compareKingdomWith(from, to, diff, ignore_gouni)
   end
   return _compareKingdomWith(from, to, diff, ignore_gouni)
 end
+-- 全局生效：hegemony 本体与各包都直接调用 HegUtil.compareKingdomWith，
+-- 必须替换模块表上的函数，仅包装 compat 只对 fengsui 包内生效。
+modern.compareKingdomWith = compat.compareKingdomWith
 
 compat.HegMarkChanged = TriggerEvent:subclass("FengsuiHegMarkChanged")
 -- Fengsui 奖惩即将执行时；替换摸牌和弃牌两种分支，保留死亡的其他后续。
