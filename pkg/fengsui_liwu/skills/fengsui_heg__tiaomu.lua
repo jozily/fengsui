@@ -23,7 +23,23 @@ tiaomu:addEffect(fk.TargetConfirmed, {
     player:hideGeneral(not place)
     room:drawCards(data.from, 1, tiaomu.name)
     data:setNullified(player)
-    room:setPlayerMark(data.from, target_mark, "迢目")
+    room:setPlayerMark(data.from, target_mark, 1)
+  end,
+})
+
+-- 朱佩兰死亡后移除全场迢目标记
+tiaomu:addEffect(fk.Death, {
+  global = true,
+  can_trigger = function(self, _, target, player)
+    return target == player and player:hasSkill(tiaomu.name, true, true)
+  end,
+  on_use = function(self, _, target, player)
+    local room = player.room
+    for _, p in ipairs(room.alive_players) do
+      if p:getMark(target_mark) ~= 0 then
+        room:setPlayerMark(p, target_mark, 0)
+      end
+    end
   end,
 })
 

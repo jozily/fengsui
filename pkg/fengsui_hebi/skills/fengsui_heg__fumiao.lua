@@ -55,19 +55,20 @@ fumiao:addEffect("viewas", {
     if Fk:getCardById(hand).number > Fk:getCardById(bottom).number then
       room:moveCardTo({hand, bottom}, Card.DiscardPile, nil,
         fk.ReasonPutIntoDiscardPile, fumiao.name, nil, true, player)
+      -- 拼点赢：暗置另一张武将牌，然后视为使用之
+      local skillOnDeputy = U.getSkillPlace(player, fumiao.name)
+      local hideDeputy = skillOnDeputy ~= true
+      player:hideGeneral(hideDeputy)
+      room:sendLog{
+        type = "#ChangeHiddenGeneral",
+        from = player.id,
+        arg = hideDeputy and "deputyGeneral" or "mainGeneral",
+        toast = true,
+      }
       return
     end
 
-    -- 暗置另一张武将牌（技能所在那张之外）
-    local skillOnDeputy = U.getSkillPlace(player, fumiao.name)
-    local hideDeputy = skillOnDeputy ~= true
-    player:hideGeneral(hideDeputy)
-    room:sendLog{
-      type = "#ChangeHiddenGeneral",
-      from = player.id,
-      arg = hideDeputy and "deputyGeneral" or "mainGeneral",
-      toast = true,
-    }
+    -- 拼点没赢：不暗置武将牌，选一张拼点牌置于牌堆顶，另一张进弃牌堆
     local top = U.chooseCardsFromList(room, player, {hand, bottom}, 1, 1,
       "#fengsui_heg__fumiao-top", fumiao.name, false)[1]
     local discard = top == hand and bottom or hand

@@ -23,38 +23,32 @@ yunie:addEffect(fk.AskForRetrial, {
       skill_name = yunie.name,
       cancelable = true,
     })
-    if #tos == 2 then
-      event:setCostData(self, {tos = tos})
-      return true
-    end
-  end,
-  on_use = function(self, event, target, player, data)
-    local room = player.room
-    U.hideSkillGeneral(player, yunie.name)
-
-    local tos = event:getCostData(self).tos
+    if #tos ~= 2 then return false end
+    -- 先真正完成移动；两名角色之间没有可移动的牌时改判不成立
     local moved = room:askToMoveCardInBoard(player, {
       target_one = tos[1],
       target_two = tos[2],
       skill_name = yunie.name,
     })
-    if not moved then return end
+    if not moved then return false end
+    event:setCostData(self, { moved = moved.card })
+    return true
+  end,
+  on_use = function(self, event, target, player, data)
+    local room = player.room
+    U.hideSkillGeneral(player, yunie.name)
 
-    local old_id = data.card:getEffectiveId()
-    local vcard = Fk:cloneCard(data.card.name, moved.card.suit, moved.card.number)
+    local moved = event:getCostData(self).moved
+    if not moved then return end
+    local vcard = Fk:cloneCard(data.card.name, moved.suit, moved.number)
     vcard.skillName = yunie.name
-    data.card = vcard
-    room:sendLog{
-      type = "#ChangedJudge",
-      from = player.id,
-      to = {data.who.id},
-      arg = yunie.name,
-      arg2 = vcard:toLogString(),
+    -- 引擎官方改判入口：负责替换 data.card、记日志、原判定牌进弃牌堆
+    room:changeJudge{
+      card = vcard,
+      player = player,
+      data = data,
+      skillName = yunie.name,
     }
-    if old_id and room:getCardArea(old_id) == Card.Processing then
-      room:moveCardTo(old_id, Card.DiscardPile, nil, fk.ReasonJudge,
-        yunie.name, nil, true, player)
-    end
   end,
 })
 

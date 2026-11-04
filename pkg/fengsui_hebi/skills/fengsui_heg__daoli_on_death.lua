@@ -26,6 +26,8 @@ daoli_on_death:addEffect(fk.Death, {
   global = true,
   can_trigger = function(self, _, target, player)
     return target == player and
+      -- 悼离是限定技，已发动过则死亡时无法再“发动悼离”，不触发选人
+      player:usedSkillTimes("fengsui_heg__daoli", Player.HistoryGame) == 0 and
       (player:hasSkill("fengsui_heg__daoli", true, true) or
         player:hasSkill("fengsui_heg__beiqiu", true, true))
   end,
