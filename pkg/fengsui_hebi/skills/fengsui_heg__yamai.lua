@@ -6,6 +6,8 @@ local yamai = fk.CreateSkill{
 
 yamai:addEffect("arraysummon", { array_type = "formation" })
 
+-- 记录：山涛本回合获得的牌（记在山涛身上）、
+-- 与山涛同队列的角色本回合使用过的牌（记在使用者身上）。
 yamai:addEffect(fk.AfterCardsMove, {
   global = true,
   mute = true,
@@ -13,7 +15,7 @@ yamai:addEffect(fk.AfterCardsMove, {
     if not player:hasSkill(yamai.name) then return false end
     return table.find(data, function(move)
       if move.to == player and move.toArea == Card.PlayerHand then return true end
-      if move.from == player and move.moveReason == fk.ReasonUse then
+      if move.moveReason == fk.ReasonUse and move.from and U.inSameQueue(move.from, player) then
         return table.find(move.moveInfo, function(info)
           return info.fromArea == Card.PlayerHand or info.fromArea == Card.PlayerEquip
         end) ~= nil
@@ -22,40 +24,49 @@ yamai:addEffect(fk.AfterCardsMove, {
     end) ~= nil
   end,
   on_refresh = function(self, event, target, player, data)
-    local cards = player:getTableMark("fengsui_heg__yamai_cards-turn")
+    local room = player.room
+    local gained = player:getTableMark("fengsui_heg__yamai_cards-turn")
     for _, move in ipairs(data) do
       if move.to == player and move.toArea == Card.PlayerHand then
         for _, info in ipairs(move.moveInfo) do
-          table.insertIfNeed(cards, info.cardId)
+          table.insertIfNeed(gained, info.cardId)
         end
-      elseif move.from == player and move.moveReason == fk.ReasonUse then
+      elseif move.moveReason == fk.ReasonUse and move.from and U.inSameQueue(move.from, player) then
+        local used = move.from:getTableMark("fengsui_heg__yamai_used-turn")
         for _, info in ipairs(move.moveInfo) do
           if info.fromArea == Card.PlayerHand or info.fromArea == Card.PlayerEquip then
-            table.insertIfNeed(cards, info.cardId)
+            table.insertIfNeed(used, info.cardId)
           end
         end
+        room:setPlayerMark(move.from, "fengsui_heg__yamai_used-turn", used)
       end
     end
-    player.room:setPlayerMark(player, "fengsui_heg__yamai_cards-turn", cards)
+    room:setPlayerMark(player, "fengsui_heg__yamai_cards-turn", gained)
   end,
 })
+
+local function getUsableCards(room, player, turnPlayer)
+  local pool = {}
+  table.insertTable(pool, player:getTableMark("fengsui_heg__yamai_cards-turn"))
+  table.insertTable(pool, turnPlayer:getTableMark("fengsui_heg__yamai_used-turn"))
+  return table.filter(pool, function(id)
+    local area = room:getCardArea(id)
+    return (area == Card.PlayerHand and room:getCardOwner(id) == player) or area == Card.DiscardPile
+  end)
+end
 
 yamai:addEffect(fk.TurnEnd, {
   global = true,
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
-    if not player:hasSkill(yamai.name) or not U.inSameQueue(target, player) then return false end
-    return table.find(player:getTableMark("fengsui_heg__yamai_cards-turn"), function(id)
-      local area = player.room:getCardArea(id)
-      return (area == Card.PlayerHand and player.room:getCardOwner(id) == player) or area == Card.DiscardPile
-    end) ~= nil
+    if not player:hasSkill(yamai.name) or not target or not U.inSameQueue(target, player) then
+      return false
+    end
+    return #getUsableCards(player.room, player, target) > 0
   end,
   on_cost = function(self, event, target, player, data)
     local room = player.room
-    local cards = table.filter(player:getTableMark("fengsui_heg__yamai_cards-turn"), function(id)
-      local area = room:getCardArea(id)
-      return (area == Card.PlayerHand and room:getCardOwner(id) == player) or area == Card.DiscardPile
-    end)
+    local cards = getUsableCards(room, player, target)
     local use = room:askToUseRealCard(player, {
       pattern = cards,
       expand_pile = cards,

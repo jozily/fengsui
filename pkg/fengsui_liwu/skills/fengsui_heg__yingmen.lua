@@ -50,6 +50,7 @@ end
 
 local function attachSkill(room, player, skill)
   player:addFakeSkill(skill)
+  player:prelightSkill(skill, true)
   local skills = { skill }
   table.insertTable(skills, skill.related_skills or {})
   for _, related in ipairs(skills) do
@@ -108,7 +109,11 @@ end
 local function detachVisitorSkills(room, player)
   local skillNames = player:getTableMark("fengsui_heg__fangke_skills")
   for _, skillName in ipairs(skillNames) do
-    player:loseFakeSkill(Fk.skills[skillName])
+    local skill = Fk.skills[skillName]
+    if skill then
+      player:prelightSkill(skill, false)
+      player:loseFakeSkill(skill)
+    end
   end
   room:setPlayerMark(player, "fengsui_heg__fangke_skills", 0)
 end

@@ -62,7 +62,11 @@ local function removeVisitor(room, player, generalName)
     end)
     if not stillProvided then
       room:removeTableMark(player, "fengsui_heg__fangke_skills", skillName)
-      player:loseFakeSkill(Fk.skills[skillName])
+      local skill = Fk.skills[skillName]
+      if skill then
+        player:prelightSkill(skill, false)
+        player:loseFakeSkill(skill)
+      end
     end
   end
 end
@@ -73,7 +77,11 @@ local function clearVisitors(room, player)
   room:setPlayerMark(player, "@[private]&fengsui_heg__fangke", 0)
   local granted = player:getTableMark("fengsui_heg__fangke_skills")
   for _, skillName in ipairs(granted) do
-    if Fk.skills[skillName] then player:loseFakeSkill(Fk.skills[skillName]) end
+    local skill = Fk.skills[skillName]
+    if skill then
+      player:prelightSkill(skill, false)
+      player:loseFakeSkill(skill)
+    end
   end
   room:setPlayerMark(player, "fengsui_heg__fangke_skills", 0)
 end

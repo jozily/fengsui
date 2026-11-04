@@ -2,6 +2,22 @@ local modern = require "packages.hegemony.util"
 
 local compat = setmetatable({}, { __index = modern })
 
+-- 遴哲：被标记的角色除计算胜利外，视为与标记者势力相同（模仿构逆）。
+local linzheMark = "fengsui_heg__linzhe_target"
+local _compareKingdomWith = modern.compareKingdomWith
+function compat.compareKingdomWith(from, to, diff, ignore_gouni)
+  if not ignore_gouni and from and to and from ~= to and
+    from.getTableMark and to.getTableMark then
+    if table.contains(from:getTableMark(linzheMark), to) or
+      table.contains(to:getTableMark(linzheMark), from) then
+      local ret = true
+      if diff then ret = not ret end
+      return ret
+    end
+  end
+  return _compareKingdomWith(from, to, diff, ignore_gouni)
+end
+
 compat.HegMarkChanged = TriggerEvent:subclass("FengsuiHegMarkChanged")
 -- Fengsui 奖惩即将执行时；替换摸牌和弃牌两种分支，保留死亡的其他后续。
 compat.KillRewardExecuting = TriggerEvent:subclass("FengsuiKillRewardExecuting")
