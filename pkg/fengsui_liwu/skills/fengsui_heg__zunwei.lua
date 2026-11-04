@@ -12,6 +12,8 @@ local function responseName()
   local exp = Exppattern:Parse(pattern)
   if exp:match(Fk:cloneCard("jink")) then return "jink" end
   if exp:match(Fk:cloneCard("nullification")) then return "nullification" end
+  if exp:match(Fk:cloneCard("peach")) then return "peach" end
+  if exp:match(Fk:cloneCard("slash")) then return "slash" end
 end
 
 zunwei:addEffect("viewas", {
