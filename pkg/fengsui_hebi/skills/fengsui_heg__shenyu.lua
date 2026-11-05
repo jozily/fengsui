@@ -2,7 +2,7 @@ local shenyu = fk.CreateSkill { name = "fengsui_heg__shenyu" }
 shenyu:addEffect(fk.TurnEnd, {
   global = true,
   can_trigger = function(self, _, target, player)
-    return target and target:isAlive() and
+    return target and player:hasSkill(self.name) and target:isAlive() and
       target:getMark("fengsui_heg__shenyu-turn") == 0 and
       target:getHandcardNum() ~= target.hp and
       target:getMark("fengsui_heg__shenyu-discard") >= target.hp

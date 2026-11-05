@@ -46,12 +46,12 @@ local function resolve(self, player)
   room:broadcastProperty(current, "MaxCards")
 end
 siji:addEffect(fk.Damaged, {
-    can_trigger = function(self, _, target, player) return target == player and player.room.current end,
+    can_trigger = function(self, _, target, player) return target == player and player:hasSkill(self.name) and player.room.current end,
     on_cost = function(self, _, target, player) return player.room:askToSkillInvoke(player, { skill_name = self.name, prompt = "#fengsui_heg__siji-invoke" }) end,
     on_use = function(self, _, _, player) resolve(self, player) end,
   })
 siji:addEffect(fk.Damage, {
-    can_trigger = function(self, _, target, player, data) return data and data.from == player and player.room.current ~= nil end,
+    can_trigger = function(self, _, target, player, data) return data and data.from == player and player:hasSkill(self.name) and player.room.current ~= nil end,
     on_cost = function(self, _, target, player) return player.room:askToSkillInvoke(player, { skill_name = self.name, prompt = "#fengsui_heg__siji-invoke" }) end,
     on_use = function(self, _, _, player) resolve(self, player) end,
   })

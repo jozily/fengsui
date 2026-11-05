@@ -17,7 +17,7 @@ zhanjue:addEffect(fk.AskForCardResponse, {
   global = true,
   can_trigger = function(self, _, target, player, data)
     local e = data and data.eventData
-    return target == player and data.pattern and
+    return target == player and player:hasSkill(self.name) and data.pattern and
       string.find(data.pattern, "slash") and e and e.card and (e.card.name == "duel" or e.card.trueName == "duel") and
       ((e.card.skillName == ZNAME) or (e.card.skillNames and table.contains(e.card.skillNames, ZNAME))) and #player:getCardIds("e") > 0
   end,

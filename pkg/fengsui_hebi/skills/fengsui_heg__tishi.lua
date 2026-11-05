@@ -9,7 +9,7 @@ local function updateVisible(room, player)
 end
 tishi:addEffect(fk.HpChanged, {
   can_trigger = function(self, _, target, player, data)
-    return target == player and data and data.old ~= player.hp and
+    return target == player and player:hasSkill(self.name) and data and data.old ~= player.hp and
       (player.hp == 3 or player.hp == 2 or player.hp == 1) and player:getMark("fengsui_heg__tishi-" .. player.hp .. "-round") == 0
   end,
   on_use = function(self, _, _, player)

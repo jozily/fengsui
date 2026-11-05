@@ -87,7 +87,7 @@ xiangchen:addEffect(fk.HpChanged, {
     local currentKingdom = current and H.getKingdom(current)
     local same_unknown = player ~= target and player.kingdom == "unknown" and
       target.kingdom == "unknown"
-    return target and
+    return target and player:hasSkill(self.name) and
       (H.compareKingdomWith(player, target) or same_unknown) and current and
       currentKingdom ~= "fengsui_neutral_old" and
       currentKingdom ~= "fengsui_neutral"

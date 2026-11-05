@@ -13,7 +13,7 @@ local function lost(player, data)
 end
 lishi:addEffect(fk.AfterCardsMove, {
   global = true,
-  can_trigger = function(self, _, _, player, data) return table.find(lost(player, data), function(p) return p == player or not player:isNude() end) ~= nil end,
+  can_trigger = function(self, _, _, player, data) return player:hasSkill(self.name) and table.find(lost(player, data), function(p) return p == player or not player:isNude() end) ~= nil end,
   on_cost = function(self, event, _, player, data)
     local tos = player.room:askToChoosePlayers(player, {targets = table.filter(lost(player, data), function(p) return p == player or not player:isNude() end), min_num = 1, max_num = 1, skill_name = self.name, prompt = "#fengsui_heg__lishi-target", cancelable = true})
     if #tos == 0 then return false end; event:setCostData(self, tos[1]); return true

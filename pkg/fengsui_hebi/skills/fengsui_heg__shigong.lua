@@ -4,7 +4,7 @@ local shigong = fk.CreateSkill { name = "fengsui_heg__shigong", tags = { Skill.L
 
 shigong:addEffect(fk.EnterDying, {
   can_trigger = function(self, _, target, player)
-    return target == player and player.room.current ~= player and
+    return target == player and player:hasSkill(self.name) and player.room.current ~= player and
       player:getMark("fengsui_heg__shigong_used") == 0 and H.hasGeneral(player, true)
   end,
   on_use = function(self, _, _, player)

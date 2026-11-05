@@ -1,7 +1,7 @@
 local zhenchao = fk.CreateSkill { name = "fengsui_heg__zhenchao" }
 
 local function available(self, player)
-  return player:usedSkillTimes(self.name, Player.HistoryTurn) == 0 and
+  return player:hasSkill(self.name) and player:usedSkillTimes(self.name, Player.HistoryTurn) == 0 and
     #player.room.draw_pile > 0
 end
 

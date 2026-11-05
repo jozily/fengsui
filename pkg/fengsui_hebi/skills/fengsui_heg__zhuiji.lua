@@ -70,6 +70,6 @@ local function reduce(self, player)
     player.room:setPlayerMark(player, "@fengsui_heg__zhuiji", 0)
   end
 end
-zhuiji:addEffect(fk.Damage, { can_trigger = function(self, _, target, player, data) return target == player and player:getMark(ZNAME .. "-damage") > 0 end, on_use = function(self, _, _, player) reduce(self, player) end })
-zhuiji:addEffect(fk.Damaged, { can_trigger = function(self, _, target, player, data) return target == player and player:getMark(ZNAME .. "-damage") > 0 end, on_use = function(self, _, _, player) reduce(self, player) end })
+zhuiji:addEffect(fk.Damage, { can_trigger = function(self, _, target, player, data) return target == player and player:hasSkill(ZNAME) and player:getMark(ZNAME .. "-damage") > 0 end, on_use = function(self, _, _, player) reduce(self, player) end })
+zhuiji:addEffect(fk.Damaged, { can_trigger = function(self, _, target, player, data) return target == player and player:hasSkill(ZNAME) and player:getMark(ZNAME .. "-damage") > 0 end, on_use = function(self, _, _, player) reduce(self, player) end })
 return zhuiji

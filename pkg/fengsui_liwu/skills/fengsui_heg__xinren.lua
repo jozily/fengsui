@@ -32,7 +32,7 @@ s:addEffect("targetmod", {
 
 local function canTriggerAfterDetermined(self, _, target, player)
   local targetId = tonumber(player:getMark("fengsui_heg__yanshi_target"))
-  return target == player and
+  return target == player and player:hasSkill(s.name) and
     player:getMark(s.name .. "_used") == 0 and player.kingdom ~= "unknown" and
     targetId ~= nil and targetId ~= player.id
 end

@@ -29,7 +29,7 @@ end
 
 ruwu:addEffect(fk.AfterCardsMove, {
   can_trigger = function(self, _, _, player, data)
-    if not (player:isAlive() and hasPileChange(data)) then
+    if not (player:isAlive() and player:hasSkill(self.name) and hasPileChange(data)) then
       return false
     end
     return table.find(player.room.alive_players, hasHegMark) ~= nil

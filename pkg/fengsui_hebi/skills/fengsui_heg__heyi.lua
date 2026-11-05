@@ -26,7 +26,7 @@ end
 
 heyi:addEffect(fk.Damage, {
   can_trigger = function(self, _, target, player)
-    return target == player and canTrigger(player, "fengsui_heg__heyi_out-round")
+    return target == player and player:hasSkill(heyi.name) and canTrigger(player, "fengsui_heg__heyi_out-round")
   end,
   on_cost = function(self, _, _, player)
     return player.room:askToSkillInvoke(player, { skill_name = heyi.name, prompt = "#fengsui_heg__heyi-invoke" })
@@ -39,7 +39,7 @@ heyi:addEffect(fk.Damage, {
 
 heyi:addEffect(fk.Damaged, {
   can_trigger = function(self, _, target, player)
-    return target == player and canTrigger(player, "fengsui_heg__heyi_in-round")
+    return target == player and player:hasSkill(heyi.name) and canTrigger(player, "fengsui_heg__heyi_in-round")
   end,
   on_cost = function(self, _, _, player)
     return player.room:askToSkillInvoke(player, { skill_name = heyi.name, prompt = "#fengsui_heg__heyi-invoke" })
