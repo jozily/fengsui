@@ -153,10 +153,13 @@ Fk:loadTranslationTable{
 
 assert(#extension.generals == 20, "fengsui_shiyi must register exactly 20 generals")
 
--- 番外武将默认隐藏；五名常规中立者必须进入正常选将池。
+-- 番外武将默认隐藏；五名常规中立者与学园都市角色进入正常选将池。
 local visible_neutral = {
   fengsui_heg__jiaxu = true, fengsui_heg__lusu = true, fengsui_heg__xushu = true,
   fengsui_heg__zhaoe = true, fengsui_heg__xushao = true,
+  fengsui_toaru__heg__frenda = true, fengsui_toaru__heg__shokuhou = true,
+  fengsui_toaru__heg__misaka = true, fengsui_toaru__heg__shirai = true,
+  fengsui_toaru__heg__saten = true,
 }
 for _, general in ipairs(extension.generals) do
   general.hidden = not visible_neutral[general.name]

@@ -12,7 +12,9 @@ local function spec(event)
     anim_type = "support",
     can_trigger = function(self, _, target, player, data)
       local other = otherTarget(event, player, data)
-      return target == player and player:hasSkill(yongfan.name) and other and other ~= player and other:isAlive()
+      return target == player and player:hasSkill(yongfan.name) and
+        player:usedSkillTimes(yongfan.name, Player.HistoryTurn) == 0 and
+        other and other ~= player and other:isAlive()
     end,
     on_cost = function(self, eventObj, target, player, data)
       local other = otherTarget(event, player, data)
@@ -34,7 +36,7 @@ yongfan:addEffect(fk.Damaged, spec(fk.Damaged))
 
 Fk:loadTranslationTable {
   ["fengsui_heg__yongfan"] = "雍番",
-  [":fengsui_heg__yongfan"] = "当你受到或造成伤害后，你可以视为使用一张仅指定你与目标或伤害来源的【以逸待劳】。",
+  [":fengsui_heg__yongfan"] = "每回合限一次，当你受到或造成伤害后，你可以视为使用一张仅指定你与目标或伤害来源的【以逸待劳】。",
   ["#fengsui_heg__yongfan-invoke"] = "雍番：是否视为使用一张仅指定你与 %dest 的【以逸待劳】？",
 }
 

@@ -27,10 +27,9 @@ local wangfuren = General:new(extension, "fengsui_heg__wangfuren", "wu", 3, 3, G
 wangfuren:addCompanions("hs__sunquan")
 wangfuren:addSkills { "fengsui_heg__qiangong", "fengsui_heg__bizun" }
 
-local fengsui_heg__zhangbai = General:new(extension, "fengsui_heg__zhangbai", "wu", 3)
-fengsui_heg__zhangbai:addCompanions("ty_heg__luyusheng")
-fengsui_heg__zhangbai:addSkill("fengsui_heg__jincai")
-fengsui_heg__zhangbai:addSkill("fengsui_heg__lianxi")
+local fengsui_heg__heji = General:new(extension, "fengsui_heg__heji", "wu", 3, 3, General.Female)
+fengsui_heg__heji:addCompanions("fengsui_heg__sunyuan")
+fengsui_heg__heji:addSkills { "fengsui_heg__guru", "fengsui_heg__weihou" }
 
 local mazhi = General:new(extension, "fengsui_heg__mazhi", "qun", 3, 3, General.Female)
 mazhi:addCompanions("fengsui_heg__malun")
@@ -1471,7 +1470,9 @@ Fk:loadTranslationTable{
     [":fengsui_heg__jiaosu"]="主将技，当一名同势力角色成为不同势力角色使用的单体目标牌的目标后，你可以主副将<a href='heg__yiwei'>易位</a>并取消之。",
     [":fengsui_heg__chuguang"]="锁定技，当你于一轮内第X次发动“皎宿”或“曜暝”后，你令该技能目标摸X张牌；当一名成为过“皎宿”/“曜暝”目标的角色脱离濒死状态后/死亡后，你令其/你暗置变更副将（X为“皎宿”或“曜暝”发动次数且等于同势力角色数后“皎宿”或“曜暝”于本轮失效）。",
     [":fengsui_heg__yaoming"]="副将技，当一名同势力角色使用单体目标牌指定不同势力角色为目标后，你可以主副将<a href='heg__yiwei'>易位</a>为此牌增加一名合法目标。",
-    [":fengsui_heg__qusheng"]='每回合限一次，当一张牌进入弃牌堆后，若弃牌堆有唯一一张与此牌牌名相同但花色不同的牌，你可以获得之，然后将原牌置入牌堆顶。',
+    [":fengsui_heg__qusheng"]='当一张牌进入弃牌堆后，若弃牌堆有与此牌牌名相同但颜色不同的牌且你的另一张武将牌明置，你可暗置另一张武将牌并获得之，然后将原牌置于牌堆顶。',
+    ["fengsui_heg__qushengRemake"]="取声·旧",
+    [":fengsui_heg__qushengRemake"]='每回合限一次，当一张牌进入弃牌堆后，若弃牌堆有唯一一张与此牌牌名相同但花色不同的牌，你可以获得之，然后将原牌置入牌堆顶。',
     [":fengsui_heg__jinshi"]='锁定技，当你明置另一张武将牌后，你失去一点体力值并暗置此武将牌。你下次明置此武将牌时将手牌摸至体力上限。',
     [":fengsui_heg__nizi"]='当一名与你势力相同的角色于其回合内使用的基本牌或普通锦囊牌结算后，你可以弃置任意枚名字字数之和等于此牌牌名字数的国战标记，视为使用此牌，然后若你的武将牌均明置，你暗置此武将牌。',
     [":fengsui_heg__buge"]="当你明置此武将牌后或受到伤害后，你可以随机获得一枚国战标记。",
@@ -1490,7 +1491,7 @@ Fk:loadTranslationTable{
     ["#fengsui_heg__lishi-target"]="离室：选择一名手牌数不大于体力值且一次性失去至少两张牌的角色",
     ["#fengsui_heg__lishi-give"]="离室：选择交给另一名角色的一张牌",
     ["#fengsui_heg__qinghuang-swap"]="清篁：是否与该角色交换对应武将牌？",
-    ["#fengsui_heg__qusheng-invoke"]="取声：是否获得同名异花色的牌？", ["#fengsui_heg__jinshi-use"]="噤誓：你可以使用一张牌",
+    ["#fengsui_heg__qusheng-invoke"]="取声：是否暗置另一张武将牌，获得同名异色的牌？", ["#fengsui_heg__qusheng-choose"]="取声：请选择要获得的牌", ["#fengsui_heg__qushengRemake-invoke"]="取声·旧：是否获得同名异花色的牌？", ["#fengsui_heg__jinshi-use"]="噤誓：你可以使用一张牌",
     ["#fengsui_heg__nizi-choice"]="拟字：选择要弃置的国战标记组合",
     ["#fengsui_heg__cimang-invoke"]="刺芒：是否获得牌堆底的一张牌？",
     ["#fengsui_heg__qiju-use"]="戚举：是否将此基本牌转化为其他基本牌？", ["#fengsui_heg__qiju-slash"]="戚举：是否使用一张【杀】？",
@@ -1873,7 +1874,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__xushu"] = "佚名",
   ["cv:fengsui_heg__xushu"] = "暂无",
   ["fengsui_heg__jiange"] = "剑歌",
-  [":fengsui_heg__jiange"] = "你可以将一张锦囊牌或装备牌当作无距离限制的【杀】或【决斗】使用或打出，然后你摸一张牌。",
+  [":fengsui_heg__jiange"] = "每轮每项限一次，你可以将一张锦囊牌或装备牌当作无距离限制的【杀】或【决斗】使用或打出，然后你摸一张牌。",
   ["fengsui_heg__xiawang"] = "侠望",
   [":fengsui_heg__xiawang"] = "每轮限一次，当与你距离不大于1的角色受到伤害后，若伤害来源不为你，你可对伤害来源使用一张可用的伤害牌。",
   ["@fengsui_heg__xiawangRemake"] = "侠望",

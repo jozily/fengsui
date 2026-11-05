@@ -27,7 +27,7 @@ linzhe:addEffect("active", {
     local target = effect.tos[1]
     -- 隐藏标记存 id 供势力判断；@ 标记让目标头上可见
     room:addTableMarkIfNeed(player, LINZHE_MARK, target.id)
-    room:setPlayerMark(target, LINZHE_VISIBLE_MARK, "势力相同")
+    room:setPlayerMark(target, LINZHE_VISIBLE_MARK, 1)
 
     -- 视为同势力后，所有同势力角色（含山涛与被标记者）依次选择是否变更副将
     local targets = table.filter(room.alive_players, function(p)

@@ -62,9 +62,10 @@ local heqi = General:new(extension, "fengsui_heg__heqi", "wu", 4)
 heqi.deputyMaxHpAdjustedValue = -1
 heqi:addSkills { "fengsui_heg__junwei", "fengsui_heg__chenji", "fengsui_heg__zhouwang" }
 
-local heji = General:new(extension, "fengsui_heg__heji", "wu", 3, 3, General.Female)
-heji:addCompanions("fengsui_heg__sunyuan")
-heji:addSkills { "fengsui_heg__guru", "fengsui_heg__weihou" }
+local fengsui_heg__zhangbai = General:new(extension, "fengsui_heg__zhangbai", "wu", 3)
+fengsui_heg__zhangbai:addCompanions("ty_heg__luyusheng")
+fengsui_heg__zhangbai:addSkill("fengsui_heg__jincai")
+fengsui_heg__zhangbai:addSkill("fengsui_heg__lianxi")
 
 local zhanghuai = General:new(extension, "fengsui_heg__zhanghuai", "wu", 3)
 zhanghuai.gender = General.Female

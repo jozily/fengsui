@@ -5,8 +5,24 @@ local compat = setmetatable({}, { __index = modern })
 -- 遴哲：被标记的角色除计算胜利外，视为与标记者势力相同（模仿构逆）。
 local linzheMark = "fengsui_heg__linzhe_target"
 local _compareKingdomWith = modern.compareKingdomWith
+
+-- “除计算胜利外”：胜利条件计算不应用遴哲效果。
+-- 胜利相关调用点：hegemony_rule.lua 的全员同势力结算（直接调用），
+-- 以及 new_hegemony_mode.lua 的 winner_getter（经 compareExpectedKingdomWith 间接调用）。
+local function inVictoryCalc()
+  local caller = debug.getinfo(2, "S")
+  local src = caller and caller.source or ""
+  if src:find("hegemony_rule", 1, true) then return true end
+  if src:find("util", 1, true) then
+    local upper = debug.getinfo(3, "S")
+    local src2 = upper and upper.source or ""
+    if src2:find("new_hegemony_mode", 1, true) then return true end
+  end
+  return false
+end
+
 function compat.compareKingdomWith(from, to, diff, ignore_gouni)
-  if not ignore_gouni and from and to and from ~= to and
+  if not ignore_gouni and not inVictoryCalc() and from and to and from ~= to and
     from.getTableMark and to.getTableMark then
     if table.contains(from:getTableMark(linzheMark), to.id) or
       table.contains(to:getTableMark(linzheMark), from.id) then

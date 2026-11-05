@@ -174,28 +174,31 @@ function HegLogic:chooseGenerals()
     room:sendLog{ type = "#fengsui_warlords_filter", toast = true }
   end
 
-  -- 可选：从常规中立者与野心家中随机保留指定数量，作为本局可用武将。
+  -- 可选：从中立者与野心家中随机保留指定数量，作为本局可用武将。
   local randomNeutral = tonumber(room:getSettings("fengsui_random_neutral")) or 0
   local randomWild = tonumber(room:getSettings("fengsui_random_wild")) or 0
   if not warlordsOn and (randomNeutral > 0 or randomWild > 0) then
-    local regularNeutral = {
-      fengsui_heg__jiaxu = true, fengsui_heg__lusu = true, fengsui_heg__xushu = true,
-      fengsui_heg__zhaoe = true, fengsui_heg__xushao = true,
-    }
+    -- 与野心家一样按势力抽签，不设固定名单；需要约束人选请在游戏内禁将。
+    local function isNeutralKingdom(k)
+      return k == "fengsui_neutral" or k == "fengsui_neutral_old"
+    end
     -- Hidden flags are resolved while the room builds its initial pile.  Keep
     -- the random pool authoritative even when an older room cache omitted a
     -- visible neutral general.
-    for name in pairs(regularNeutral) do
-      if Fk.generals[name] and not table.contains(room.general_pile, name) then
+    for name, g in pairs(Fk.generals) do
+      if g and not g.hidden and isNeutralKingdom(g.kingdom) and
+        not table.contains(room.general_pile, name) then
         table.insert(room.general_pile, name)
       end
     end
     local candidates = table.filter(room.general_pile, function(name)
       local g = Fk.generals[name]
-      return g and ((g.kingdom == "wild" and randomWild > 0) or (regularNeutral[name] and randomNeutral > 0))
+      return g and ((g.kingdom == "wild" and randomWild > 0) or
+        (isNeutralKingdom(g.kingdom) and randomNeutral > 0))
     end)
-    -- 只从五名常规中立者中抽取，学园都市中立者不纳入本选项。
-    local neutralCandidates = table.filter(candidates, function(name) return regularNeutral[name] == true end)
+    local neutralCandidates = table.filter(candidates, function(name)
+      return isNeutralKingdom(Fk.generals[name].kingdom)
+    end)
     local wildCandidates = table.filter(candidates, function(name) return Fk.generals[name].kingdom == "wild" end)
     local selectedNeutral = table.random(neutralCandidates, math.min(randomNeutral, #neutralCandidates))
     local selectedWild = table.random(wildCandidates, math.min(randomWild, #wildCandidates))
@@ -205,7 +208,7 @@ function HegLogic:chooseGenerals()
     for i = #room.general_pile, 1, -1 do
       local generalName = room.general_pile[i]
       local g = Fk.generals[generalName]
-      if g and (g.kingdom == "wild" or regularNeutral[generalName]) and not selectedSet[generalName] then
+      if g and (g.kingdom == "wild" or isNeutralKingdom(g.kingdom)) and not selectedSet[generalName] then
         table.remove(room.general_pile, i)
       end
     end

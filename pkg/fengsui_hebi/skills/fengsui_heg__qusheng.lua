@@ -1,34 +1,41 @@
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 local qusheng = fk.CreateSkill { name = "fengsui_heg__qusheng" }
 
--- 在弃牌堆中寻找“与该牌同名但花色不同”的唯一一张牌；若有 0 张或 2 张以上则返回 nil
-local function findUniqueMatch(room, id)
+-- 在弃牌堆中寻找与该牌同名但颜色不同的所有牌（可能有多张）
+local function findMatches(room, id)
   local card = Fk:getCardById(id)
-  if not card then return nil end
-  local match, found = nil, 0
+  if not card then return {} end
+  local matches = {}
   for _, other in ipairs(room.discard_pile) do
     if other ~= id then
       local c = Fk:getCardById(other)
-      if c and c.name == card.name and c.suit ~= card.suit then
-        found = found + 1
-        match = other
-        if found > 1 then return nil end
+      if c and c.name == card.name and c.color ~= card.color then
+        table.insert(matches, other)
       end
     end
   end
-  return found == 1 and match or nil
+  return matches
+end
+
+-- 另一张武将牌（非取声所在的那张）是否明置；返回其位置（是否副将）
+local function otherGeneralShown(player)
+  local place = U.getSkillPlace(player, qusheng.name)
+  if place == nil then return nil end
+  local otherName = place and player.general or player.deputyGeneral
+  return place, otherName ~= "anjiang"
 end
 
 qusheng:addEffect(fk.AfterCardsMove, {
   global = true,
   can_trigger = function(self, _, target, player, data)
     if not U.hasGeneralName(player, "fengsui_heg__biyu") then return false end
-    if player:getMark(self.name .. "-turn") > 0 then return false end
+    local _, shown = otherGeneralShown(player)
+    if not shown then return false end
     if not data then return false end
     for _, move in ipairs(data) do
       if move.toArea == Card.DiscardPile and move.moveInfo then
         for _, info in ipairs(move.moveInfo) do
-          if findUniqueMatch(player.room, info.cardId) then return true end
+          if #findMatches(player.room, info.cardId) > 0 then return true end
         end
       end
     end
@@ -39,8 +46,10 @@ qusheng:addEffect(fk.AfterCardsMove, {
     for _, move in ipairs(data) do
       if move.toArea == Card.DiscardPile and move.moveInfo then
         for _, info in ipairs(move.moveInfo) do
-          local m = findUniqueMatch(player.room, info.cardId)
-          if m then table.insert(candidates, { orig = info.cardId, match = m }) end
+          local matches = findMatches(player.room, info.cardId)
+          if #matches > 0 then
+            table.insert(candidates, { orig = info.cardId, matches = matches })
+          end
         end
       end
     end
@@ -52,22 +61,39 @@ qusheng:addEffect(fk.AfterCardsMove, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    room:setPlayerMark(player, self.name .. "-turn", 1)
-    for _, pair in ipairs(event:getCostData(self).candidates) do
-      local gain, put = pair.match, pair.orig
-      room:obtainCard(player, gain, true, fk.ReasonPrey, player, self.name)
-      if room:getCardArea(put) == Card.DiscardPile then
-        room:moveCardTo(put, Card.DrawPile, nil, fk.ReasonPut, self.name, nil, true, player)
-        table.removeOne(room.draw_pile, put)
-        table.insert(room.draw_pile, 1, put)
+    local place = otherGeneralShown(player)
+    local candidates = event:getCostData(self).candidates
+    local gainIds = {}
+    for _, pair in ipairs(candidates) do
+      for _, m in ipairs(pair.matches) do
+        if not table.contains(gainIds, m) then table.insert(gainIds, m) end
       end
     end
+    local gain = gainIds[1]
+    if #gainIds > 1 then
+      local picked = room:askToChooseCards(player, {
+        target = player, flag = { card_data = { { self.name, gainIds } } },
+        min = 1, max = 1, skill_name = self.name,
+        prompt = "#fengsui_heg__qusheng-choose",
+      })
+      gain = picked[1] or gain
+    end
+    local orig
+    for _, pair in ipairs(candidates) do
+      if table.contains(pair.matches, gain) then
+        orig = pair.orig
+        break
+      end
+    end
+    player:hideGeneral(not place)
+    room:obtainCard(player, gain, true, fk.ReasonPrey, player, self.name)
+    if orig and room:getCardArea(orig) == Card.DiscardPile then
+      room:moveCards {
+        ids = { orig }, toArea = Card.DrawPile, drawPilePosition = 1,
+        moveReason = fk.ReasonPut, skillName = self.name, moveVisible = true,
+      }
+    end
   end,
-})
-
-qusheng:addEffect(fk.TurnStart, { global = true,
-  can_refresh = function(self, _, target) return target ~= nil end,
-  on_refresh = function(self, _, target) target.room:setPlayerMark(target, self.name .. "-turn", 0) end,
 })
 
 return qusheng
