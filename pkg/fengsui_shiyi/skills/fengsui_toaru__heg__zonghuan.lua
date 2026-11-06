@@ -37,11 +37,17 @@ zonghuan:addEffect(fk.TargetConfirming, {
     })[1]
     if not newUser then return end
     use.from = newUser
-    -- 清空原目标，重新指定
+    -- use.tos 是 AimGroup（1=未结算 2=已结算 3=已取消 三个子列表）。
+    -- 必须先快照所有旧目标再逐个取消：把整个子列表传给 cancelTarget 会
+    -- 对同一张表边遍历边删除，Lua 的 ipairs 会跳过一半目标导致漏取消。
     local oldTos = {}
-    for _, t in ipairs(use.tos) do oldTos[#oldTos + 1] = t end
+    for _, group in ipairs(use.tos) do
+      if type(group) == "table" and group[1] and group[1].class then
+        for _, t in ipairs(group) do table.insert(oldTos, t) end
+      end
+    end
     for _, t in ipairs(oldTos) do
-      if table.contains(use.tos, t) then use:cancelTarget(t) end
+      use:cancelTarget(t)
     end
     local candidates = table.filter(room.alive_players, function(p)
       return p:isAlive() and newUser:canUseTo(use.card, p, { bypass_distances = true, bypass_times = true })
