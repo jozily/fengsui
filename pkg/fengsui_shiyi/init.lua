@@ -156,7 +156,7 @@ Fk:loadTranslationTable{
   ["#fengsui_toaru__heg__uiharukazari"] = "恒温死神",
 }
 
-assert(#extension.generals == 20, "fengsui_shiyi must register exactly 20 generals")
+assert(#extension.generals == 21, "fengsui_shiyi must register exactly 21 generals")
 
 -- 番外武将默认隐藏；五名常规中立者与学园都市角色进入正常选将池。
 local visible_neutral = {
