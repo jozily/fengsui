@@ -47,7 +47,8 @@ local function availableSkills(general, target, history, field_skills)
       description:find("明置此武将牌", 1, true) or
       description:find("明置另一张武将牌", 1, true)
     )
-    return skill and not skill:hasTag(Skill.Lord) and not position_changing and
+    return skill and not skill:hasTag(Skill.Lord) and not H.isTaggedSkill(skill) and
+    not position_changing and
       not target:hasSkill(skill_name, true, true) and
       not table.contains(history, skill_name) and not field_skills[skill_name]
   end)

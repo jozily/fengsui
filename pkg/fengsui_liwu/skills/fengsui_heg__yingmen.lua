@@ -1,3 +1,4 @@
+local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.utility.utility"
 local FU = require "packages.fengsui.pkg.fengsui_liwu.util"
 
@@ -41,6 +42,8 @@ end
 
 local function eligibleSkill(skill, isDeputy)
   if not skill then return false end
+  -- 访客技能只提供非标签技（锁定技/限定技/觉醒技/主公技等不灌入）。
+  if H.isTaggedSkill(skill) then return false end
   if FU.isGeneralStateSkill(skill) then return false end
   if isDeputy == nil then return false end
   if skill:hasTag(Skill.MainPlace) and isDeputy then return false end
@@ -204,13 +207,14 @@ s:addTest(function(room, me)
   }) do
     lu.assertFalse(Fk.generals[name].hidden)
   end
+  -- 标签技（锁定技/限定技等）一律不灌入，yinbing 含 Compulsory、baoguo 为限定技。
   lu.assertFalse(eligibleSkill(Fk.skills["fengsui_heg__yinbing"], false))
+  lu.assertFalse(eligibleSkill(Fk.skills["fengsui_heg__yinbing"], true))
+  lu.assertFalse(eligibleSkill(Fk.skills["fengsui_heg__baoguo"], false))
+  -- 主将技/副将技位置标签保留原匹配逻辑。
   lu.assertTrue(eligibleSkill(Fk.skills["fengsui_heg__jianhe"], false))
-  lu.assertTrue(eligibleSkill(Fk.skills["fengsui_heg__yinbing"], true))
   lu.assertFalse(eligibleSkill(Fk.skills["fengsui_heg__jianhe"], true))
-  lu.assertFalse(eligibleSkill(Fk.skills["fengsui_heg__yuandao"], true))
   lu.assertTrue(eligibleSkill(Fk.skills["fengsui_heg__yuandao"], false))
-  lu.assertTrue(eligibleSkill(Fk.skills["fengsui_heg__baoguo"], false))
 
   local translations = require "packages.fengsui.pkg.fengsui_liwu.option_translations"
   for key in pairs(translations) do

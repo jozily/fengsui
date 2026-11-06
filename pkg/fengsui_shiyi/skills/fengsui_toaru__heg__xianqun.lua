@@ -7,7 +7,7 @@ local xianqun = fk.CreateSkill {
 
 Fk:loadTranslationTable{
   ["fengsui_toaru__heg__xianqun"] = "掀裙",
-  [":fengsui_toaru__heg__xianqun"] = "锁定技，已明置武将数不大于你的角色无法响应你使用的牌。",
+  [":fengsui_toaru__heg__xianqun"] = "锁定技，已明置武将数小于你的角色无法响应你使用的牌。",
 }
 
 -- 只在出牌前把不可响应名单写进 use，引擎在 askToUseCard / askForCard
@@ -21,7 +21,7 @@ xianqun:addEffect(fk.PreCardUse, {
   on_trigger = function(self, event, target, player, data)
     local mine = H.getGeneralsRevealedNum(player)
     local list = table.filter(player.room.alive_players, function(p)
-      return H.getGeneralsRevealedNum(p) <= mine
+      return H.getGeneralsRevealedNum(p) < mine
     end)
     if #list == 0 then return end
     data.disresponsiveList = data.disresponsiveList or {}

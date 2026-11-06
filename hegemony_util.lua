@@ -302,6 +302,25 @@ function compat.askToHebiOrTransform(room, player, skillName, cancelable)
   return true
 end
 
+-- 非标签技判定：供揖门访客、相谶发放等临时获得技能的场合使用。
+-- 主将技/副将技是位置标签而非技能类型，不在排除之列（由调用方做位置匹配）。
+local GRANT_FORBIDDEN_TAGS = {
+  [Skill.Lord] = true, [Skill.Compulsory] = true, [Skill.Limited] = true,
+  [Skill.Wake] = true, [Skill.Switch] = true, [Skill.Quest] = true,
+  [Skill.Permanent] = true, [Skill.Hidden] = true, [Skill.AttachedKingdom] = true,
+  [Skill.Charge] = true, [Skill.Family] = true, [Skill.Combo] = true,
+  [Skill.Rhyme] = true, [Skill.Force] = true,
+}
+
+function compat.isTaggedSkill(skill)
+  if not skill then return true end
+  local skel = skill.getSkeleton and skill:getSkeleton() or skill
+  for _, tag in ipairs(skel.tags or {}) do
+    if GRANT_FORBIDDEN_TAGS[tag] then return true end
+  end
+  return false
+end
+
 Fk:loadTranslationTable{
   ["#fengsui-hebi-or-transform"] = "请选择合璧；若无可用配对对象则自动变更副将",
 }

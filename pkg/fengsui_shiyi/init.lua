@@ -84,6 +84,9 @@ shirai:addSkills { "fengsui_toaru__heg__shunyi", "fengsui_toaru__heg__fengji" }
 local saten = General:new(extension, "fengsui_toaru__heg__saten", "fengsui_neutral", 4, 4, General.Female)
 saten:addSkills { "fengsui_toaru__heg__xianqun", "fengsui_toaru__heg__juben" }
 
+local uiharukazari = General:new(extension, "fengsui_toaru__heg__uiharukazari", "fengsui_neutral", 3, 3, General.Female)
+uiharukazari:addSkills { "fengsui_toaru__heg__hengwen", "fengsui_toaru__heg__zonghuan" }
+
 -- Remake 备份也会作为技能骨架加载；校验官方骨架至少完整即可。
 assert(#extension.skill_skels >= 18, "fengsui_shiyi must load the official skill skeletons")
 
@@ -149,6 +152,8 @@ Fk:loadTranslationTable{
   ["fengsui_toaru__heg__shirai"] = "白井黑子",
   ["fengsui_toaru__heg__saten"] = "佐天泪子",
   ["#fengsui_toaru__heg__saten"] = "泪爷",
+  ["fengsui_toaru__heg__uiharukazari"] = "初春饰利",
+  ["#fengsui_toaru__heg__uiharukazari"] = "恒温死神",
 }
 
 assert(#extension.generals == 20, "fengsui_shiyi must register exactly 20 generals")
@@ -160,6 +165,7 @@ local visible_neutral = {
   fengsui_toaru__heg__frenda = true, fengsui_toaru__heg__shokuhou = true,
   fengsui_toaru__heg__misaka = true, fengsui_toaru__heg__shirai = true,
   fengsui_toaru__heg__saten = true,
+  fengsui_toaru__heg__uiharukazari = true,
 }
 for _, general in ipairs(extension.generals) do
   general.hidden = not visible_neutral[general.name]
