@@ -10,6 +10,10 @@ local function damagePattern()
   for _, card in ipairs(Fk.cards) do
     if card.is_damage_card then table.insertIfNeed(names, card.name) end
   end
+  -- 兜底：牌堆尚未生成或某些扩展伤害牌缺席时，也要保证转化技的
+  -- pattern（剑歌 "slash,duel"）与请求 pattern 相容，否则技能按钮不显示。
+  table.insertIfNeed(names, "slash")
+  table.insertIfNeed(names, "duel")
   return table.concat(names, ",")
 end
 
