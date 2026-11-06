@@ -6,13 +6,14 @@ local hengwen = fk.CreateSkill {
 }
 
 local RECORD_MARK = "fengsui_toaru__heg__hengwen_record"
+local VISIBLE_MARK = "@fengsui_toaru__heg__hengwen_record"
 
 Fk:loadTranslationTable{
   ["fengsui_toaru__heg__hengwen"] = "恒温",
   [":fengsui_toaru__heg__hengwen"] = "限定技，出牌阶段，你可以记录一名角色的体力值与手牌数。当其体力值变化后，你可以令其体力恢复与手牌摸至记录数并清除此记录。",
   ["#fengsui_toaru__heg__hengwen"] = "恒温：记录一名角色的体力值与手牌数",
   ["#fengsui_toaru__heg__hengwen-invoke"] = "恒温：是否令 %dest 恢复至记录的体力与手牌数？",
-  ["fengsui_toaru__heg__hengwen_record"] = "恒温",
+  ["@fengsui_toaru__heg__hengwen_record"] = "恒温",
 }
 
 hengwen:addEffect("active", {
@@ -34,6 +35,7 @@ hengwen:addEffect("active", {
       hp = target.hp,
       hand = target:getHandcardNum(),
     })
+    room:setPlayerMark(effect.from, VISIBLE_MARK, target.hp .. "/" .. target:getHandcardNum())
   end,
 })
 
@@ -54,6 +56,7 @@ hengwen:addEffect(fk.HpChanged, {
     local room = player.room
     local record = player:getTableMark(RECORD_MARK)
     room:setPlayerMark(player, RECORD_MARK, 0)
+    room:setPlayerMark(player, VISIBLE_MARK, 0)
     if target.dead then return end
     if target.hp < record.hp and target:isWounded() then
       room:recover {
