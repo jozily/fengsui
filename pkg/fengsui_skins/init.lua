@@ -124,15 +124,15 @@ Fk:loadTranslationTable {
   ["fengsui_toaru__heg__misaka_s5.jpg"] = "守护者",
 
   ["fengsui_toaru__heg__shirai_s1.jpg"] = "妖精之翼",
-  ["fengsui_toaru__heg__shirai_s2.jpg"] = "寒风围巾",
-  ["fengsui_toaru__heg__shirai_s3.jpg"] = "针舞",
+  ["fengsui_toaru__heg__shirai_s2.jpg"] = "凛冽之梦",
+  ["fengsui_toaru__heg__shirai_s3.jpg"] = "风纪委员",
 
   ["fengsui_toaru__heg__shokuhou_s1.jpg"] = "体育课",
   ["fengsui_toaru__heg__shokuhou_s2.jpg"] = "粉色黄昏",
   ["fengsui_toaru__heg__shokuhou_s3.jpg"] = "初诣",
 
-  ["fengsui_toaru__heg__frenda_s1.jpg"] = "贝雷帽",
-  ["fengsui_toaru__heg__frenda_s2.jpg"] = "人偶堆",
+  ["fengsui_toaru__heg__frenda_s1.jpg"] = "贝雷少女",
+  ["fengsui_toaru__heg__frenda_s2.jpg"] = "人偶少女",
   ["fengsui_toaru__heg__frenda_s3.jpg"] = "火箭少女",
 
   ["fengsui_heg__lemin_s1.jpg"] = "紫藤倚怀",

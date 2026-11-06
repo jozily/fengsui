@@ -4,6 +4,8 @@ local qinghuang = fk.CreateSkill { name = "fengsui_heg__qinghuang" }
 qinghuang:addEffect(fk.CardUseFinished, {
   global = true,
   can_trigger = function(self, _, target, player, data)
+    -- global 触发技不校验技能归属；武将牌暗置后技能已移除，仍会弹询问框
+    if not player:hasSkill(qinghuang.name) then return false end
     return U.hasGeneralName(player, "fengsui_heg__songyi") and target and target ~= player and target.phase == Player.Play and H.compareKingdomWith(player, target)
       and player.room.current == target and data and data.card
   end,

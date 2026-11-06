@@ -234,10 +234,10 @@ return function(suite)
       setPlayerMark = function(_, p, key, value) p.mark[key] = value end,
     }
     callback.on_refresh(nil, nil, owner, nil, {})
-    lu.assertEquals(owner.mark["@fengsui_heg__siji"], "手牌上限+1")
+    lu.assertEquals(owner.mark["@fengsui_heg__siji"], "+1")
     owner.mark[MarkEnum.MinusMaxCardsInTurn] = 3
     callback.on_refresh(nil, nil, owner, nil, {})
-    lu.assertEquals(owner.mark["@fengsui_heg__siji"], "手牌上限-1")
+    lu.assertEquals(owner.mark["@fengsui_heg__siji"], "-1")
     owner.mark[MarkEnum.MinusMaxCardsInTurn] = 2
     callback.on_refresh(nil, nil, owner, nil, {})
     lu.assertEquals(owner.mark["@fengsui_heg__siji"], 0)

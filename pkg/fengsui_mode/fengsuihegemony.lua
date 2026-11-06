@@ -728,6 +728,7 @@ Fk:loadTranslationTable{
   ["revealAll"] = "全部明置",
   ["@heg_bankingdom"] = "禁用势力  ",
   ["#KingdomFiltered"] = "本局禁用势力为: %arg",
+  ["#fengsui_random_neutral_wild"] = "本局随机中立者/野心家：%arg",
   ["#fengsui_warlords_filter"] = "群雄割据：中立者与野心家武将已退出本局选将",
 
   ["hegemony_special_rule"] = "特殊规则",

@@ -10,7 +10,7 @@ local function updateMark(room, target)
     if old ~= 0 then room:setPlayerMark(target, "@fengsui_heg__siji", 0) end
     return
   end
-  local text = "手牌上限" .. (net > 0 and "+" or "") .. net
+  local text = (net > 0 and "+" or "") .. net
   if old ~= text then room:setPlayerMark(target, "@fengsui_heg__siji", text) end
 end
 

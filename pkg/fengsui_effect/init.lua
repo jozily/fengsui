@@ -68,6 +68,7 @@ extension:loadSkillSkelsByPath("./packages/fengsui/pkg/fengsui_effect/skills")
 
 Fk:loadTranslationTable{
   ["fengsui_effect"] = "烽燧燎原-特效",
+  ["#fengsui_effect_rule"] = "烽燧亮将特效",
 }
 
 return extension

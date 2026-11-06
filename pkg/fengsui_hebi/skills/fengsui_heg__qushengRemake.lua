@@ -22,6 +22,9 @@ end
 qusheng:addEffect(fk.AfterCardsMove, {
   global = true,
   can_trigger = function(self, _, target, player, data)
+    -- 本技能只作旧版存档、不挂载任何武将。global 会让它对所有碧玉触发，
+    -- 因此必须校验归属，否则会和现版取声一起弹出「取声·旧」询问框。
+    if not player:hasSkill(qusheng.name) then return false end
     if not U.hasGeneralName(player, "fengsui_heg__biyu") then return false end
     if player:getMark(self.name .. "-turn") > 0 then return false end
     if not data then return false end

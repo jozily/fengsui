@@ -28,6 +28,9 @@ end
 qusheng:addEffect(fk.AfterCardsMove, {
   global = true,
   can_trigger = function(self, _, target, player, data)
+    -- global 触发技不需要玩家拥有技能即可触发，必须自行校验技能归属，
+    -- 否则武将牌暗置、技能已移除时仍会弹出询问框。
+    if not player:hasSkill(qusheng.name) then return false end
     if not U.hasGeneralName(player, "fengsui_heg__biyu") then return false end
     local _, shown = otherGeneralShown(player)
     if not shown then return false end
