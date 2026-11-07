@@ -128,7 +128,6 @@ function HegLogic:chooseGenerals()
   end)
   table.removeOne(allKingdoms, "fengsui_neutral_old")
   table.removeOne(allKingdoms, "fengsui_neutral")
-  table.removeOne(allKingdoms, "fengsui_sweeping")
   table.removeOne(allKingdoms, "wild")
   if #allKingdoms > 4 and not room:getSettings("notBanToFourKingdoms") then
     local kingdoms = table.random(allKingdoms, 4)
@@ -141,8 +140,7 @@ function HegLogic:chooseGenerals()
     end
      for i = #room.general_pile, 1, -1 do
       local g = Fk.generals[room.general_pile[i]]
-      if g.kingdom ~= "fengsui_sweeping" and
-        (table.contains(unused, g.kingdom) or table.contains(unused, g.subkingdom)) then
+      if table.contains(unused, g.kingdom) or table.contains(unused, g.subkingdom) then
         table.remove(room.general_pile, i)
       end
     end
@@ -161,7 +159,7 @@ function HegLogic:chooseGenerals()
   end
     table.sort(allKingdoms)
 
-  -- 群雄割据：常规势力之间自由组合，中立者/野心家/横扫武将不进入本局选将牌堆。
+  -- 群雄割据：常规势力之间自由组合，中立者/野心家不进入本局选将牌堆。
   local warlordsOn = (function()
     local value = room:getSettings("fengsui_warlords")
     return value == true or value == 1 or value == "1" or value == "true"
@@ -170,7 +168,7 @@ function HegLogic:chooseGenerals()
     for i = #room.general_pile, 1, -1 do
       local g = Fk.generals[room.general_pile[i]]
       if g and (g.kingdom == "wild" or g.kingdom == "fengsui_neutral_old" or
-        g.kingdom == "fengsui_neutral" or g.kingdom == "fengsui_sweeping") then
+        g.kingdom == "fengsui_neutral") then
         table.remove(room.general_pile, i)
       end
     end

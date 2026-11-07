@@ -167,6 +167,42 @@ local function findFreshGenerals(room, kingdom, num)
   end, num)
 end
 
+-- 特殊身份势力，与 fengsuihegemony.lua 生成 allKingdoms 时的排除项一致：
+-- wild（野心家）、fengsui_neutral / fengsui_neutral_old（中立者）都不是
+-- 可选「势力」。既用于「野心家副将」的不限势力候选池，也用于合璧候选池
+-- 的上层规则排除。
+local specialKingdoms = {
+  wild = true,
+  fengsui_neutral = true,
+  fengsui_neutral_old = true,
+}
+
+-- 「野心家副将」规则专用候选池：不限势力，但排除上面的特殊身份武将牌。
+-- 单独成函数，不改 findFreshGenerals 的既有语义——非野心家的变更副将
+-- 路径与改动前完全相同。
+local function findAnyKingdomGenerals(room, num)
+  return room:findGenerals(function(name)
+    local general = Fk.generals[name]
+    return general and not wasTransformed(room, name) and
+      not isGeneralOnField(room, name) and
+      not specialKingdoms[general.kingdom] and
+      not specialKingdoms[general.subkingdom]
+  end, num)
+end
+
+-- 野心家身份：涵盖「wild 势力武将野心家」「君主死亡变野」「群雄割据 1/3 转野」
+-- 三类。只看 __heg_kingdom 会漏判——前两类里该标记可能仍是常规势力。
+function compat.isWildPlayer(player)
+  if not player then return false end
+  if player.kingdom == "wild" or player.role == "wild" then return true end
+  if player:getMark("__heg_kingdom") == "wild" or
+      player:getMark("__heg_init_kingdom") == "wild" then return true end
+  for _, m in ipairs({ "__heg_wild", "__heg_join_wild", "__heg_construct_wild", "_wild_gained" }) do
+    if (tonumber(player:getMark(m)) or 0) > 0 then return true end
+  end
+  return false
+end
+
 -- The official helper is already random when it receives one candidate. For
 -- Fengsui callers that request a multi-candidate choice, keep the same pool
 -- and event contract but select one candidate directly.
@@ -191,9 +227,30 @@ function compat.transformGeneral(room, player, isMain, isHidden, num, skillName)
   local kingdom = player:getMark("__heg_kingdom")
   if kingdom == 0 or kingdom == "" or kingdom == nil then kingdom = player.kingdom end
   local count = math.max(1, num or 1)
-  local generals = findFreshGenerals(room, kingdom, count)
+
+  -- 规则「野心家副将」：野心家变更副将时，从将池中随机抽取一张任意势力
+  -- 的武将直接变更，不受自身势力限制，也不看 num（本包所有换副将本来就是
+  -- 随机给一张）。不改 __heg_kingdom 等标记，否则会污染胜负结算与奖惩。
+  local wildDeputy = not isMain and compat.isWildPlayer(player)
+  local generals
+  if wildDeputy then
+    -- 先把全部合法候选抽出，再真随机取一张；未被选中的必须完整归还
+    -- 将池，否则后续所有人都会无将可变更。
+    local pool = findAnyKingdomGenerals(room, #(room.general_pile or {}))
+    if #pool == 0 then return false end
+    generals = { room:tableRandomPick(pool, 1)[1] }
+    local rest = {}
+    for _, g in ipairs(pool) do
+      if g ~= generals[1] then table.insert(rest, g) end
+    end
+    if #rest > 0 then room:returnToGeneralPile(rest) end
+    -- 供模式规则技能发日志；不改 data.num，保持变更事件的原契约。
+    data.fengsuiWildDeputy = true
+  else
+    generals = findFreshGenerals(room, kingdom, count)
+  end
   if #generals == 0 then return false end
-  local general = count == 1 and generals[1] or room:askToChooseGeneral(player, {
+  local general = (wildDeputy or count == 1) and generals[1] or room:askToChooseGeneral(player, {
     generals = generals,
     n = math.min(count, #generals),
     no_convert = true,
@@ -248,14 +305,16 @@ function compat.askToHebiOrTransform(room, player, skillName, cancelable)
   if not room or not player or player.dead then return false end
   local main = Fk.generals[modern.getActualGeneral(player, false)]
   if not main then return compat.transformGeneral(room, player, false, false, 1, skillName) end
-  if main.kingdom == "wild" or main.subkingdom == "wild" then
-    return compat.transformGeneral(room, player, false, false, 1, skillName)
-  end
 
+  -- 合璧候选池：配对对象只能是常规势力武将。野心家势力武将只能做主将
+  -- （野心家角色只能做主将），中立者是特殊身份而非可选势力；按上层
+  -- 规则「野心家不可与中立者或另一野心家配对」一并从池中排除。
+  -- 主将本身是野心家势力武将时同样按此池合璧：其珠联璧合对象均为常规
+  -- 势力，不受排除影响；无可用配对对象时仍回落到变更副将。
   local companions = room:findGenerals(function(name)
     local general = Fk.generals[name]
     return general and not wasTransformed(room, name) and not isGeneralOnField(room, name) and
-      general.kingdom ~= "wild" and general.subkingdom ~= "wild" and
+      not specialKingdoms[general.kingdom] and not specialKingdoms[general.subkingdom] and
       (main:isCompanionWith(general) or general:isCompanionWith(main))
   end, #(room.general_pile or {}))
 
