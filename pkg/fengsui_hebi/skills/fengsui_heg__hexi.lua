@@ -2,10 +2,14 @@ local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 local hexi = fk.CreateSkill { name = "fengsui_heg__hexi" }
 
+-- -turn 后缀由引擎在每个回合结束时清除，对应「每回合限一次」。
+local used_mark = "fengsui_heg__hexi_used-turn"
+
 hexi:addEffect(fk.AfterCardsMove, {
   anim_type = "control",
   can_trigger = function(self, _, _, player, data)
-    return player:isAlive() and player:hasSkill(self.name) and player.phase ~= Player.Draw and
+    return player:isAlive() and player:hasSkill(self.name) and
+      player:getMark(used_mark) == 0 and player.phase ~= Player.Draw and
       table.find(data or {}, function(move)
         -- “获得牌”限定为实际进入手牌区；进入装备区、判定区或其他区域
         -- 的移动不再触发合隙。
@@ -30,6 +34,7 @@ hexi:addEffect(fk.AfterCardsMove, {
   end,
   on_use = function(self, event, _, player)
     local room = player.room
+    room:setPlayerMark(player, used_mark, 1)
     local to = event:getCostData(self).to
     if not to:isAlive() then return end
     local moved = room:askToMoveCardInBoard(player, {
