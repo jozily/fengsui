@@ -1,0 +1,260 @@
+{
+  "created_at": "2026-11-06T23:22:16",
+  "note": "赵娥语音原版备份；新版来源 C:/Users/jia/Downloads/*_20261106.wav，转码 ffmpeg libmp3lame -q:a 2 -ac 1 volume=-1dB，保留各自采样率",
+  "backup_files": [
+    {
+      "target": "audio/skill/fengsui_heg__yanshi1.mp3",
+      "backup": "backups/zhaoe_audio_original_20261106/skill/fengsui_heg__yanshi1.mp3",
+      "sha256": "0ec57b570ffb854623a5a885773f2e9c76c5354a7b7db9fc6f346b0e47e635af",
+      "size": 86249,
+      "spec": {
+        "codec_name": "mp3",
+        "sample_rate": "22050",
+        "channels": 1,
+        "duration": "4.212426",
+        "bit_rate": "160000"
+      },
+      "line": "魇誓1 父为人所杀，此仇十余年未敢忘。"
+    },
+    {
+      "target": "audio/skill/fengsui_heg__yanshi2.mp3",
+      "backup": "backups/zhaoe_audio_original_20261106/skill/fengsui_heg__yanshi2.mp3",
+      "sha256": "38b48633aa362c6cae8d25e0812ee71d0c40e0cb3da15d61f51482d7dba6f8b5",
+      "size": 85204,
+      "spec": {
+        "codec_name": "mp3",
+        "sample_rate": "22050",
+        "channels": 1,
+        "duration": "4.168073",
+        "bit_rate": "160000"
+      },
+      "line": "魇誓2 兄弟俱亡，仇家以为无人能报么？"
+    },
+    {
+      "target": "audio/skill/fengsui_heg__yanshi3.mp3",
+      "backup": "backups/zhaoe_audio_original_20261106/skill/fengsui_heg__yanshi3.mp3",
+      "sha256": "a5d2f75ee6d84cb7c532aa8efe565217364161106e4fe31b8211504c6fa4e321",
+      "size": 90428,
+      "spec": {
+        "codec_name": "mp3",
+        "sample_rate": "22050",
+        "channels": 1,
+        "duration": "4.435011",
+        "bit_rate": "160000"
+      },
+      "line": "魇誓3 常帷车而候，今日终于都亭相遇。"
+    },
+    {
+      "target": "audio/skill/fengsui_heg__yanshi4.mp3",
+      "backup": "backups/zhaoe_audio_original_20261106/skill/fengsui_heg__yanshi4.mp3",
+      "sha256": "17e3841da5dbb6278aeff54fccd5b18cea76e20dd4a644299790cf89c1986b5f",
+      "size": 75277,
+      "spec": {
+        "codec_name": "mp3",
+        "sample_rate": "22050",
+        "channels": 1,
+        "duration": "3.677234",
+        "bit_rate": "160000"
+      },
+      "line": "魇誓4 父仇既报，我自诣县受法。"
+    },
+    {
+      "target": "audio/skill/fengsui_heg__xinren1.mp3",
+      "backup": "backups/zhaoe_audio_original_20261106/skill/fengsui_heg__xinren1.mp3",
+      "sha256": "b70f0560913f6adb4ac05f448372546002824ad25609f537a885a930983accde",
+      "size": 80502,
+      "spec": {
+        "codec_name": "mp3",
+        "sample_rate": "22050",
+        "channels": 1,
+        "duration": "3.924172",
+        "bit_rate": "160000"
+      },
+      "line": "衅刃1 潜备刀兵，只待仇踪一现。"
+    },
+    {
+      "target": "audio/skill/fengsui_heg__xinren2.mp3",
+      "backup": "backups/zhaoe_audio_original_20261106/skill/fengsui_heg__xinren2.mp3",
+      "sha256": "d72651c197ac21571b02891b0fbd4842566054f98ddc258b2504ee9b8b2a38da",
+      "size": 162526,
+      "spec": {
+        "codec_name": "mp3",
+        "sample_rate": "22050",
+        "channels": 1,
+        "duration": "8.045714",
+        "bit_rate": "160000"
+      },
+      "line": "衅刃2 此刃藏逾十年……报我父亲血仇！"
+    },
+    {
+      "target": "audio/skill/fengsui_heg__xinren3.mp3",
+      "backup": "backups/zhaoe_audio_original_20261106/skill/fengsui_heg__xinren3.mp3",
+      "sha256": "c2e2e60f1b64cb1e39f7dcaa456a1d9ff59eeb9cd575ff9fc709463dc76e1749",
+      "size": 85726,
+      "spec": {
+        "codec_name": "mp3",
+        "sample_rate": "22050",
+        "channels": 1,
+        "duration": "4.181723",
+        "bit_rate": "160000"
+      },
+      "line": "衅刃3 尹君不必弃印，娥不肯苟生枉法。"
+    },
+    {
+      "target": "audio/skill/fengsui_heg__xinren4.mp3",
+      "backup": "backups/zhaoe_audio_original_20261106/skill/fengsui_heg__xinren4.mp3",
+      "sha256": "8be5aa28e5f80ff517c4253bf559b99d73b65116a922f0ceee4588ea32660f61",
+      "size": 76322,
+      "spec": {
+        "codec_name": "mp3",
+        "sample_rate": "22050",
+        "channels": 1,
+        "duration": "3.726803",
+        "bit_rate": "160000"
+      },
+      "line": "衅刃4 今天就是你的忌日，拿命来！"
+    },
+    {
+      "target": "audio/death/fengsui_heg__zhaoe.mp3",
+      "backup": "backups/zhaoe_audio_original_20261106/death/fengsui_heg__zhaoe.mp3",
+      "sha256": "3c815b9bdfca57b88d67c8897f730e341c7ad1ba2fc93648fc7742f13f124e46",
+      "size": 115245,
+      "spec": {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 1,
+        "duration": "4.731000",
+        "bit_rate": "192000"
+      },
+      "line": "阵亡 父仇已报，我也了无心事......"
+    }
+  ],
+  "replace_report": [
+    {
+      "target": "audio/skill/fengsui_heg__yanshi1.mp3",
+      "source_wav": "父为人所杀，此仇十余年未敢忘。_20261106.wav",
+      "line": "魇誓1 父为人所杀，此仇十余年未敢忘。",
+      "old_duration": 4.212426,
+      "new_duration": 4.16,
+      "new_spec": {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 1,
+        "duration": "4.160000",
+        "bit_rate": "102766"
+      }
+    },
+    {
+      "target": "audio/skill/fengsui_heg__yanshi2.mp3",
+      "source_wav": "兄弟俱亡，仇家以为无人能报么？_20261106.wav",
+      "line": "魇誓2 兄弟俱亡，仇家以为无人能报么？",
+      "old_duration": 4.168073,
+      "new_duration": 4.8,
+      "new_spec": {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 1,
+        "duration": "4.800000",
+        "bit_rate": "94687"
+      }
+    },
+    {
+      "target": "audio/skill/fengsui_heg__yanshi3.mp3",
+      "source_wav": "常帷车而候，今日终于都亭相遇。_20261106.wav",
+      "line": "魇誓3 常帷车而候，今日终于都亭相遇。",
+      "old_duration": 4.435011,
+      "new_duration": 4.48,
+      "new_spec": {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 1,
+        "duration": "4.480000",
+        "bit_rate": "93191"
+      }
+    },
+    {
+      "target": "audio/skill/fengsui_heg__yanshi4.mp3",
+      "source_wav": "父仇既报，我自诣县受法。_20261106.wav",
+      "line": "魇誓4 父仇既报，我自诣县受法。",
+      "old_duration": 3.677234,
+      "new_duration": 3.2,
+      "new_spec": {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 1,
+        "duration": "3.200000",
+        "bit_rate": "108800"
+      }
+    },
+    {
+      "target": "audio/skill/fengsui_heg__xinren1.mp3",
+      "source_wav": "潜备刀兵，只待仇踪一现。_20261106.wav",
+      "line": "衅刃1 潜备刀兵，只待仇踪一现。",
+      "old_duration": 3.924172,
+      "new_duration": 3.36,
+      "new_spec": {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 1,
+        "duration": "3.360000",
+        "bit_rate": "104397"
+      }
+    },
+    {
+      "target": "audio/skill/fengsui_heg__xinren2.mp3",
+      "source_wav": "此刃藏逾十年，今日我必当将你饮恨黄泉，报我父亲血仇！_20261106.wav",
+      "line": "衅刃2 此刃藏逾十年……报我父亲血仇！",
+      "old_duration": 8.045714,
+      "new_duration": 7.04,
+      "new_spec": {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 1,
+        "duration": "7.040000",
+        "bit_rate": "95783"
+      }
+    },
+    {
+      "target": "audio/skill/fengsui_heg__xinren3.mp3",
+      "source_wav": "尹君不必弃印，娥不肯苟生枉法。_20261106 (1).wav",
+      "line": "衅刃3 尹君不必弃印，娥不肯苟生枉法。",
+      "old_duration": 4.181723,
+      "new_duration": 3.68,
+      "new_spec": {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 1,
+        "duration": "3.680000",
+        "bit_rate": "100542"
+      }
+    },
+    {
+      "target": "audio/skill/fengsui_heg__xinren4.mp3",
+      "source_wav": "今天就是你的忌日，拿命来！_20261106.wav",
+      "line": "衅刃4 今天就是你的忌日，拿命来！",
+      "old_duration": 3.726803,
+      "new_duration": 3.2,
+      "new_spec": {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 1,
+        "duration": "3.200000",
+        "bit_rate": "94222"
+      }
+    },
+    {
+      "target": "audio/death/fengsui_heg__zhaoe.mp3",
+      "source_wav": "父仇已报，我也了无心事......_20261106.wav",
+      "line": "阵亡 父仇已报，我也了无心事......",
+      "old_duration": 4.731,
+      "new_duration": 5.134,
+      "new_spec": {
+        "codec_name": "mp3",
+        "sample_rate": "22050",
+        "channels": 1,
+        "duration": "5.133968",
+        "bit_rate": "55237"
+      }
+    }
+  ]
+}

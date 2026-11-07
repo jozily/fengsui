@@ -11,22 +11,32 @@ local function damageIds(player)
   end)
 end
 
+-- prohibit/maxcards/targetmod 这类状态技注册在房间级 status_skills 上：
+-- 本局只要有人获得衅刃，引擎就会对场上每个角色都调用这些回调，
+-- 而不是只对技能持有者调用。必须在回调里自己判定归属，否则会变成
+-- 全场共享衅刃（其它角色也用不了红色伤害牌、伤害牌不计手牌上限、
+-- 黑色伤害牌无视距离）。
+local function hasXinren(player)
+  return player ~= nil and player:hasSkill(s.name)
+end
+
 s:addEffect("prohibit", {
   prohibit_use = function(self, player, card)
-    return damageCard(card) and card.color == Card.Red
+    return hasXinren(player) and damageCard(card) and card.color == Card.Red
   end,
 })
 
 s:addEffect("maxcards", {
   exclude_from = function(self, player, card)
-    return damageCard(card)
+    return hasXinren(player) and damageCard(card)
   end,
 })
 
 s:addEffect("targetmod", {
-  global = true,
+  -- 不设 global = true：全局状态技在包加载时就对整个房间生效，
+  -- 与是否有人选到赵娥无关，反而会把效果漏给全场。
   bypass_distances = function(self, player, skill, card)
-    return damageCard(card) and card.color == Card.Black
+    return hasXinren(player) and damageCard(card) and card.color == Card.Black
   end,
 })
 

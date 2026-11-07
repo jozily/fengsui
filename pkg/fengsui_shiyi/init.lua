@@ -150,6 +150,12 @@ Fk:loadTranslationTable{
   ["fengsui_toaru__heg__shokuhou"] = "食蜂操祈",
   ["fengsui_toaru__heg__misaka"] = "御坂美琴",
   ["fengsui_toaru__heg__shirai"] = "白井黑子",
+  -- 技能与阵亡台词：日语一行 + 粉色中文译文一行。引擎的台词气泡与武将详情页均以富文本渲染。
+  ["$fengsui_toaru__heg__shunyi1"] = "こうなったら食うか食われるか。黒子の愛を受け入れられないのなら、いっそ黒子と戦ってくださいまし。<br/><font color='#F05C9E'>事到如今，不是你吃了我就是我吃了你；若接受不了黑子的爱，就干脆与黑子一战吧。</font>",
+  ["$fengsui_toaru__heg__shunyi2"] = "お姉さまの愛の鞭、とってもいいわ！……あぁ♥<br/><font color='#F05C9E'>姐姐大人爱的鞭挞太销魂了，啊♥~</font>",
+  ["$fengsui_toaru__heg__fengji1"] = "己の信念に従い、正しいと感じた行動を取るべし。ジャッジメントの心得の一つですの。<br/><font color='#F05C9E'>遵循自己的信念，做自己认为正确的事——这是风纪委员的心得之一呢。</font>",
+  ["$fengsui_toaru__heg__fengji2"] = "ジャッジメントですの！<br/><font color='#F05C9E'>我是风纪委员哦！</font>",
+  ["~fengsui_toaru__heg__shirai"] = "あぁ、お姉さま……激しすぎますの！<br/><font color='#F05C9E'>啊，姐姐大人……太激烈了！</font>",
   ["fengsui_toaru__heg__saten"] = "佐天泪子",
   ["#fengsui_toaru__heg__saten"] = "泪爷",
   ["fengsui_toaru__heg__uiharukazari"] = "初春饰利",
