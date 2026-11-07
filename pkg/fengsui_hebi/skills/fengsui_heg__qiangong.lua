@@ -58,12 +58,13 @@ qiangong:addEffect(fk.AfterCardsMove, {
   on_use = function(self, event, target, player, data)
     local cost = event:getCostData(self)
     U.hideSkillGeneral(player, qiangong.name)
-    if cost.to:isAlive() then cost.to:drawCards(cost.n, qiangong.name) end
+    -- 失去区域内的牌可能多达十几张，避尊的摸牌量上限为五张。
+    if cost.to:isAlive() then cost.to:drawCards(math.min(cost.n, 5), qiangong.name) end
   end,
 })
 
 Fk:loadTranslationTable{
-  ["#fengsui_heg__qiangong-invoke"] = "避尊：暗置此武将牌，令一名失去区域内所有牌的同势力角色摸等量张牌",
+  ["#fengsui_heg__qiangong-invoke"] = "避尊：暗置此武将牌，令一名失去区域内所有牌的同势力角色摸等量张牌（至多五张）",
 }
 
 return qiangong

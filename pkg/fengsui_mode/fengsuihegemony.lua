@@ -100,11 +100,15 @@ end
 
 function HegLogic:chooseGenerals()
   local room = self.room
-  local num = room:getSettings('generalNum')
-  if num > 9 then --强制9框
-    num = 9
-  end
-  local generalNum = math.max(num, 5)
+  local rawNum = room:getSettings('generalNum')
+  -- 设置值可能来自 QML 的字符串，也可能缺失；先归一化再夹到国战允许的 3~9 框。
+  -- 旧写法 math.max(num, 5) 会把低于 5 的设置（含房间默认的 3）一律抬成 5，
+  -- 房间设置里选 8/9 时也会因为下面的 num 与 generalNum 不一致而表现得不稳定。
+  local num = tonumber(rawNum) or 5
+  num = math.max(3, math.min(num, 9))
+  local generalNum = num
+  fk.qWarning(string.format("[fengsui-heg] 选将数设置 raw=%s -> %d, 人数=%d",
+    tostring(rawNum), generalNum, #room.players))
   room:doBroadcastNotify("ShowToast", Fk:translate("#fengsuihegInitialNotices"))
 
   local lord = room:getLord() --[[@as ServerPlayer]]
@@ -221,6 +225,12 @@ function HegLogic:chooseGenerals()
   local players = room.players
   local generals = room:getNGenerals(#players * generalNum)
   table.shuffle(generals)
+  -- askToChooseIniticalGeneral 在传入 generals 时按 #generals/#players 平分，
+  -- 将池不足会让实际框数少于设置值，这里把差额记进日志便于排查。
+  if #generals < #players * generalNum then
+    fk.qWarning(string.format("[fengsui-heg] 将池不足：请求 %d 张，实得 %d 张，每人实际 %d 框",
+      #players * generalNum, #generals, math.floor(#generals / #players)))
+  end
    local dat, ext = room:askToChooseIniticalGeneral(lord, {
     targets = players,
     num = num,
