@@ -1764,7 +1764,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__lutan"] = "暂无",
   ["cv:fengsui_heg__lutan"] = "暂无",
   ["fengsui_heg__anliu"] = "暗流",
-  [":fengsui_heg__anliu"] = "锁定技，当你受到或造成伤害后，若受伤角色：副将明置，其暗置变更副将，否则其摸暗置武将牌数量的牌。",
+  [":fengsui_heg__anliu"] = "锁定技，当你受到或造成伤害后，若受伤角色武将牌均明置，其暗置变更副将，否则其摸其暗置武将牌数量的牌。",
   ["fengsui_heg__anliu_abolishedversion"] = "暗流",
   [":fengsui_heg__anliu_abolishedversion"] = "锁定技，当你受到或造成伤害后，若为本局累计第X次，受伤角色<a href=':fengsui_heg__abolish_deputy'>废除副将</a>并令N+1，否则其随机执行摸N张牌或暗置变更副将（X为场上势力数，N初始为0至多为5）。",
   ["fengsui_heg__kuanqu"] = "款曲",

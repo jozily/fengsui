@@ -10,8 +10,9 @@ shenqing:addEffect("active", {
   card_num = 0,
   min_target_num = 1,
   max_target_num = 2,
-  target_filter = function(self, to_select, selected, selected_cards, player)
-    return H.compareKingdomWith(player, to_select) and not table.contains(selected, to_select)
+  target_filter = function(self, player, to_select, selected)
+    return H.compareKingdomWith(player, to_select) and
+      not table.contains(selected, to_select) and #selected < 2
   end,
   can_use = function(self, player)
     return player.phase == Player.Play and player:usedSkillTimes(self.name, Player.HistoryPhase) == 0

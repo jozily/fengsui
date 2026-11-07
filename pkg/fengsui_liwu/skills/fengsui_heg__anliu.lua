@@ -1,6 +1,6 @@
 -- 暗流（陆昙）
--- 锁定技，当你受到或造成伤害后，若受伤角色：副将明置，其暗置变更副将，
--- 否则其摸暗置武将牌数量的牌。
+-- 锁定技，当你受到或造成伤害后，若受伤角色武将牌均明置，其暗置变更副将，
+-- 否则其摸其暗置武将牌数量的牌。
 local H = require "packages.fengsui.hegemony_util"
 
 local anliu = fk.CreateSkill {
@@ -17,8 +17,8 @@ end
 
 local function resolveVictim(self, room, victim)
   if not victim or not victim:isAlive() then return end
-  if victim.deputyGeneral and victim.deputyGeneral ~= "anjiang" then
-    -- 副将明置：暗置变更副将
+  if H.allGeneralsRevealed(victim) then
+    -- 武将牌均明置：暗置变更副将
     H.transformGeneral(room, victim, false, true, 1, self.name)
   else
     local n = hiddenGeneralCount(victim)

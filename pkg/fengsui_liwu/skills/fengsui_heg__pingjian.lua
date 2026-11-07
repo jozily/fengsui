@@ -92,6 +92,11 @@ s:addEffect(H.GeneralTransformed, {
   can_trigger = function(self, event, target, player, data)
     return target == player and data and data.origName == XUSHAO
   end,
+  -- 变更此武将牌时清理「访客」属于自动结算：评鉴不是锁定技，
+  -- 若沿用默认 cost 会弹出「是否发动评鉴」并带取消按钮，这里直接跳过询问。
+  on_cost = function()
+    return true
+  end,
   on_use = function(self, event, target, player, data)
     clearVisitors(player.room, player)
     player.room:setPlayerMark(player, "@fengsui_neutral", 0)

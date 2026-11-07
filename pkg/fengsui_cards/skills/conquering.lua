@@ -18,7 +18,7 @@ Fk:loadTranslationTable {
 conquering:addEffect("cardskill", {
   prompt = "#heg_conquering_skill",
   min_target_num = 1,
-  mod_target_filter = function(self, to_select, selected, player)
+  mod_target_filter = function(self, player, to_select, selected)
     return to_select:isAlive()
   end,
   target_filter = Util.CardTargetFilter,
