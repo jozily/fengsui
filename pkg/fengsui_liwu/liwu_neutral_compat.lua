@@ -187,7 +187,14 @@ local function chooseGenerals(self)
   local room = self and self.room
   if not room then return end
   warlordsMode = settingOn(room, "fengsui_warlords")
-  local generalNum = math.max(room:getSettings("generalNum"), 5)
+  -- 与 fengsui_mode/fengsuihegemony.lua 的 chooseGenerals 保持一致：
+  -- 选将数跟随房间设置值，不设上限（设置页可填 3~18）；低于 5 时保底 5 框。
+  -- 旧写法 math.max(num, 5) 会把所有低于 5 的设置一律抬成 5，
+  -- 之后又曾用 math.min(num, 9) 把高于 9 的设置砍成 9，两者都会让界面选的数字失效。
+  local rawNum = room:getSettings("generalNum")
+  local generalNum = math.max(tonumber(rawNum) or 5, 5)
+  fk.qWarning(string.format("[fengsui-heg-compat] 选将数设置 raw=%s -> %d, 人数=%d",
+    tostring(rawNum), generalNum, #room.players))
   room:doBroadcastNotify("ShowToast", Fk:translate("#HegInitialNotice"))
 
   local lord = room:getLord()
@@ -244,6 +251,10 @@ local function chooseGenerals(self)
 
   local players = room.players
   local generals = room:getNGenerals(#players * generalNum)
+  if #generals < #players * generalNum then
+    fk.qWarning(string.format("[fengsui-heg-compat] 将池不足：请求 %d 张，实得 %d 张，每人实际 %d 框",
+      #players * generalNum, #generals, math.floor(#generals / #players)))
+  end
   table.shuffle(generals)
   local req = Request:new(players, "AskForGeneral")
   req.timeout = room:getSettings("generalTimeout")

@@ -101,11 +101,10 @@ end
 function HegLogic:chooseGenerals()
   local room = self.room
   local rawNum = room:getSettings('generalNum')
-  -- 设置值可能来自 QML 的字符串，也可能缺失；先归一化再夹到国战允许的 3~9 框。
-  -- 旧写法 math.max(num, 5) 会把低于 5 的设置（含房间默认的 3）一律抬成 5，
-  -- 房间设置里选 8/9 时也会因为下面的 num 与 generalNum 不一致而表现得不稳定。
-  local num = tonumber(rawNum) or 5
-  num = math.max(3, math.min(num, 9))
+  -- 选将数跟随房间设置值，不设上限（设置页可填 3~18）；低于 5 时保底 5 框。
+  -- 旧写法 math.max(num, 5) 会把所有低于 5 的设置一律抬成 5，
+  -- 之后又曾用 math.min(num, 9) 把高于 9 的设置砍成 9，两者都会让界面选的数字失效。
+  local num = math.max(tonumber(rawNum) or 5, 5)
   local generalNum = num
   fk.qWarning(string.format("[fengsui-heg] 选将数设置 raw=%s -> %d, 人数=%d",
     tostring(rawNum), generalNum, #room.players))
