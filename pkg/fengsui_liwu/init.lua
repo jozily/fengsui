@@ -47,7 +47,7 @@ fengsui_heg__limi:addSkill("fengsui_heg__ciying")
 fengsui_heg__limi:addSkill("fengsui_heg__chendu")
 
 local zhangyu = General:new(extension, "fengsui_heg__zhangyu", "shu", 3)
-zhangyu:addSkills { "fengsui_heg__xiangchen", "fengsui_heg__mingding" }
+zhangyu:addSkills { "fengsui_heg__yuzhao", "fengsui_heg__gumeng" }
 
 local wuxian = General:new(extension, "fengsui_heg__wuxian", "shu", 3, 3, General.Female)
 wuxian:addCompanions("hs__liubei")

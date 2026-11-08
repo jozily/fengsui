@@ -53,26 +53,33 @@ aobi:addEffect(fk.TurnEnd, {
   end,
   on_use = function(self, _, _, player)
     local room = player.room
-    local max = -1
-    for _, p in ipairs(room.alive_players) do max = math.max(max, p:getMark("fengsui_heg__aobi_gained-turn")) end
+    local gained = "fengsui_heg__aobi_gained-turn"
+    local alive = room.alive_players
+    local max, min = -1, math.huge
+    for _, p in ipairs(alive) do
+      local n = p:getMark(gained)
+      max = math.max(max, n)
+      min = math.min(min, n)
+    end
+    -- 本回合无人获得牌时不存在「获得牌最多/最少的角色」，不结算。
     if max <= 0 then return end
-    local most = table.filter(room.alive_players, function(p)
-      return p:getMark("fengsui_heg__aobi_gained-turn") == max
-    end)
-    local none = table.filter(room.alive_players, function(p)
-      return p:getMark("fengsui_heg__aobi_gained-turn") == 0 and not table.contains(most, p)
-    end)
-    local reverse = #most > 1 and not table.contains(most, player)
-    if reverse then
-      for _, p in ipairs(none) do
-        for _, source in ipairs(most) do
-          if p:isAlive() and source:isAlive() then room:damage { from = p, to = source, damage = 1, skillName = aobi.name } end
+    local most = table.filter(alive, function(p) return p:getMark(gained) == max end)
+    local least = table.filter(alive, function(p) return p:getMark(gained) == min end)
+    if #most == 1 then
+      -- 最多者唯一：其依次对所有获得牌最少的其他角色各造成 1 点伤害。
+      local source = most[1]
+      for _, p in ipairs(least) do
+        if p ~= source and source:isAlive() and p:isAlive() then
+          room:damage { from = source, to = p, damage = 1, skillName = aobi.name }
         end
       end
     else
-      for _, source in ipairs(most) do
-        for _, p in ipairs(none) do
-          if source:isAlive() and p:isAlive() then room:damage { from = source, to = p, damage = 1, skillName = aobi.name } end
+      -- 最多者不唯一：获得牌最少的角色依次对所有获得牌最多的其他角色各造成 1 点伤害。
+      for _, p in ipairs(least) do
+        for _, source in ipairs(most) do
+          if p ~= source and p:isAlive() and source:isAlive() then
+            room:damage { from = p, to = source, damage = 1, skillName = aobi.name }
+          end
         end
       end
     end
