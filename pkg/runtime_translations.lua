@@ -91,6 +91,7 @@ Fk:loadTranslationTable {
   ["fengsui_heg__yingmianRemake"] = translated_skill_name("fengsui_heg__yingmianRemake"),
   ["fengsui_heg__yisangRemake"] = translated_skill_name("fengsui_heg__yisangRemake"),
   ["fengsui_heg__zeyuRemake"] = translated_skill_name("fengsui_heg__zeyuRemake"),
+  ["fengsui_heg__zhenchaoRemake"] = translated_skill_name("fengsui_heg__zhenchaoRemake"),
   ["fengsui_heg__zhengchiRemake"] = translated_skill_name("fengsui_heg__zhengchiRemake"),
   ["fengsui_heg__zhouwangRemake"] = translated_skill_name("fengsui_heg__zhouwangRemake"),
 
