@@ -1688,7 +1688,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__chongjing"] = "憧京", [":fengsui_heg__chongjing"] = "锁定技，当你重铸牌后，你需令一名本轮未以此法选择过势力的角色使用此重铸牌。若其未使用此牌/此技能无合法目标，其/你失去一点体力值。",
   ["fengsui_heg__aishan"] = "哀扇", [":fengsui_heg__aishan"] = "每个已确定势力每轮限一次，当有角色体力值变化后不大于你且你的武将牌均明置，你可以暗置此武将牌并展示你与其各一张手牌，若这些牌：颜色/花色/牌名一致，你获得之/重铸之/变更副将。",
   ["fengsui_heg__bahuan"] = "拔宦", [":fengsui_heg__bahuan"] = "回合开始时，你可以选择场上所有势力各一名武将牌明置数不大于你的其他角色，对其依次造成一点伤害，然后其可以交给你一张牌并恢复一点体力。",
-  ["fengsui_heg__youhuan"] = "幽寰", [":fengsui_heg__youhuan"] = "锁定技，当有角色受到伤害后，若伤害来源与你势力相同且你的武将牌均明置，你暗置此武将牌并令此伤害-1。",
+  ["fengsui_heg__youhuan"] = "幽寰", [":fengsui_heg__youhuan"] = "锁定技，当有角色即将受到伤害时，若伤害来源与你势力相同且你的武将牌均明置，你暗置此武将牌并令此伤害-1。",
   ["$fengsui_heg__yandu1"] = "十载磨锋，今朝赋成三都。",
   ["$fengsui_heg__yandu2"] = "一赋惊京洛，纸贵满都城。",
   ["$fengsui_heg__yandu3"] = "文章自有千钧骨，何须朱门借声名？",
