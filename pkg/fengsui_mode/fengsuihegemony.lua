@@ -465,7 +465,7 @@ heg = fk.CreateGameMode{
       kingdom = H.getKingdom(winner)
       local i = H.getKingdomPlayersNum(room, true)[kingdom]
       for _, p in ipairs(alive) do
-        if not H.compareExpectedKingdomWith(p, winner) then
+        if not H.compareExpectedKingdomWith(p, winner, nil, true) then
           return ""
         end
         if p.kingdom == "unknown" then

@@ -392,6 +392,12 @@ Fk:loadTranslationTable{
   ["$fengsui_heg__xingji2"] = "天机可窥一二，岂容尔再三妄为！",
   ["$fengsui_heg__xingji3"] = "同梦再现之时，便是劫数临身之日！",
   ["$fengsui_heg__xingji4"] = "梦醒方知，生死早有定数！",
+  -- 矢北是酣世额外回合内发给全场的临时技能，任何角色触发都播同一组台词。
+  -- 只注册技能名通用键，不注册 $..._<武将名> 专属键，避免按触发者分流。
+  ["$fengsui_heg__shibei1"] = "一枕未冷，首厄反得回生！",
+  ["$fengsui_heg__shibei2"] = "再惊残梦，天机便索一命！",
+  ["$fengsui_heg__shibei3"] = "梦兆未改，吉凶已易，先后之间自有定数！",
+  ["$fengsui_heg__shibei4"] = "长宵独醒，此梦只容一伤！",
   ["~fengsui_heg__dream__zhouxuan"] = "梦可卜他人生死……却难占自身归途……",
 }
 

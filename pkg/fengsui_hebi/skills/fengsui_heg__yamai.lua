@@ -67,9 +67,15 @@ yamai:addEffect(fk.TurnEnd, {
   on_cost = function(self, event, target, player, data)
     local room = player.room
     local cards = getUsableCards(room, player, target)
+    -- 手牌本来就在手牌区；若把它们也塞进 expand_pile，客户端会为同一张牌
+    -- 再生成一个 CardItem，请求结束时按 id 回收清不干净，残影会盖在手牌上。
+    -- 这里只把弃牌堆里的牌作为额外牌堆展开，pattern 仍是全部可用牌。
+    local expand = table.filter(cards, function(id)
+      return room:getCardArea(id) == Card.DiscardPile
+    end)
     local use = room:askToUseRealCard(player, {
       pattern = cards,
-      expand_pile = cards,
+      expand_pile = expand,
       skill_name = yamai.name,
       prompt = "#fengsui_heg__yamai-use::" .. target.id,
       cancelable = true,

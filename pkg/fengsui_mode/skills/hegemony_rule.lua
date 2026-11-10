@@ -419,7 +419,7 @@ hegRule:addEffect(fk.GeneralShown, {
             end
           end
           -- 然后判断场上所有人势力是否相同
-          if table.every(room.alive_players, function(p) return H.compareKingdomWith(p, player) end) then
+          if table.every(room.alive_players, function(p) return H.compareKingdomWith(p, player, nil, true) end) then
             -- 若所有人势力相同则全部亮将
             for _, p in ipairs(room.alive_players) do
               if p.general == "anjiang" then p:revealGeneral(false) end

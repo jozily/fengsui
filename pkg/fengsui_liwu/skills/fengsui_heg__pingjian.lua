@@ -4,6 +4,7 @@ local FU = require "packages.fengsui.pkg.fengsui_liwu.util"
 
 local s = fk.CreateSkill { name = "fengsui_heg__pingjian" }
 local XUSHAO = "fengsui_heg__xushao"
+local EXPIRING_MARK = FU.VISITOR_EXPIRING_MARK
 
 local function getXushaoPlace(player)
   return FU.getGeneralPlace(player, XUSHAO)
@@ -62,10 +63,12 @@ local function removeVisitor(room, player, generalName)
     end)
     if not stillProvided then
       room:removeTableMark(player, "fengsui_heg__fangke_skills", skillName)
+      -- 不立刻摘技能：本回合剩余时机仍要能触发（如裸衣的伤害加成）。
+      -- 访客武将牌与摸牌照常即时结算，只把已挂在身上的技能登记为待回收，
+      -- 由盈门的回合结束效果统一失效并清标记。
       local skill = Fk.skills[skillName]
-      if skill then
-        player:prelightSkill(skill, false)
-        player:loseFakeSkill(skill)
+      if skill and player:isFakeSkill(skill) then
+        room:addTableMarkIfNeed(player, EXPIRING_MARK, skillName)
       end
     end
   end
@@ -84,6 +87,8 @@ local function clearVisitors(room, player)
     end
   end
   room:setPlayerMark(player, "fengsui_heg__fangke_skills", 0)
+  -- 武将牌变更／暗置属于强制清理，待回收技能一并立即失效。
+  FU.expireVisitorSkills(room, player)
 end
 
 s:addEffect(H.GeneralTransformed, {

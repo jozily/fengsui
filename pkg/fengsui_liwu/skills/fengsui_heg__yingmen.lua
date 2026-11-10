@@ -151,6 +151,8 @@ local function clearVisitors(room, player)
   room:returnToGeneralPile(visitors)
   room:setPlayerMark(player, "@[private]&fengsui_heg__fangke", 0)
   room:setPlayerMark(player, "fengsui_heg__fangke_skills", 0)
+  -- 暗置／变更此武将牌时，待回收技能一并立即失效。
+  FU.expireVisitorSkills(room, player)
 end
 
 s:addEffect(fk.GeneralRevealed, {
@@ -197,6 +199,29 @@ s:addEffect(fk.Damaged, {
   end,
   on_lose = function(self, player)
     clearVisitors(player.room, player)
+  end,
+})
+
+-- 评鉴移去访客后，技能留到本回合结束再失效：本回合内后续时机
+-- （裸衣造成伤害等）仍能触发，回合结束统一摘技能、注销触发技、清标记。
+s:addEffect(fk.TurnEnd, {
+  global = true,
+  is_delay_effect = true,
+  mute = true,
+  can_trigger = function(self, event, target, player, data)
+    local room = player and player.room or Fk:currentRoom()
+    if not room then return false end
+    return table.find(room.players, function(p)
+      return #p:getTableMark(FU.VISITOR_EXPIRING_MARK) > 0
+    end) ~= nil
+  end,
+  on_use = function(self, event, target, player, data)
+    local room = player and player.room or Fk:currentRoom()
+    if not room then return end
+    -- 幂等：回收函数会清空待回收表，重复触发不会重复摘技能。
+    for _, p in ipairs(room.players) do
+      FU.expireVisitorSkills(room, p)
+    end
   end,
 })
 

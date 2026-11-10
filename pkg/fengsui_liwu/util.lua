@@ -154,4 +154,57 @@ function U.swapGenerals(room, player)
   return true
 end
 
+-- 访客技能被评鉴移去后，本回合剩余时机仍要能响应（如裸衣的伤害加成），
+-- 因此不立即 loseFakeSkill，而是登记到待回收表，等回合结束统一失效并清标记。
+U.VISITOR_EXPIRING_MARK = "fengsui_heg__fangke_expiring-turn"
+
+-- engine 的 addTriggerSkill 只增不减：触发技实例留在 room.logic 里时，
+-- global 效果的 can_trigger 会绕过 hasSkill 判断，技能移去后仍对全场生效。
+-- 仅当全场没有其他角色正在使用该技能时才注销，避免误伤真实武将的同名技。
+local function visitorSkillStillInUse(room, skillName, player)
+  for _, p in ipairs(room.players) do
+    if p ~= player then
+      if p:hasSkill(skillName) and not p:isFakeSkill(skillName) then return true end
+      if table.contains(p:getTableMark("fengsui_heg__fangke_skills"), skillName) then
+        return true
+      end
+    end
+  end
+  return false
+end
+
+local function unregisterVisitorTriggers(room, skill)
+  local logic = room.logic
+  if not logic or not logic.skill_table then return end
+  for _, trig in ipairs(skill.related_skills or {}) do
+    if trig:isInstanceOf(TriggerSkill) then
+      if logic.skills then table.removeOne(logic.skills, trig.name) end
+      local tab = logic.skill_table[trig.event]
+      if tab then table.removeOne(tab, trig) end
+    end
+  end
+end
+
+function U.expireVisitorSkills(room, player)
+  local pending = player:getTableMark(U.VISITOR_EXPIRING_MARK)
+  if #pending == 0 then return end
+  for _, skillName in ipairs(pending) do
+    -- 技能又被新的访客提供时保留，不摘掉仍在使用的技能。
+    if not table.contains(player:getTableMark("fengsui_heg__fangke_skills"), skillName) then
+      local skill = Fk.skills[skillName]
+      if skill and player:isFakeSkill(skill) then
+        player:prelightSkill(skill, false)
+        player:loseFakeSkill(skill)
+        if not visitorSkillStillInUse(room, skillName, player) then
+          unregisterVisitorTriggers(room, skill)
+        end
+      end
+      -- 技能留下的本回合／本阶段标记一并清掉，避免技能失效后残留。
+      room:setPlayerMark(player, skillName .. "-turn", 0)
+      room:setPlayerMark(player, skillName .. "-phase", 0)
+    end
+  end
+  room:setPlayerMark(player, U.VISITOR_EXPIRING_MARK, 0)
+end
+
 return U

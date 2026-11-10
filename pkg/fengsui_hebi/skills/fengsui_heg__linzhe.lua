@@ -25,9 +25,11 @@ linzhe:addEffect("active", {
   on_use = function(self, room, effect)
     local player = effect.from
     local target = effect.tos[1]
-    -- 隐藏标记存 id 供势力判断；@ 标记让目标头上可见
-    room:addTableMarkIfNeed(player, LINZHE_MARK, target.id)
-    room:setPlayerMark(target, LINZHE_VISIBLE_MARK, 1)
+    -- 隐藏标记与官方构逆一致，直接存目标对象供 compareKingdomWith 比较。
+    room:addTableMarkIfNeed(player, LINZHE_MARK, target)
+    -- 可见标记显示发动遴哲的主将名，便于辨认是谁标记的。
+    room:setPlayerMark(target, LINZHE_VISIBLE_MARK,
+      Fk:translate(H.getActualGeneral(player, false)))
 
     -- 视为同势力后，所有同势力角色（含山涛与被标记者）依次选择是否变更副将
     local targets = table.filter(room.alive_players, function(p)

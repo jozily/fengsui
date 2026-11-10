@@ -2,30 +2,20 @@ local modern = require "packages.hegemony.util"
 
 local compat = setmetatable({}, { __index = modern })
 
--- 遴哲：被标记的角色除计算胜利外，视为与标记者势力相同（模仿构逆）。
+-- 遴哲：被标记的角色除计算胜利外，视为与标记者势力相同。
+-- 与官方「构逆」同构：第四参数 ignore_gouni 是官方留给胜利／投降计算的开关，
+-- 这里复用它一并跳过遴哲。不再用 debug 栈去猜调用来源——栈层级会因为
+-- compareExpectedKingdomWith 的间接调用而偏一层，且 fengsui 模式自己的
+-- winner_getter 在 fengsuihegemony.lua，根本不在原先写死的识别名单里。
 local linzheMark = "fengsui_heg__linzhe_target"
 local _compareKingdomWith = modern.compareKingdomWith
-
--- “除计算胜利外”：胜利条件计算不应用遴哲效果。
--- 胜利相关调用点：hegemony_rule.lua 的全员同势力结算（直接调用），
--- 以及 new_hegemony_mode.lua 的 winner_getter（经 compareExpectedKingdomWith 间接调用）。
-local function inVictoryCalc()
-  local caller = debug.getinfo(2, "S")
-  local src = caller and caller.source or ""
-  if src:find("hegemony_rule", 1, true) then return true end
-  if src:find("util", 1, true) then
-    local upper = debug.getinfo(3, "S")
-    local src2 = upper and upper.source or ""
-    if src2:find("new_hegemony_mode", 1, true) then return true end
-  end
-  return false
-end
+local _compareExpectedKingdomWith = modern.compareExpectedKingdomWith
 
 function compat.compareKingdomWith(from, to, diff, ignore_gouni)
-  if not ignore_gouni and not inVictoryCalc() and from and to and from ~= to and
+  if not ignore_gouni and from and to and from ~= to and
     from.getTableMark and to.getTableMark then
-    if table.contains(from:getTableMark(linzheMark), to.id) or
-      table.contains(to:getTableMark(linzheMark), from.id) then
+    if table.contains(from:getTableMark(linzheMark), to) or
+      table.contains(to:getTableMark(linzheMark), from) then
       local ret = true
       if diff then ret = not ret end
       return ret
@@ -36,6 +26,40 @@ end
 -- 全局生效：hegemony 本体与各包都直接调用 HegUtil.compareKingdomWith，
 -- 必须替换模块表上的函数，仅包装 compat 只对 fengsui 包内生效。
 modern.compareKingdomWith = compat.compareKingdomWith
+
+-- 官方 compareExpectedKingdomWith 内部直接调用 compareKingdomWith(from, to)，
+-- 不会透传第四参数；这里在「显式要求忽略」时按官方同样的流程走一遍，
+-- 让胜利计算能把 ignore 传到底。没传 ignore 的调用仍完全交给官方实现，
+-- 因此选将、敌友判断等场合的遴选效果不受影响。
+function compat.compareExpectedKingdomWith(from, to, diff, ignore_gouni)
+  if ignore_gouni == nil then
+    return _compareExpectedKingdomWith(from, to, diff)
+  end
+  local room = Fk:currentRoom()
+  if from == to then return not diff end
+  if compat.compareKingdomWith(from, to, false, ignore_gouni) then
+    return not diff
+  end
+  if to.kingdom == "unknown" then return not diff end
+  if from.kingdom == "unknown" then
+    local kingdom = from:getMark("__heg_kingdom")
+    local i = 1
+    local lord = false
+    for _, p in ipairs(room.players) do
+      if modern.getKingdom(p) == kingdom then
+        i = i + 1
+        if string.find(p.general, "lord") then lord = true end
+      end
+    end
+    if i > #room.players // 2 and not lord then
+      return diff
+    elseif kingdom == modern.getKingdom(to) then
+      return not diff
+    end
+  end
+  return diff
+end
+modern.compareExpectedKingdomWith = compat.compareExpectedKingdomWith
 
 compat.HegMarkChanged = TriggerEvent:subclass("FengsuiHegMarkChanged")
 -- Fengsui 奖惩即将执行时；替换摸牌和弃牌两种分支，保留死亡的其他后续。

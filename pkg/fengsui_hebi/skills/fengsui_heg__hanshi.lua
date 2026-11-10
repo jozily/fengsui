@@ -21,6 +21,10 @@ local H = require "packages.fengsui.hegemony_util"
 local hanshi = fk.CreateSkill {
   name = "fengsui_heg__hanshi",
   tags = { Skill.Limited },
+  -- 矢北由本技能在额外回合内临时发给全场，不是梦周宣的常驻技能。
+  -- 登记为相关技能，只为让梦周宣的武将详情页列出矢北及其四条语音/台词；
+  -- 骨架层的 related_skills 不参与 Player:addSkill 的级联，不会让梦周宣常驻获得矢北。
+  related_skills = { "fengsui_heg__shibei" },
 }
 
 -- 排队中的额外回合；额外回合开始后置 0
