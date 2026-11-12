@@ -21,7 +21,9 @@ liuxun:addSkill("fengsui_heg__wuli")
 
 local guozhao = General:new(extension, "fengsui_heg__guozhao", "wei", 3, 3, General.Female)
 guozhao:addCompanions("hs__caopi")
-guozhao:addSkills { "fengsui_heg__zunwei", "fengsui_heg__zunwei_vs", "fengsui_heg__jiaoyu" }
+-- 尊位的「使用」与「打出/响应」已合并为单个 viewas 一体按钮，
+-- 不再挂载 fengsui_heg__zunwei_vs（响应时会出现两个「尊位」按钮）。
+guozhao:addSkills { "fengsui_heg__zunwei", "fengsui_heg__jiaoyu" }
 
 local mamiao = General:new(extension, "fengsui_heg__mamiao", "shu", 4)
 mamiao:addCompanions("fengsui_heg__lixian")

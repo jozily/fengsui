@@ -8,7 +8,8 @@ local function resolve(self, _, target, player)
   local choice = room:askToChoice(target, { choices = choices, skill_name = lianxi.name })
   if choice == "fengsui_heg__lianxi_chain" then
     if target:isAlive() then
-      target:drawCards(2, lianxi.name)
+      -- 锁定技自动结算的摸牌：不挂技能名，日志里不出现「连徙」。
+      target:drawCards(2)
       if target:isAlive() then target:setChainState(true) end
     end
     return
@@ -37,9 +38,18 @@ end
 for _, timing in ipairs({ fk.GeneralRevealed, fk.GeneralHidden }) do
   lianxi:addEffect(timing, {
     global = true,
+    -- 【连徙】是锁定技：张白本人不做任何选择，选项框是给被指定的角色的。
+    -- 整段属自动结算，不该再走一次技能发动流程：mute 关配音与「发动【连徙】」
+    -- 播报，no_indicate 关指示线，on_cost 直接返回 true 跳过引擎默认的询问框。
+    -- 刻意不加 is_delay_effect：锁定技明置武将是国战规则，需要保留。
+    mute = true,
+    no_indicate = true,
     can_trigger = function(self, _, target, player)
       return target and target:isAlive() and player:hasSkill(lianxi.name) and
         H.compareKingdomWith(target, player)
+    end,
+    on_cost = function()
+      return true
     end,
     on_use = resolve,
   })

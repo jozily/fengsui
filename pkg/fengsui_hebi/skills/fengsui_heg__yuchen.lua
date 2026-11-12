@@ -42,11 +42,22 @@ yuchen:addEffect(fk.TargetSpecified, {
   end,
 })
 
+-- 以下两段都是【毓尘】的后续自动结算：只有最开始「弃置一张同花色牌」由玩家
+-- 自己选择并提示，伤害+1 与未造成伤害时的反打一律静默。
+-- mute 关配音与技能发动播报，no_indicate 关指示线，
+-- is_delay_effect 跳过 revealBySkillName（不明置武将），
+-- on_cost 直接返回 true 跳过引擎默认的「是否发动」询问框。
 yuchen:addEffect(fk.DamageCaused, {
   global = true,
+  mute = true,
+  no_indicate = true,
+  is_delay_effect = true,
   can_trigger = function(self, event, target, player, data)
     return player:hasSkill(yuchen.name) and data and data.card and
       (data.card:getMark(bonus_mark) > 0 or player:getMark(reuse_mark) > 0)
+  end,
+  on_cost = function()
+    return true
   end,
   on_use = function(self, event, target, player, data)
     data:changeDamage(1)
@@ -54,9 +65,15 @@ yuchen:addEffect(fk.DamageCaused, {
 })
 
 yuchen:addEffect(fk.CardUseFinished, {
+  mute = true,
+  no_indicate = true,
+  is_delay_effect = true,
   can_trigger = function(self, event, target, player, data)
     return player:hasSkill(yuchen.name) and data and data.card and
       data.card:getMark(bonus_mark) > 0 and player:getMark(reuse_mark) == 0
+  end,
+  on_cost = function()
+    return true
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
@@ -71,8 +88,9 @@ yuchen:addEffect(fk.CardUseFinished, {
     if not cardName then return end
     -- reuse_mark 同时兼作「伤害+1」标记与递归保护：反打的牌在 TargetSpecified
     -- 阶段会被跳过，DamageCaused 阶段据此 +1；调用返回后即清除。
+    -- 反打属静默结算：不挂技能名，牌的使用日志里不出现「毓尘」。
     room:setPlayerMark(player, reuse_mark, 1)
-    room:useVirtualCard(cardName, nil, origin, player, yuchen.name, true)
+    room:useVirtualCard(cardName, nil, origin, player, nil, true)
     room:setPlayerMark(player, reuse_mark, 0)
   end,
 })

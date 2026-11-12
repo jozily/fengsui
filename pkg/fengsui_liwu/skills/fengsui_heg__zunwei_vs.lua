@@ -1,3 +1,9 @@
+-- 【已废弃，勿再挂载】
+-- 2026-11-12 起，尊位的「使用」与「打出/响应」合并进
+-- fengsui_heg__zunwei.lua 的单个 viewas 一体按钮（武圣式写法）。
+-- 本文件保留旧响应实现仅作历史参考，未注册到任何武将；
+-- 若重新 addSkills 挂载，响应时会再次出现两个「尊位」按钮。
+
 local H = require "packages.fengsui.hegemony_util"
 local CardNameUI = require "packages.fengsui.pkg.card_name_ui"
 

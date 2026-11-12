@@ -1819,7 +1819,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__guozhao"] = "暂无",
   ["cv:fengsui_heg__guozhao"] = "暂无",
   ["fengsui_heg__zunwei"] = "尊位",
-  [":fengsui_heg__zunwei"] = "你可以移除你的副将视为使用一张不计入次数的基本牌或普通锦囊牌，或于需要使用【闪】或【无懈可击】响应其他角色使用的牌时移除你的副将视为使用之，然后你弃置所有手牌并将手牌数摸至体力上限。",
+  [":fengsui_heg__zunwei"] = "你可以移除你的副将视为使用一张不计入次数的基本牌或普通锦囊牌，然后你弃置所有手牌并将手牌数摸至体力上限。",
   ["fengsui_heg__jiaoyu"] = "椒遇",
   [":fengsui_heg__jiaoyu"] = "锁定技，每回合结束后，若你本回合失去的牌数不小于当前回合角色，你变更副将。",
   ["$fengsui_heg__zunwei1"] = "位可愈后宫诸贵，势可压殊颜千芳。",
