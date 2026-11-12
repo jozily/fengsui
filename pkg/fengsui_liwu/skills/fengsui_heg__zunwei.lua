@@ -6,12 +6,12 @@ local zunwei = fk.CreateSkill {
   name = "fengsui_heg__zunwei",
 }
 
+-- 【闪】/【无懈可击】的响应由 fengsui_heg__zunwei_vs 负责，
+-- 此处只处理求【桃】、求【杀】一类的响应，避免响应时弹出两个「尊位」按钮。
 local function responseName()
   local pattern = Fk.currentResponsePattern
   if not pattern then return end
   local exp = Exppattern:Parse(pattern)
-  if exp:match(Fk:cloneCard("jink")) then return "jink" end
-  if exp:match(Fk:cloneCard("nullification")) then return "nullification" end
   if exp:match(Fk:cloneCard("peach")) then return "peach" end
   if exp:match(Fk:cloneCard("slash")) then return "slash" end
 end
@@ -53,9 +53,7 @@ zunwei:addEffect("viewas", {
   enabled_at_response = function(self, player)
     return H.hasGeneral(player, true) and responseName() ~= nil
   end,
-  enabled_at_nullification = function(self, player)
-    return H.hasGeneral(player, true) and responseName() == "nullification"
-  end,
+  enabled_at_nullification = function() return false end,
 })
 
 Fk:loadTranslationTable {

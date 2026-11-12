@@ -21,7 +21,7 @@ liuxun:addSkill("fengsui_heg__wuli")
 
 local guozhao = General:new(extension, "fengsui_heg__guozhao", "wei", 3, 3, General.Female)
 guozhao:addCompanions("hs__caopi")
-guozhao:addSkills { "fengsui_heg__zunwei", "fengsui_heg__jiaoyu" }
+guozhao:addSkills { "fengsui_heg__zunwei", "fengsui_heg__zunwei_vs", "fengsui_heg__jiaoyu" }
 
 local mamiao = General:new(extension, "fengsui_heg__mamiao", "shu", 4)
 mamiao:addCompanions("fengsui_heg__lixian")

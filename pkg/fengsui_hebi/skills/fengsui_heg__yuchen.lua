@@ -1,65 +1,86 @@
 local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.fengsui.pkg.fengsui_hebi.util"
-local Util = require "packages.utility.utility"
 
 local yuchen = fk.CreateSkill { name = "fengsui_heg__yuchen" }
+local bonus_mark = "fengsui_heg__yuchen_bonus"
+local reuse_mark = "fengsui_heg__yuchen_reuse-turn"
 
-local function equalYinYang(player)
-  local main = Fk.generals[H.getActualGeneral(player, false)]
-  local deputy = Fk.generals[H.getActualGeneral(player, true)]
-  if not main or not deputy then return false end
-  return (main.maxHp + (main.mainMaxHpAdjustedValue or 0)) ==
-    (deputy.maxHp + (deputy.deputyMaxHpAdjustedValue or 0))
+-- 新版：同势力角色使用单体伤害牌指定他人后，弃一张同花色的牌令此牌伤害+1；
+-- 若此牌未造成伤害，原目标视为对技能拥有者使用此牌且伤害+1。
+local function sameSuitCards(player, suit)
+  return table.filter(player:getCardIds("he"), function(id)
+    return Fk:getCardById(id).suit == suit
+  end)
 end
 
-local function resolveChoice(room, player)
-  if not player:isAlive() or not equalYinYang(player) then return end
-  local choices = { "fengsui_heg__yuchen_draw" }
-  if H.hasGeneral(player, true) and not room:getBanner("fengsui_heg__yuchen_removed") then table.insert(choices, "fengsui_heg__yuchen_transform") end
-  local choice = room:askToChoice(player, {
-    choices = choices, skill_name = yuchen.name,
-    prompt = "#fengsui_heg__yuchen-choice",
-  })
-  if choice == "fengsui_heg__yuchen_draw" then
-    local n = math.max(0, player:getMaxCards() - player:getHandcardNum())
-    if n > 0 then room:drawCards(player, n, yuchen.name) end
-  else
-    room:setBanner("fengsui_heg__yuchen_removed", true)
-    H.transformGeneral(room, player, false, false, 1, yuchen.name)
-    if player:isAlive() then
-      H.addHegMark(player, "companion")
+yuchen:addEffect(fk.TargetSpecified, {
+  anim_type = "offensive",
+  can_trigger = function(self, event, target, player, data)
+    if not player:hasSkill(yuchen.name) or player:getMark(reuse_mark) > 0 then return false end
+    if not data or not data.card or not data.card.is_damage_card or not data.from then return false end
+    if not data.use or #data.use.tos ~= 1 then return false end
+    local to = data.to
+    if not to or to == data.from or not to:isAlive() then return false end
+    if not H.compareKingdomWith(data.from, player) then return false end
+    if data.card:getMark(bonus_mark) > 0 then return false end
+    return #sameSuitCards(player, data.card.suit) > 0
+  end,
+  on_cost = function(self, event, target, player, data)
+    local room = player.room
+    local cards = sameSuitCards(player, data.card.suit)
+    cards = U.chooseCardsFromList(room, player, cards, 1, 1,
+      "#fengsui_heg__yuchen-invoke", yuchen.name, true)
+    if #cards > 0 then
+      event:setCostData(self, { cards = cards })
+      return true
     end
-  end
-end
+  end,
+  on_use = function(self, event, target, player, data)
+    local room = player.room
+    room:throwCard(event:getCostData(self).cards, yuchen.name, player, player)
+    data.card:setMark(bonus_mark, 1)
+  end,
+})
 
-yuchen:addEffect("active", {
-  anim_type = "support", prompt = "#fengsui_heg__yuchen-invoke",
-  card_num = 0, target_num = 1,
-  can_use = function(self, player)
-    return player.phase == Player.Play and player:usedSkillTimes(self.name, Player.HistoryPhase) == 0 and
-      H.getGeneralsRevealedNum(player) > 0
+yuchen:addEffect(fk.DamageCaused, {
+  global = true,
+  can_trigger = function(self, event, target, player, data)
+    return player:hasSkill(yuchen.name) and data and data.card and
+      (data.card:getMark(bonus_mark) > 0 or player:getMark(reuse_mark) > 0)
   end,
-  card_filter = Util.FalseFunc,
-  target_filter = function(self, player, to, selected)
-    return #selected == 0 and to ~= player and H.compareKingdomWith(to, player) and
-      H.hasGeneral(player, true) and H.hasGeneral(to, true)
+  on_use = function(self, event, target, player, data)
+    data:changeDamage(1)
   end,
-  on_use = function(self, room, effect)
-    local player, target = effect.from, effect.tos[1]
-    local moved = U.getSkillPlace(player, self.name) == true
-    H.swapDeputy(room, player, target)
-    resolveChoice(room, player)
-    if moved and target:isAlive() then resolveChoice(room, target) end
+})
+
+yuchen:addEffect(fk.CardUseFinished, {
+  can_trigger = function(self, event, target, player, data)
+    return player:hasSkill(yuchen.name) and data and data.card and
+      data.card:getMark(bonus_mark) > 0 and player:getMark(reuse_mark) == 0
+  end,
+  on_use = function(self, event, target, player, data)
+    local room = player.room
+    local dealt = 0
+    if data.damageDealt then
+      for _, n in pairs(data.damageDealt) do dealt = dealt + (tonumber(n) or 0) end
+    end
+    if dealt > 0 then return end
+    local origin = data.tos and data.tos[1]
+    if not origin or not origin:isAlive() or not player:isAlive() then return end
+    local cardName = data.card.name
+    if not cardName then return end
+    -- reuse_mark 同时兼作「伤害+1」标记与递归保护：反打的牌在 TargetSpecified
+    -- 阶段会被跳过，DamageCaused 阶段据此 +1；调用返回后即清除。
+    room:setPlayerMark(player, reuse_mark, 1)
+    room:useVirtualCard(cardName, nil, origin, player, yuchen.name, true)
+    room:setPlayerMark(player, reuse_mark, 0)
   end,
 })
 
 Fk:loadTranslationTable {
   ["fengsui_heg__yuchen"] = "毓尘",
-  [":fengsui_heg__yuchen"] = "出牌阶段限一次，你可以与一名其他同势力角色副将<a href='heg__yiwei'>易位</a>，易位前后控制此武将牌的角色中主副将阴阳鱼相等的角色依次（由你开始）选择一项：1.将手牌数摸至手牌上限；2.变更副将并获得一枚珠联璧合标记，然后移除此选项。",
-  ["#fengsui_heg__yuchen-invoke"] = "毓尘：选择一名其他同势力角色，与其副将易位",
-  ["#fengsui_heg__yuchen-choice"] = "毓尘：请选择一项",
-  ["fengsui_heg__yuchen_draw"] = "将手牌数摸至手牌上限",
-  ["fengsui_heg__yuchen_transform"] = "变更副将并获得珠联璧合标记",
+  [":fengsui_heg__yuchen"] = "当一名同势力角色使用单体伤害牌指定其他角色后，你可以弃置一张同花色的牌令此牌伤害+1，若此牌未造成伤害，原目标视为对你使用此牌且伤害+1。",
+  ["#fengsui_heg__yuchen-invoke"] = "毓尘：请选择一张与此牌花色相同的牌弃置",
 }
 
 return yuchen

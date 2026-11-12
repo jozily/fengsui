@@ -425,6 +425,24 @@ Fk:loadTranslationTable {
   ["#fengsui_heg__jietuRemake-active"] = "捷途：请选择要发动",
   ["#fengsui_heg__jietuRemake-recast"] = "捷途：请选择要重铸的一张牌",
   ["@fengsui_heg__liusuRemake2_unknown-turn"] = "流愫",
+
+  -- 2026-11-12 改版存档：断衿/连徙/申情/毓尘/告返 的改版前原文（序号递归）
+  ["fengsui_heg__duanjinRemake"] = "断衿",
+  [":fengsui_heg__duanjinRemake"] = "当此武将牌被移除或变更后，你可以与一名同势力其他角色副将<a href='heg__yiwei'>易位</a>并各获得一枚珠联璧合标记。",
+  ["fengsui_heg__lianxiRemake4"] = "连徙",
+  [":fengsui_heg__lianxiRemake4"] = "锁定技，与你势力相同的角色明置武将牌数变化后，你令其选择一项：1.弃置一个区域所有牌并对当前回合角色造成一点伤害；2.摸两张牌并与你副将<a href='heg__yiwei'>易位</a>。",
+  ["fengsui_heg__shenqingRemake2"] = "申情",
+  [":fengsui_heg__shenqingRemake2"] = "出牌阶段限一次，你可以选择场上至多两名同势力角色，然后选择一项：1.令其中一名角色<a href='heg__hebi'>合璧</a>；2.令两名角色副将<a href='heg__yiwei'>易位</a>。",
+  ["fengsui_heg__yuchenRemake2"] = "毓尘",
+  [":fengsui_heg__yuchenRemake2"] = "出牌阶段限一次，你可以与一名其他同势力角色副将<a href='heg__yiwei'>易位</a>，易位前后控制此武将牌的角色中主副将阴阳鱼相等的角色依次（由你开始）选择一项：1.将手牌数摸至手牌上限；2.变更副将并获得一枚珠联璧合标记，然后移除此选项。",
+  ["fengsui_heg__gaofanRemake"] = "告返",
+  [":fengsui_heg__gaofanRemake"] = "当你需要响应其他同势力角色的一张牌或其他同势力角色需要响应你的一张牌时，你可以与其副将<a href='heg__yiwei'>易位</a>视为响应之，然后被响应方变更副将或对响应方造成1点伤害。",
+  ["fengsui_heg__gaofanRemake_response&"] = "告返",
+  [":fengsui_heg__gaofanRemake_response&"] = "你可以与贾褒副将易位，视为响应此牌。",
+  ["#fengsui_heg__gaofanRemake-response"] = "告返：与贾褒副将易位，视为响应此牌",
+  ["#fengsui_heg__gaofanRemake-choice"] = "告返：请选择变更副将，或对 %dest 造成1点伤害",
+  ["fengsui_heg__gaofanRemake_transform"] = "变更副将",
+  ["fengsui_heg__gaofanRemake_damage"] = "对响应方造成1点伤害",
 }
 
 return true

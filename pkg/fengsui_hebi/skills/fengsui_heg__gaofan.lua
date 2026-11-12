@@ -5,21 +5,7 @@ local gaofan = fk.CreateSkill{
   attached_skill_name = "fengsui_heg__gaofan_response&",
 }
 
-local function generalPosition(player)
-  for _, is_deputy in ipairs({false, true}) do
-    local general = Fk.generals[H.getActualGeneral(player, is_deputy)]
-    if general and table.contains(general:getSkillNameList(), gaofan.name) then
-      return is_deputy
-    end
-  end
-end
-
-local function canSwap(owner, responder)
-  local is_deputy = generalPosition(owner)
-  return is_deputy ~= nil and H.hasGeneral(owner, is_deputy) and
-    H.hasGeneral(responder, is_deputy)
-end
-
+-- 新版不再要求副将易位，只需双方同势力即可把响应技能挂给响应方。
 local function findOwner(room, responder, source)
   if not responder or not source or responder == source or not responder:isAlive() or not source:isAlive() then
     return
@@ -28,7 +14,7 @@ local function findOwner(room, responder, source)
     local counterpart = owner == responder and source or responder
     return owner:hasSkill(gaofan.name) and
       (owner == responder or owner == source) and
-      H.compareKingdomWith(owner, counterpart) and canSwap(owner, counterpart)
+      H.compareKingdomWith(owner, counterpart)
   end)
 end
 

@@ -1,5 +1,4 @@
 local H = require "packages.fengsui.hegemony_util"
-local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 
 local gaofanResponse = fk.CreateSkill{
   name = "fengsui_heg__gaofan_response&",
@@ -13,14 +12,7 @@ local function responseCardName()
   end)
 end
 
-local function swapMain(room, first, second)
-  if not U.swapGenerals(room, first) or not U.swapGenerals(room, second) then return false end
-  H.swapDeputy(room, first, second)
-  U.swapGenerals(room, first)
-  U.swapGenerals(room, second)
-  return true
-end
-
+-- 新版：直接视为响应，不再与贾褒副将易位。
 gaofanResponse:addEffect("viewas", {
   prompt = "#fengsui_heg__gaofan-response",
   card_filter = Util.FalseFunc,
@@ -38,17 +30,10 @@ gaofanResponse:addEffect("viewas", {
   before_use = function(self, player, use)
     local room = player.room
     local owner = room:getPlayerById(use.card:getMark("fengsui_heg__gaofan_owner"))
-    local counterpart = room:getPlayerById(use.card:getMark("fengsui_heg__gaofan_counterpart"))
-    if not owner or owner.dead or not counterpart or counterpart.dead then return end
-    local main = Fk.generals[H.getActualGeneral(owner, false)]
-    local is_deputy = not (main and table.contains(main:getSkillNameList(), "fengsui_heg__gaofan"))
-    if is_deputy then
-      H.swapDeputy(room, owner, counterpart)
-    else
-      swapMain(room, owner, counterpart)
+    if owner and not owner.dead then
+      room:notifySkillInvoked(owner, "fengsui_heg__gaofan", "control")
+      owner:broadcastSkillInvoke("fengsui_heg__gaofan")
     end
-    room:notifySkillInvoked(owner, "fengsui_heg__gaofan", "control")
-    owner:broadcastSkillInvoke("fengsui_heg__gaofan")
   end,
   after_use = function(self, player, use)
     local room = player.room

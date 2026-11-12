@@ -19,10 +19,19 @@ local function shownKingdomGenerals(target)
 end
 
 local function useBurningCamps(player)
-  if player:isAlive() and player:canUse(Fk:cloneCard("burning_camps"), { bypass_times = true }) then
-    player.room:useVirtualCard("burning_camps", nil, player, nil, yinxian.name, true,
-      { bypass_times = true, extraUse = true })
-  end
+  if not player:isAlive() then return end
+  local card = Fk:cloneCard("burning_camps")
+  if not player:canUse(card, { bypass_times = true }) then return end
+  local room = player.room
+  -- 【火烧连营】是固定目标锦囊，目标由卡牌自身规则给出（下家及同队列角色）。
+  -- useVirtualCard 的 tos 必须是非空目标列表，传 nil 会在 usecard.lua 里索引空值崩溃。
+  local tos = card:getFixedTargets(player) or {}
+  tos = table.filter(tos, function(p)
+    return not player:isProhibited(p, card)
+  end)
+  if #tos == 0 then return end
+  room:useVirtualCard("burning_camps", nil, player, tos, yinxian.name, true,
+    { bypass_times = true, extraUse = true })
 end
 
 yinxian:addEffect("active", {

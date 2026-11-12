@@ -1,8 +1,24 @@
 local H = require "packages.fengsui.hegemony_util"
+local CardNameUI = require "packages.fengsui.pkg.card_name_ui"
 
 local zunweiVs = fk.CreateSkill {
   name = "fengsui_heg__zunwei_vs",
 }
+
+local options = { "jink", "nullification" }
+
+-- 客户端在部分「使用牌」请求里不一定带得上 Fk.currentResponsePattern
+-- （参见 fengsui_heg__jiange），故转化牌名不能只依赖它：
+-- 选项框始终存在，并把默认牌名写进 interaction.data 供 view_as 兜底。
+local function responseName()
+  local pattern = Fk.currentResponsePattern
+  if not pattern or pattern == "" then return end
+  local ok, exp = pcall(Exppattern.Parse, Exppattern, pattern)
+  if not ok or not exp then return end
+  for _, name in ipairs(options) do
+    if exp:match(Fk:cloneCard(name)) then return name end
+  end
+end
 
 zunweiVs:addEffect("viewas", {
   anim_type = "defensive",
@@ -15,17 +31,15 @@ zunweiVs:addEffect("viewas", {
     subcards = {},
   },
   card_filter = function() return false end,
+  interaction = function(self, player)
+    return CardNameUI.create(zunweiVs.name, options, options, responseName() or "jink")
+  end,
   view_as = function(self, player, cards)
-    local pattern = Fk.currentResponsePattern
-    if not pattern then return end
-    local exp = Exppattern:Parse(pattern)
-    local name
-    if exp:match(Fk:cloneCard("jink")) then
-      name = "jink"
-    elseif exp:match(Fk:cloneCard("nullification")) then
-      name = "nullification"
+    local name = responseName()
+    if not name and self.interaction and self.interaction.data then
+      name = self.interaction.data
     end
-    if not name then return end
+    if not table.contains(options, name) then name = "jink" end
     local card = Fk:cloneCard(name)
     card.skillName = zunweiVs.name
     return card
@@ -39,6 +53,7 @@ zunweiVs:addEffect("viewas", {
     if n > 0 then player:drawCards(n, zunweiVs.name) end
   end,
   enabled_at_play = function() return false end,
+  -- 按钮是否相容由引擎按 skill.pattern 把关，这里只判断技能本身能否发动
   enabled_at_response = function(self, player)
     return H.hasGeneral(player, true)
   end,
@@ -49,6 +64,7 @@ zunweiVs:addEffect("viewas", {
 
 Fk:loadTranslationTable {
   ["fengsui_heg__zunwei_vs"] = "尊位",
+  [":fengsui_heg__zunwei_vs"] = "当你需要使用或打出【闪】或【无懈可击】时，你可以移除副将视为使用或打出之，然后弃置所有手牌并将手牌数摸至体力上限。",
   ["#fengsui_heg__zunwei-response"] = "尊位：移除副将并视为使用【闪】或【无懈可击】响应，然后弃置所有手牌并将手牌数摸至体力上限",
 }
 
