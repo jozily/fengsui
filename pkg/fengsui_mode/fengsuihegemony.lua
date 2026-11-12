@@ -175,10 +175,17 @@ function HegLogic:chooseGenerals()
     room:sendLog{ type = "#fengsui_warlords_filter", toast = true }
   end
 
+  -- 中立者/野心家总控（主页面设置）。关闭时维持原有规则：两类武将
+  -- 全部启用，两项数量设置置灰且不生效。开启后先禁用全部，再按两项
+  -- 数量设置随机放回若干张（都为 0 即一张不放）。群雄割据不受影响。
+  local masterValue = room:getSettings("fengsui_enable_neutral_wild")
+  local masterOn = masterValue == true or masterValue == 1 or
+    masterValue == "1" or masterValue == "true"
+
   -- 可选：从中立者与野心家中随机保留指定数量，作为本局可用武将。
-  local randomNeutral = tonumber(room:getSettings("fengsui_random_neutral")) or 0
-  local randomWild = tonumber(room:getSettings("fengsui_random_wild")) or 0
-  if not warlordsOn and (randomNeutral > 0 or randomWild > 0) then
+  local randomNeutral = masterOn and (tonumber(room:getSettings("fengsui_random_neutral")) or 0) or 0
+  local randomWild = masterOn and (tonumber(room:getSettings("fengsui_random_wild")) or 0) or 0
+  if not warlordsOn and (masterOn or randomNeutral > 0 or randomWild > 0) then
     -- 与野心家一样按势力抽签，不设固定名单；需要约束人选请在游戏内禁将。
     local function isNeutralKingdom(k)
       return k == "fengsui_neutral" or k == "fengsui_neutral_old"
@@ -215,7 +222,11 @@ function HegLogic:chooseGenerals()
     end
     if #selectedNeutral > 0 then room:setBanner("@&enable_neutral_generals", selectedNeutral) end
     if #selectedWild > 0 then room:setBanner("@&enable_wildgenerals", selectedWild) end
-    room:sendLog{ type = "#fengsui_random_neutral_wild", arg = table.concat(table.map(selected, Util.TranslateMapper), " "), toast = true }
+    if #selected > 0 then
+      room:sendLog{ type = "#fengsui_random_neutral_wild", arg = table.concat(table.map(selected, Util.TranslateMapper), " "), toast = true }
+    else
+      room:sendLog{ type = "#fengsui_neutral_wild_banned", toast = true }
+    end
   end
 
 
@@ -643,6 +654,13 @@ heg = fk.CreateGameMode{
   end,
 }
 
+-- 两项数量设置是否可用，取决于主页面的「禁用中立者/野心家」总控。
+-- 该函数在每次设置变更时被 W.toQmlData 重新求值，切换总控即刻置灰/解灰。
+local function neutralWildEnabled(settings)
+  local v = settings._mode and settings._mode.fengsui_enable_neutral_wild
+  return v == true or v == 1 or v == "1" or v == "true"
+end
+
 heg.ui_settings = {
   --君主替换
    W.PreferenceGroup {
@@ -694,16 +712,23 @@ heg.ui_settings = {
       title = "fengsui_warlords",
     },
 
+    W.SwitchRow {
+      _settingsKey = "fengsui_enable_neutral_wild",
+      title = "fengsui_enable_neutral_wild",
+    },
+
     W.ComboRow {
       _settingsKey = "fengsui_random_neutral",
       title = "fengsui_random_neutral",
       model = { "0", "1", "2", "3", "4", "5" },
+      enabled = neutralWildEnabled,
     },
 
     W.ComboRow {
       _settingsKey = "fengsui_random_wild",
       title = "fengsui_random_wild",
       model = { "0", "1", "2", "3", "4", "5" },
+      enabled = neutralWildEnabled,
     },
 
     W.ComboRow {
@@ -753,14 +778,17 @@ Fk:loadTranslationTable{
   ["help: fengsui_no_ban_kingdom"] = "勾选后，开局不再随机禁用一个势力。默认不勾选，开局照常随机禁用一个势力。",
   ["fengsui_warlords"] = "群雄割据",
   ["help: fengsui_warlords"] = "开启后可自由组合不同势力的武将，禁用中立者和野心家武将；同一势力人数达到全场人数的三分之一后，该势力的下一名角色成为野心家。",
+  ["fengsui_enable_neutral_wild"] = "禁用中立者/野心家",
+  ["help: fengsui_enable_neutral_wild"] = "中立者与野心家的总开关。默认关闭，此时两类武将照常全部启用，下方两项数量设置置灰且不生效。开启后本局先禁用全部中立者与野心家武将，再按两项数量设置随机放回指定数量（都为 0 即全部禁用）。群雄割据按自身规则处理，不受本开关影响。",
   ["fengsui_random_neutral"] = "随机中立者武将数量",
   ["fengsui_random_wild"] = "随机野心家武将数量",
   ["@&enable_neutral_generals"] = "本局中立者",
   ["@&enable_wildgenerals"] = "本局野心家",
+  ["#fengsui_neutral_wild_banned"] = "本局中立者与野心家武将已全部禁用",
   ["#wild-choose"] = "野心家建国：选择你要成为的势力！",
   ["#wild_join-choose"] = "加入建国",
-  ["help: fengsui_random_neutral"] = "本局从常规中立者中随机保留指定数量（0至5）。<br>中立者可与任意势力武将组合，和双势力组合开局需自选势力，不可与野心家或另一名中立者组合；单独明置时仍视为未确定势力，亮出另一张武将牌后确定势力。",
-  ["help: fengsui_random_wild"] = "本局从野心家武将中随机保留指定数量（0至5）。",
+  ["help: fengsui_random_neutral"] = "需先开启「禁用中立者/野心家」总开关，否则本项灰色不可用。开启后本局从常规中立者中随机放回指定数量（0至5，0 表示一个都不放）。<br>中立者可与任意势力武将组合，和双势力组合开局需自选势力，不可与野心家或另一名中立者组合；单独明置时仍视为未确定势力，亮出另一张武将牌后确定势力。",
+  ["help: fengsui_random_wild"] = "需先开启「禁用中立者/野心家」总开关，否则本项灰色不可用。开启后本局从野心家武将中随机放回指定数量（0至5，0 表示一个都不放）。",
   ["fengsui_reveal_count"] = "出牌阶段主动亮将次数",
   ["help: fengsui_reveal_count"] = "0 表示本局出牌阶段不出现亮将按钮；1/3/5/10 表示每名角色每出牌阶段可主动亮将的次数，亮将按钮上显示本阶段剩余次数，用尽后按钮不可用；无限表示不限次数，亮将按钮不显示次数。回合开始时的主动亮将不计入。",
   ["fengsui_neutral_rule_help"] = "中立者机制：中立者可与魏、蜀、吴、群、晋势力武将组合；单独明置时仍视为未确定势力，亮出另一张武将牌后确定势力；不可与野心家或另一名中立者组合。",

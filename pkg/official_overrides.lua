@@ -148,6 +148,76 @@ local function overrideTianxiang()
   end
 end
 
+-- 官方裸衣的 @@hs__luoyi 没有 -turn 后缀，on_use 用 addPlayerMark 累加，
+-- 而伤害效果按 getMark 取值，逐回合发动会叠成 +2/+3。这里在每次发动前
+-- 先把标记归零，保持「此伤害+1」；换将后的清 0 由 mark_cleanup 负责。
+local function fixLuoyiStacking()
+  for _, effect in ipairs(collectTriggerEffects("hs__luoyi")) do
+    if effect.event == fk.EventPhaseEnd and effect.use and not effect.__fengsui_luoyi_reset then
+      local oldUse = effect.use
+      effect.use = function(self, event, target, player, data)
+        player.room:setPlayerMark(player, "@@hs__luoyi", 0)
+        return oldUse(self, event, target, player, data)
+      end
+      effect.__fengsui_luoyi_reset = true
+      fk.qInfo("[fengsui-overrides] hs__luoyi(裸衣) 发动前重置标记")
+    end
+  end
+end
+
+-- 官方建安把「不能明置」写成无后缀 RevealProhibited 里的一个 "m"/"d"，
+-- 与青龙刀写的 "m"/"d" 完全同形，任何一边整表清零都会误伤另一边。
+-- 这里在建安发动时把它自己加的那一项记到 fengsui_jianan_reveal；
+-- 官方回合开始/死亡 refresh 会无条件清空全场该 mark，包装后补回
+-- 仍在生效的青龙刀层数，并清掉这条记录。
+local function trackJiananReveal()
+  for _, effect in ipairs(collectTriggerEffects("jianan")) do
+    if effect.use and not effect.__fengsui_jianan_reveal_use then
+      local oldUse = effect.use
+      effect.use = function(self, event, target, player, data)
+        local before = target and target:getTableMark(MarkEnum.RevealProhibited) or {}
+        local ret = oldUse(self, event, target, player, data)
+        if target and target.room then
+          local after = target:getTableMark(MarkEnum.RevealProhibited)
+          if #after > #before then
+            local added = after[#after]
+            if added == "m" or added == "d" then
+              target.room:setPlayerMark(target, "fengsui_jianan_reveal", added)
+            end
+          end
+        end
+        return ret
+      end
+      effect.__fengsui_jianan_reveal_use = true
+    end
+
+    if (effect.event == fk.TurnStart or effect.event == fk.Death) and
+        effect.refresh and not effect.__fengsui_jianan_reveal_refresh then
+      local oldRefresh = effect.refresh
+      effect.refresh = function(self, event, target, player, data)
+        local ret = oldRefresh(self, event, target, player, data)
+        local room = player and player.room
+        if room then
+          for _, p in ipairs(room.players) do
+            local n = p:getMark("@@sa__blade")
+            if n > 0 then
+              local rec = {}
+              for _ = 1, n do
+                table.insert(rec, "m")
+                table.insert(rec, "d")
+              end
+              room:setPlayerMark(p, MarkEnum.RevealProhibited, rec)
+            end
+            room:setPlayerMark(p, "fengsui_jianan_reveal", 0)
+          end
+        end
+        return ret
+      end
+      effect.__fengsui_jianan_reveal_refresh = true
+    end
+  end
+end
+
 -- 这些技能只负责悼离的阶段清理/特效，不应在战报中生成“【】”或
 -- “【悼离骤雨】”。部分旧引擎版本不会把骨架上的 mute 完整复制到
 -- 延迟触发器，因此在所有扩展技能实例创建后再强制静默一次。
@@ -200,8 +270,15 @@ local function runAllOverrides()
   overrideBianfurenGender()
   overrideLukangKeshou()
   overrideTianxiang()
+  fixLuoyiStacking()
+  trackJiananReveal()
   muteDaoliSkills()
   guardArchiveSkills()
+  -- 左慈替换单独包一层：即使该模块缺失或报错，也不影响上面的覆盖。
+  Pcall(function()
+    local zuoci = require "packages.fengsui.pkg.zuoci_compat"
+    zuoci.apply()
+  end)
 end
 
 -- 挂在 Package.install 上：每装完一个包就重试一轮覆盖。

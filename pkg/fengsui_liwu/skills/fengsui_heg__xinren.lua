@@ -72,9 +72,11 @@ local function useAgainstYanshiTarget(self, _, target, player)
   end
   local place = H.inGeneralSkills(player, s.name)
   if place then
+    H.removeGeneral(player, place == "d", s.name)
+    -- 衅刃结算完毕、赵娥武将牌移除之后再清掉魇誓配对。
+    -- 统一清理表会在移除过程中再清一次，重复清 0 无副作用。
     room:setPlayerMark(player, "fengsui_heg__yanshi_target", 0)
     if victim then room:setPlayerMark(victim, "@fengsui_heg__yanshi_target", 0) end
-    H.removeGeneral(player, place == "d", s.name)
   end
 end
 
