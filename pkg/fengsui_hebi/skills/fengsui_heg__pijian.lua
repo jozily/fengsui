@@ -28,9 +28,17 @@ pijian:addEffect(fk.EventPhaseEnd, {
     local ids = table.filter(player:getCardIds("h"), function(id)
       return table.contains(names, Fk:getCardById(id).trueName)
     end)
+    -- prompt 的第 4 段才是 %arg，只写 "::" .. target.id 时客户端不会替换。
+    -- 这里列出手中实际存在的同名牌名，避免提示里出现无关牌名。
+    local shownNames = {}
+    for _, id in ipairs(ids) do
+      table.insertIfNeed(shownNames, Fk:translate(Fk:getCardById(id).trueName))
+    end
     local id = player.room:askToChooseCard(player, {
       target = player, flag = "h", pattern = tostring(Exppattern { id = ids }),
-      skill_name = pijian.name, prompt = "#fengsui_heg__pijian-card::" .. target.id,
+      skill_name = pijian.name,
+      prompt = "#fengsui_heg__pijian-card::" .. target.id .. ":" ..
+        table.concat(shownNames, "、"),
     })
     if id then event:setCostData(self, id); return true end
   end,

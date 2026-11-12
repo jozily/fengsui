@@ -301,7 +301,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__pijian"] = "辟剑",
   [":fengsui_heg__pijian"] = "副将技，其他角色的回合结束后，若你的手牌区有任意本回合被使用过的牌的同名牌，你可以展示并弃置之，然后视为对其使用一张【决斗】。",
   ["#fengsui_heg__pijian-invoke"] = "辟剑：是否对 %dest 发动？",
-  ["#fengsui_heg__pijian-card"] = "辟剑：选择一张%arg牌弃置，以对%dest造成1点雷电伤害",
+  ["#fengsui_heg__pijian-card"] = "辟剑：弃置一张与 %arg 同名的手牌，视为对 %dest 使用一张【决斗】",
   ["fengsui_heg__zeyu"] = "泽誉",
   [":fengsui_heg__zeyu"] = "主将技，当与你势力相同的角色因杀死其他角色而执行奖惩后，你可令其变更副将。",
   ["#fengsui_heg__zeyu-invoke"] = "泽誉：是否对 %dest 发动？",
