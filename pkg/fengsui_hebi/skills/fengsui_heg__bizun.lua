@@ -1,3 +1,7 @@
+-- 新版（2026-11-13）：互换对应区域各一张牌后，只在该区域牌数严格较多
+-- （两人不并列）、且该角色与发动者势力相同时，才可令其合璧；不再摸牌。
+-- 改版前的「小势力角色摸牌 + 同势力合璧」版本见
+-- fengsui_heg__bizunRemake2.lua。
 local H = require "packages.fengsui.hegemony_util"
 
 local bizun = fk.CreateSkill{
@@ -36,6 +40,10 @@ bizun:addEffect("active", {
       prompt = "#fengsui_heg__bizun-area",
     })
     local flag = ({bizun_hand = "h", bizun_equip = "e", bizun_judge = "j"})[choice]
+    -- 互换后双方该区域牌数变化相同（手牌区各净变 0，装备/判定区各 -1），
+    -- 谁牌较多不因结算顺序改变，故在移动牌之前记录原始牌数。
+    local first_num = #first:getCardIds(flag)
+    local second_num = #second:getCardIds(flag)
     local from_second = room:askToChooseCard(first, {
       target = second,
       flag = flag,
@@ -52,26 +60,19 @@ bizun:addEffect("active", {
     })
     room:moveCardTo(from_first, Card.PlayerHand, second, fk.ReasonPrey, bizun.name, nil, false, second)
 
-    local small = table.filter({first, second}, function(p)
-      return p:isAlive() and H.isSmallKingdomPlayer(p)
-    end)
-    if #small == 0 then return end
-    local chosen = room:askToChoosePlayers(player, {
-      targets = small,
-      min_num = 1,
-      max_num = 1,
+    -- 「对应区域牌较多」须唯一：两人牌数相同则不存在这样的角色。
+    local more
+    if first_num > second_num then
+      more = first
+    elseif second_num > first_num then
+      more = second
+    end
+    if not more or not more:isAlive() or not H.compareKingdomWith(more, player) then return end
+    if room:askToSkillInvoke(player, {
       skill_name = bizun.name,
-      prompt = "#fengsui_heg__bizun-draw",
-      cancelable = true,
-    })
-    if #chosen == 0 then return end
-    local to = chosen[1]
-    to:drawCards(1, bizun.name)
-    if to:isAlive() and H.compareKingdomWith(to, player) and room:askToSkillInvoke(player, {
-      skill_name = bizun.name,
-      prompt = "#fengsui_heg__bizun-change::" .. to.id,
+      prompt = "#fengsui_heg__bizun-change::" .. more.id,
     }) then
-      H.askToHebiOrTransform(room, to, bizun.name, false)
+      H.askToHebiOrTransform(room, more, bizun.name, false)
     end
   end,
 })
@@ -80,7 +81,6 @@ Fk:loadTranslationTable{
   ["#fengsui_heg__bizun"] = "迁宫：依次选择两名角色并选择二者均有牌的相同区域",
   ["#fengsui_heg__bizun-area"] = "迁宫：选择双方均有牌的区域",
   ["#fengsui_heg__bizun-take"] = "迁宫：获得 %dest 该区域的一张牌",
-  ["#fengsui_heg__bizun-draw"] = "迁宫：你可以令其中一名小势力角色摸一张牌",
   ["#fengsui_heg__bizun-change"] = "迁宫：你可以令 %dest 合璧",
   ["bizun_hand"] = "手牌区",
   ["bizun_equip"] = "装备区",

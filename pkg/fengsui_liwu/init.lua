@@ -64,10 +64,9 @@ local heqi = General:new(extension, "fengsui_heg__heqi", "wu", 4)
 heqi.deputyMaxHpAdjustedValue = -1
 heqi:addSkills { "fengsui_heg__junwei", "fengsui_heg__chenji", "fengsui_heg__zhouwang" }
 
-local fengsui_heg__zhangbai = General:new(extension, "fengsui_heg__zhangbai", "wu", 3)
-fengsui_heg__zhangbai:addCompanions("ty_heg__luyusheng")
-fengsui_heg__zhangbai:addSkill("fengsui_heg__jincai")
-fengsui_heg__zhangbai:addSkill("fengsui_heg__lianxi")
+local fengsui_heg__heji = General:new(extension, "fengsui_heg__heji", "wu", 3, 3, General.Female)
+-- 孙鸢不再与何姬构成珠联璧合（2026-11-13 移除）。
+fengsui_heg__heji:addSkills { "fengsui_heg__guru", "fengsui_heg__weihou" }
 
 local zhanghuai = General:new(extension, "fengsui_heg__zhanghuai", "wu", 3)
 zhanghuai.gender = General.Female

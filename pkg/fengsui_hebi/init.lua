@@ -27,9 +27,10 @@ local wangfuren = General:new(extension, "fengsui_heg__wangfuren", "wu", 3, 3, G
 wangfuren:addCompanions("hs__sunquan")
 wangfuren:addSkills { "fengsui_heg__qiangong", "fengsui_heg__bizun" }
 
-local fengsui_heg__heji = General:new(extension, "fengsui_heg__heji", "wu", 3, 3, General.Female)
-fengsui_heg__heji:addCompanions("fengsui_heg__sunyuan")
-fengsui_heg__heji:addSkills { "fengsui_heg__guru", "fengsui_heg__weihou" }
+local fengsui_heg__zhangbai = General:new(extension, "fengsui_heg__zhangbai", "wu", 3)
+fengsui_heg__zhangbai:addCompanions("ty_heg__luyusheng")
+fengsui_heg__zhangbai:addSkill("fengsui_heg__jincai")
+fengsui_heg__zhangbai:addSkill("fengsui_heg__lianxi")
 
 local mazhi = General:new(extension, "fengsui_heg__mazhi", "qun", 3, 3, General.Female)
 mazhi:addCompanions("fengsui_heg__malun")
@@ -716,7 +717,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__qiangong_equip"] = "装备区",
   ["fengsui_heg__qiangong_judge"] = "判定区",
   ["fengsui_heg__bizun"] = "迁宫",
-  [":fengsui_heg__bizun"] = "出牌阶段限一次，你可以选择两名角色并选择一个二者均有牌的相同区域，所选角色依次获得彼此相同区域的一张牌，然后你可以令其中的小势力角色摸一张牌，若其与你势力相同，你可令其<a href='heg__hebi'>合璧</a>。",
+  [":fengsui_heg__bizun"] = "出牌阶段限一次，你可以选择两名角色并选择一个二者均有牌的相同区域，所选角色依次获得彼此相同区域的一张牌，若其中对应区域牌较多角色与你势力相同且唯一，你可以令其<a href='heg__hebi'>合璧</a>。",
   ["$fengsui_heg__qiangong1"] = "尊位非我所求，休儿平安，便胜万千恩宠。",
   ["$fengsui_heg__qiangong2"] = "花开太盛易招风雨，不若敛华守静。",
   ["$fengsui_heg__qiangong3"] = "退居人后，非为自轻，实为避祸全身。",

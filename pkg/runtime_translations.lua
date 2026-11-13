@@ -432,6 +432,9 @@ Fk:loadTranslationTable {
   -- 2026-11-13 改版存档：改版前为「重铸装备区所有牌并令你与一名其他同势力角色各获得一枚」
   ["fengsui_heg__duanjinRemake2"] = "断衿",
   [":fengsui_heg__duanjinRemake2"] = "当你的武将牌被移除或变更后，你可以重铸装备区所有牌并令你与一名其他同势力角色各获得一枚珠联璧合标记。",
+  -- 2026-11-13 改版存档：迁宫改版前为「令其中小势力角色摸一张牌，同势力可令其合璧」
+  ["fengsui_heg__bizunRemake2"] = "迁宫",
+  [":fengsui_heg__bizunRemake2"] = "出牌阶段限一次，你可以选择两名角色并选择一个二者均有牌的相同区域，所选角色依次获得彼此相同区域的一张牌，然后你可以令其中的小势力角色摸一张牌，若其与你势力相同，你可令其<a href='heg__hebi'>合璧</a>。",
   ["fengsui_heg__lianxiRemake4"] = "连徙",
   [":fengsui_heg__lianxiRemake4"] = "锁定技，与你势力相同的角色明置武将牌数变化后，你令其选择一项：1.弃置一个区域所有牌并对当前回合角色造成一点伤害；2.摸两张牌并与你副将<a href='heg__yiwei'>易位</a>。",
   ["fengsui_heg__shenqingRemake2"] = "申情",

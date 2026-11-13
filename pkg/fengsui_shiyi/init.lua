@@ -13,7 +13,7 @@ chenshou:addCompanions("fengsui_heg__qiaozhou", "fengsui_heg__limi")
 chenshou:addSkills { "fengsui_heg__dianmo", "fengsui_heg__fuzai" }
 
 local sunyuan = General:new(extension, "fengsui_heg__sunyuan", "wu", 4, 4, General.Female)
-sunyuan:addCompanions("fengsui_heg__heji")
+-- 何姬不再与孙鸢构成珠联璧合（2026-11-13 移除）。
 sunyuan:addSkills { "fengsui_heg__dongxin" }
 
 local liuhui = General:new(extension, "fengsui_heg__liuhui", "qun", 4)
