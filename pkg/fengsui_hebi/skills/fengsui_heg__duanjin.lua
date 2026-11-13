@@ -57,7 +57,7 @@ addDuanjinEffect(H.GeneralRemoved)
 addDuanjinEffect(H.GeneralTransformed)
 
 Fk:loadTranslationTable{
-  ["#fengsui_heg__duanjin-choose"] = "断衿：你可以令一名其他同势力角色也获得一枚珠联璧合标记",
+  ["#fengsui_heg__duanjin-choose"] = "断衿：你可以令一名其他同势力角色获得一枚珠联璧合标记",
 }
 
 return duanjin
