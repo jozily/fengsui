@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // 烽燧燎原版「魂」选择框：由 pkg/zuoci_compat.lua 调用。
 // 与官方版的差别：势力栏由 Lua 侧 soulTabs 指定；原「双势力」栏
-// 改称「其他」，收纳双势力 / 中立者 / 野心家魂；新增晋势力栏。
+// 改称「其他」，双势力 / 中立者 / 野心家魂一律只进这一栏，不设野心家栏；
+// 另有晋势力栏。
 
 pragma ComponentBehavior: Bound
 
@@ -22,7 +23,7 @@ GraphicsBox {
   // 与 cards 逐一对应的势力栏列表，元素为逗号分隔的字符串。
   property var soulTabs: []
   property var kingdoms: [
-    "all", "wei", "shu", "wu", "qun", "jin", "wild", "other"
+    "all", "wei", "shu", "wu", "qun", "jin", "other"
   ]
   property string currentKingdom: "all"
   property var cardsByKingdom: ({
@@ -32,7 +33,6 @@ GraphicsBox {
     wu: [],
     qun: [],
     jin: [],
-    wild: [],
     other: [],
   })
   property var displayCards: cardsByKingdom[currentKingdom] || []
@@ -62,7 +62,6 @@ GraphicsBox {
       wu: [],
       qun: [],
       jin: [],
-      wild: [],
       other: [],
     };
     cards.forEach((general, idx) => {
@@ -262,11 +261,9 @@ GraphicsBox {
           enabled: kingdomTab.hasCards
           text: kingdomTab.kingdom === "all"
             ? qsTr("\u5168\u90e8")
-            : kingdomTab.kingdom === "wild"
-              ? qsTr("\u91ce")
-              : kingdomTab.kingdom === "other"
-                ? qsTr("\u5176\u4ED6")
-                : kingdomTab.kingdom === "jin"
+            : kingdomTab.kingdom === "other"
+              ? qsTr("\u5176\u4ED6")
+              : kingdomTab.kingdom === "jin"
                 ? qsTr("\u664B")
                 : Lua.tr(kingdomTab.kingdom)
           backgroundColor: kingdomTab.selected
@@ -289,11 +286,9 @@ GraphicsBox {
           selected: kingdomTab.selected
           text: kingdomTab.kingdom === "all"
             ? qsTr("\u5168\u90e8")
-            : kingdomTab.kingdom === "wild"
-              ? qsTr("\u91ce")
-              : kingdomTab.kingdom === "other"
-                ? qsTr("\u5176\u4ED6")
-                : kingdomTab.kingdom === "jin"
+            : kingdomTab.kingdom === "other"
+              ? qsTr("\u5176\u4ED6")
+              : kingdomTab.kingdom === "jin"
                 ? qsTr("\u664B")
                 : Lua.tr(kingdomTab.kingdom)
 

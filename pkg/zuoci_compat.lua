@@ -9,9 +9,9 @@
 -- 1. 原版要把「万能牌堆」里的一堆实体牌摆出来供点选，这里改成符会/浮邈
 --    那种「牌名」选择框；魂与牌名合在同一个 custom 交互里，用
 --    "魂名|牌名" 一个字符串回传，viewAs 解析后印虚拟牌。
--- 2. 魂的势力栏：原版「双势力」一栏改称「其他」，收纳双势力/中立者/
---    野心家魂；中立者魂可在任意势力栏（野心家栏除外）选中，且视为使用时
---    可指定任意势力的角色为目标，野心家与未确定势力也在其内。
+-- 2. 魂的势力栏：原版「双势力」一栏改称「其他」，双势力、中立者与
+--    野心家魂一律只归入「其他」，不再单设野心家栏；中立者魂视为使用时
+--    可以指定任意势力（含野心家与未确定势力）的角色为目标。
 -- 3. 其余官方逻辑（明置得魂、PreCardUse 消耗魂、每回合牌名限一次、
 --    扇子杀备份魂信息）一概不动，仍由官方技能对象负责。
 
@@ -40,28 +40,17 @@ local function isNeutralSoul(name)
 end
 
 --- 一张「魂」应当出现在势力选择框的哪些栏里。
---- 其他 = 双势力 / 中立者 / 野心家（原「双势力」栏改称「其他」）。
---- 中立者魂同时可归入魏蜀吴群晋各栏，唯独不进野心家栏。
+--- 单势力魂归入自己的势力栏；双势力、中立者、野心家与非常规势力
+--- 一律只进「其他」，不再单设野心家栏。
 local function soulTabKeys(name)
   local g = Fk.generals[name]
   if not g then return { "other" } end
   local k, sub = g.kingdom, g.subkingdom
-  local tabs = {}
-  if k == NEUTRAL or k == LEGACY_NEUTRAL then
-    for _, t in ipairs(KINGDOMS) do table.insert(tabs, t) end
-    table.insert(tabs, "other")
-  elseif k == "wild" then
-    table.insert(tabs, "wild")
-    table.insert(tabs, "other")
-  else
-    if table.contains(KINGDOMS, k) then table.insert(tabs, k) end
-    if sub and table.contains(KINGDOMS, sub) and not table.contains(tabs, sub) then
-      table.insert(tabs, sub)
-    end
-    -- 双势力与其他非常规势力一并归入「其他」。
-    if sub or not table.contains(KINGDOMS, k) then table.insert(tabs, "other") end
+  if k == NEUTRAL or k == LEGACY_NEUTRAL or k == "wild" or sub or
+      not table.contains(KINGDOMS, k) then
+    return { "other" }
   end
-  return tabs
+  return { k }
 end
 
 --- 该「魂」视为使用的牌能否指定 to 为目标。
