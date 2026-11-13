@@ -274,23 +274,13 @@ function compat.transformGeneral(room, player, isMain, isHidden, num, skillName)
     generals = findFreshGenerals(room, kingdom, count)
   end
   if #generals == 0 then return false end
-  -- num 的含义是「备选几张」，最终只会换上一张，因此这里必须按 n = 1 询问。
-  -- Room:askToChooseGeneral 在 n > 1 时返回的是被选武将组成的数组（#generals == n
-  -- 时直接返回整个 generals），若照旧把返回值当武将名传给 changeHero，会把一个
-  -- 数组写进 general / deputyGeneral 属性，随后 ChangeProperty 里
-  -- Fk.generals[数组] 取到 nil 直接崩服（清殇、陈笃等传 3 的技能都会踩到）。
-  local general
-  if wildDeputy or #generals == 1 then
-    general = generals[1]
-  else
-    general = room:askToChooseGeneral(player, {
-      generals = generals,
-      n = 1,
-      no_convert = true,
-    })
-    -- 兜底：即使上层改了选将规则返回数组，也只取第一张，绝不把表写进属性。
-    if type(general) == "table" then general = general[1] end
-  end
+  -- num 只是「备选几张」，最终只换上一张，且变更副将不弹选将框——由房间随机
+  -- 决定，因此这里直接随机取一张。
+  -- 不能改用 askToChooseGeneral：它在 n > 1 时返回的是被选武将组成的数组
+  -- （#generals == n 时更是直接返回整个 generals），一旦把数组写进
+  -- general / deputyGeneral 属性，ChangeProperty 里 Fk.generals[数组] 取到 nil
+  -- 就会直接崩服（清殇、陈笃等传 3 的技能都会踩到）。
+  local general = room:tableRandomPick(generals)
   if not general or type(general) ~= "string" then
     room:returnToGeneralPile(generals)
     return false

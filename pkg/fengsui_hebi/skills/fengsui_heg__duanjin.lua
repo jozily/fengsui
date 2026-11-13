@@ -20,7 +20,8 @@ local function addDuanjinEffect(triggerEvent)
       local targets = table.filter(room.alive_players, function(p)
         return p ~= player and H.compareKingdomWith(p, player)
       end)
-      if #targets == 0 then return false end
+      -- 场上没有其他同势力角色时技能照样发动，只是只有自己获得标记。
+      if #targets == 0 then return true end
       local tos = room:askToChoosePlayers(player, {
         targets = targets,
         min_num = 1,
@@ -36,7 +37,8 @@ local function addDuanjinEffect(triggerEvent)
     end,
     on_use = function(self, event, target, player, data)
       local room = player.room
-      local to = event:getCostData(self).to
+      local cost = event:getCostData(self)
+      local to = cost and cost.to
       local equips = player:getCardIds("e")
       if #equips > 0 then
         room:recastCard(equips, player, duanjin.name)
@@ -55,7 +57,7 @@ addDuanjinEffect(H.GeneralRemoved)
 addDuanjinEffect(H.GeneralTransformed)
 
 Fk:loadTranslationTable{
-  ["#fengsui_heg__duanjin-choose"] = "断衿：选择一名其他同势力角色，依次获得珠联璧合标记",
+  ["#fengsui_heg__duanjin-choose"] = "断衿：你可以令一名其他同势力角色也获得一枚珠联璧合标记",
 }
 
 return duanjin
