@@ -14,7 +14,7 @@ tongyi:addEffect(fk.EnterDying, {
   on_cost = function(self, event, target, player, data)
     return player.room:askToSkillInvoke(player, {
       skill_name = tongyi.name,
-      prompt = "#fengsui_heg__tongyi-invoke::" .. data.damage.from.id,
+      prompt = "#fengsui_heg__tongyiRemake-invoke::" .. data.damage.from.id,
     })
   end,
   on_use = function(self, event, target, player, data)
@@ -27,7 +27,7 @@ tongyi:addEffect(fk.EnterDying, {
       target = from,
       flag = "h",
       skill_name = tongyi.name,
-      prompt = "#fengsui_heg__tongyi-show::" .. from.id,
+      prompt = "#fengsui_heg__tongyiRemake-show::" .. from.id,
     })
     room:showCards({hand}, from)
     if Fk:getCardById(top):compareColorWith(Fk:getCardById(hand)) then
@@ -48,8 +48,8 @@ tongyi:addEffect(fk.EnterDying, {
 })
 
 Fk:loadTranslationTable{
-  ["#fengsui_heg__tongyi-invoke"] = "通意：你可以暗置此武将牌并亮出牌堆顶与 %dest 的一张手牌",
-  ["#fengsui_heg__tongyi-show"] = "通意：请选择 %dest 的一张手牌亮出",
+  ["#fengsui_heg__tongyiRemake-invoke"] = "通意：你可以暗置此武将牌并亮出牌堆顶与 %dest 的一张手牌",
+  ["#fengsui_heg__tongyiRemake-show"] = "通意：请选择 %dest 的一张手牌亮出",
 }
 
 return tongyi

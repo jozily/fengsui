@@ -13,7 +13,7 @@ yudao:addEffect(fk.Damage, {
   on_cost = function(self, event, target, player, data)
     return player.room:askToSkillInvoke(player, {
       skill_name = yudao.name,
-      prompt = "#fengsui_heg__yundao-change::" .. data.to.id,
+      prompt = "#fengsui_heg__yundaoRemake-change::" .. data.to.id,
     })
   end,
   on_use = function(self, event, target, player, data)
@@ -37,7 +37,7 @@ yudao:addEffect(fk.Damaged, {
       min_num = 1,
       max_num = 1,
       skill_name = yudao.name,
-      prompt = "#fengsui_heg__yundao-fish",
+      prompt = "#fengsui_heg__yundaoRemake-fish",
       cancelable = true,
     })
     if #chosen > 0 then
@@ -51,8 +51,8 @@ yudao:addEffect(fk.Damaged, {
 })
 
 Fk:loadTranslationTable{
-  ["#fengsui_heg__yundao-change"] = "熨道：你可以令 %dest 合璧",
-  ["#fengsui_heg__yundao-fish"] = "熨道：选择双方中一名没有阴阳鱼标记的角色获得标记",
+  ["#fengsui_heg__yundaoRemake-change"] = "熨道：你可以令 %dest 合璧",
+  ["#fengsui_heg__yundaoRemake-fish"] = "熨道：选择双方中一名没有阴阳鱼标记的角色获得标记",
 }
 
 return yudao

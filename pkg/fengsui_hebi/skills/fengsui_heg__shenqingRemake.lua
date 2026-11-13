@@ -8,7 +8,7 @@ local shenqing = fk.CreateSkill{
 
 shenqing:addEffect("active", {
   anim_type = "support",
-  prompt = "#fengsui_heg__shenqing-invoke",
+  prompt = "#fengsui_heg__shenqingRemake-invoke",
   card_num = 0,
   target_num = 0,
   can_use = function(self, player)
@@ -35,7 +35,7 @@ shenqing:addEffect("active", {
     local choices = U.askToChooseGeneralsAndChoice(player, {
       skill_name = shenqing.name,
       generals = all_gens,
-      prompt = "#fengsui_heg__shenqing-choose",
+      prompt = "#fengsui_heg__shenqingRemake-choose",
       min_num = 2,
       max_num = 2,
     })
@@ -63,7 +63,7 @@ shenqing:addEffect("active", {
               min_num = 1,
               max_num = 1,
               skill_name = shenqing.name,
-              prompt = "#fengsui_heg__shenqing-hebi",
+              prompt = "#fengsui_heg__shenqingRemake-hebi",
               cancelable = true,
             })
             if #chosen > 0 then
@@ -76,11 +76,11 @@ shenqing:addEffect("active", {
 })
 
 Fk:loadTranslationTable{
-  ["fengsui_heg__shenqing"] = "申情",
-  [":fengsui_heg__shenqing"] = "限定技，出牌阶段，你可以选择场上两张武将牌，若其中有满足珠联璧合的武将牌，则其所属角色各获得一枚珠联璧合标记；若均不满足，你可以令其中一位所属角色<a href='heg__hebi'>合璧</a>。",
-  ["#fengsui_heg__shenqing-invoke"] = "申情：挑选两张武将牌进行判断",
-  ["#fengsui_heg__shenqing-choose"] = "申情：请选择场上两张武将牌",
-  ["#fengsui_heg__shenqing-hebi"] = "申情：未构成珠联璧合，选择一名角色令其合璧",
+  ["fengsui_heg__shenqingRemake"] = "申情",
+  [":fengsui_heg__shenqingRemake"] = "限定技，出牌阶段，你可以选择场上两张武将牌，若其中有满足珠联璧合的武将牌，则其所属角色各获得一枚珠联璧合标记；若均不满足，你可以令其中一位所属角色<a href='heg__hebi'>合璧</a>。",
+  ["#fengsui_heg__shenqingRemake-invoke"] = "申情：挑选两张武将牌进行判断",
+  ["#fengsui_heg__shenqingRemake-choose"] = "申情：请选择场上两张武将牌",
+  ["#fengsui_heg__shenqingRemake-hebi"] = "申情：未构成珠联璧合，选择一名角色令其合璧",
   ["shenqing_hebi"] = "令 %src 合璧",
 }
 

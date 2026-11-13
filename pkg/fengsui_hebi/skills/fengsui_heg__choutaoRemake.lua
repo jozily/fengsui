@@ -28,14 +28,14 @@ choutao:addEffect(fk.TurnEnd, {
   on_cost = function(self, event, target, player, data)
     return player.room:askToSkillInvoke(player, {
       skill_name = choutao.name,
-      prompt = "#fengsui_heg__choutao-invoke::" .. target.id,
+      prompt = "#fengsui_heg__choutaoRemake-invoke::" .. target.id,
     })
   end,
   on_use = function(self, event, target, player, data)
     player.room:askToUseRealCard(player, {
       pattern = "slash",
       skill_name = choutao.name,
-      prompt = "#fengsui_heg__choutao-use::" .. target.id,
+      prompt = "#fengsui_heg__choutaoRemake-use::" .. target.id,
       cancelable = false,
       extra_data = {
         exclusive_targets = { target.id },
@@ -48,10 +48,13 @@ choutao:addEffect(fk.TurnEnd, {
 })
 
 Fk:loadTranslationTable{
-  ["fengsui_heg__choutao"] = "仇讨",
-  [":fengsui_heg__choutao"] = "其他角色的回合结束时，若你本回合获得过牌且手牌数大于其，你可对其使用一张无距离限制的【杀】。",
-  ["#fengsui_heg__choutao-invoke"] = "仇讨：你可以对 %dest 使用一张无距离限制的【杀】",
-  ["#fengsui_heg__choutao-use"] = "仇讨：请对 %dest 使用一张无距离限制的【杀】",
+  -- 存档技能必须使用带 Remake 后缀的键。skills 目录会被
+  -- loadSkillSkelsByPath 整目录加载，若沿用现役 fengsui_heg__choutao 的键，
+  -- 会把现役仇讨的名字、描述与发动提示一起覆盖成下面这份旧版文案。
+  ["fengsui_heg__choutaoRemake"] = "仇讨",
+  [":fengsui_heg__choutaoRemake"] = "其他角色的回合结束时，若你本回合获得过牌且手牌数大于其，你可对其使用一张无距离限制的【杀】。",
+  ["#fengsui_heg__choutaoRemake-invoke"] = "仇讨：你可以对 %dest 使用一张无距离限制的【杀】",
+  ["#fengsui_heg__choutaoRemake-use"] = "仇讨：请对 %dest 使用一张无距离限制的【杀】",
 
 }
 
