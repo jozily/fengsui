@@ -27,10 +27,25 @@ Item {
   width: buttonRow.width
   height: buttonRow.height
 
-  readonly property var currentCardNames: {
-    const idx = souls.indexOf(soul);
-    const list = idx >= 0 ? cardNamesBySoul[idx] : [];
+  // 某个魂可印的牌名；Lua 侧传空表时可能被转成对象，统一兜底成数组。
+  function namesOf(index) {
+    const list = cardNamesBySoul ? cardNamesBySoul[index] : null;
     return Array.isArray(list) ? list : [];
+  }
+
+  // 未选魂时给出所有魂能印的牌名并集，让「选择牌名」先点也能点开；
+  // 选定牌名后由 setCard 自动补一个能印该牌名的魂。
+  readonly property var currentCardNames: {
+    const idx = souls ? souls.indexOf(soul) : -1;
+    if (idx >= 0) return namesOf(idx);
+    const merged = [];
+    for (let i = 0; i < (souls ? souls.length : 0); ++i) {
+      const list = namesOf(i);
+      for (let j = 0; j < list.length; ++j) {
+        if (!merged.includes(list[j])) merged.push(list[j]);
+      }
+    }
+    return merged;
   }
 
   function send() {
@@ -41,14 +56,26 @@ Item {
   function setSoul(name) {
     if (soul === name) return;
     soul = name;
-    if (!currentCardNames.includes(cardName))
+    // 换魂后若原牌名印不出来就清空，避免回传一个该魂做不到的组合。
+    const idx = souls ? souls.indexOf(name) : -1;
+    if (idx >= 0 && !namesOf(idx).includes(cardName))
       cardName = "";
     send();
   }
 
   function setCard(name) {
-    if (cardName === name) return;
+    if (cardName === name && soul) return;
     cardName = name;
+    // 还没选魂时自动补一个能印这张牌的魂，保证回传给 Lua 的
+    // "魂|牌名" 两段都非空，viewAs 才解析得出。
+    if (!soul) {
+      for (let i = 0; i < (souls ? souls.length : 0); ++i) {
+        if (namesOf(i).includes(name)) {
+          soul = souls[i];
+          break;
+        }
+      }
+    }
     send();
   }
 
