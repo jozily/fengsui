@@ -75,7 +75,7 @@ shenqing:addEffect(fk.EventPhaseStart, {
 
 Fk:loadTranslationTable {
   ["fengsui_heg__shenqing"] = "申情",
-  [":fengsui_heg__shenqing"] = "当你受到伤害后或出牌阶段开始时，你可以令一名角色合璧或摸X张牌（X为场上珠联璧合标记数）。",
+  [":fengsui_heg__shenqing"] = "当你受到伤害后或出牌阶段开始时，你可以令一名角色<a href='heg__hebi'>合璧</a>或摸X张牌（X为场上珠联璧合标记数）。",
   ["#fengsui_heg__shenqing-invoke"] = "申情：选择一名角色",
   ["#fengsui_heg__shenqing-choice"] = "申情：请选择一项（可摸 %arg 张牌）",
   ["fengsui_heg__shenqing_hebi"] = "令该角色合璧",

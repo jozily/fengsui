@@ -53,7 +53,7 @@ panan:addSkills { "fengsui_heg__daoli", "fengsui_heg__beiqiu" }
 
 local kuaishi = General:new(extension, "fengsui_heg__kuaishi", "jin", 3, 3, General.Female)
 kuaishi:addCompanions("heg__sunxiuj")
-kuaishi:addCompanions("heg__wangyuanji")
+-- 王元姬不再与蒯岚构成珠联璧合（2026-11-13 移除）。
 
 liuchen:addCompanions("fengsui_heg__cuizhi")
 cuizhi:addCompanions("fengsui_heg__liuchen")
@@ -879,7 +879,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__mazhi"] = "公冶长风",
   ["cv:fengsui_heg__mazhi"] = "暂无",
   ["fengsui_heg__shenqing"] = "申情",
-  [":fengsui_heg__shenqing"] = "当你受到伤害后或出牌阶段开始时，你可以令一名角色合璧或摸X张牌（X为场上珠联璧合标记数）。",
+  [":fengsui_heg__shenqing"] = "当你受到伤害后或出牌阶段开始时，你可以令一名角色<a href='heg__hebi'>合璧</a>或摸X张牌（X为场上珠联璧合标记数）。",
   ["#fengsui_heg__shenqing-invoke"] = "申情：选择一名角色",
   ["#fengsui_heg__shenqing-choice"] = "申情：请选择一项",
   ["fengsui_heg__shenqing_hebi"] = "令该角色合璧",
