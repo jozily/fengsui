@@ -6,13 +6,13 @@ extension:loadSkillSkelsByPath("./packages/fengsui/pkg/fengsui_hebi/skills")
 
 -- 当前子包武将注册顺序
 local xuncan = General:new(extension, "fengsui_heg__xuncan", "wei", 3)
-xuncan:addCompanions("hs__xunyu")
+-- 荀彧不再与荀粲构成珠联璧合（2026-11-13 移除）。
 xuncan:addCompanions("fengsui_heg__caocen")
 xuncan:addSkills { "fengsui_heg__yundao", "fengsui_heg__tongyi" }
 
 local caocen = General:new(extension, "fengsui_heg__caocen", "wei", 3)
 caocen:addCompanions("fengsui_heg__xuncan")
-caocen:addCompanions("ld__caohong")
+-- 曹洪不再与曹涔构成珠联璧合（2026-11-13 移除）。
 caocen.gender = General.Female
 caocen:addSkill("fengsui_heg__duanjin")
 caocen:addSkill("fengsui_heg__qingshang")
