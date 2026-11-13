@@ -1,7 +1,7 @@
 local duxin = fk.CreateSkill{name = "fengsui_toaru__heg__duxinRemake"}
 
 Fk:loadTranslationTable{
-  ["fengsui_toaru__heg__duxinRemake"] = "读心（旧）",
+  ["fengsui_toaru__heg__duxinRemake"] = "读心",
   [":fengsui_toaru__heg__duxinRemake"] = "当你明置或暗置武将牌时，你可以视为使用一张【知己知彼】。",
   ["#fengsui_toaru__heg__duxinRemake-use"] = "读心：你可以视为使用一张【知己知彼】",
 }

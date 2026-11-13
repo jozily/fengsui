@@ -68,7 +68,7 @@ tuanfeng:addEffect(fk.CardUseFinished, {
 })
 
 Fk:loadTranslationTable{
-  ["fengsui_heg__tuanfengRemake2"] = "抟风·旧",
+  ["fengsui_heg__tuanfengRemake2"] = "抟风",
   [":fengsui_heg__tuanfengRemake2"] = "每种类别每轮限一次，当同势力角色使用的基本牌或普通锦囊牌进入弃牌堆后，若此牌结算期间没有角色进入濒死状态且你的武将牌均明置，你可以暗置此武将牌并获得之，此牌不计入次数。",
   ["#fengsui_heg__tuanfengRemake2-invoke"] = "抟风：是否暗置此武将牌，获得 %dest 使用的 %arg 并令此牌不计入次数？",
 }

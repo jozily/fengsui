@@ -52,7 +52,7 @@ xuanhe:addEffect("prohibit", {
 })
 
 Fk:loadTranslationTable{
-  ["fengsui_heg__xuanheRemake2"] = "悬河·旧",
+  ["fengsui_heg__xuanheRemake2"] = "悬河",
   [":fengsui_heg__xuanheRemake2"] = "主将技，锁定技，你计算体力上限时减少一个单独的阴阳鱼。当你于回合内首次使用牌指定目标后，所有目标本回合无法使用或打出与此牌类别相同的牌。其他角色使用牌指定你为目标后，若为其本回合使用的首张牌，取消之。",
 }
 

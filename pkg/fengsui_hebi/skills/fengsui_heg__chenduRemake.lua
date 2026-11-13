@@ -117,11 +117,11 @@ chendu:addEffect(H.GeneralRemoved, {
 })
 
 Fk:loadTranslationTable{
-  ["fengsui_heg__chenduRemake"] = "陈笃·旧",
+  ["fengsui_heg__chenduRemake"] = "陈笃",
   [":fengsui_heg__chenduRemake"] = "限定技，当场上有角色移除武将牌后，你可以令其依次执行任意项：1.主副将易位；2.与一名同势力角色主将或副将易位；3.变更副将。",
-  ["#fengsui_heg__chenduRemake-invoke"] = "陈笃·旧：选择令 %dest 依次执行的任意项",
-  ["#fengsui_heg__chenduRemake-swap"] = "陈笃·旧：请选择一名同势力角色进行易位",
-  ["#fengsui_heg__chenduRemake-position"] = "陈笃·旧：选择与 %dest 易位的武将牌位置",
+  ["#fengsui_heg__chenduRemake-invoke"] = "陈笃：选择令 %dest 依次执行的任意项",
+  ["#fengsui_heg__chenduRemake-swap"] = "陈笃：请选择一名同势力角色进行易位",
+  ["#fengsui_heg__chenduRemake-position"] = "陈笃：选择与 %dest 易位的武将牌位置",
   ["fengsui_heg__chenduRemake_self"] = "主副将易位",
   ["fengsui_heg__chenduRemake_other"] = "与同势力角色易位",
   ["fengsui_heg__chenduRemake_transform"] = "变更副将",

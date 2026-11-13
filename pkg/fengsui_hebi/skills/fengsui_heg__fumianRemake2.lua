@@ -71,7 +71,7 @@ fumian:addEffect("maxcards", {
 })
 
 Fk:loadTranslationTable{
-  ["fengsui_heg__fumianRemake2"] = "福绵·旧",
+  ["fengsui_heg__fumianRemake2"] = "福绵",
   [":fengsui_heg__fumianRemake2"] = "准备阶段开始时，你可令本回合摸牌阶段摸牌数、出牌阶段出【杀】次数、手牌上限其中任一项改为X（X为同势力角色数），若你所处势力为全场唯一大势力，你可额外选择一项。",
   ["#fengsui_heg__fumianRemake2-choice"] = "福绵：选择至多两项改为 %arg",
   ["fumianRemake2_draw"] = "摸牌阶段摸牌数",

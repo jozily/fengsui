@@ -64,9 +64,9 @@ huaixiang:addEffect(fk.EventPhaseStart, {
 })
 
 Fk:loadTranslationTable{
-  ["fengsui_heg__huaixiangRemake"] = "怀香·旧",
+  ["fengsui_heg__huaixiangRemake"] = "怀香",
   [":fengsui_heg__huaixiangRemake"] = "出牌阶段，你可以重铸一张本回合未进入弃牌堆类别的牌并选择一名确定势力的角色，其本回合视为未确定势力。",
-  ["#fengsui_heg__huaixiangRemake-active"] = "怀香·旧：重铸一张合规手牌，令一名确定势力的角色暂时变为未确定势力",
+  ["#fengsui_heg__huaixiangRemake-active"] = "怀香：重铸一张合规手牌，令一名确定势力的角色暂时变为未确定势力",
 }
 
 return huaixiang

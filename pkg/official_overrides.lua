@@ -235,7 +235,7 @@ end
 -- 旧版存档技能（名字含 Remake）不挂载任何武将，只留作版本回溯。但其中很多
 -- 带 global = true，引擎会把它们全部注册进 Fk.global_trigger；只要自身的
 -- can_trigger 条件成立，就会对「根本没有这个技能」的玩家触发，弹出凭空出现的
--- 技能名询问框（例如碧玉用现版取声时，旧版 qushengRemake 仍弹「取声·旧」）。
+-- 技能名询问框（例如碧玉用现版取声时，旧版 qushengRemake 会跟着弹出同名询问框）。
 -- 这里统一补一道自身技能归属门控：不拥有该技能的玩家一律不触发、不刷新。
 -- 若以后某处把旧版技能动态挂给武将，hasSkill 为真，技能照常可用。
 local function guardArchiveSkills()
