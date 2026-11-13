@@ -85,8 +85,9 @@ local function updateKingdomVisible(room, owner)
 end
 
 local function canHandleReveal(target, player, data)
-  -- 拥有者自己的明置由下方"拥有者保底"效果独家处理，
-  -- 否则这里与保底各发一枚先驱，拥有者会拿到两枚。
+  -- 拥有者自己的明置由下方"拥有者保底"效果独家处理：那里一次性发放
+  -- "你"与"本势力首个明置"两份奖励（同时满足时合计两枚先驱），
+  -- 这里再处理会造成重复发放。
   if target == player then return false end
   -- 国战规则在 GameOverJudge 中会公开阵亡者的武将牌，同样触发亮将时机。
   -- 死者的势力不该被记入元嫡，也不该拿到先驱。
@@ -183,8 +184,28 @@ yuandi:addEffect(fk.GeneralRevealed, {
   end,
 })
 
--- 元嫡拥有者首次明置自己带有本技能的武将牌时，也获得一枚先驱。
--- 单独处理该效果，避免全场首亮的势力排除逻辑把拥有者一并跳过。
+-- 判断拥有者本人是否为全场首亮。优先用模式规则写入的 tag；tag 尚未
+-- 写入时改看场上是否已有其他角色明置过武将牌，避免依赖 GeneralShown /
+-- GeneralRevealed 两条效果的执行顺序。
+local function isFirstShownInRoom(room, player)
+  local first_id = room:getTag("TheFirstToShowRewarded")
+  if first_id then
+    return first_id == player.id or tostring(first_id) == tostring(player.id)
+  end
+  for _, p in ipairs(room.players) do
+    if p ~= player and p:isAlive() and
+      (p.general ~= "anjiang" or p.deputyGeneral ~= "anjiang") then
+      return false
+    end
+  end
+  return true
+end
+
+-- 元嫡拥有者首次明置自己带有本技能的武将牌时，获得"你"那一枚先驱。
+-- 若她同时是本势力首个明置武将牌的角色，则再获得"每个势力首个明置"
+-- 那一枚，合计两枚；全场首亮角色所属势力除外，此时她只从模式规则与
+-- "你"各得一枚。单独处理该效果，避免全场首亮的势力排除逻辑把拥有者
+-- 一并跳过；两份奖励在这里一次性发放，也免去两处各发一枚的顺序依赖。
 local function ownerFirstReveal(self, _, target, player)
   return target == player and player:hasShownSkill(self.name) and
     player:getMark(owner_first_vanguard) == 0
@@ -196,8 +217,14 @@ local function grantOwnerFirstVanguard(self, _, target, player)
   -- 补上原本由全局处理器完成的两件事：标记该角色已处理、
   -- 记录其势力（此后同势力角色明置不再从元嫡获得先驱）。
   room:setPlayerMark(player, seen_player_mark, 1)
+  local kingdom = H.getKingdom(player)
+  local first_kingdom = getFirstKingdom(room)
+  local unclaimed = kingdom ~= "unknown" and kingdom ~= "wild" and
+    first_kingdom ~= kingdom and
+    not room:getTag("fengsui_heg__yuandi_seen_" .. kingdom)
+  local count = (unclaimed and not isFirstShownInRoom(room, player)) and 2 or 1
   recordKingdom(room, player)
-  H.addHegMark(room, player, "vanguard")
+  H.addHegMark(room, player, "vanguard", count)
   updateKingdomVisible(room, player)
 end
 

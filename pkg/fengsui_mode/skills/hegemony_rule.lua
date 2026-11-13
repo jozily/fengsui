@@ -42,6 +42,49 @@ local enterBattleRoyalMode = function(room)
   room.logic:trigger(H.EnterBattleRoyalMode, room.current, nil)
 end
 
+-- 删除【赋礼】事件（房间设置 fengsui_remove_fuli）。
+-- 官方 new_battle_royal_event 在每轮 RoundStart 从 all_events 里剔除
+-- @[:]battle_royal_used_event 中已抽过的事件，再随机取一个作为本轮事件。
+-- 下面按官方清单列出除赋礼外的事件，用来判断一轮是否已经抽完。
+local fuliEvent = "battle_royal_fuli"
+local otherBattleRoyalEvents = {
+  "battle_royal_bujinzetui",
+  "battle_royal_luoshi",
+  "battle_royal_shengzheweiwang",
+  "battle_royal_huoqi",
+  "battle_royal_jili",
+}
+
+-- 官方那条 RoundStart 效果的 priority 是默认 1，这里用 2 抢在它之前，
+-- 把「赋礼」预置成已用，抽签就永远不会命中。若其余事件已抽完一轮，
+-- 官方会把 used 整体清空、连赋礼一起放回，所以这里先替它完成重置。
+hegRule:addEffect(fk.RoundStart, {
+  mute = true,
+  priority = 2,
+  can_trigger = function(self, event, target, player, data)
+    if player.seat ~= 1 then return false end
+    local value = player.room:getSettings("fengsui_remove_fuli")
+    return value == true or value == 1 or value == "1" or value == "true"
+  end,
+  on_trigger = function(self, event, target, player, data)
+    local room = player.room
+    local used = table.simpleClone(room:getBanner("@[:]battle_royal_used_event") or {})
+    local allUsed = true
+    for _, name in ipairs(otherBattleRoyalEvents) do
+      if not table.contains(used, name) then
+        allUsed = false
+        break
+      end
+    end
+    if allUsed then used = {} end
+    if not table.contains(used, fuliEvent) then
+      table.insert(used, fuliEvent)
+    end
+    room:setBanner("new_battle_royal_event_used", used)
+    room:setBanner("@[:]battle_royal_used_event", used)
+  end,
+})
+
 --- 野心家选择国家
 ---@param room Room
 ---@param player ServerPlayer

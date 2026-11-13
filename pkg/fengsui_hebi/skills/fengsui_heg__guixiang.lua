@@ -5,6 +5,14 @@ local guixiang = fk.CreateSkill{
   tags = {Skill.Limited},
 }
 
+-- 提示词里的「当前为XX阶段」：沿用 on_use 里那四个选项的中文翻译。
+local phaseNameKeys = {
+  [Player.Judge] = "fengsui_heg__guixiang_judge",
+  [Player.Draw] = "fengsui_heg__guixiang_draw",
+  [Player.Play] = "fengsui_heg__guixiang_play",
+  [Player.Discard] = "fengsui_heg__guixiang_discard",
+}
+
 guixiang:addEffect(fk.EventPhaseChanging, {
   anim_type = "control",
   can_trigger = function(self, event, target, player, data)
@@ -26,9 +34,13 @@ guixiang:addEffect(fk.EventPhaseChanging, {
     return phase_count == same_count
   end,
   on_cost = function(self, event, target, player, data)
+    -- prompt 第 4 段才是 %arg；阶段名用橙黄色富文本，客户端按 RichText 渲染。
+    local phaseKey = phaseNameKeys[data.phase]
+    local phaseName = phaseKey and Fk:translate(phaseKey) or "未知阶段"
     return player.room:askToSkillInvoke(player, {
       skill_name = guixiang.name,
-      prompt = "#fengsui_heg__guixiang-invoke::" .. target.id,
+      prompt = "#fengsui_heg__guixiang-invoke::" .. target.id ..
+        ":<font color='#FFA500'>" .. phaseName .. "</font>",
     })
   end,
   on_use = function(self, event, target, player, data)

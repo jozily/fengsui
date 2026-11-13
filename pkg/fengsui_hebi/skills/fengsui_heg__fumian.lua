@@ -39,9 +39,17 @@ fumian:addEffect(fk.EventPhaseStart, {
   end,
 })
 
+-- 准备阶段第一次由玩家自己选择并正常提示；下面这条只是按已记录的选项
+-- 自动结算，不该再弹「是否发动【福绵】」、播报技能名或重复明置武将。
 fumian:addEffect(fk.DrawNCards, {
+  mute = true,
+  no_indicate = true,
+  is_delay_effect = true,
   can_trigger = function(self, event, target, player, data)
     return target == player and player:getMark("fengsui_heg__fumian_draw-turn") > 0
+  end,
+  on_cost = function()
+    return true
   end,
   on_use = function(self, event, target, player, data)
     data.n = data.n + 1

@@ -534,7 +534,7 @@ Fk:loadTranslationTable{
   ["cv:fengsui_heg__wuxian"] = "暂无",
   ["fengsui_heg__guixiang"] = "贵相",
   [":fengsui_heg__guixiang"] = "限定技，同势力角色于其回合内除准备和结束外的第X个阶段开始前，你可以将此阶段改为任意一个合法阶段。（X为与你同势力的角色数）",
-  ["#fengsui_heg__guixiang-invoke"] = "贵相：是否改变 %dest 当前将要执行的阶段？",
+  ["#fengsui_heg__guixiang-invoke"] = "当前为<font color='#FFA500'>%arg</font>。贵相：是否改变 %dest 当前将要执行的阶段？",
   ["#fengsui_heg__guixiang-choice"] = "贵相：选择要改为的阶段",
   ["fengsui_heg__guixiang_judge"] = "判定阶段",
   ["fengsui_heg__guixiang_draw"] = "摸牌阶段",
