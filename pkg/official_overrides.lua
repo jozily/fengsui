@@ -117,33 +117,122 @@ local function overrideLukangKeshou()
   end
 end
 
--- 官方小乔〖天香〗(hs__tianxiang) 两处问题：
--- 1. can_trigger 不检查是否持有可弃的♥手牌，也不检查选项是否为空；
--- 2. 当“失去体力”分支本回合已用且伤害来源已死亡时，on_use 的 askToChoice
---    会拿到空选项列表而报错。这里在触发条件里补上这两层保护。
+-- 官方小乔〖天香〗(hs__tianxiang) 在国战（hegemony）里的四处问题：
+-- 1. can_trigger 只判 not isKongcheng，不判是否真有♥手牌（红颜转化后♠按♥计），
+--    也不判选项是否为空；
+-- 2. on_cost 的选牌 pattern 写死 "heart"，红颜把♠当♥时选不出牌；
+-- 3. on_use 把 cost 里的牌表直接当单张牌 id 传给 getCardArea，永远取不到区域，
+--    「目标获得你弃置的牌」这一项实际不生效；
+-- 4. 失去体力分支本回合已用、且伤害来源已死时，选项为空，askToChoice 拿空表。
+-- 这里整体替换 cost/use，不委托旧实现，避免半修。
+local function tianxiangHeartCards(player)
+  return table.filter(player:getCardIds("h"), function(id)
+    local suit = Fk:getCardById(id):getSuitString()
+    return suit == "heart" or (suit == "spade" and player:hasSkill("hs__hongyan"))
+  end)
+end
+
+local function tianxiangChoices(player, data)
+  local choices = {}
+  if player:getMark("hs__tianxiang_loseHp-turn") == 0 then
+    table.insert(choices, "hs__tianxiang_loseHp")
+  end
+  if data and data.from and not data.from.dead and player:getMark("hs__tianxiang_damage-turn") == 0 then
+    table.insert(choices, "hs__tianxiang_damage")
+  end
+  return choices
+end
+
 local function overrideTianxiang()
   for _, effect in ipairs(collectTriggerEffects("hs__tianxiang")) do
     if effect.event == fk.DetermineDamageInflicted and not effect.__fengsui_tianxiang_override then
       -- spec.can_trigger 已被捕获进 triggerable 闭包，包裹 triggerable 才有效。
       local old_triggerable = effect.triggerable
-      if old_triggerable then
-        effect.triggerable = function(_self, event, target, player, data)
-          if not old_triggerable(_self, event, target, player, data) then return false end
-          -- 需有可弃的♥手牌（红颜转化后♠按♥计）
-          local hasHeart = table.find(player:getCardIds("h"), function(id)
-            local suit = Fk:getCardById(id):getSuitString()
-            return suit == "heart" or (suit == "spade" and player:hasSkill("hs__hongyan"))
-          end)
-          if not hasHeart then return false end
-          -- 至少一项可选，避免空选项报错
-          local loseHpOk = player:getMark("hs__tianxiang_loseHp-turn") == 0
-          local damageOk = player:getMark("hs__tianxiang_damage-turn") == 0 and
-            data.from and not data.from.dead
-          return loseHpOk or damageOk
+      effect.triggerable = function(_self, event, target, player, data)
+        if not player or target ~= player or not player:hasSkill("hs__tianxiang") then return false end
+        if not player.room or not player.room.alive_players then return false end
+        if #tianxiangHeartCards(player) == 0 then return false end
+        local others = table.filter(player.room:getOtherPlayers(player, false), function(p)
+          return p and not p.dead
+        end)
+        if #others == 0 then return false end
+        if #tianxiangChoices(player, data) == 0 then return false end
+        if old_triggerable then
+          return old_triggerable(_self, event, target, player, data)
         end
-        effect.__fengsui_tianxiang_override = true
-        fk.qInfo("[fengsui-overrides] hs__tianxiang(天香) triggerable 已包裹")
+        return true
       end
+
+      effect.cost = function(self, event, target, player, data)
+        local room = player.room
+        local hearts = tianxiangHeartCards(player)
+        local others = table.filter(room:getOtherPlayers(player, false), function(p)
+          return p and not p.dead
+        end)
+        if #hearts == 0 or #others == 0 or #tianxiangChoices(player, data) == 0 then
+          return false
+        end
+        -- pattern 用 id 表，红颜转化出的♠手牌才选得到。
+        local to, card, ok = room:askToChooseCardsAndPlayers(player, {
+          min_card_num = 1,
+          max_card_num = 1,
+          pattern = tostring(Exppattern{ id = hearts }),
+          targets = others,
+          min_num = 1,
+          max_num = 1,
+          cancelable = true,
+          prompt = "#hs__tianxiang-choose",
+          skill_name = "hs__tianxiang",
+          will_throw = true,
+          skip = true,
+        })
+        if not ok or type(to) ~= "table" or #to == 0 or type(card) ~= "table" or #card == 0 then
+          return false
+        end
+        event:setCostData(self, { tos = to, cards = card })
+        return true
+      end
+
+      effect.use = function(self, event, target, player, data)
+        local room = player.room
+        local costData = event:getCostData(self) or {}
+        local to = (costData.tos or {})[1]
+        local cid = (costData.cards or {})[1]
+        if not to or to.dead or not cid then return end
+        local choices = tianxiangChoices(player, data)
+        if #choices == 0 then return end
+
+        room:throwCard({ cid }, "hs__tianxiang", player, player)
+        data:preventDamage()
+
+        local choice = room:askToChoice(player, {
+          choices = choices,
+          skill_name = "hs__tianxiang",
+          prompt = "#hs__tianxiang-choice::" .. to.id,
+        })
+        if choice == "hs__tianxiang_loseHp" then
+          room:setPlayerMark(player, "hs__tianxiang_loseHp-turn", 1)
+          room:loseHp(to, 1, "hs__tianxiang")
+          local area = room:getCardArea(cid)
+          if not to.dead and (area == Card.DrawPile or area == Card.DiscardPile) then
+            room:obtainCard(to, cid, true, fk.ReasonJustMove)
+          end
+        else
+          room:setPlayerMark(player, "hs__tianxiang_damage-turn", 1)
+          room:damage{
+            from = data.from,
+            to = to,
+            damage = 1,
+            skillName = "hs__tianxiang",
+          }
+          if not to.dead then
+            to:drawCards(math.min(to:getLostHp(), 5), "hs__tianxiang")
+          end
+        end
+      end
+
+      effect.__fengsui_tianxiang_override = true
+      fk.qInfo("[fengsui-overrides] hs__tianxiang(天香) cost/use 已整体替换")
     end
   end
 end
