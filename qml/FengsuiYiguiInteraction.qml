@@ -5,6 +5,9 @@
 // 官方版把万能牌堆里的一堆实体牌展开供点选，这里改成两个按钮：
 // 左边选牌名（复用烽燧已有的牌名框），右边选魂（烽燧版势力分栏框）。
 // 两份选择打包成 "魂名|牌名" 通过 Interaction 回传，Lua 侧 viewAs 解析。
+//
+// 数据由 Lua 侧摊平成平行数组传进来（cardKeys / cardNames），这里不做嵌套表
+// 下标对齐；所有取值都过 toList()，兼容 Qt 把数组转成「数字键对象」的情况。
 
 import QtQuick
 import Fk
@@ -16,9 +19,12 @@ Item {
 
   property string skillName: ""
   property var souls: []
+  property var soulLabels: []
   property var availableSouls: []
   property var allCardNames: []
-  property var cardNamesBySoul: []
+  // cardKeys[i] = "魂|牌名"，cardNames[i] 为同位置的可读牌名
+  property var cardKeys: []
+  property var cardNames: []
   property var soulTabs: []
 
   property string soul: ""
@@ -27,51 +33,83 @@ Item {
   width: buttonRow.width
   height: buttonRow.height
 
-  // 某个魂可印的牌名；Lua 侧传空表时可能被转成对象，统一兜底成数组。
-  function namesOf(index) {
-    const list = cardNamesBySoul ? cardNamesBySoul[index] : null;
-    return Array.isArray(list) ? list : [];
+  // 数组可能以 JS 数组、QVariantList 或「数字键对象」三种形态抵达，统一成数组。
+  function toList(v) {
+    if (!v) return [];
+    if (Array.isArray(v)) return v;
+    if (typeof v.length === "number") return v;
+    const keys = Object.keys(v).filter(k => /^\d+$/.test(k));
+    if (keys.length === 0) return [];
+    keys.sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+    return keys.map(k => v[k]);
   }
 
-  // 未选魂时给出所有魂能印的牌名并集，让「选择牌名」先点也能点开；
-  // 选定牌名后由 setCard 自动补一个能印该牌名的魂。
-  readonly property var currentCardNames: {
-    const idx = souls ? souls.indexOf(soul) : -1;
-    if (idx >= 0) return namesOf(idx);
-    const merged = [];
-    for (let i = 0; i < (souls ? souls.length : 0); ++i) {
-      const list = namesOf(i);
-      for (let j = 0; j < list.length; ++j) {
-        if (!merged.includes(list[j])) merged.push(list[j]);
-      }
+  function keys() { return toList(root.cardKeys); }
+  function names() { return toList(root.cardNames); }
+  function soulsList() { return toList(root.souls); }
+  function availableList() { return toList(root.availableSouls); }
+
+  // 某个魂能不能印某个牌名
+  function canPrint(soulName, name) {
+    return keys().indexOf(soulName + "|" + name) >= 0;
+  }
+
+  // 该魂能印的第一个牌名，没有则空串
+  function firstCardOf(soulName) {
+    const list = keys();
+    const prefix = soulName + "|";
+    for (let i = 0; i < list.length; ++i) {
+      if (typeof list[i] === "string" && list[i].indexOf(prefix) === 0)
+        return list[i].substring(prefix.length);
     }
-    return merged;
+    return "";
+  }
+
+  // 数据一到就选好默认魂与默认牌名，避免出现「还没选魂所以牌名点不了」的死状态。
+  onCardKeysChanged: {
+    console.log("[fengsui-yigui] souls=" + soulsList().length
+      + " available=" + availableList().length
+      + " keys=" + keys().length
+      + " names=" + names().length
+      + " allCards=" + toList(root.allCardNames).length
+      + " rawIsArray=" + Array.isArray(root.cardKeys)
+      + "/" + Array.isArray(root.souls));
+    const list = keys();
+    if (list.length === 0) return;
+    if (!root.soul) {
+      const first = String(list[0]);
+      const bar = first.indexOf("|");
+      if (bar > 0) root.soul = first.substring(0, bar);
+    }
+    if (!root.cardName || !canPrint(root.soul, root.cardName))
+      root.cardName = firstCardOf(root.soul);
+    send();
   }
 
   function send() {
     // 即使某一项还没选也要回传，避免 interaction.data 停留在旧组合。
-    Lua.updateRequestUI("Interaction", "1", "update", soul + "|" + cardName);
+    Lua.updateRequestUI("Interaction", "1", "update", root.soul + "|" + root.cardName);
   }
 
   function setSoul(name) {
-    if (soul === name) return;
-    soul = name;
-    // 换魂后若原牌名印不出来就清空，避免回传一个该魂做不到的组合。
-    const idx = souls ? souls.indexOf(name) : -1;
-    if (idx >= 0 && !namesOf(idx).includes(cardName))
-      cardName = "";
+    if (root.soul === name) return;
+    root.soul = name;
+    // 换魂后原牌名印不出来就换成本魂能印的第一个；一个都印不出来才清空。
+    if (root.cardName && !canPrint(name, root.cardName))
+      root.cardName = firstCardOf(name);
     send();
   }
 
   function setCard(name) {
-    if (cardName === name && soul) return;
-    cardName = name;
-    // 还没选魂时自动补一个能印这张牌的魂，保证回传给 Lua 的
-    // "魂|牌名" 两段都非空，viewAs 才解析得出。
-    if (!soul) {
-      for (let i = 0; i < (souls ? souls.length : 0); ++i) {
-        if (namesOf(i).includes(name)) {
-          soul = souls[i];
+    root.cardName = name;
+    // 反向对齐魂：该牌名若当前魂印不出来，换成能印它的第一个魂。
+    if (!canPrint(root.soul, name)) {
+      const list = keys();
+      const suffix = "|" + name;
+      for (let i = 0; i < list.length; ++i) {
+        const k = String(list[i]);
+        if (k.endsWith(suffix)) {
+          root.soul = k.substring(0, k.length - suffix.length);
           break;
         }
       }
@@ -80,14 +118,23 @@ Item {
   }
 
   function chooseCard() {
-    if (currentCardNames.length === 0) return;
+    const list = names();
+    if (list.length === 0) {
+      console.log("[fengsui-yigui] 牌名列表为空：交互数据未到达，或当前确实无可印牌名");
+      return;
+    }
     const component = Qt.createComponent(
       Cpp.path + "/packages/fengsui/pkg/fengsui_effect/qml/FengsuiCardNameBox.qml"
     );
+    if (!component || component.status !== Component.Ready) {
+      console.log("[fengsui-yigui] 牌名框加载失败: "
+        + (component ? component.errorString() : "null"));
+      return;
+    }
     const scene = Ltk.roomScene;
     scene.showPopup(component, {
-      choices: currentCardNames,
-      allChoices: allCardNames,
+      choices: list,
+      allChoices: toList(root.allCardNames),
       prompt: "#fengsui_yigui-card",
       result: cardName,
     });
@@ -100,15 +147,20 @@ Item {
   }
 
   function chooseSoul() {
-    if (availableSouls.length === 0) return;
+    if (availableList().length === 0) return;
     const component = Qt.createComponent(
       Cpp.path + "/packages/fengsui/qml/FengsuiYiguiSoulBox.qml"
     );
+    if (!component || component.status !== Component.Ready) {
+      console.log("[fengsui-yigui] 魂选择框加载失败: "
+        + (component ? component.errorString() : "null"));
+      return;
+    }
     const scene = Ltk.roomScene;
     scene.showPopup(component, {
-      cards: souls,
-      availableCards: availableSouls,
-      soulTabs: soulTabs,
+      cards: soulsList(),
+      availableCards: availableList(),
+      soulTabs: toList(root.soulTabs),
       result: soul,
     });
     const box = scene.popupItem;
@@ -131,7 +183,7 @@ Item {
       id: cardButton
       width: 148
       height: 34
-      enabled: root.currentCardNames.length > 0
+      enabled: root.names().length > 0
       text: root.cardName
         ? Ltk.processPrompt(root.cardName)
         : qsTr("\u9009\u62E9\u724C\u540D")
@@ -142,16 +194,15 @@ Item {
       id: soulButton
       width: 148
       height: 34
-      enabled: root.availableSouls.length > 0
+      enabled: root.availableList().length > 0
       text: {
         if (!root.soul) return qsTr("\u9009\u62E9\u9B42");
-        const data = Ltk.getGeneralData(root.soul);
-        const k = data && data.kingdom ? data.kingdom : "";
-        // 本模式把 "jin" 翻译成带 HTML 的富文本势力名，按钮上直接写汉字。
-        const kingdom = k === "jin" ? qsTr("\u664B")
-          : k === "wild" ? qsTr("\u91ce")
-          : k ? Lua.tr(k) : "";
-        return (kingdom ? kingdom + "|" : "") + Lua.tr(root.soul);
+        // 势力与将名的文字由 Lua 侧拼好（souls 与 soulLabels 同下标）。
+        const list = root.soulsList();
+        const labels = root.toList(root.soulLabels);
+        const idx = list.indexOf(root.soul);
+        if (idx >= 0 && labels[idx]) return String(labels[idx]);
+        return Lua.tr(root.soul);
       }
       onClicked: root.chooseSoul()
     }

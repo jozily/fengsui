@@ -160,16 +160,48 @@ end
 -- 交互框：魂 + 牌名，两份数据打包成一个字符串回传
 ---------------------------------------------------------------------------
 
+--- 交互数据一律摊平成「字符串数组 + 平行数组」，不传嵌套表。
+--- 嵌套表在 cbor/QVariant 之间来回转换时，空表、混合键都可能掉成对象，
+--- 到 QML 里 Array.isArray 判假，按钮就会一直是灰的。
 local function buildInteraction(skill, player)
   local souls = U.getPrivateMark(player, HUN)
   local availables = getAvailableSouls(player)
   if #availables == 0 then return end
-  local cardNamesBySoul, soulTabs = {}, {}
+  local soulTabs = {}
   for _, s in ipairs(souls) do
-    table.insert(cardNamesBySoul,
-      table.contains(availables, s) and availableCardNames(player, s) or {})
     table.insert(soulTabs, table.concat(soulTabKeys(s), ","))
   end
+
+  -- 魂按钮上的文字也在 Lua 侧算好，省得 QML 再去查武将数据。
+  local soulLabels = {}
+  for _, s in ipairs(souls) do
+    local g = Fk.generals[s]
+    local k = g and g.kingdom or ""
+    local kingdom
+    if k == "jin" then kingdom = "晋"
+    elseif k == "wild" then kingdom = "野"
+    elseif k ~= "" then kingdom = Fk:translate(k) end
+    local label = Fk:translate(s)
+    if type(label) ~= "string" then label = s end
+    if type(kingdom) == "string" and kingdom ~= "" then
+      label = kingdom .. "|" .. label
+    end
+    table.insert(soulLabels, label)
+  end
+
+  -- cardKeys[i] = "魂|牌名"，cardNames[i] 为同位置的可读牌名；
+  -- 同一牌名只保留一张（取第一个能印它的魂），避免按钮重复。
+  local cardKeys, cardNames, seen = {}, {}, {}
+  for _, s in ipairs(availables) do
+    for _, name in ipairs(availableCardNames(player, s)) do
+      if not seen[name] then
+        seen[name] = true
+        table.insert(cardKeys, s .. "|" .. name)
+        table.insert(cardNames, name)
+      end
+    end
+  end
+
   return {
     type = "custom",
     qml = {
@@ -177,9 +209,11 @@ local function buildInteraction(skill, player)
       prop = {
         skillName = YIGUI,
         souls = souls,
+        soulLabels = soulLabels,
         availableSouls = availables,
         allCardNames = allCardNames(player),
-        cardNamesBySoul = cardNamesBySoul,
+        cardKeys = cardKeys,
+        cardNames = cardNames,
         soulTabs = soulTabs,
       },
     },
