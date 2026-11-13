@@ -1,0 +1,64 @@
+-- 断衿存档（2026-11-13 改版前）：武将牌被移除/变更后重铸装备区所有牌，
+-- 然后与一名其他同势力角色各获得一枚珠联璧合标记。
+-- 现役版本见 fengsui_heg__duanjin.lua，此文件未挂载到任何武将，仅作回退备份。
+local H = require "packages.fengsui.hegemony_util"
+
+local duanjin = fk.CreateSkill{
+  name = "fengsui_heg__duanjinRemake2",
+}
+
+local function addDuanjinEffect(triggerEvent)
+  duanjin:addEffect(triggerEvent, {
+    anim_type = "support",
+    can_trigger = function(self, event, target, player, data)
+      -- GeneralRemoved / GeneralTransformed 触发前曹涔的技能已被卸掉，
+      -- 此处不能用 hasShownSkill 判断，否则技能永远无法发动。
+      return target == player and player:isAlive() and
+        data and data.origName == "fengsui_heg__caocen"
+    end,
+    on_cost = function(self, event, target, player, data)
+      local room = player.room
+      local targets = table.filter(room.alive_players, function(p)
+        return p ~= player and H.compareKingdomWith(p, player)
+      end)
+      -- 场上没有其他同势力角色时技能照样发动，只是只有自己获得标记。
+      if #targets == 0 then return true end
+      local tos = room:askToChoosePlayers(player, {
+        targets = targets,
+        min_num = 1,
+        max_num = 1,
+        prompt = "#fengsui_heg__duanjinRemake2-choose",
+        skill_name = duanjin.name,
+        cancelable = true,
+      })
+      if #tos > 0 then
+        event:setCostData(self, { to = tos[1] })
+        return true
+      end
+    end,
+    on_use = function(self, event, target, player, data)
+      local room = player.room
+      local cost = event:getCostData(self)
+      local to = cost and cost.to
+      local equips = player:getCardIds("e")
+      if #equips > 0 then
+        room:recastCard(equips, player, duanjin.name)
+      end
+      if player:isAlive() then
+        H.addHegMark(player, "companion")
+      end
+      if to and to:isAlive() then
+        H.addHegMark(to, "companion")
+      end
+    end,
+  })
+end
+
+addDuanjinEffect(H.GeneralRemoved)
+addDuanjinEffect(H.GeneralTransformed)
+
+Fk:loadTranslationTable{
+  ["#fengsui_heg__duanjinRemake2-choose"] = "断衿：你可以令一名其他同势力角色获得一枚珠联璧合标记",
+}
+
+return duanjin

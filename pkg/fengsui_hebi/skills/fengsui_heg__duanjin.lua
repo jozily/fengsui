@@ -4,8 +4,9 @@ local duanjin = fk.CreateSkill{
   name = "fengsui_heg__duanjin",
 }
 
--- 新版：武将牌被移除/变更后，重铸装备区所有牌，然后与一名其他同势力角色
--- 依次各获得一枚珠联璧合标记。不再需要副将易位。
+-- 新版：武将牌被移除/变更后，选择一名其他角色，你与其进入横置状态并各获得
+-- 一枚珠联璧合标记。改版前的「重铸装备并仅限同势力」版本见
+-- fengsui_heg__duanjinRemake2.lua。
 local function addDuanjinEffect(triggerEvent)
   duanjin:addEffect(triggerEvent, {
     anim_type = "support",
@@ -18,10 +19,9 @@ local function addDuanjinEffect(triggerEvent)
     on_cost = function(self, event, target, player, data)
       local room = player.room
       local targets = table.filter(room.alive_players, function(p)
-        return p ~= player and H.compareKingdomWith(p, player)
+        return p ~= player
       end)
-      -- 场上没有其他同势力角色时技能照样发动，只是只有自己获得标记。
-      if #targets == 0 then return true end
+      if #targets == 0 then return false end
       local tos = room:askToChoosePlayers(player, {
         targets = targets,
         min_num = 1,
@@ -39,14 +39,16 @@ local function addDuanjinEffect(triggerEvent)
       local room = player.room
       local cost = event:getCostData(self)
       local to = cost and cost.to
-      local equips = player:getCardIds("e")
-      if #equips > 0 then
-        room:recastCard(equips, player, duanjin.name)
+      if not to then return end
+      -- setChainState 内部会跳过已经横置的角色，不会重复广播。
+      player:setChainState(true)
+      if to:isAlive() then
+        to:setChainState(true)
       end
       if player:isAlive() then
         H.addHegMark(player, "companion")
       end
-      if to and to:isAlive() then
+      if to:isAlive() then
         H.addHegMark(to, "companion")
       end
     end,
@@ -57,7 +59,7 @@ addDuanjinEffect(H.GeneralRemoved)
 addDuanjinEffect(H.GeneralTransformed)
 
 Fk:loadTranslationTable{
-  ["#fengsui_heg__duanjin-choose"] = "断衿：你可以令一名其他同势力角色获得一枚珠联璧合标记",
+  ["#fengsui_heg__duanjin-choose"] = "断衿：你可以选择一名其他角色，你与其进入横置状态并各获得一枚珠联璧合标记",
 }
 
 return duanjin

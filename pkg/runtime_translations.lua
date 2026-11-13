@@ -429,6 +429,9 @@ Fk:loadTranslationTable {
   -- 2026-11-12 改版存档：断衿/连徙/申情/毓尘/告返 的改版前原文（序号递归）
   ["fengsui_heg__duanjinRemake"] = "断衿",
   [":fengsui_heg__duanjinRemake"] = "当此武将牌被移除或变更后，你可以与一名同势力其他角色副将<a href='heg__yiwei'>易位</a>并各获得一枚珠联璧合标记。",
+  -- 2026-11-13 改版存档：改版前为「重铸装备区所有牌并令你与一名其他同势力角色各获得一枚」
+  ["fengsui_heg__duanjinRemake2"] = "断衿",
+  [":fengsui_heg__duanjinRemake2"] = "当你的武将牌被移除或变更后，你可以重铸装备区所有牌并令你与一名其他同势力角色各获得一枚珠联璧合标记。",
   ["fengsui_heg__lianxiRemake4"] = "连徙",
   [":fengsui_heg__lianxiRemake4"] = "锁定技，与你势力相同的角色明置武将牌数变化后，你令其选择一项：1.弃置一个区域所有牌并对当前回合角色造成一点伤害；2.摸两张牌并与你副将<a href='heg__yiwei'>易位</a>。",
   ["fengsui_heg__shenqingRemake2"] = "申情",
