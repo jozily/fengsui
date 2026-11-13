@@ -89,8 +89,16 @@ yamai:addEffect(fk.TurnEnd, {
   end,
   on_use = function(self, event, target, player, data)
     local use = event:getCostData(self).use
+    if not use then return end
     use.extraUse = true
     player.room:useCard(use)
+    -- 这张牌是从弃牌堆里展开进手牌区选的，用完后它已经回到弃牌堆，
+    -- 但请求结束时按 id 回收展开项偶尔会漏掉，残影就留在手牌行里。
+    -- 让该玩家的客户端重建一次手牌区（expand 列表随之清空）。
+    local sp = player.serverplayer
+    if sp and cbor then
+      sp:doNotify("ChangeSelf", cbor.encode(player.id))
+    end
   end,
 })
 
