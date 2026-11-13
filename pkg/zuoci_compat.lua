@@ -11,7 +11,7 @@
 --    "魂名|牌名" 一个字符串回传，viewAs 解析后印虚拟牌。
 -- 2. 魂的势力栏：原版「双势力」一栏改称「其他」，收纳双势力/中立者/
 --    野心家魂；中立者魂可在任意势力栏（野心家栏除外）选中，且视为使用时
---    可指定任意势力的角色为目标（野心家除外）。
+--    可指定任意势力的角色为目标，野心家与未确定势力也在其内。
 -- 3. 其余官方逻辑（明置得魂、PreCardUse 消耗魂、每回合牌名限一次、
 --    扇子杀备份魂信息）一概不动，仍由官方技能对象负责。
 
@@ -66,7 +66,7 @@ end
 
 --- 该「魂」视为使用的牌能否指定 to 为目标。
 --- 官方只认魂自身的 kingdom/subkingdom；这里给中立者魂放开到任意势力，
---- 野心家角色与野心家势力除外，未确定势力照旧可选。
+--- 野心家与未确定势力照旧可选。
 local function canTargetbySoul(to, soul)
   local g = Fk.generals[soul]
   if not g then return false end
@@ -77,7 +77,7 @@ local function canTargetbySoul(to, soul)
   end
   if type(tokingdom) ~= "string" then tokingdom = "unknown" end
   if isNeutralSoul(soul) then
-    return tokingdom ~= "wild"
+    return true
   end
   local kingdoms = {}
   table.insertIfNeed(kingdoms, g.kingdom)
