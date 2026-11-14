@@ -309,7 +309,7 @@ return function(suite)
   suite:addTest(function()
     local name = "fengsui_toaru__heg__duxin"
     lu.assertEquals(Fk:translate(":" .. name),
-      "当你明置或暗置武将牌时，你可以视为使用一张不可响应的【知己知彼】并摸一张牌。")
+      "当你明置此武将牌或即将暗置此武将牌时，你可以视为使用一张不可响应的【知己知彼】并摸一张牌。")
     local owner, other = actor(), actor()
     local used, drawn = 0, 0
     local room = {players = {owner, other}, alive_players = {owner, other}}
@@ -330,10 +330,11 @@ return function(suite)
       lu.assertEquals(use.disresponsiveList, room.players)
       used = used + 1
     end
+    local hidden_timing = fk.BeforeGeneralHidden or fk.GeneralHidden
     local seen = {}
     for _, effect in ipairs(Fk.skill_skels[name].effect_spec_list) do
       local timing, callback = effect[1], effect[3]
-      if timing == fk.GeneralRevealed or timing == fk.GeneralHidden then
+      if timing == fk.GeneralRevealed or timing == hidden_timing then
         lu.assertNotNil(callback.can_trigger(nil, nil, owner, owner, {}))
         lu.assertFalse(callback.can_trigger(nil, nil, other, owner, {}))
         lu.assertTrue(callback.on_cost(nil, nil, owner, owner, {}))
@@ -342,9 +343,64 @@ return function(suite)
       end
     end
     lu.assertTrue(seen[fk.GeneralRevealed])
-    lu.assertTrue(seen[fk.GeneralHidden])
+    lu.assertTrue(seen[hidden_timing])
     lu.assertEquals(used, 2)
     lu.assertEquals(drawn, 2)
+  end)
+  suite:addTest(function()
+    local name = "fengsui_toaru__heg__piruan"
+    lu.assertEquals(Fk:translate(name), "疲软")
+    lu.assertStrContains(Fk:translate(":" .. name), "重铸一个区域所有牌")
+    local callback, skill
+    for _, effect in ipairs(Fk.skill_skels[name].effect_spec_list) do
+      if effect[1] == fk.TargetConfirmed then callback = effect[3] end
+    end
+    lu.assertNotNil(callback)
+    skill = Fk.skills[name]
+
+    local owner = actor()
+    owner.getCardIds = function() return {} end
+    owner.room = {}
+    -- 非锦囊不触发；锦囊且武将牌均明置时照常触发（可走「暗置」这一项）
+    lu.assertFalse(callback.can_trigger(skill, nil, owner, owner, {card = Fk:cloneCard("slash")}))
+    lu.assertTrue(callback.can_trigger(skill, nil, owner, owner, {card = Fk:cloneCard("ex_nihilo")}))
+
+    -- 武将牌均暗置且三个区域全空：两项都落不了地，不触发
+    local dark = actor()
+    dark.general, dark.deputyGeneral = "anjiang", "anjiang"
+    dark.getCardIds = function() return {} end
+    dark.room = {}
+    lu.assertFalse(callback.can_trigger(skill, nil, dark, dark, {card = Fk:cloneCard("ex_nihilo")}))
+
+    -- 两项都能选时弹选项框，「重铸」被选中则重铸所选区域全部牌
+    local asked, recast
+    owner.getCardIds = function(_, area) return area == "h" and {101, 102} or {} end
+    owner.room = {
+      askToChoice = function(_, who, params)
+        table.insert(asked, params)
+        return params.choices[#params.choices]
+      end,
+      recastCard = function(_, ids) recast = ids end,
+    }
+    callback.on_use(nil, nil, owner, owner, {card = Fk:cloneCard("ex_nihilo")})
+    lu.assertEquals(#asked, 1)
+    lu.assertEquals(#asked[1].all_choices, 2)
+    lu.assertEquals(#recast, 2)
+    lu.assertEquals(recast[2], 102)
+
+    -- 未全部明置：只剩「重铸」一项，不再弹选项框
+    local half = actor()
+    half.deputyGeneral = "anjiang"
+    half.getCardIds = function(_, area) return area == "e" and {201} or {} end
+    local asked_times, recast2 = 0, nil
+    half.room = {
+      askToChoice = function() asked_times = asked_times + 1; return "" end,
+      recastCard = function(_, ids) recast2 = ids end,
+    }
+    callback.on_use(nil, nil, half, half, {card = Fk:cloneCard("ex_nihilo")})
+    lu.assertEquals(asked_times, 0)
+    lu.assertEquals(#recast2, 1)
+    lu.assertEquals(recast2[1], 201)
   end)
   suite:addTest(function()
     lu.assertNil(Fk.generals.fengsui_heg__caoshi)

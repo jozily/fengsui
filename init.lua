@@ -17,6 +17,10 @@ Fk:loadTranslationTable{
 
 require "packages/fengsui/pkg/compat"
 
+-- 注册「即将暗置武将牌」时机（fk.BeforeGeneralHidden）。事件类必须早于子包技能加载，
+-- 方法包装由 lua/server/scheduler.lua 在 ServerPlayer 就绪后完成。
+require("packages/fengsui/pkg/before_general_hidden").installEvent()
+
 local fengsui_hebi = require "packages/fengsui/pkg/fengsui_hebi"
 
 local fengsui_cards = require "packages/fengsui/pkg/fengsui_cards"

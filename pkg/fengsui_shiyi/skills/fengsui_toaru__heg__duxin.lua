@@ -2,7 +2,7 @@ local duxin = fk.CreateSkill{name = "fengsui_toaru__heg__duxin"}
 
 Fk:loadTranslationTable{
   ["fengsui_toaru__heg__duxin"] = "读心",
-  [":fengsui_toaru__heg__duxin"] = "当你明置或暗置武将牌时，你可以视为使用一张不可响应的【知己知彼】并摸一张牌。",
+  [":fengsui_toaru__heg__duxin"] = "当你明置此武将牌或即将暗置此武将牌时，你可以视为使用一张不可响应的【知己知彼】并摸一张牌。",
   ["#fengsui_toaru__heg__duxin-use"] = "读心：你可以视为使用一张【知己知彼】",
 }
 
@@ -29,6 +29,14 @@ local spec = {
   end,
 }
 duxin:addEffect(fk.GeneralRevealed, spec)
-duxin:addEffect(fk.GeneralHidden, spec)
+-- 暗置用前置时机：此时武将牌还明着，读心结算完再真正暗置。
+-- 挂在 GeneralHidden 上会在暗置完成后触发，技能已被换成 fake skill，
+-- 之后再被明置回来又能触发一次，一来一回白拿牌。
+if fk.BeforeGeneralHidden then
+  duxin:addEffect(fk.BeforeGeneralHidden, spec)
+else
+  fk.qWarning("[fengsui] fk.BeforeGeneralHidden 未注册，读心回退到 GeneralHidden")
+  duxin:addEffect(fk.GeneralHidden, spec)
+end
 
 return duxin
