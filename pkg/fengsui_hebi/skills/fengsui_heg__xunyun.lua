@@ -37,7 +37,7 @@ xunyun:addEffect(fk.EnterDying, {
       cancelable = false,
     })
     if #chosen > 0 then
-      H.askToHebiOrTransform(room, chosen[1], xunyun.name, false)
+      H.askToHebiOrTransform(room, chosen[1], xunyun.name, true)
     end
   end,
 })

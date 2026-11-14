@@ -33,6 +33,7 @@ menyin:addEffect(fk.EventPhaseStart, {
       prompt = "#fengsui_heg__menyin-choice",
     })
     if choice == "fengsui_heg__menyin_hebi" then
+      -- 目标已经在「合璧 / 暗置武将牌」里表过态，这里不再追加一次确认。
       H.askToHebiOrTransform(room, to, self.name, false)
     else
       to:hideGeneral(true)

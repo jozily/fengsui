@@ -64,13 +64,13 @@ hejue:addEffect(fk.Damaged, {
       targets = same_kingdom, min_num = 1, max_num = 1,
       skill_name = self.name, prompt = "#fengsui_heg__hejue-hebi", cancelable = false,
     })
-    if selected[1] then H.askToHebiOrTransform(room, selected[1], self.name, false) end
+    if selected[1] then H.askToHebiOrTransform(room, selected[1], self.name, true) end
   end,
 })
 
 Fk:loadTranslationTable {
   ["#fengsui_heg__hejue-invoke"] = "合珏：是否发动？",
   ["#fengsui_heg__hejue-choose"] = "合珏：选择至多两名角色",
-  ["#fengsui_heg__hejue-hebi"] = "合珏：选择一名角色令其合璧",
+  ["#fengsui_heg__hejue-hebi"] = "合珏：选择一名角色，令其选择是否合璧",
 }
 return hejue

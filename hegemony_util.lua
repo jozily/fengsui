@@ -345,18 +345,22 @@ function compat.askToHebiOrTransform(room, player, skillName, cancelable)
   end, #(room.general_pile or {}))
 
   -- A careerist companion cannot form Hebi; replace the deputy directly instead.
+  -- 按合璧规则，没有可用配对对象时这一动作本身就等于变更副将，不因
+  -- cancelable（是否由目标自行决定）而改变：外部已经问过目标要不要发动，
+  -- 这里只管执行。
   if #companions == 0 then
     return compat.transformGeneral(room, player, false, false, 1, skillName)
   end
 
-  local choices = { "fengsui_hebi_choice" }
+  -- 按钮用引擎内置的「确定 / 取消」：这一步只问要不要发动，不给第二个动作选项。
+  local choices = { "OK" }
   if cancelable then table.insert(choices, "Cancel") end
   local choice = room:askToChoice(player, {
     choices = choices,
     skill_name = skillName,
     prompt = "#fengsui-hebi-or-transform",
   })
-  if choice ~= "fengsui_hebi_choice" then
+  if choice ~= "OK" then
     room:returnToGeneralPile(companions)
     if choice == "Cancel" then return false end
     return compat.transformGeneral(room, player, false, false, 1, skillName)
@@ -407,7 +411,7 @@ function compat.isTaggedSkill(skill)
 end
 
 Fk:loadTranslationTable{
-  ["#fengsui-hebi-or-transform"] = "请选择合璧；若无可用配对对象则自动变更副将",
+  ["#fengsui-hebi-or-transform"] = "是否合璧？（若无可用配对对象自动变更副将）",
 }
 
 return compat

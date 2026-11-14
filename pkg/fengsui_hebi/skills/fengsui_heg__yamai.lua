@@ -92,12 +92,15 @@ yamai:addEffect(fk.TurnEnd, {
     if not use then return end
     use.extraUse = true
     player.room:useCard(use)
-    -- 这张牌是从弃牌堆里展开进手牌区选的，用完后它已经回到弃牌堆，
-    -- 但请求结束时按 id 回收展开项偶尔会漏掉，残影就留在手牌行里。
-    -- 让该玩家的客户端重建一次手牌区（expand 列表随之清空）。
+    -- 这张牌是从弃牌堆展开进手牌区选的，用完已回到弃牌堆，但客户端的
+    -- DashboardModel.expandedCards 里还留着这一项：结尾时按 id 回收偶尔漏掉，
+    -- 残影就盖在手牌行上（只是显示，手牌数据本身是干净的）。
+    -- changeSelf 会清空 expandedCards 并重建手牌列表，但它只改属性、
+    -- 不触发 HandcardArea.syncCards()，所以还得再让客户端走一次 applyChange。
     local sp = player.serverplayer
     if sp and cbor then
       sp:doNotify("ChangeSelf", cbor.encode(player.id))
+      sp:doNotify("UpdateRequestUI", cbor.encode({ _type = "Room" }))
     end
   end,
 })

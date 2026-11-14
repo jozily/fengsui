@@ -72,7 +72,7 @@ bizun:addEffect("active", {
       skill_name = bizun.name,
       prompt = "#fengsui_heg__bizun-change::" .. more.id,
     }) then
-      H.askToHebiOrTransform(room, more, bizun.name, false)
+      H.askToHebiOrTransform(room, more, bizun.name, true)
     end
   end,
 })
@@ -81,7 +81,7 @@ Fk:loadTranslationTable{
   ["#fengsui_heg__bizun"] = "迁宫：依次选择两名角色并选择二者均有牌的相同区域",
   ["#fengsui_heg__bizun-area"] = "迁宫：选择双方均有牌的区域",
   ["#fengsui_heg__bizun-take"] = "迁宫：获得 %dest 该区域的一张牌",
-  ["#fengsui_heg__bizun-change"] = "迁宫：你可以令 %dest 合璧",
+  ["#fengsui_heg__bizun-change"] = "迁宫：你可以令 %dest 选择是否合璧",
   ["bizun_hand"] = "手牌区",
   ["bizun_equip"] = "装备区",
   ["bizun_judge"] = "判定区",

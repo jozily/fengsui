@@ -76,8 +76,19 @@ liefa:addEffect(fk.GeneralRevealed, {
     })
   end,
   on_use = function(self, event, target, player, data)
-    H.transformGeneral(player.room, target, false, false)
+    local room = player.room
+    -- 变更与否交给被明置者自己决定。
+    if room:askToSkillInvoke(target, {
+      skill_name = liefa.name,
+      prompt = "#fengsui_heg__liefa-be-changed",
+    }) then
+      H.transformGeneral(room, target, false, false)
+    end
   end,
 })
+
+Fk:loadTranslationTable {
+  ["#fengsui_heg__liefa-be-changed"] = "烈伐：你可以变更副将",
+}
 
 return liefa

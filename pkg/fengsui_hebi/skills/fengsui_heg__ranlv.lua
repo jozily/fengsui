@@ -15,7 +15,7 @@ ranlv:addEffect(fk.Damaged, { can_trigger = function(self, _, target, player, da
             targets = tos, min_num = 1, max_num = 1, skill_name = self.name,
             prompt = "#fengsui_heg__ranlv-change", cancelable = true,
           })
-          if selected and selected[1] then H.askToHebiOrTransform(room, selected[1], self.name, false) end
+          if selected and selected[1] then H.askToHebiOrTransform(room, selected[1], self.name, true) end
         end
       else room:setPlayerMark(player, "fengsui_heg__ranlv_used", 1) end
     end })

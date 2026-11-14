@@ -19,9 +19,20 @@ zeyu:addEffect(H.KillRewardExecuting, {
   end,
   on_use = function(self, _, target)
     if target:isAlive() and H.hasGeneral(target, true) then
-      H.transformGeneral(target.room, target, false, false, 1, zeyu.name)
+      local room = target.room
+      -- 变更与否交给被执行者自己决定。
+      if room:askToSkillInvoke(target, {
+        skill_name = zeyu.name,
+        prompt = "#fengsui_heg__zeyu-transform",
+      }) then
+        H.transformGeneral(room, target, false, false, 1, zeyu.name)
+      end
     end
   end,
 })
+
+Fk:loadTranslationTable {
+  ["#fengsui_heg__zeyu-transform"] = "泽誉：你可以变更副将",
+}
 
 return zeyu

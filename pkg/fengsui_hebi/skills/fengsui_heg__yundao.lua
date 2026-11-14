@@ -78,7 +78,7 @@ for _, event in ipairs({ fk.Damage, fk.Damaged }) do
       local source, victim = participants(event, player, data)
       local cost = event:getCostData(self) or {}
       if cost.source and source and source:isAlive() and H.compareKingdomWith(player, source) then
-        H.askToHebiOrTransform(player.room, source, self.name, false)
+        H.askToHebiOrTransform(player.room, source, self.name, true)
       end
       if cost.victim and victim and victim:isAlive() and H.compareKingdomWith(player, victim) then
         arrangeXunxun(victim)

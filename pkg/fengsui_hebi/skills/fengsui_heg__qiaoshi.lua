@@ -24,7 +24,7 @@ qiaoshi:addEffect(fk.Damaged, {
         skill_name = qiaoshi.name,
         prompt = "#fengsui_heg__qiaoshi-change::" .. target.id,
       }) then
-      H.askToHebiOrTransform(room, target, qiaoshi.name, false)
+      H.askToHebiOrTransform(room, target, qiaoshi.name, true)
     end
   end,
 })

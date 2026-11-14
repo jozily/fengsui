@@ -449,6 +449,28 @@ Fk:loadTranslationTable {
   ["#fengsui_heg__gaofanRemake-choice"] = "告返：请选择变更副将，或对 %dest 造成1点伤害",
   ["fengsui_heg__gaofanRemake_transform"] = "变更副将",
   ["fengsui_heg__gaofanRemake_damage"] = "对响应方造成1点伤害",
+
+  -- 2026-11-14 改版存档：合璧/变更副将由「令其执行」改为「令其选择是否执行」
+  ["fengsui_heg__qiaoshiRemake"] = "樵拾",
+  [":fengsui_heg__qiaoshiRemake"] = "当有角色受到属性伤害后，你可以与其各摸一张牌，若为同势力角色，你可令其<a href='heg__hebi'>合璧</a>。",
+  ["fengsui_heg__yundaoRemake2"] = "熨道",
+  [":fengsui_heg__yundaoRemake2"] = "当你受到或造成属性伤害后，若伤害来源与你势力相同，你可令其<a href='heg__hebi'>合璧</a>；若受伤角色与你势力相同，你可令其发动一次“<a href=':hs__xunxun'>恂恂</a>”并获得牌堆底两张牌。",
+  ["fengsui_heg__bizunRemake3"] = "迁宫",
+  [":fengsui_heg__bizunRemake3"] = "出牌阶段限一次，你可以选择两名角色并选择一个二者均有牌的相同区域，所选角色依次获得彼此相同区域的一张牌，若其中对应区域牌较多角色与你势力相同且唯一，你可以令其<a href='heg__hebi'>合璧</a>。",
+  ["fengsui_heg__hejueRemake3"] = "合珏",
+  [":fengsui_heg__hejueRemake3"] = "当你受到伤害后，你可以选择至多两名角色，若其中有两张珠联璧合的武将牌，则其对应角色各摸一张牌，否则你选择其中一名同势力角色<a href='heg__hebi'>合璧</a>。",
+  ["fengsui_heg__menyinRemake"] = "门荫",
+  [":fengsui_heg__menyinRemake"] = "主将技，限定技，此武将牌上阴阳鱼数量-1。出牌阶段开始时，若你所在势力为大势力，你可以令一名武将牌均明置的同势力角色<a href='heg__hebi'>合璧</a>。",
+  ["fengsui_heg__ranlvRemake"] = "燃缕",
+  [":fengsui_heg__ranlvRemake"] = "当有角色受到锦囊牌造成的伤害后，若你的武将牌均明置，你可以暗置此武将牌并横置你与受伤角色，若你已横置，你可以令一名势力与你相同的角色<a href='heg__hebi'>合璧</a>。",
+  ["fengsui_heg__shenqingRemake3"] = "申情",
+  [":fengsui_heg__shenqingRemake3"] = "当你受到伤害后或出牌阶段开始时，你可以令一名同势力角色<a href='heg__hebi'>合璧</a>或摸X张牌（X为场上珠联璧合标记数）。",
+  ["fengsui_heg__zeyuRemake2"] = "泽誉",
+  [":fengsui_heg__zeyuRemake2"] = "主将技，当与你势力相同的角色因杀死其他角色而执行奖惩后，你可令其变更副将。",
+  ["fengsui_heg__liefaRemake2"] = "烈伐",
+  [":fengsui_heg__liefaRemake2"] = "阵法技，若你构成阵列：与你处于同一阵列的角色获得“冰心”；若你构成围攻，你获得“鸟翔”；若你均构成或均不构成，同势力角色明置武将牌后，你可以令其变更一次副将。",
+  ["fengsui_heg__xunyunRemake2"] = "勋殒",
+  [":fengsui_heg__xunyunRemake2"] = "<b>锁定技，</b>当你首次进入濒死状态时，你令伤害来源移除副将，然后令一名其他同势力角色<a href='heg__hebi'>合璧</a>。",
 }
 
 return true
