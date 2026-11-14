@@ -1,9 +1,13 @@
 local H = require "packages.fengsui.hegemony_util"
 local lianxi = fk.CreateSkill { name = "fengsui_heg__lianxi", tags = { Skill.Compulsory } }
 
+-- 每名角色每回合首次明置武将牌才结算；标记打在明将的角色身上，回合开始时清空。
+local mark = "fengsui_heg__lianxi-turn"
+
 -- 新版：选项一改为雷电伤害，选项二改为摸两张牌并横置（不再副将易位）。
 local function resolve(self, _, target, player)
   local room = player.room
+  room:setPlayerMark(target, mark, 1)
   local choices = { "fengsui_heg__lianxi_discard", "fengsui_heg__lianxi_chain" }
   local choice = room:askToChoice(target, { choices = choices, skill_name = lianxi.name })
   if choice == "fengsui_heg__lianxi_chain" then
@@ -39,19 +43,31 @@ end
 -- 整段属自动结算，不该再走一次技能发动流程：mute 关配音与「发动【连徙】」
 -- 播报，no_indicate 关指示线，on_cost 直接返回 true 跳过引擎默认的询问框。
 -- 刻意不加 is_delay_effect：锁定技明置武将是国战规则，需要保留。
--- 只在武将牌明置时结算；暗置武将牌不触发。
+-- 只在武将牌明置时结算；暗置武将牌不触发，同回合内第二次及以后明置也不结算。
 lianxi:addEffect(fk.GeneralRevealed, {
   global = true,
   mute = true,
   no_indicate = true,
   can_trigger = function(self, _, target, player)
     return target and target:isAlive() and player:hasSkill(lianxi.name) and
-      H.compareKingdomWith(target, player)
+      H.compareKingdomWith(target, player) and target:getMark(mark) == 0
   end,
   on_cost = function()
     return true
   end,
   on_use = resolve,
+})
+
+-- -turn 标记按角色记录本回合是否已结算，回合开始时统一清零。
+lianxi:addEffect(fk.TurnStart, {
+  global = true,
+  can_refresh = function(self, _, target) return target ~= nil end,
+  on_refresh = function(self, _, target)
+    local room = target.room
+    for _, p in ipairs(room.alive_players) do
+      room:setPlayerMark(p, mark, 0)
+    end
+  end,
 })
 
 Fk:loadTranslationTable{
