@@ -11,12 +11,15 @@ local function companionMarkCount(room)
   return n
 end
 
--- 新版：受到伤害后 / 出牌阶段开始时，令一名同势力角色合璧或摸 X 张牌。
+-- 新版：受到伤害后 / 出牌阶段开始时，令一名同势力角色合璧或摸 X+1 张牌。
 local function commonCost(self, event, player)
   local room = player.room
   local x = companionMarkCount(room)
-  local choices = { "fengsui_heg__shenqing_hebi" }
-  if x > 0 then table.insert(choices, "fengsui_heg__shenqing_draw") end
+  local drawNum = x + 1
+  -- 选项文本写成「键:::参数」，客户端 processPrompt 会把 %arg 换成实际数字，
+  -- 这样摸牌项显示的是本局此刻的张数，而不是一个固定的 X。
+  local drawChoice = ("fengsui_heg__shenqing_draw:::%d"):format(drawNum)
+  local choices = { "fengsui_heg__shenqing_hebi", drawChoice }
   -- 只对同势力角色生效：合璧本身需要同势力，摸牌一项也不该跳出势力。
   local targets = table.filter(room.alive_players, function(p)
     return H.compareKingdomWith(p, player)
@@ -31,12 +34,12 @@ local function commonCost(self, event, player)
     cancelable = true,
   })
   if #tos == 0 then return false end
-  local choice = #choices == 1 and choices[1] or room:askToChoice(player, {
+  local choice = room:askToChoice(player, {
     choices = choices,
     skill_name = shenqing.name,
-    prompt = "#fengsui_heg__shenqing-choice",
+    prompt = "#fengsui_heg__shenqing-choice:::" .. drawNum,
   })
-  event:setCostData(self, { to = tos[1], choice = choice, x = x })
+  event:setCostData(self, { to = tos[1], choice = choice, x = drawNum })
   return true
 end
 
@@ -80,11 +83,11 @@ shenqing:addEffect(fk.EventPhaseStart, {
 
 Fk:loadTranslationTable {
   ["fengsui_heg__shenqing"] = "申情",
-  [":fengsui_heg__shenqing"] = "当你受到伤害后或出牌阶段开始时，你可以令一名同势力角色摸X张牌或选择是否<a href='heg__hebi'>合璧</a>（X为场上珠联璧合标记数）。",
+  [":fengsui_heg__shenqing"] = "当你受到伤害后或出牌阶段开始时，你可以令一名同势力角色摸X+1张牌或选择是否<a href='heg__hebi'>合璧</a>（X为场上珠联璧合标记数）。",
   ["#fengsui_heg__shenqing-invoke"] = "申情：选择一名同势力角色",
   ["#fengsui_heg__shenqing-choice"] = "申情：请选择一项（可摸 %arg 张牌）",
   ["fengsui_heg__shenqing_hebi"] = "令该角色选择是否合璧",
-  ["fengsui_heg__shenqing_draw"] = "令该角色摸X张牌",
+  ["fengsui_heg__shenqing_draw"] = "令该角色摸 %arg 张牌",
 }
 
 return shenqing

@@ -102,49 +102,53 @@ local function makeFourthKingdomWild(room, player, oldKingdom)
   end
 end
 
+-- 本技能只做势力判定与标记维护，属纯事务性动作，不该走技能发动流程：
+-- 走 on_trigger 而不是 on_cost/on_use，否则明置、换将时会弹出
+-- 「你想发动〖屹立于世〗吗？」，日志里还会多出一条技能播报。
+local function applyNeutralRule(player, data)
+  local room = player and player.room
+  if not room then return end
+  local revealedKingdom = player.kingdom
+  if revealedKingdom ~= "unknown" and revealedKingdom ~= "wild" then
+    promoteWarlord(room, player, revealedKingdom)
+  end
+  local neutralPlace = getNeutralPlace(player)
+  local shownPlace = data.m and "m" or (data.d and "d")
+  local firstNeutral = shownPlace == neutralPlace and
+    ((shownPlace == "m" and player.deputyGeneral == "anjiang") or
+     (shownPlace == "d" and player.general == "anjiang")) and
+    not (data.m and data.d)
+  if firstNeutral then
+    room:setPlayerProperty(player, "kingdom", "unknown")
+    room:setPlayerProperty(player, "role", "hidden")
+    room:setPlayerMark(player, "@fengsui_neutral", "")
+  else
+    -- 先亮正常势力牌或同时亮两张时，不触发中立特效，
+    -- 但仍按正常势力确定当前角色势力。
+    local oldKingdom = player.kingdom
+    room:setPlayerMark(player, "@fengsui_neutral", 0)
+    room:setPlayerMark(player, "@fengsui_neutral_old", 0)
+    -- ServerPlayer:revealGeneral 会先按国战规则检查人数上限；
+    -- 如果该角色已被判为野心家，这里不能再把它覆盖回原势力。
+    if oldKingdom == "wild" then
+      room:setPlayerMark(player, "__heg_wild", 1)
+      room:setPlayerProperty(player, "kingdom", "wild")
+      room:setPlayerProperty(player, "role", player:getMark("__heg_kingdom"))
+    else
+      determineKingdom(room, player)
+      makeFourthKingdomWild(room, player, oldKingdom)
+    end
+  end
+end
+
 neutralRule:addEffect(fk.GeneralShown, {
   global = true,
   priority = 20,
   can_trigger = function(self, event, target, player, data)
     return target == player and getNeutralPlace(player) ~= nil and data ~= nil
   end,
-  on_cost = function()
-    return true
-  end,
-  on_use = function(self, event, target, player, data)
-    local room = player and player.room
-    if not room then return end
-    local revealedKingdom = player.kingdom
-    if revealedKingdom ~= "unknown" and revealedKingdom ~= "wild" then
-      promoteWarlord(room, player, revealedKingdom)
-    end
-    local neutralPlace = getNeutralPlace(player)
-    local shownPlace = data.m and "m" or (data.d and "d")
-    local firstNeutral = shownPlace == neutralPlace and
-      ((shownPlace == "m" and player.deputyGeneral == "anjiang") or
-       (shownPlace == "d" and player.general == "anjiang")) and
-      not (data.m and data.d)
-    if firstNeutral then
-      room:setPlayerProperty(player, "kingdom", "unknown")
-      room:setPlayerProperty(player, "role", "hidden")
-      room:setPlayerMark(player, "@fengsui_neutral", "")
-    else
-      -- 先亮正常势力牌或同时亮两张时，不触发中立特效，
-      -- 但仍按正常势力确定当前角色势力。
-      local oldKingdom = player.kingdom
-      room:setPlayerMark(player, "@fengsui_neutral", 0)
-      room:setPlayerMark(player, "@fengsui_neutral_old", 0)
-      -- ServerPlayer:revealGeneral 会先按国战规则检查人数上限；
-      -- 如果该角色已被判为野心家，这里不能再把它覆盖回原势力。
-      if oldKingdom == "wild" then
-        room:setPlayerMark(player, "__heg_wild", 1)
-        room:setPlayerProperty(player, "kingdom", "wild")
-        room:setPlayerProperty(player, "role", player:getMark("__heg_kingdom"))
-      else
-        determineKingdom(room, player)
-        makeFourthKingdomWild(room, player, oldKingdom)
-      end
-    end
+  on_trigger = function(self, event, target, player, data)
+    applyNeutralRule(target, data)
   end,
 })
 
@@ -233,9 +237,11 @@ neutralRule:addEffect(H.GeneralTransformed, {
     return target == player and old and
       (old.kingdom == neutralKingdom or old.kingdom == neutralAllKingdom)
   end,
-  on_use = function(self, event, target, player, data)
-    clearRevealProhibition(player.room, player)
-    loseNeutralSkills(player.room, player)
+  -- 同上：清标记与收回技能是静默结算，走 on_trigger 免得弹出「是否发动」。
+  on_trigger = function(self, event, target)
+    if not target or not target.room then return end
+    clearRevealProhibition(target.room, target)
+    loseNeutralSkills(target.room, target)
   end,
 })
 
