@@ -32,6 +32,24 @@ require "packages/fengsui/pkg/runtime_translations"
 require "packages/fengsui/pkg/official_overrides"
 require "packages/fengsui/pkg/mark_cleanup"
 
+-- 智能 AI 补丁：给烽燧与国战技能补齐策略。
+-- 用 pcall 包住，补丁本身出问题也不影响整个扩展加载。
+local ok_ai, fengsui_ai = pcall(require, "packages/fengsui/pkg/fengsui_ai")
+if ok_ai and fengsui_ai and fengsui_ai.install then
+  local ok_install, err_install = pcall(fengsui_ai.install)
+  if not ok_install then
+    fk.qWarning(string.format("[fengsui-ai] 安装失败：%s", tostring(err_install)))
+  end
+  -- 房间重载时也重新挂一次钩子，避免模块被缓存后漏装
+  pcall(function()
+    Fk:addPostLoadFunc(function()
+      pcall(fengsui_ai.install)
+    end)
+  end)
+elseif not ok_ai then
+  fk.qWarning(string.format("[fengsui-ai] 加载失败：%s", tostring(fengsui_ai)))
+end
+
 -- Voice overrides are loaded last so official packages cannot replace them.
 Fk:loadTranslationTable{
   ["fengsui_hebi"] = "烽燧燎原-合璧",
