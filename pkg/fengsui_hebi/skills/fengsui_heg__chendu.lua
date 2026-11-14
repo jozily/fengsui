@@ -1,16 +1,14 @@
 -- 尘牍（李密）
--- 当你于回合外交给其他角色牌后，若其与你势力相同，其可以变更副将。
+-- 当你交给其他角色牌后，若其与你势力相同，其可以变更副将。
 local H = require "packages.fengsui.hegemony_util"
 
 local chendu = fk.CreateSkill{
   name = "fengsui_heg__chendu",
 }
 
--- 本回合外由 player 交给其他角色的牌的收牌人（同势力、存活）
+-- 本次由 player 交给其他角色的牌的收牌人（同势力、存活）
 local function giveTargets(room, player, data)
   local tos = {}
-  local current = room.current
-  if not current or current == player then return tos end -- 仅回合外
   for _, move in ipairs(data) do
     if move.from == player and move.to and move.to ~= player and
       move.toArea == Card.PlayerHand and move.to:isAlive() and

@@ -63,8 +63,8 @@ local function getChan(target)
   return type(v) == "string" and v ~= "" and v or nil
 end
 
--- drawCard 为 true 表示「失去谶」自然到期，按描述摸一张牌；替换旧谶时
--- 传 false，否则反复替换可以白摸牌。故梦会把谶转为永久技能，也不走这里。
+-- 失去「谶」（到期回收或被新的「谶」替换）即摸一张牌；故梦把谶转为永久
+-- 技能时不走这里，因为谶并没有失去。
 local function clearChan(room, target, drawCard)
   local skill_name = getChan(target)
   room:setPlayerMark(target, chan_mark, 0)
@@ -84,8 +84,8 @@ local function clearChan(room, target, drawCard)
   for _, mark in ipairs(stale) do
     room:setPlayerMark(target, mark, 0)
   end
-  -- 到期回收属被动结算：摸牌不挂技能名，日志里不出现「虞照」；
-  -- 技能发动播报由下方 EventPhaseStart 的 mute = true 关闭。
+  -- 失去谶属被动结算：摸牌不挂技能名，日志里不出现「虞照」；
+  -- 到期回收的发动播报由下方 EventPhaseStart 的 mute = true 关闭。
   if drawCard then room:drawCards(target, 1) end
   return skill_name
 end
@@ -148,7 +148,7 @@ yuzhao:addEffect(fk.HpChanged, {
     -- 「观看」不等于取走武将牌，三张全部归还将池；否则反复替换会耗尽将池。
     room:returnToGeneralPile(candidates)
 
-    if old_chan then clearChan(room, target, false) end
+    if old_chan then clearChan(room, target, true) end
     room:handleAddLoseSkills(target, skill_name)
     room:setPlayerMark(target, chan_mark, skill_name)
     room:setPlayerMark(target, wait_mark, 1)
