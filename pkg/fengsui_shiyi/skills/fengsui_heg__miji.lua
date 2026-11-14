@@ -19,8 +19,10 @@ miji:addEffect(fk.HpLost, {
     return player:hasSkill(miji.name) and player.room.current and not player.room.current.dead
   end,
   on_cost = function(self, event, target, player, data)
+    local current = player.room.current
     local choices = {"fengsui_heg__miji_draw", "Cancel"}
-    if not player:isNude() then
+    -- 选项2 是令当前回合角色本回合手牌上限-1：上限已经是 0 时无意义，不再提供。
+    if not player:isNude() and current and current:getMaxCards() > 0 then
       table.insert(choices, 2, "fengsui_heg__miji_discard")
     end
     local choice = player.room:askToChoice(player, {

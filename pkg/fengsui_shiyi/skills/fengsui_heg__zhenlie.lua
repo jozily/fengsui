@@ -1,3 +1,5 @@
+local H = require "packages.fengsui.hegemony_util"
+
 local zhenlie = fk.CreateSkill {
   name = "fengsui_heg__zhenlie",
 }
