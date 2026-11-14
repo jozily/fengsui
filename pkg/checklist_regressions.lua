@@ -18,29 +18,59 @@ return function(suite)
   end
   local function skill(name) return {name = "fengsui_heg__" .. name} end
   suite:addTest(function()
-    local callback = spec("jincai", fk.TargetSpecified)
+    local callback = spec("jincai", fk.TargetConfirmed)
     local owner, source = actor(), actor()
-    local use = {setNullified = function(self) self.nullified = true end}
+    local nullified, order = {}, {}
     local choices = {"fengsui_heg__jincai_hide", "fengsui_heg__jincai_main"}
     owner.room = {
       askToChoice = function() return table.remove(choices, 1) end,
       addTableMark = function() end,
     }
     source.room = owner.room
-    source.hideGeneral = function(self, deputy) self.hidden = deputy and "d" or "m" end
-    callback.on_use(skill("jincai"), nil, source, owner, {use = use})
-    lu.assertEquals(source.hidden, "m")
-    lu.assertNil(use.nullified)
-    source.general = "anjiang"
-    choices = {"fengsui_heg__jincai_hide"}
-    callback.on_use(skill("jincai"), nil, source, owner, {use = use})
-    lu.assertTrue(use.nullified)
-    local obtained
-    choices = {"fengsui_heg__jincai_obtain"}
-    owner.room.obtainCard = function(_, player, card) obtained = {player, card} end
+    source.hideGeneral = function(self, deputy)
+      self.hidden = deputy and "d" or "m"
+      table.insert(order, "hide")
+    end
+
     local red = Fk:cloneCard("slash", Card.Heart)
-    callback.on_use(skill("jincai"), nil, source, owner, {use = {}, card = red})
+    local function make_data(card, from)
+      return {
+        from = from or source, card = card, use = {},
+        setNullified = function(self, target) table.insert(nullified, target) end,
+      }
+    end
+    -- 仅红色基本牌与普通锦囊牌触发；装备牌、延时锦囊不触发；自己使用的牌同样触发
+    lu.assertTrue(callback.can_trigger(skill("jincai"), nil, owner, owner, make_data(red)))
+    lu.assertTrue(callback.can_trigger(skill("jincai"), nil, owner, owner,
+      make_data(Fk:cloneCard("duel", Card.Diamond))))
+    lu.assertFalse(callback.can_trigger(skill("jincai"), nil, owner, owner,
+      make_data(Fk:cloneCard("qinggang_sword", Card.Heart))))
+    lu.assertFalse(callback.can_trigger(skill("jincai"), nil, owner, owner,
+      make_data(Fk:cloneCard("indulgence", Card.Heart))))
+    lu.assertTrue(callback.can_trigger(skill("jincai"), nil, owner, owner, make_data(red, owner)))
+
+    -- 使用者武将牌并非均明置时不发动
+    source.general = "anjiang"
+    lu.assertFalse(callback.can_trigger(skill("jincai"), nil, owner, owner, make_data(red)))
+    source.general = "caocao"
+
+    -- 选项一：暗置一张武将牌，然后张白获得此牌
+    local obtained
+    owner.room.obtainCard = function(_, player, card)
+      table.insert(order, "obtain")
+      obtained = {player, card}
+    end
+    callback.on_use(skill("jincai"), nil, owner, owner, make_data(red))
+    lu.assertEquals(source.hidden, "m")
+    lu.assertEquals(order, {"hide", "obtain"})
     lu.assertEquals(obtained, {owner, red})
+    lu.assertEquals(#nullified, 0)
+
+    -- 选项二：此牌对张白无效，不获得牌
+    choices = {"fengsui_heg__jincai_nullify"}
+    callback.on_use(skill("jincai"), nil, owner, owner, make_data(red))
+    lu.assertEquals(nullified, {owner})
+    lu.assertEquals(order, {"hide", "obtain"})
   end)
   suite:addTest(function()
     local callback = spec("yisang", fk.PreCardUse)

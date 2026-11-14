@@ -35,6 +35,13 @@ juexun:addEffect(fk.PreDamage, {
     data.extra_data = data.extra_data or {}
     data.extra_data.fengsui_heg__juexun_owner = player.id
     player.room:setPlayerMark(player, "fengsui_heg__juexun_ready", 0)
+    -- 改伤害属性本身没有可见反馈：伤害结算只会照新属性写成「火焰伤害」，
+    -- 场上看不出是绝殉改的。补一条战报把来源点明。
+    player.room:sendLog{
+      type = "#fengsui_heg__juexun-fire",
+      from = player.id,
+      toast = true,
+    }
   end,
 })
 
