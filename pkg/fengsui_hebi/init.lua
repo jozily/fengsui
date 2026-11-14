@@ -827,7 +827,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__jincai_draw"] = "摸两张牌并暗置一张武将牌，本轮对技能发动者的下一次伤害-1",
   ["fengsui_heg__jincai_red"] = "本回合不能使用红色牌",
   ["fengsui_heg__lianxi"] = "连徙",
-  [":fengsui_heg__lianxi"] = "锁定技，与你势力相同的角色明置武将牌数变化后，你令其选择一项：1.弃置一个区域所有牌并对当前回合角色造成一点雷电伤害；2.摸两张牌并横置。",
+  [":fengsui_heg__lianxi"] = "锁定技，与你势力相同的角色明置武将牌后，你令其选择一项：1.弃置一个区域所有牌并对当前回合角色造成一点雷电伤害；2.摸两张牌并横置。",
   ["$fengsui_heg__jincai1"] = "笔墨本为诤言劝主，今日只能书写无奈之志。",
   ["$fengsui_heg__jincai2"] = "权贵之心如秋草，昨日喜哀今朝弃之。",
     ["$fengsui_heg__jincai3"] = "才学满腹却无处可施，此乃吾之恨也。",
