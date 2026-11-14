@@ -51,11 +51,12 @@ zhuiji:addEffect(fk.AfterSkillEffect, {
 })
 
 -- 标记技能之外，拟字、周王、陈梦等技能会直接消耗国战标记。统一的
--- HegMarkChanged 事件记录这些消耗，保证“上次使用过的标记”不会漏记。
+-- HegMarkChanged 事件逐枚记录这些消耗，保证“最后弃置的标记”不会漏记；
+-- 一次弃多枚时事件按弃置顺序发出，最后一次写入即玩家后选的那枚。
 zhuiji:addEffect(H.HegMarkChanged, {
   global = true,
   can_refresh = function(self, _, target, player, data)
-    return target == player and data and data.action == "use" and usedSkills[data.markName] == nil and
+    return target == player and data and data.action == "use" and
       table.contains({ "yinyangfish", "vanguard", "companion", "wild", "fengsui_heg_ascend", "fengsui_heg__descend" }, data.markName)
   end,
   on_refresh = function(self, _, _, player, data)

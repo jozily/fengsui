@@ -1480,7 +1480,7 @@ Fk:loadTranslationTable{
     [":fengsui_heg__nizi"]='当一名与你势力相同的角色于其回合内使用的基本牌或普通锦囊牌结算后，你可以弃置任意枚名字字数之和等于此牌牌名字数的国战标记，视为使用此牌，然后若你的武将牌均明置，你暗置此武将牌。',
     [":fengsui_heg__buge"]="当你明置此武将牌后或受到伤害后，你可以随机获得一枚国战标记。",
     [":fengsui_heg__fuyang"]="锁定技，当你首次明置此武将牌后，你获得一枚<a href=':fengsui_heg_ascend_skill&'>“升”</a>和一枚<a href=':fengsui_heg__descend_skill&'>“降”</a>。",
-    [":fengsui_heg__zhuiji"]='出牌阶段，若你本局游戏使用过国战标记，你可以获得一枚与你上次使用的国战标记同名的标记，然后此技能失效直至你累计造成或受到X点伤害（X为该标记名字的字数）。',
+    [":fengsui_heg__zhuiji"]='出牌阶段，若你使用或弃置过国战标记，你可以获得一枚上次使用或最后弃置的国战标记，然后此技能失效直至你累计造成或受到X点伤害（X为该标记名字字数）。',
     ["#fengsui_heg__tishi-slash"]="体势：选择一名角色，视为对其使用雷【杀】",
     ["#fengsui_heg__siji-invoke"]="思疾：是否发动？",
 
@@ -1495,7 +1495,7 @@ Fk:loadTranslationTable{
     ["#fengsui_heg__lishi-give"]="离室：选择交给另一名角色的一张牌",
     ["#fengsui_heg__qinghuang-swap"]="清篁：是否与该角色交换对应武将牌？",
     ["#fengsui_heg__qusheng-invoke"]="取声：是否暗置另一张武将牌，获得同名异色的牌？", ["#fengsui_heg__qusheng-choose"]="取声：请选择要获得的牌", ["#fengsui_heg__qushengRemake-invoke"]="取声：是否获得同名异花色的牌？", ["#fengsui_heg__jinshi-use"]="噤誓：你可以使用一张牌",
-    ["#fengsui_heg__nizi-choice"]="拟字：选择要弃置的国战标记组合",
+    ["#fengsui_heg__nizi-choice"]="拟字：选择要弃置的国战标记（还需 %arg 字）",
     ["#fengsui_heg__cimang-invoke"]="刺芒：是否获得牌堆底的一张牌？",
     ["#fengsui_heg__qiju-use"]="戚举：是否将此基本牌转化为其他基本牌？", ["#fengsui_heg__qiju-slash"]="戚举：是否使用一张【杀】？",
     ["fengsui_heg__siji_up"]="弃置一张牌并令当前回合角色手牌上限+1",
