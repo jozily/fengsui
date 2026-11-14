@@ -1941,7 +1941,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__zhaoe"] = "佚名",
   ["cv:fengsui_heg__zhaoe"] = "暂无",
   ["fengsui_heg__yanshi"] = "魇誓",
-  [":fengsui_heg__yanshi"] = "锁定技，当你明置此武将牌后，你选择一名角色，你与其每轮对彼此首次造成的伤害+1。当你即将受到伤害时，你展示所有手牌，若其中有伤害牌，你弃置一种牌名的所有牌防止之。",
+  [":fengsui_heg__yanshi"] = "锁定技，当你首次明置此武将牌后，你选择一名角色，你与其每轮对彼此首次造成的伤害+1。当你即将受到伤害时，你展示所有手牌，若其中有伤害牌，你弃置一种牌名的所有牌防止之。",
   ["fengsui_heg__xinren"] = "衅刃",
   [":fengsui_heg__xinren"] = "锁定技，你的红色/黑色伤害类卡牌不计入手牌上限且无法使用/无距离限制；当你确定势力后，你展示所有手牌并对“魇誓”目标依次使用其中的伤害牌，然后你移除此武将牌。",
   ["#fengsui_heg__xinren-use"] = "衅刃：请使用 %arg",

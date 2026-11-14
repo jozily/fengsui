@@ -5,20 +5,30 @@ local function damageCards(player)
   return table.filter(player:getCardIds("h"), function(id) return Fk:getCardById(id).is_damage_card end)
 end
 
+-- “首次明置”：用独立标记记录本局是否已经选过配对目标，不复用 _target。
+-- 衅刃结算后会把 _target 清 0，若此后赵娥武将牌又回到场上并被明置，
+-- 只靠 _target 判断会再选一次目标，与“首次”不符。
+local REVEALED_MARK = s.name .. "_revealed"
+
+-- 仍挂 GeneralShown：衅刃挂在 GeneralRevealed 上且要求配对目标已存在，
+-- 明置时机必须早于它，否则同一次明置里衅刃会先判定、错过结算。
 s:addEffect(fk.GeneralShown, {
   can_trigger = function(self, event, target, player, data)
     local place = H.inGeneralSkills(player, s.name)
-    return target == player and player:isAlive() and player:hasShownSkill(s.name) and player:getMark(s.name .. "_target") == 0 and
+    return target == player and player:isAlive() and player:hasShownSkill(s.name) and
+      player:getMark(REVEALED_MARK) == 0 and player:getMark(s.name .. "_target") == 0 and
       place ~= nil and data and ((place == "m" and data.m) or (place == "d" and data.d))
   end,
   on_use = function(self, event, target, player, data)
-    local tos = player.room:askToChoosePlayers(player, {
-      targets = player.room:getOtherPlayers(player), min_num = 1, max_num = 1,
+    local room = player.room
+    local tos = room:askToChoosePlayers(player, {
+      targets = room:getOtherPlayers(player), min_num = 1, max_num = 1,
       skill_name = s.name, prompt = "#fengsui_heg__yanshi-target", cancelable = false,
     })
     if #tos > 0 then
-      player.room:setPlayerMark(player, s.name .. "_target", tos[1].id)
-      player.room:setPlayerMark(tos[1], "@fengsui_heg__yanshi_target", "")
+      room:setPlayerMark(player, s.name .. "_target", tos[1].id)
+      room:setPlayerMark(tos[1], "@fengsui_heg__yanshi_target", "")
+      room:setPlayerMark(player, REVEALED_MARK, 1)
     end
   end,
 })
