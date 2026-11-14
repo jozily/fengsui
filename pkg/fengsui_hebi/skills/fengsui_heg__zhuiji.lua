@@ -63,14 +63,32 @@ zhuiji:addEffect(H.HegMarkChanged, {
     player.room:setPlayerMark(player, ZNAME .. "-last", data.markName)
   end,
 })
-local function reduce(self, player)
+-- 按实际伤害点数累计：一次造成或受到 2 点伤害即减 2，扣到 0 时解除失效。
+-- 伤害事件在增减伤结算之后触发，data.damage 是最终点数；0 点的虚拟伤害不累计。
+local function reduce(self, player, data)
   local n = player:getMark(ZNAME .. "-damage")
-  if n > 0 then player.room:setPlayerMark(player, ZNAME .. "-damage", n - 1) end
-  if n == 1 then
+  if n <= 0 then return end
+  local amount = math.floor(tonumber(data and data.damage) or 0)
+  if amount < 1 then return end
+  local left = n - amount
+  if left <= 0 then
+    player.room:setPlayerMark(player, ZNAME .. "-damage", 0)
     player.room:setPlayerMark(player, ZNAME .. "-disabled", 0)
     player.room:setPlayerMark(player, "@fengsui_heg__zhuiji", 0)
+  else
+    player.room:setPlayerMark(player, ZNAME .. "-damage", left)
   end
 end
-zhuiji:addEffect(fk.Damage, { can_trigger = function(self, _, target, player, data) return target == player and player:hasSkill(ZNAME) and player:getMark(ZNAME .. "-damage") > 0 end, on_use = function(self, _, _, player) reduce(self, player) end })
-zhuiji:addEffect(fk.Damaged, { can_trigger = function(self, _, target, player, data) return target == player and player:hasSkill(ZNAME) and player:getMark(ZNAME .. "-damage") > 0 end, on_use = function(self, _, _, player) reduce(self, player) end })
+zhuiji:addEffect(fk.Damage, {
+  can_trigger = function(self, _, target, player, data)
+    return target == player and player:hasSkill(ZNAME) and player:getMark(ZNAME .. "-damage") > 0
+  end,
+  on_use = function(self, _, _, player, data) reduce(self, player, data) end,
+})
+zhuiji:addEffect(fk.Damaged, {
+  can_trigger = function(self, _, target, player, data)
+    return target == player and player:hasSkill(ZNAME) and player:getMark(ZNAME .. "-damage") > 0
+  end,
+  on_use = function(self, _, _, player, data) reduce(self, player, data) end,
+})
 return zhuiji
