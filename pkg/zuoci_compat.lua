@@ -12,7 +12,10 @@
 -- 2. 魂的势力栏：原版「双势力」一栏改称「其他」，双势力、中立者与
 --    野心家魂一律只归入「其他」，不再单设野心家栏；中立者魂视为使用时
 --    可以指定任意势力（含野心家与未确定势力）的角色为目标。
--- 3. 其余官方逻辑（明置得魂、PreCardUse 消耗魂、每回合牌名限一次、
+-- 3. 鏖战只禁「非转化的桃」，魂印出的牌带 ld__yigui 技能名、属于转化桃，
+--    按规则可以照常回复体力。这里豁免鏖战系列 prohibit 对魂印桃的拦截，
+--    其余禁止效果照常生效。
+-- 4. 其余官方逻辑（明置得魂、PreCardUse 消耗魂、每回合牌名限一次、
 --    扇子杀备份魂信息）一概不动，仍由官方技能对象负责。
 
 local U = require "packages.utility.utility"
@@ -280,6 +283,37 @@ function M.apply()
       end
       effect.__fengsui_yigui_prohibit = true
     end
+  end
+
+  -- 鏖战规则里实体【桃】只能当【杀】/【闪】/【酒】使用，但转化桃不受此限
+  -- （官方 prohibit 也是按 #skillNames > 0 放行的）。魂印出的桃在某些结算路径
+  -- 上仍会被鏖战技能拦下，导致可选牌名里没有【桃】、实际使用也被禁止。
+  -- 只豁免鏖战系列技能，其余「禁止使用/回复体力」等效果照常生效。
+  if Player and not Player.__fengsui_yigui_peach_guard then
+    local BATTLE_ROYAL_SKILLS = {
+      ["battle_royal&"] = true,
+      ["new_battle_royal&"] = true,
+      ["#battle_royal_prohibit&"] = true,
+      ["#battle_royal_peach&"] = true,
+    }
+    local raw_prohibitUse = Player.prohibitUse
+    Player.prohibitUse = function(self, card)
+      local soul_peach = card and card.trueName == "peach" and
+        table.contains(card.skillNames or {}, YIGUI)
+      local room = Fk.currentRoom and Fk:currentRoom()
+      local in_battle_royal = soul_peach and room and room.getTag and
+        room:getTag("BattleRoyalMode") == true
+      if not in_battle_royal then return raw_prohibitUse(self, card) end
+      local status_skills = room.status_skills and room.status_skills[ProhibitSkill]
+      for _, sk in ipairs(status_skills or Util.DummyTable) do
+        if not BATTLE_ROYAL_SKILLS[sk.name] and sk:prohibitUse(self, card) then
+          return true
+        end
+      end
+      return false
+    end
+    Player.__fengsui_yigui_peach_guard = true
+    fk.qInfo("[fengsui-zuoci] 鏖战下魂印【桃】已按转化牌放行")
   end
 
   skill.__fengsui_yigui_ui = true

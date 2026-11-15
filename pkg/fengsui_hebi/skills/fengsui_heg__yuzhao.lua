@@ -6,6 +6,10 @@
 --
 -- 与旧版的区别：候选只按目标勾玉筛三张（不再看当前回合角色势力、不再按
 -- 势力人数决定张数）；同时至多保留一个“谶”，替换时可在看完武将牌后取消。
+--
+-- 「谶」是临时挂到角色身上的技能，不对应任何一张武将牌。因此排除两类技能：
+-- 位置标签技（主将技/副将技），以及会主动明置、暗置、变更、移除武将牌的技能。
+-- 仅把「明置此武将牌」之类当作条件或时机的技能（如【望归】）不受影响。
 local H = require "packages.fengsui.hegemony_util"
 local U = require "packages.utility.utility"
 
@@ -39,20 +43,82 @@ local function fieldGeneralsAndSkills(room)
   return generals, skills
 end
 
+-- 描述里这些说法只是把武将牌状态当作条件或时机，技能本身并不改变武将牌，
+-- 也不会去引用「技能所在的那张武将牌」。先把它们摘掉，再判断有无改牌动作，
+-- 否则「仅明置此武将牌」会因为含有「明置此武将牌」而误剔除【望归】这一类。
+local CONDITIONAL_PHRASES = {
+  -- 「仅/首次/…明置…武将牌后」这类整句先摘干净，否则剩下的「明置一张
+  -- 武将牌」会被下面的动作短语误认（如【孤茹】【连徙】【入洛】【趋势】）。
+  "变更副将后", "移除副将后",
+  "仅明置一张武将牌", "仅暗置一张武将牌",
+  "首次明置武将牌后", "明置武将牌后",
+  "明置一张武将牌后", "暗置一张武将牌后",
+  "已明置武将牌数", "明置武将牌数",
+  "当一名角色明置或暗置武将牌后",
+  "当你明置此武将牌或即将暗置此武将牌时",
+  "当你首次明置此武将牌后", "当你首次明置此武将牌时",
+  "当你明置此武将牌后", "当你明置此武将牌时",
+  "当你暗置此武将牌后", "当你暗置此武将牌时",
+  "当你明置另一张武将牌后", "当你明置武将牌后",
+  "首次明置此武将牌后", "首次明置此武将牌时",
+  "明置另一张武将牌后", "暗置另一张武将牌后",
+  "明置此武将牌后", "明置此武将牌时",
+  "暗置此武将牌后", "暗置此武将牌时",
+  "明置或暗置此武将牌时",
+  "仅明置此武将牌", "武将牌均明置", "武将牌均暗置",
+  "若你明置此武将牌", "若其明置此武将牌",
+}
+
+-- 真正会改变武将牌明暗/存亡的动作写法。逐个精确匹配，不用宽泛模式：
+-- 「已明置武将牌数」「明置武将牌后」只是状态或计数引用，不该被当成动作。
+local POSITION_ACTION_PHRASES = {
+  "暗置此武将牌", "暗置另一张武将牌", "暗置一张武将牌",
+  "暗置其一张武将牌", "暗置其武将牌", "暗置自己的一张武将牌",
+  "明置此武将牌", "明置另一张武将牌", "明置一张武将牌",
+  "明置其一张武将牌", "明置其武将牌", "明置自己的一张武将牌",
+  -- 换将/移除/易位也动武将牌，但描述里未必出现「武将牌」三字（如【烈伐】
+  -- 「变更副将」只在同一句的「明置武将牌后」里带出这三个字）。
+  "变更副将", "变更主将", "变更武将牌",
+  "移除副将", "移除主将", "移除武将牌",
+  "主副将易位", "武将牌易位",
+}
+
+local function changesGeneralState(description)
+  if type(description) ~= "string" then return false end
+  local text = description
+  for _, phrase in ipairs(CONDITIONAL_PHRASES) do
+    text = text:gsub(phrase, "")
+  end
+  for _, phrase in ipairs(POSITION_ACTION_PHRASES) do
+    if text:find(phrase, 1, true) then return true end
+  end
+  -- 换将写法中间可能插字（【选备】「变更X次副将」），用不跨小句的模式兜底。
+  -- 先把中文标点换成单字节分隔符：Lua 模式按字节工作，把多字节标点直接
+  -- 写进 [^...] 会被拆成字节集合，连带排除掉普通汉字。
+  for _, punct in ipairs({ "，", "。", "；", "：", "、", ",", ";", ":" }) do
+    text = text:gsub(punct, "|")
+  end
+  if text:find("变更[^|]*副将") or text:find("移除[^|]*副将") or
+    text:find("变更[^|]*主将") or text:find("移除[^|]*主将") then
+    return true
+  end
+  -- 「移除武将牌」「变更武将牌」不一定带数量词，单独按两词共现兜底。
+  local changed =
+    (text:find("移除", 1, true) and text:find("武将牌", 1, true)) or
+    (text:find("变更", 1, true) and text:find("武将牌", 1, true))
+  return changed and true or false
+end
+
 local function availableSkills(general, target, history, field_skills)
   return table.filter(general:getSkillNameList(true), function(skill_name)
     local skill = Fk.skills[skill_name]
     local description = Fk:translate(":" .. skill_name)
-    local position_changing = type(description) == "string" and (
-      (description:find("移除", 1, true) and description:find("武将牌", 1, true)) or
-      (description:find("变更", 1, true) and description:find("武将牌", 1, true)) or
-      description:find("暗置此武将牌", 1, true) or
-      description:find("暗置另一张武将牌", 1, true) or
-      description:find("明置此武将牌", 1, true) or
-      description:find("明置另一张武将牌", 1, true)
-    )
-    return skill and not skill:hasTag(Skill.Lord) and not H.isTaggedSkill(skill) and
-      not position_changing and
+    -- 主将技/副将技绑定武将位置，「谶」没有所在武将牌，一律不给；
+    -- 这里单独判断，不改 H.isTaggedSkill（【盈门】访客还要按位置匹配这两类标签）。
+    return skill and not skill:hasTag(Skill.Lord) and
+      not skill:hasTag(Skill.MainPlace) and not skill:hasTag(Skill.DeputyPlace) and
+      not H.isTaggedSkill(skill) and
+      not changesGeneralState(description) and
       not target:hasSkill(skill_name, true, true) and
       not table.contains(history, skill_name) and not field_skills[skill_name]
   end)

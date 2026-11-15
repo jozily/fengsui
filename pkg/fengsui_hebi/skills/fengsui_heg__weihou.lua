@@ -46,6 +46,9 @@ weihou:addEffect(fk.AskForRetrial, {
       data = data,
       skillName = weihou.name,
       response = true,
+      -- 替换判定牌后获得原判定牌（鬼道式）。changeJudge 会把原判定牌
+      -- 从处理区移入发动者手牌，而不是弃牌堆。
+      exchange = true,
     }
   end,
 })
