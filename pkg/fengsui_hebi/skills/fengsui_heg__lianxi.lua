@@ -8,6 +8,8 @@ local mark = "fengsui_heg__lianxi-turn"
 local function resolve(self, _, target, player)
   local room = player.room
   room:setPlayerMark(target, mark, 1)
+  -- mute 关掉了引擎默认配音，这里手动补一次，保留「不播报发动技能」的静默。
+  player:broadcastSkillInvoke(lianxi.name)
   local choices = { "fengsui_heg__lianxi_discard", "fengsui_heg__lianxi_chain" }
   local choice = room:askToChoice(target, { choices = choices, skill_name = lianxi.name })
   if choice == "fengsui_heg__lianxi_chain" then
@@ -40,8 +42,9 @@ local function resolve(self, _, target, player)
 end
 
 -- 【连徙】是锁定技：张白本人不做任何选择，选项框是给被指定的角色的。
--- 整段属自动结算，不该再走一次技能发动流程：mute 关配音与「发动【连徙】」
--- 播报，no_indicate 关指示线，on_cost 直接返回 true 跳过引擎默认的询问框。
+-- 整段属自动结算，不该再走一次技能发动流程：mute 关「发动【连徙】」
+-- 播报，配音在 resolve 里手动播放；no_indicate 关指示线，on_cost 直接
+-- 返回 true 跳过引擎默认的询问框。
 -- 刻意不加 is_delay_effect：锁定技明置武将是国战规则，需要保留。
 -- 只在武将牌明置时结算；暗置武将牌不触发，同回合内第二次及以后明置也不结算。
 lianxi:addEffect(fk.GeneralRevealed, {
