@@ -362,6 +362,17 @@ M.policy = {
     -- 单次加成上限：八人局里最大势力也就四五人，封顶避免一家独大的局无脑集火
     max_bonus = 9.0,
   },
+
+  -- 智能 AI 的局势权重。房间设置「开启 智能AI对局」勾选后才参与计算；
+  -- 关掉开关时下面这些判断全部跳过，行为与引擎原版一致。
+  smart = {
+    kill_bonus = 8,           -- 能收掉残血敌人的方案额外加分
+    low_hp_penalty = 4,       -- 残血时一切自损方案再扣分
+    behind_penalty = 3,       -- 我方势力人数落后且残血，趋于保守
+    last_defense = 4,         -- 把手里最后的桃/闪/无懈全交出去的额外代价
+    equip_threat = 0.6,       -- 目标每装备一件，威胁加分
+    empty_hand_bonus = 1.5,   -- 空手的残血目标更容易被打中
+  },
 }
 
 --- 取势力名：野心家按 role 算（新月杀里野心家会自动建国）
@@ -406,6 +417,51 @@ local function kingdomContext(ai)
     end
   end
   return ctx
+end
+
+--- 房间设置「开启 智能AI对局」：只有显式为真才启用增强逻辑。
+--- 拿不到设置（旧房、旁观、别的游戏模式）一律按原版处理，不越界改官方 AI。
+local smart_logged = false
+local function smartEnabled(ai)
+  local room = ai and ai.room
+  if not room or type(room.getSettings) ~= "function" then return false end
+  local ok, v = pcall(function() return room:getSettings("fengsui_smart_ai") end)
+  if not ok then return false end
+  local on = v == true or v == 1 or v == "1" or v == "true"
+  if not smart_logged then
+    smart_logged = true
+    pcall(function()
+      fk.qInfo("[fengsui-ai] 智能AI对局：" .. (on and "开启" or "关闭（原版 AI）"))
+    end)
+  end
+  return on
+end
+M.smartEnabled = smartEnabled
+
+--- 一次思考里局势不会变，算一次给主动技、触发技和目标评分共用。
+--- 只看公开信息（血线、势力人数、装备数、手牌里的保命牌），不偷看暗将。
+local function situation(ai)
+  local s = {
+    hp = 3, maxhp = 3, low = false, critical = false,
+    behind = false, ally = 1, enemy_max = 0,
+  }
+  pcall(function()
+    local me = ai.player
+    s.hp = type(me.hp) == "number" and me.hp or 3
+    s.maxhp = type(me.maxHp) == "number" and me.maxHp or s.hp
+  end)
+  s.low = s.hp <= 2
+  s.critical = s.hp <= 1
+
+  local ok, ctx = pcall(kingdomContext, ai)
+  if ok and type(ctx) == "table" and not ctx.disabled then
+    s.ally = (ctx.mine and ctx.counts[ctx.mine]) or 1
+    for k, n in pairs(ctx.counts) do
+      if k ~= ctx.mine and n > s.enemy_max then s.enemy_max = n end
+    end
+    s.behind = s.enemy_max > s.ally
+  end
+  return s
 end
 
 --- 打这个目标，在"势力"这一层值多少分
@@ -480,6 +536,15 @@ local function targetScore(ai, p, prof, ctx)
       -- 【决斗】【火攻】这类要对手掏牌来应，对方空手几乎必中
       if textHas(prof.text, "决斗") or textHas(prof.text, "火攻") then
         if n == 0 then s = s + 2.5 elseif n == 1 then s = s + 0.8 end
+      end
+      -- 智能 AI：装备越厚越是威胁；残血又空手的目标几乎必中，值得先收
+      if smartEnabled(ai) then
+        local scfg = M.policy.smart
+        local oke, equips = pcall(function() return p:getCardIds("e") end)
+        if oke and type(equips) == "table" then
+          s = s + #equips * scfg.equip_threat
+        end
+        if p.hp <= 1 and n == 0 then s = s + scfg.empty_hand_bonus end
       end
     end
   end
@@ -600,6 +665,50 @@ local function scorePlan(ai, prof, cards, targets, ctx)
     value = value + 3
   end
 
+  -- 智能 AI：局势层。只在开关打开时叠加，关掉后打分与原版完全一致。
+  if smartEnabled(ai) then
+    local scfg = M.policy.smart
+    local s = situation(ai)
+
+    -- 能收人头就别省技能：限定技之外也一样，补刀比留一手更值
+    if prof.offense then
+      for _, p in ipairs(targets) do
+        if p ~= me and not ai:isFriend(p) and p.hp <= 1 then
+          value = value + scfg.kill_bonus
+        end
+      end
+    end
+
+    -- 残血、且我方势力人数落后时，自损技能一律再降一档
+    if s.low and (prof.cost_hp or prof.cost_all or prof.cost_remove) then
+      value = value - scfg.low_hp_penalty
+    end
+    if s.critical and prof.cost_all then
+      value = value - scfg.low_hp_penalty
+    end
+    if s.low and s.behind then
+      value = value - scfg.behind_penalty
+    end
+
+    -- 手里仅有的桃/闪/无懈若要被这套方案全部交出去，残血时不能再赌
+    if s.low and #cards > 0 then
+      local okh, ids = pcall(function() return me:getCardIds("h") end)
+      if okh and type(ids) == "table" then
+        local defense, giving = 0, 0
+        for _, cid in ipairs(ids) do
+          local okc, card = pcall(function() return Fk:getCardById(cid) end)
+          if okc and card and KEY_CARDS[card.trueName or card.name] then
+            defense = defense + 1
+            if table.contains(cards, cid) then giving = giving + 1 end
+          end
+        end
+        if defense > 0 and giving >= defense then
+          value = value - scfg.last_defense
+        end
+      end
+    end
+  end
+
   -- 转化技：满血不必把桃变桃，闪和无懈在出牌阶段没有意义
   if prof.viewas_kind == "self" and not prof.offense then
     if me.hp >= me.maxHp then return -100 end
@@ -648,6 +757,13 @@ end
 
 --- 主动技 / 转化技的通用思考
 local function thinkActive(prof, ai)
+  -- 开关关闭时策略不介入，等价于引擎原本"没有 addAI 策略"时的行为
+  if not smartEnabled(ai) then return nil, -100 end
+
+  -- 智能 AI：1 血时不赌"弃光手牌 / 移除武将"这类技能
+  local s0 = situation(ai)
+  if s0.critical and (prof.cost_all or prof.cost_remove) then return nil, -100 end
+
   local used = phaseUsed(ai, prof.name)
   if prof.text:find("出牌阶段限一次", 1, true) or prof.text:find("每阶段限一次", 1, true) then
     if used >= 1 then return nil, -100 end
@@ -690,7 +806,10 @@ end
 
 --- 触发技是否发动
 local function thinkInvoke(prof, ai)
+  -- 开关关闭时一律不主动发动，与引擎原本"没有 addAI 策略"一致
+  if not smartEnabled(ai) then return false end
   local me = ai.player
+  local s = situation(ai)
 
   if prof.compulsory then return true end
 
@@ -729,6 +848,14 @@ local function thinkInvoke(prof, ai)
 
   -- 暗置自己的武将牌：换不来摸牌/回复/输出就不值
   if prof.cost_show and not (prof.draw or prof.heal or prof.offense) then
+    return false
+  end
+
+  -- 智能 AI：1 血时不再交自损类技能；人数落后且残血时趋于保守
+  if s.critical and (prof.cost_hp or prof.cost_all or prof.cost_remove) then
+    return false
+  end
+  if s.low and s.behind and (prof.cost_hp or prof.cost_all or prof.cost_show) then
     return false
   end
 
@@ -899,6 +1026,11 @@ local function installChoiceHandler()
 
   local old = SmartAI.handleAskForChoices
   function SmartAI:handleAskForChoices(data)
+    -- 开关关闭：直接交回引擎原版处理器
+    if not smartEnabled(self) then
+      if old then return old(self, data) end
+      return nil
+    end
     local ok, ret = pcall(function()
       if type(data) ~= "table" then return nil end
       if not shouldHandleChoice(self, data) then return nil end
@@ -912,6 +1044,11 @@ local function installChoiceHandler()
   -- room:askToChoice 也走 AskForChoices，但老代码里还有 AskForChoice 的路径，一并接管
   local old_single = SmartAI.handleAskForChoice
   function SmartAI:handleAskForChoice(data)
+    if not smartEnabled(self) then
+      if old_single then return old_single(self, data) end
+      local choices = type(data) == "table" and data[1] or nil
+      return type(choices) == "table" and choices[1] or nil
+    end
     local ok, ret = pcall(function()
       if type(data) ~= "table" then return nil end
       local choices, _all, skill_name, prompt = table.unpack(data)
@@ -1045,7 +1182,8 @@ local function installNullificationHandler()
   local old = SmartAI.handleAskForUseCard
   function SmartAI:handleAskForUseCard(data)
     -- 只管国战 / 烽燧这类按势力分阵营的模式，别的模式原样交给引擎
-    if type(data) == "table" and data[2] == "nullification" and isHegemonyMode(self) then
+    if type(data) == "table" and data[2] == "nullification" and
+      isHegemonyMode(self) and smartEnabled(self) then
       local ok, ret = pcall(function()
         if not shouldNullify(self, data) then return "" end
         local ids = self:getEnabledCards()
@@ -1084,7 +1222,7 @@ local function installCardTargetHook()
   local old = klass.chooseTargets
   function klass:chooseTargets(ai)
     local okk, ret, val = pcall(function()
-      if not isHegemonyMode(ai) then return old(self, ai) end
+      if not isHegemonyMode(ai) or not smartEnabled(ai) then return old(self, ai) end
 
       local AIGameLogic = require "ltk.server.ai.logic"
       local logic = AIGameLogic:new(ai)
@@ -1153,6 +1291,7 @@ local function installSkeleton(skel, stats, scope)
     skel:addAI(AI.newActiveStrategy {
       use_priority = 50,
       think = function(strategy, ai)
+        if not smartEnabled(ai) then return nil, -100 end
         local p = profileOf(strategy.skill_name, skel, ai.player)
         if not p then return nil, -100 end
         if special and special.active then
@@ -1176,6 +1315,7 @@ local function installSkeleton(skel, stats, scope)
   if has_trigger and not hasStrategy(skel, AI.InvokeStrategy) then
     skel:addAI(AI.newInvokeStrategy {
       think = function(strategy, ai)
+        if not smartEnabled(ai) then return false end
         local p = profileOf(strategy.skill_name, skel, ai.player)
         if not p then return false end
         if special and special.invoke then

@@ -747,6 +747,12 @@ heg.ui_settings = {
       _settingsKey = "firstdeadnextseat1",
       title = "heg__firstdeadnextseat1",
     },
+
+    -- 智能 AI 对局：不勾选时完全走引擎原版 AI
+    W.SwitchRow {
+      _settingsKey = "fengsui_smart_ai",
+      title = "fengsui_smart_ai",
+    },
   },
  }
 
@@ -763,6 +769,8 @@ Fk:loadTranslationTable{
   ["#fengsui_random_neutral_wild"] = "本局随机中立者/野心家：%arg",
   ["#fengsui_warlords_filter"] = "群雄割据：中立者与野心家武将已退出本局选将",
 
+  ["fengsui_smart_ai"] = "开启 智能AI对局",
+  ["help: fengsui_smart_ai"] = "勾选后，本局人机使用烽燧增强 AI（会评估势力人数、血线、手牌代价与补刀机会）；不勾选则完全使用游戏原版 AI。",
   ["hegemony_special_rule"] = "特殊规则",
   ["heg_settings__lordconvert"] = "君主替换",
   ["help: heg_settings__lordconvert"] = "满足条件时可将同名普通武将替换为君主武将",

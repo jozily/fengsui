@@ -53,13 +53,28 @@ beiqiu:addEffect(H.GeneralTransformed, {
 beiqiu:addEffect(fk.Death, {
   global = true,
   can_trigger = function(self, _, target, player)
-    return target and player:hasShownSkill("fengsui_heg__beiqiu") and
+    if not target then return false end
+    if target == player then
+      -- 潘安自己阵亡：死亡结算时武将牌可能已不再明置，改用忽略存活／明置的
+      -- 判定，保证「所念之人」一定被回收。
+      return player:hasSkill(self.name, true, true)
+    end
+    return player:hasShownSkill(self.name) and
       player:getMark("fengsui_heg__beiqiu_target") == target.id
   end,
   on_use = function(self, _, target, player)
     local room = player.room
     room:setPlayerMark(player, "fengsui_heg__beiqiu_target", 0)
     room:setPlayerMark(target, "@fengsui_heg__beiqiu_target", 0)
+    if target == player then
+      -- 标记挂在别人身上，潘安死后一并抹去。
+      for _, p in ipairs(room.players) do
+        if p ~= target and p:getMark("@fengsui_heg__beiqiu_target") ~= 0 then
+          room:setPlayerMark(p, "@fengsui_heg__beiqiu_target", 0)
+        end
+      end
+      return
+    end
     local ids = player:getCardIds("hej")
     if #ids > 0 then room:throwCard(ids, "fengsui_heg__beiqiu", player, player) end
   end,

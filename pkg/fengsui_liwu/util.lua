@@ -138,8 +138,53 @@ function U.revealOneGeneral(target)
   return false
 end
 
+-- 主副将易位走 changeHero，ChangeProperty 会把原武将技能先 '-' 再 '+'，
+-- '-' 触发 SkillSkeleton:onLose 清空 derived_piles。两张武将牌都没离开角色，
+-- 先把原本明置的武将牌上的牌备份下来，易位结束后放回原私人牌堆。
+local function snapshotGeneralPiles(player)
+  local saved = {}
+  for _, isDeputy in ipairs({false, true}) do
+    local hidden = isDeputy and player.deputyGeneral == "anjiang" or
+      (not isDeputy and player.general == "anjiang")
+    local g = not hidden and Fk.generals[H.getActualGeneral(player, isDeputy)]
+    if g then
+      for _, sname in ipairs(g:getSkillNameList(true)) do
+        local skel = Fk.skill_skels[sname]
+        if skel then
+          local piles = {}
+          local function addPiles(v)
+            if type(v) == "string" then v = { v } end
+            if v then for _, p in ipairs(v) do table.insertIfNeed(piles, p) end end
+          end
+          addPiles(skel.derived_piles)
+          for _, eff in ipairs(skel.effects or {}) do addPiles(eff.derived_piles) end
+          for _, pile in ipairs(piles) do
+            local ids = player:getPile(pile)
+            if #ids > 0 then
+              saved[pile] = saved[pile] or {}
+              table.insertTableIfNeed(saved[pile], ids)
+            end
+          end
+        end
+      end
+    end
+  end
+  return saved
+end
+
+local function restoreGeneralPiles(room, player, saved)
+  for pile, ids in pairs(saved) do
+    local restorable = table.filter(ids, function(id)
+      local area = room:getCardArea(id)
+      return area == Card.DiscardPile or area == Card.Processing or area == Card.Void
+    end)
+    if #restorable > 0 then player:addToPile(pile, restorable, true) end
+  end
+end
+
 function U.swapGenerals(room, player)
   if not player.deputyGeneral or player.deputyGeneral == "" then return false end
+  local savedPiles = snapshotGeneralPiles(player)
 
   local main = H.getActualGeneral(player, false)
   local deputy = H.getActualGeneral(player, true)
@@ -151,6 +196,7 @@ function U.swapGenerals(room, player)
 
   if deputy_hidden then player:hideGeneral(false) end
   if main_hidden then player:hideGeneral(true) end
+  restoreGeneralPiles(room, player, savedPiles)
   return true
 end
 

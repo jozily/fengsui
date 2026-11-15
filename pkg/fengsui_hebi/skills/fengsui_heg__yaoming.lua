@@ -17,6 +17,7 @@ yaoming:addEffect(fk.TargetSpecified, {
   on_use = function(self, event, _, player, data)
     player.room:setPlayerMark(player, "fengsui_heg__chuguang_target-round", data.from.id)
     player.room:addPlayerMark(player, "fengsui_heg__chuguang_count-round", 1)
+    U.refreshChuguangMark(player)
     U.swapGenerals(player.room, player)
     data:addTarget(event:getCostData(self))
   end,

@@ -14,6 +14,7 @@ jiaosu:addEffect(fk.TargetSpecified, {
   on_use = function(self, _, _, player, data)
     player.room:setPlayerMark(player, "fengsui_heg__chuguang_target-round", data.to.id)
     player.room:addPlayerMark(player, "fengsui_heg__chuguang_count-round", 1)
+    U.refreshChuguangMark(player)
     U.swapGenerals(player.room, player)
     data:cancelTarget(data.to)
   end,

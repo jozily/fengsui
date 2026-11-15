@@ -30,7 +30,7 @@ chuguang:addEffect(fk.AfterSkillEffect, {
 chuguang:addEffect("invalidity", {
   global = true,
   invalidity_func = function(self, from, skill)
-    return from and from:getMark(disabledMark) > 0 and
+    return from and from:getMark(disabledMark) ~= 0 and
       (skill.name == "fengsui_heg__jiaosu" or skill.name == "fengsui_heg__yaoming")
   end,
 })

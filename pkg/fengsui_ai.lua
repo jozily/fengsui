@@ -13,7 +13,9 @@
 --   · 选择项：按收益关键词打分，替掉"永远选第一个"。
 -- 本文件只负责"认领烽燧的技能"，外加几条通用的烽燧专属判断。
 --
--- 关闭方式：把 M.enabled 置 false，或注释掉 packages/fengsui/init.lua 里的 require。
+-- 开关：房间设置「开启 智能AI对局」（fengsui_smart_ai）。不勾选时，增强策略、
+-- 选项/无懈/选目标的钩子一律交回引擎原版，人机行为与没装补丁时一致。
+-- 全局停用仍可把 M.enabled 置 false，或注释掉 packages/fengsui/init.lua 里的 require。
 
 -- 内核必须放在本包内。早先它只存在于 packages/hegemony/pkg/ 下，而那是官方国战包，
 -- 并不带这个文件：从 GitHub 下载的客户端上 require 直接失败，init.lua 的 pcall 把错误
@@ -298,5 +300,6 @@ if Fk.skill_skels and next(Fk.skill_skels) then
 end
 
 M.profileOf = Core.profileOf
+M.smartEnabled = Core.smartEnabled
 
 return M
