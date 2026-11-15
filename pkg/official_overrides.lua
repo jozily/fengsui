@@ -403,7 +403,67 @@ local function guardQiceInteraction()
   fk.qInfo("[fengsui-overrides] ld__qice 已补 interaction 兜底")
 end
 
+-- 官方 ServerPlayerBase:doNotify 遍历 _observers / room.observers 时直接调
+-- p:getState()、p:doNotify()。死亡结算、托管或视角切换期间控制者可能临时不是
+-- 网络层 Player，C++ 绑定会抛 "expected player got 'serverplayer'"，整条通知链
+-- 随之中断。这里在包加载时整体替换该方法（与 overrideSijian 同样的覆盖方式），
+-- 不改官方源文件。lua/core/mod_manager.lua:35 把 ServerPlayerBase 赋成了全局，
+-- 因此这里能直接取到类；install 钩子会重复调用，用标记保证只包装一次。
+local function guardDoNotify()
+  local cls = _G.ServerPlayerBase
+  if type(cls) ~= "table" or cls._fengsuiDoNotifyGuard then return end
+  if type(cls.doNotify) ~= "function" then return end
+
+  cls.doNotify = function(self, command, data)
+    -- 新版核心在 doNotify 前置做聊天过滤；旧版没有 filterChatMessage 就跳过。
+    if command == "Chat" and type(data) == "table" and data.msg and
+      type(cls.filterChatMessage) == "function" then
+      local filtered = cls.filterChatMessage(data.msg)
+      if not filtered then return end
+      data.msg = filtered
+    end
+
+    local cbordata = cbor.encode(data)
+    local room = self.room
+
+    local function safeState(p)
+      local ok, state = pcall(function() return p:getState() end)
+      return ok and state or fk.Player_Robot
+    end
+    local function safeNotify(p)
+      pcall(function() p:doNotify(command, cbordata) end)
+    end
+
+    for _, p in ipairs(self._observers) do
+      if safeState(p) ~= fk.Player_Robot then
+        room.notify_count = room.notify_count + 1
+        safeNotify(p)
+      end
+    end
+
+    for _, t in ipairs(room.observers) do
+      local id, p = table.unpack(t)
+      -- Reconnect 是整房序列化摘要，只应发给重连者本人做全量重建；
+      -- 绑定它的旁观者若收到会把自己当重连者重建，打断观察视角。
+      local ok, observing = pcall(function() return room.room:hasObserver(p) end)
+      if id == self.id and command ~= "Reconnect" and ok and observing
+        and safeState(p) ~= fk.Player_Robot then
+        safeNotify(p)
+      end
+    end
+
+    if room.notify_count >= room.notify_max and
+      coroutine.status(room.main_co) == "normal" then
+      room:delay(100)
+    end
+  end
+
+  cls._fengsuiDoNotifyGuard = true
+  fk.qInfo("[fengsui-overrides] ServerPlayerBase:doNotify 已加类型安全兜底")
+end
+
 local function runAllOverrides()
+  guardDoNotify()
   guardQiceInteraction()
   fixDufuDraw()
   overrideSijian()

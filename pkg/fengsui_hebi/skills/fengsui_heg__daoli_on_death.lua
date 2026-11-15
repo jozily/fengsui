@@ -31,17 +31,6 @@ local function firstBySeat(candidates)
   return list[1]
 end
 
--- 死亡结算期间控制者可能已被托管或换过视角，player.serverplayer 未必还是
--- 网络层 Player；此时向死者发 Request 会在 controller:getState() 处抛
--- "expected player got 'serverplayer'"。先做一次类型安全的状态探测，
--- 拿不到在线真人的状态就不弹窗，直接指定，承接照样必定发生。
-local function canAsk(player)
-  local controller = player.serverplayer
-  if not controller then return false end
-  local ok, state = pcall(function() return controller:getState() end)
-  return ok and state == fk.Player_Online
-end
-
 local daoli_on_death = fk.CreateSkill { name = "#fengsui_heg__daoli_on_death", mute = true }
 daoli_on_death:addEffect(fk.Death, {
   global = true,
@@ -59,20 +48,11 @@ daoli_on_death:addEffect(fk.Death, {
       return p ~= player and H.compareKingdomWith(player, p)
     end)
     if #candidates == 0 then return end
-    -- 只有一个候选、或死者已不能正常交互时，直接指定，不弹窗也就没有取消键。
-    -- 多候选且死者在线时才询问；即便客户端按了取消，服务端也会强制指定。
-    local receiver
-    if #candidates == 1 or not canAsk(player) then
-      receiver = firstBySeat(candidates)
-    else
-      local ok, tos = pcall(room.askToChoosePlayers, room, player, {
-        targets = candidates, min_num = 1, max_num = 1,
-        skill_name = "fengsui_heg__beiqiu", prompt = "#fengsui_heg__beiqiu-daoli",
-        cancelable = false,
-      })
-      receiver = (ok and tos and tos[1]) or firstBySeat(candidates)
-    end
-    D.prepare(room, receiver, player)
+    -- 承接必须发动。选人弹窗的取消按钮是客户端 QML 的常驻控件，服务端
+    -- cancelable=false 只能禁用、不能隐藏，而 Lua 扩展包覆盖不到 QML。
+    -- 因此这里一律不发 Request，直接按座位顺序指定：弹窗不出现，也就
+    -- 没有可按的取消键，同时避开死亡结算期间向控制者发请求的类型异常。
+    D.prepare(room, firstBySeat(candidates), player)
   end,
 })
 
