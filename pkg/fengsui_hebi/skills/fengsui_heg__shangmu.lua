@@ -4,10 +4,15 @@ local Cmd = require "packages.hegemony.util"
 
 local shangmu = fk.CreateSkill { name = "fengsui_heg__shangmu" }
 
+-- 描述是「你可以明置此武将牌」：只有武将牌暗置、技能处于预亮状态时才
+-- 响应致命伤害；一旦明置，赏募不再发动。hasSkill 对预亮技能为真，
+-- hasShownSkill 只对已经明置的技能为真，两者相减即「暗置预亮」。
+-- 时机是「即将受到致命伤害」(fk.DamageInflicted)，不是击杀奖惩。
 shangmu:addEffect(fk.DamageInflicted, {
   global = true,
   can_trigger = function(self, _, target, player, data)
-    return target and player:hasShownSkill(shangmu.name) and data and data.damage and
+    return target and player:hasSkill(shangmu.name) and
+      not player:hasShownSkill(shangmu.name) and data and data.damage and
       data.damage >= target.hp + (target.shield or 0)
   end,
   on_cost = function(self, event, target, player)

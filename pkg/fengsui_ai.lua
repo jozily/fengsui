@@ -23,7 +23,18 @@
 -- 先认已加载的那份，是为了让本机开发时两处补丁共用同一个模块实例；否则
 -- installChoiceHandler / installNullificationHandler 的幂等标志各算各的，
 -- SmartAI 的询问处理器会被包两层。
-local Core = package.loaded["packages/hegemony/pkg/hegemony_ai_core"]
+-- 客户端包脚本运行在受限沙箱里：全局 package 可能根本不存在，只有 require
+-- 可用。直接写 package.loaded[...] 会让整个模块 require 失败（日志里的
+-- "[fengsui-ai] 加载失败"），烽燧武将的 AI 补丁等于完全没装。这里统一走
+-- 安全查询，拿不到已加载实例就退回下面的 pcall(require, ...)。
+local function loadedModule(path)
+  if type(package) == "table" and type(package.loaded) == "table" then
+    return package.loaded[path]
+  end
+  return nil
+end
+
+local Core = loadedModule("packages/hegemony/pkg/hegemony_ai_core")
 if type(Core) ~= "table" or type(Core.registerScope) ~= "function" then
   Core = nil
   local candidates = {
@@ -265,7 +276,7 @@ function M.install()
   -- 本机开发时 packages/hegemony/init.lua 会自己 require 那份 hegemony_ai，
   -- 这里检测到它已在 package.loaded 里就让位；下载版客户端的国战包里没有这个文件，
   -- 于是由本包补上，免得烽燧模式下人机拿着国战武将同样是"不发动 + 选第一个"。
-  if M.cover_hegemony and not package.loaded["packages/hegemony/pkg/hegemony_ai"] then
+  if M.cover_hegemony and not loadedModule("packages/hegemony/pkg/hegemony_ai") then
     pcall(Core.registerScope, {
       tag = "[fengsui-ai/heg]",
       match = isHegemonySkill,

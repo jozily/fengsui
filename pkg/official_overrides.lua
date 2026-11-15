@@ -353,7 +353,59 @@ local function guardArchiveSkills()
   end
 end
 
+-- 官方司马冏〖独夫〗的描述是「摸牌阶段多摸两张牌」，但
+-- jin_zfxp/skills/dufu.lua 的 DrawNCards 分支只写了 data.n + 1。
+-- 保留官方实现，在其后补足第二张；不修改官方包源文件。
+local function fixDufuDraw()
+  for _, effect in ipairs(collectTriggerEffects("heg__dufu")) do
+    if effect.event == fk.DrawNCards and type(rawget(effect, "use")) == "function" and
+      not effect.__fengsui_dufu_draw_fix then
+      local origUse = effect.use
+      effect.use = function(self, event, target, player, data)
+        origUse(self, event, target, player, data)
+        data.n = data.n + 1
+      end
+      effect.__fengsui_dufu_draw_fix = true
+      fk.qInfo("[fengsui-overrides] heg__dufu(独夫) 摸牌阶段补足两张")
+    end
+  end
+end
+
+-- 官方 ld__qice 的 onUse 直接拿 interaction.data 去 cloneCard。AI 或「使用牌」
+-- 请求提交时可能不带 interaction_data，服务端会把它写成 nil，于是触发
+-- "Attempt to clone a card that not added to engine: name=nil"。这里在 onUse
+-- 前按当前手牌补一个合法锦囊牌名，不改官方技能文件。
+local function guardQiceInteraction()
+  local skill = Fk.skills and Fk.skills["ld__qice"]
+  if not skill or skill.__fengsui_qice_guard or type(skill.onUse) ~= "function" then return end
+  local origOnUse = skill.onUse
+  skill.onUse = function(self, room, effect)
+    local holder = self.interaction
+    if holder and effect and effect.from then
+      local name = holder.data
+      if not name or not Fk.all_card_types[name] then
+        local ok, spec = pcall(function() return self:interaction(effect.from) end)
+        local fallback
+        if ok and type(spec) == "table" then
+          fallback = spec.default or (type(spec.choices) == "table" and spec.choices[1]) or nil
+        end
+        if fallback and Fk.all_card_types[fallback] then
+          holder.data = fallback
+        else
+          fk.qWarning("[fengsui-overrides] ld__qice 无可用锦囊牌名，跳过本次发动")
+          return
+        end
+      end
+    end
+    return origOnUse(self, room, effect)
+  end
+  skill.__fengsui_qice_guard = true
+  fk.qInfo("[fengsui-overrides] ld__qice 已补 interaction 兜底")
+end
+
 local function runAllOverrides()
+  guardQiceInteraction()
+  fixDufuDraw()
   overrideSijian()
   overrideKylinBowPrompt()
   overrideBianfurenGender()

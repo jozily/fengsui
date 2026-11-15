@@ -518,7 +518,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__mamiao"] = "佚名",
   ["cv:fengsui_heg__mamiao"] = "暂无",
   ["fengsui_heg__zhangguan"] = "仗关",
-  [":fengsui_heg__zhangguan"] = "锁定技，每回合当你首次使用牌指定目标后或其他角色首次使用牌指定你为目标后，你获得第一个目标的一张牌/其获得你一张手牌，若此牌造成伤害且你武将牌均明置，你暗置此武将牌。",
+  [":fengsui_heg__zhangguan"] = "锁定技，每回合当你首次使用牌指定其他角色后或其他角色首次使用牌指定你后，你获得第一个其他角色目标的一张牌/其获得你一张手牌；若此牌造成伤害且你的武将牌均明置，你暗置此武将牌。",
   ["#fengsui_heg__zhangguan-take"] = "仗关：获得 %dest 的一张牌",
   ["#fengsui_heg__zhangguan-give"] = "仗关：选择一张手牌交给 %dest",
   ["$fengsui_heg__zhangguan1"] = "城关坚固，腹地千里，他邓艾还能从天而降不成？",
