@@ -15,6 +15,8 @@ local function replaceCard(player)
   if not gainId then return end
   room:obtainCard(player, gainId, true, fk.ReasonPrey, player, heyi.name)
 
+  -- 剩下那张展示牌才是被替换的对象：先让它离开牌堆（置入弃牌堆），
+  -- 再把发动者选出的牌放到它原来的顶/底位置。
   local replaceId, replaceTop
   if gainId == top then
     replaceId, replaceTop = bottom, false
@@ -29,9 +31,17 @@ local function replaceCard(player)
     prompt = "#fengsui_heg__heyi-replace",
   })
   if not id then return end
-  room:moveCardTo(id, Card.DrawPile, nil, fk.ReasonPut, heyi.name, nil, true, player)
-  table.removeOne(room.draw_pile, id)
-  if replaceTop then table.insert(room.draw_pile, 1, id) else table.insert(room.draw_pile, id) end
+  room:moveCardTo(replaceId, Card.DiscardPile, nil,
+    fk.ReasonPutIntoDiscardPile, heyi.name, nil, true, player)
+  room:moveCards({
+    ids = { id },
+    toArea = Card.DrawPile,
+    drawPilePosition = replaceTop and 1 or -1,
+    moveReason = fk.ReasonPut,
+    skillName = heyi.name,
+    proposer = player,
+    moveVisible = true,
+  })
 end
 
 local function canTrigger(player, mark)

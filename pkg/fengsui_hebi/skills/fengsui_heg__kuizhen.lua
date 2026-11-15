@@ -35,7 +35,15 @@ kuizhen:addEffect("active", {
     local use = room:useVirtualCard("duel", nil, target, player, kuizhen.name, true)
     if use and use.damageDealt and use.damageDealt[player] and target:isAlive() then
       local handcards = target:getCardIds("h")
-      if #handcards > 0 then room:showCards(handcards, target) end
+      if #handcards > 0 and player:isAlive() then
+        -- 描述是「你观看其手牌」：viewCards 只向发动者展示，不向全场广播，
+        -- 也不会把目标的手牌登记成全场已知。
+        room:viewCards(player, {
+          cards = handcards,
+          skill_name = kuizhen.name,
+          prompt = "#fengsui_heg__kuizhen-view::" .. target.id,
+        })
+      end
       local slashes = table.filter(target:getCardIds("h"), function(id)
         return Fk:getCardById(id).trueName == "slash"
       end)
