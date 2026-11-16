@@ -237,6 +237,35 @@ local function overrideTianxiang()
   end
 end
 
+-- 官方十周年国战华歆〖息兵〗(ty_heg__xibing) 的暗置分支要求「你与其均明置了
+-- 所有武将牌」，但触发条件 can_trigger 完全不判明置——只要对方本回合首次用
+-- 黑色杀/锦囊指定唯一目标就能发动摸牌。fengsui 的约定是：息兵整个技能的触发
+-- 时机就是「双方武将牌均明置」；任一方双将只亮了一张（getGeneralsRevealedNum
+-- 未达满）就不触发。这里按 overrideTianxiang 的方式包裹 triggerable，
+-- 不改官方源文件。
+local function overrideXibing()
+  local HegUtil = require "packages.hegemony.util"
+  for _, effect in ipairs(collectTriggerEffects("ty_heg__xibing")) do
+    if effect.event == fk.TargetSpecified and not effect.__fengsui_xibing_override then
+      local old_triggerable = effect.triggerable
+      effect.triggerable = function(_self, event, target, player, data)
+        if not old_triggerable or not old_triggerable(_self, event, target, player, data) then
+          return false
+        end
+        -- player 是息兵持有者（华歆），target 是被指定牌的角色（摸牌对象）。
+        -- 双方都必须明置了所有武将牌；双将只亮一张则 allGeneralsRevealed 为假。
+        if not HegUtil.allGeneralsRevealed(player) then return false end
+        if not target or not target:isAlive() or not HegUtil.allGeneralsRevealed(target) then
+          return false
+        end
+        return true
+      end
+      effect.__fengsui_xibing_override = true
+      fk.qInfo("[fengsui-overrides] ty_heg__xibing(息兵) 加双方全明置触发门禁")
+    end
+  end
+end
+
 -- 官方裸衣的 @@hs__luoyi 没有 -turn 后缀，on_use 用 addPlayerMark 累加，
 -- 而伤害效果按 getMark 取值，逐回合发动会叠成 +2/+3。这里在每次发动前
 -- 先把标记归零，保持「此伤害+1」；换将后的清 0 由 mark_cleanup 负责。
@@ -471,6 +500,7 @@ local function runAllOverrides()
   overrideBianfurenGender()
   overrideLukangKeshou()
   overrideTianxiang()
+  overrideXibing()
   fixLuoyiStacking()
   trackJiananReveal()
   muteDaoliSkills()

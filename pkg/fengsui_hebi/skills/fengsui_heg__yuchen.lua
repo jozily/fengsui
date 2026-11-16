@@ -47,13 +47,23 @@ yuchen:addEffect(fk.TargetSpecified, {
 -- mute 关配音与技能发动播报，no_indicate 关指示线，
 -- is_delay_effect 跳过 revealBySkillName（不明置武将），
 -- on_cost 直接返回 true 跳过引擎默认的「是否发动」询问框。
+--
+-- 暗置注意：这两段是「已经发动过毓尘」之后的延迟结算，此时武将牌可能已被
+-- 压隘/相谶之类暗置。暗置时 hasSkill 返回假（技能转入 _fake_skills），若继续
+-- 用 hasSkill 当门禁，后续伤害+1 与反打就会静默失效。因此这里改用「真实武将
+-- 拥有此技能」判断：OWN_YUCHEN 通过 __heg_general/__heg_deputy 查真实武将，
+-- 不受明置/暗置影响；技能已不在真实武将上（被换将/移除）时才返回假。
+local function ownsYuchen(player)
+  return U.getSkillPlace(player, yuchen.name) ~= nil
+end
+
 yuchen:addEffect(fk.DamageCaused, {
   global = true,
   mute = true,
   no_indicate = true,
   is_delay_effect = true,
   can_trigger = function(self, event, target, player, data)
-    return player:hasSkill(yuchen.name) and data and data.card and
+    return player:isAlive() and ownsYuchen(player) and data and data.card and
       (data.card:getMark(bonus_mark) > 0 or player:getMark(reuse_mark) > 0)
   end,
   on_cost = function()
@@ -65,11 +75,12 @@ yuchen:addEffect(fk.DamageCaused, {
 })
 
 yuchen:addEffect(fk.CardUseFinished, {
+  global = true,
   mute = true,
   no_indicate = true,
   is_delay_effect = true,
   can_trigger = function(self, event, target, player, data)
-    return player:hasSkill(yuchen.name) and data and data.card and
+    return player:isAlive() and ownsYuchen(player) and data and data.card and
       data.card:getMark(bonus_mark) > 0 and player:getMark(reuse_mark) == 0
   end,
   on_cost = function()
