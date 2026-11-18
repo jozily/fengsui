@@ -60,33 +60,41 @@ zhangguan:addEffect(fk.TargetConfirmed, {
   end,
 })
 
--- 本回合仗关结算过之后，只要牵涉到伤害，且两张武将牌仍明置，就暗置此武将牌。
--- fk.DamageCaused 的 target 是伤害来源，覆盖「你指定其他角色」后你打伤别人；
--- fk.DamageInflicted 的 target 是受伤者，补上「其他角色指定你」后你被打伤。
--- 旧实现只有 DamageCaused，别人打马邈时 target 是对方，马邈受伤不会暗置。
--- 不再依赖 use.extra_data 传递标记：onAim 每轮会用 aimStruct.extra_data
--- 覆盖 useCardData.extra_data，标记容易丢失；改用本回合的 usedMark 判定，
--- 且暗置后 hasShownSkill 自动变假，同一次伤害链不会重复结算。
+-- 本回合仗关结算过之后，只要这张牌造成了伤害，且两张武将牌仍明置，就暗置此武将牌。
+--
+-- 旧实现把判定挂在伤害结算【前】的 DamageCaused / DamageInflicted，且要求
+-- data.damage >= 1：伤害被护甲吸收（实际扣血为 0）、或目标牌的目标确认交互
+-- 被打断时 usedMark 未及时置位，都会漏判，于是出现「马邈受伤且武将均明置
+-- 却仍不暗置」。改为挂在伤害结算【后】的 fk.Damaged：此时伤害已确实发生，
+-- 不再看 data.damage 的数值门槛，只看「本回合仗关已结算 + 双方明置」。
+-- global=true 让「马邈造成别人伤害」(data.from 是马邈) 与「别人伤害马邈」
+-- (target 是马邈) 两种情形都能扫到；暗置后 hasShownSkill 变假，天然不重复。
 local function hideWhenDamaged(self, _, target, player, data)
-  if target ~= player or not data or (data.damage or 0) < 1 then return false end
-  return player:hasShownSkill(self.name) and player:getMark(usedMark) ~= 0 and
-    player:isAlive() and H.allGeneralsRevealed(player)
+  if not player:isAlive() or not player:hasShownSkill(self.name) then return false end
+  if player:getMark(usedMark) == 0 then return false end
+  if not H.allGeneralsRevealed(player) then return false end
+  if not data then return false end
+  -- 马邈是受伤者，或马邈是伤害来源，都算这张牌牵涉到他
+  return target == player or data.from == player
 end
 
 local hideSpec = {
+  global = true,
   is_delay_effect = true,
   mute = true,
   no_indicate = true,
   can_trigger = hideWhenDamaged,
   on_cost = function() return true end,
   on_use = function(self, event, target, player)
-    if player:isAlive() and H.allGeneralsRevealed(player) then
-      U.hideSkillGeneral(player, self.name)
+    if not (player:isAlive() and H.allGeneralsRevealed(player)) then return end
+    -- 优先暗置仗关所在的那张武将牌；若因合璧/变更副将找不到归位，退而暗置主将，
+    -- 保证「受伤即暗置」不会被 getSkillPlace 返回 nil 卡住。
+    if not U.hideSkillGeneral(player, self.name) then
+      if player.general ~= "anjiang" then player:hideGeneral(false) end
     end
   end,
 }
-zhangguan:addEffect(fk.DamageCaused, hideSpec)
-zhangguan:addEffect(fk.DamageInflicted, hideSpec)
+zhangguan:addEffect(fk.Damaged, hideSpec)
 
 zhangguan:addEffect(fk.TurnStart, {
   global = true, mute = true,

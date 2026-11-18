@@ -207,7 +207,7 @@ shantao:addSkills { "fengsui_heg__linzhe", "fengsui_heg__yamai" }
 
 local qiaozhou = General:new(extension, "fengsui_heg__qiaozhou", "jin", 3)
 qiaozhou.subkingdom = "shu"
-qiaozhou:addCompanions("fengsui_heg__limi", "fengsui_heg__chenshou")
+qiaozhou:addCompanions("fengsui_heg__limi")  -- 取消谯周与陈寿的珠联璧合，仅保留与李密
 qiaozhou:addSkills { "fengsui_heg__baoguo", "fengsui_heg__yuandao", "fengsui_heg__yunxing" }
 
 local huoyi = General:new(extension, "fengsui_heg__huoyi", "jin", 4)
@@ -266,7 +266,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__zhouxuan"] = "周宣",
   ["#fengsui_heg__zhouxuan"] = "醒踌者",
   ["designer:fengsui_heg__zhouxuan"] = "公冶长风",
-  ["illustrator:fengsui_heg__zhouxuan"] = "公冶长风",
+  ["illustrator:fengsui_heg__zhouxuan"] = "官方",
   ["cv:fengsui_heg__zhouxuan"] = "暂无",
   ["fengsui_heg__wumei"] = "寤寐",
   [":fengsui_heg__wumei"] = "当你明置或暗置此武将牌时，你摸两张牌且可以视为使用一张<a href=':tricky_heist'>【巧取豪夺】</a>，然后若你因此获得奇珍牌，你本回合使用牌无次数限制。",
@@ -290,7 +290,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__chenshou"] = "陈寿",
   ["#fengsui_heg__chenshou"] = "犁山者",
   ["designer:fengsui_heg__chenshou"] = "公冶长风",
-  ["illustrator:fengsui_heg__chenshou"] = "公冶长风",
+  ["illustrator:fengsui_heg__chenshou"] = "官方",
   ["cv:fengsui_heg__chenshou"] = "暂无",
   ["fengsui_heg__dianmo"] = "点墨",
   [":fengsui_heg__dianmo"] = "你可以将一张红色/黑色装备牌当【无懈可击】/<a href=':rob__jink'>【掠闪】</a>使用；当你使用奇珍牌后，你可以与一名装备区牌数量小于你的角色交换装备区的所有牌。",
@@ -318,7 +318,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__sunyuan"] = "孙鸢",
   ["#fengsui_heg__sunyuan"] = "履尘者",
   ["designer:fengsui_heg__sunyuan"] = "公冶长风",
-  ["illustrator:fengsui_heg__sunyuan"] = "公冶长风",
+  ["illustrator:fengsui_heg__sunyuan"] = "官方",
   ["cv:fengsui_heg__sunyuan"] = "暂无",
   ["fengsui_heg__dongxin"] = "恫心",
   [":fengsui_heg__dongxin"] = "当你受到或造成伤害后，你可以视为对伤害来源或目标使用一张<a href=':reveal_intention'>【图穷匕见】</a>并与其各摸一张牌，然后你可重铸至多等同于此次伤害值张牌并使用其中的【杀】（不计入次数）。",
@@ -336,7 +336,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__liuhui"] = "刘徽",
   ["#fengsui_heg__liuhui"] = "精算者",
   ["designer:fengsui_heg__liuhui"] = "公冶长风",
-  ["illustrator:fengsui_heg__liuhui"] = "公冶长风",
+  ["illustrator:fengsui_heg__liuhui"] = "官方",
   ["cv:fengsui_heg__liuhui"] = "暂无",
   ["fengsui_heg__jieshu"] = "解术",
   [":fengsui_heg__jieshu"] = "当你于回合内使用牌指定目标后，你可视为使用一张与原牌合法目标相同的普通锦囊牌，然后此技能失效直至你使用奇珍牌或一张与此牌合法目标相同的实体牌。",
@@ -355,7 +355,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__wanghuifeng"] = "王惠风",
   ["#fengsui_heg__wanghuifeng"] = "戮时者",
   ["designer:fengsui_heg__wanghuifeng"] = "公冶长风",
-  ["illustrator:fengsui_heg__wanghuifeng"] = "公冶长风",
+  ["illustrator:fengsui_heg__wanghuifeng"] = "官方",
   ["cv:fengsui_heg__wanghuifeng"] = "暂无",
   ["fengsui_heg__dilie"] = "砥烈",
   [":fengsui_heg__dilie"] = "当你造成伤害后，你可以重铸任意张非基本牌；当你受到伤害后，若你的武器栏没有牌，你可以随机将弃牌堆中的一张奇珍牌或伤害来源装备区的一张牌置入你的对应装备栏，若此牌为武器牌，你可以对伤害来源造成1点伤害。",

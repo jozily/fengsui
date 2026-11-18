@@ -175,41 +175,48 @@ function HegLogic:chooseGenerals()
     room:sendLog{ type = "#fengsui_warlords_filter", toast = true }
   end
 
-  -- 中立者/野心家总控（主页面设置）。关闭时维持原有规则：两类武将
-  -- 全部启用，两项数量设置置灰且不生效。开启后先禁用全部，再按两项
-  -- 数量设置随机放回若干张（都为 0 即一张不放）。群雄割据不受影响。
+  -- 中立者/野心家总控已改为「禁用所有野心家/中立者」：开启后一类不留，
+  -- 一键全禁。数量选项从总控里独立出来，不再受它开关约束——两项各自
+  -- 独立生效：数量 N>0 时，从房间里「已被禁将列表排除之外」仍可用的
+  -- 中立者/野心家里随机保留 N 个；N=0 则该类一个都不留。
+  -- 两者都关闭且数量都为 0 时本段不介入，两类武将维持默认全部启用。
+  -- 群雄割据按自身规则已把两类剔除，这里不再处理。
   local masterValue = room:getSettings("fengsui_enable_neutral_wild")
   local masterOn = masterValue == true or masterValue == 1 or
     masterValue == "1" or masterValue == "true"
 
-  -- 可选：从中立者与野心家中随机保留指定数量，作为本局可用武将。
-  local randomNeutral = masterOn and (tonumber(room:getSettings("fengsui_random_neutral")) or 0) or 0
-  local randomWild = masterOn and (tonumber(room:getSettings("fengsui_random_wild")) or 0) or 0
+  -- 数量选项脱离总控独立读取（不再有 masterOn and 的前置条件）。
+  local randomNeutral = math.max(0, tonumber(room:getSettings("fengsui_random_neutral")) or 0)
+  local randomWild = math.max(0, tonumber(room:getSettings("fengsui_random_wild")) or 0)
   if not warlordsOn and (masterOn or randomNeutral > 0 or randomWild > 0) then
-    -- 与野心家一样按势力抽签，不设固定名单；需要约束人选请在游戏内禁将。
     local function isNeutralKingdom(k)
       return k == "fengsui_neutral" or k == "fengsui_neutral_old"
     end
-    -- Hidden flags are resolved while the room builds its initial pile.  Keep
-    -- the random pool authoritative even when an older room cache omitted a
-    -- visible neutral general.
+    -- 候选一律以房间将池为准：它已被 Fk:canUseGeneral 按禁将列表过滤，
+    -- 因此天然只包含「未被禁用的」中立者/野心家。补回可见中立将时也
+    -- 必须再查一次禁将，避免把玩家已经禁掉的武将偷渡回池。
+    local function available(name)
+      return name and not (room.disabled_generals and table.contains(room.disabled_generals, name))
+    end
     for name, g in pairs(Fk.generals) do
-      if g and not g.hidden and isNeutralKingdom(g.kingdom) and
+      if g and not g.hidden and isNeutralKingdom(g.kingdom) and available(name) and
         not table.contains(room.general_pile, name) then
         table.insert(room.general_pile, name)
       end
     end
-    local candidates = table.filter(room.general_pile, function(name)
+    local neutralCandidates = table.filter(room.general_pile, function(name)
       local g = Fk.generals[name]
-      return g and ((g.kingdom == "wild" and randomWild > 0) or
-        (isNeutralKingdom(g.kingdom) and randomNeutral > 0))
+      return g and isNeutralKingdom(g.kingdom) and available(name)
     end)
-    local neutralCandidates = table.filter(candidates, function(name)
-      return isNeutralKingdom(Fk.generals[name].kingdom)
+    local wildCandidates = table.filter(room.general_pile, function(name)
+      local g = Fk.generals[name]
+      return g and g.kingdom == "wild" and available(name)
     end)
-    local wildCandidates = table.filter(candidates, function(name) return Fk.generals[name].kingdom == "wild" end)
-    local selectedNeutral = table.random(neutralCandidates, math.min(randomNeutral, #neutralCandidates))
-    local selectedWild = table.random(wildCandidates, math.min(randomWild, #wildCandidates))
+    -- 总控开启即全禁：该类不保留任何一张；数量选项独立时只保留指定的 N 张。
+    local selectedNeutral = masterOn and {} or
+      table.random(neutralCandidates, math.min(randomNeutral, #neutralCandidates))
+    local selectedWild = masterOn and {} or
+      table.random(wildCandidates, math.min(randomWild, #wildCandidates))
     local selected = table.connect(selectedNeutral, selectedWild)
     local selectedSet = {}
     for _, name in ipairs(selected) do selectedSet[name] = true end
@@ -518,6 +525,24 @@ heg = fk.CreateGameMode{
   build_draw_pile = function(self)
     local draw, void = GameMode.buildDrawPile(self)
 
+    -- 「九变篇」开关：九变牌（nine_variations 包的奇珍装备牌等）默认随模式
+    -- 进牌堆。开启本开关才把九变牌加入牌堆；不开启则从 draw 里剔除、移入 void，
+    -- 于是本局没有九变牌也没有奇珍弃牌的逻辑来源。这样用一个开关控制九变篇的启用。
+    local room = self.room
+    local nineOn = false
+    if room and room.getSettings then
+      local value = room:getSettings("fengsui_enable_nine_variations")
+      nineOn = value == true or value == 1 or value == "1" or value == "true"
+    end
+    if not nineOn then
+      for i = #draw, 1, -1 do
+        local card = Fk:getCardById(draw[i])
+        if card and card.package and card.package.name == "nine_variations" then
+          table.insert(void, table.remove(draw, i))
+        end
+      end
+    end
+
     for i = #draw, 1, -1 do
       local card = Fk:getCardById(draw[i])
       if H.convertCards[card.name] then
@@ -654,13 +679,6 @@ heg = fk.CreateGameMode{
   end,
 }
 
--- 两项数量设置是否可用，取决于主页面的「禁用中立者/野心家」总控。
--- 该函数在每次设置变更时被 W.toQmlData 重新求值，切换总控即刻置灰/解灰。
-local function neutralWildEnabled(settings)
-  local v = settings._mode and settings._mode.fengsui_enable_neutral_wild
-  return v == true or v == 1 or v == "1" or v == "true"
-end
-
 heg.ui_settings = {
   --君主替换
    W.PreferenceGroup {
@@ -712,23 +730,40 @@ heg.ui_settings = {
       title = "fengsui_warlords",
     },
 
+    -- 群雄割据子功能：势力固定跟随主将，不再取主副将势力并集。
+    W.SwitchRow {
+      _settingsKey = "fengsui_warlords_kingdom_follow_main",
+      title = "fengsui_warlords_kingdom_follow_main",
+    },
+
+    -- 双势力武将只能做副将，不能占据主将位。
+    W.SwitchRow {
+      _settingsKey = "fengsui_double_general_only_deputy",
+      title = "fengsui_double_general_only_deputy",
+    },
+
+    -- 九变篇：开启后本局把九变牌（奇珍等）加入牌堆；关闭则不放。
+    W.SwitchRow {
+      _settingsKey = "fengsui_enable_nine_variations",
+      title = "fengsui_enable_nine_variations",
+    },
+
     W.SwitchRow {
       _settingsKey = "fengsui_enable_neutral_wild",
       title = "fengsui_enable_neutral_wild",
     },
 
+    -- 数量选项已从「禁用所有野心家/中立者」总控中独立出来，始终可用。
     W.ComboRow {
       _settingsKey = "fengsui_random_neutral",
       title = "fengsui_random_neutral",
       model = { "0", "1", "2", "3", "4", "5" },
-      enabled = neutralWildEnabled,
     },
 
     W.ComboRow {
       _settingsKey = "fengsui_random_wild",
       title = "fengsui_random_wild",
       model = { "0", "1", "2", "3", "4", "5" },
-      enabled = neutralWildEnabled,
     },
 
     W.ComboRow {
@@ -786,17 +821,23 @@ Fk:loadTranslationTable{
   ["help: fengsui_no_ban_kingdom"] = "勾选后，开局不再随机禁用一个势力。默认不勾选，开局照常随机禁用一个势力。",
   ["fengsui_warlords"] = "群雄割据",
   ["help: fengsui_warlords"] = "开启后可自由组合不同势力的武将，禁用中立者和野心家武将；同一势力人数达到全场人数的三分之一后，该势力的下一名角色成为野心家。",
-  ["fengsui_enable_neutral_wild"] = "禁用中立者/野心家",
-  ["help: fengsui_enable_neutral_wild"] = "中立者与野心家的总开关。默认关闭，此时两类武将照常全部启用，下方两项数量设置置灰且不生效。开启后本局先禁用全部中立者与野心家武将，再按两项数量设置随机放回指定数量（都为 0 即全部禁用）。群雄割据按自身规则处理，不受本开关影响。",
-  ["fengsui_random_neutral"] = "随机中立者武将数量",
-  ["fengsui_random_wild"] = "随机野心家武将数量",
+  ["fengsui_warlords_kingdom_follow_main"] = "群雄割据：势力跟随主将",
+  ["help: fengsui_warlords_kingdom_follow_main"] = "群雄割据的子功能。开启后角色势力固定取主将势力，不再由主副将势力共同决定。仅在开启「群雄割据」时有效。",
+  ["fengsui_double_general_only_deputy"] = "双势力武将只能做副将",
+  ["help: fengsui_double_general_only_deputy"] = "开启后，带双势力（有副势力）的武将不能放在主将位，只能作为副将出场。",
+  ["fengsui_enable_nine_variations"] = "开启九变篇",
+  ["help: fengsui_enable_nine_variations"] = "开启后本局将九变篇卡牌（奇珍装备牌等）加入牌堆；不开启则本局没有九变牌。",
+  ["fengsui_enable_neutral_wild"] = "禁用所有野心家/中立者",
+  ["help: fengsui_enable_neutral_wild"] = "开启后本局一键禁用全部野心家与中立者武将，一个都不留。下方两项数量设置已独立于本开关，可单独使用。群雄割据按自身规则处理，不受本开关影响。",
+  ["fengsui_random_neutral"] = "随机中立者武将数量（独立）",
+  ["fengsui_random_wild"] = "随机野心家武将数量（独立）",
   ["@&enable_neutral_generals"] = "本局中立者",
   ["@&enable_wildgenerals"] = "本局野心家",
   ["#fengsui_neutral_wild_banned"] = "本局中立者与野心家武将已全部禁用",
   ["#wild-choose"] = "野心家建国：选择你要成为的势力！",
   ["#wild_join-choose"] = "加入建国",
-  ["help: fengsui_random_neutral"] = "需先开启「禁用中立者/野心家」总开关，否则本项灰色不可用。开启后本局从常规中立者中随机放回指定数量（0至5，0 表示一个都不放）。<br>中立者可与任意势力武将组合，和双势力组合开局需自选势力，不可与野心家或另一名中立者组合；单独明置时仍视为未确定势力，亮出另一张武将牌后确定势力。",
-  ["help: fengsui_random_wild"] = "需先开启「禁用中立者/野心家」总开关，否则本项灰色不可用。开启后本局从野心家武将中随机放回指定数量（0至5，0 表示一个都不放）。",
+  ["help: fengsui_random_neutral"] = "独立于「禁用所有野心家/中立者」开关，随时可用。从房间禁将列表之外仍未被禁用的中立者武将里随机保留指定数量（0至5，0 表示一个都不留，其余中立者全部禁用）。<br>中立者可与任意势力武将组合，和双势力组合开局需自选势力，不可与野心家或另一名中立者组合；单独明置时仍视为未确定势力，亮出另一张武将牌后确定势力。",
+  ["help: fengsui_random_wild"] = "独立于「禁用所有野心家/中立者」开关，随时可用。从房间禁将列表之外仍未被禁用的野心家武将里随机保留指定数量（0至5，0 表示一个都不留，其余野心家全部禁用）。",
   ["fengsui_reveal_count"] = "出牌阶段主动亮将次数",
   ["help: fengsui_reveal_count"] = "0 表示本局出牌阶段不出现亮将按钮；1/3/5/10 表示每名角色每出牌阶段可主动亮将的次数，亮将按钮上显示本阶段剩余次数，用尽后按钮不可用；无限表示不限次数，亮将按钮不显示次数。回合开始时的主动亮将不计入。",
   ["fengsui_neutral_rule_help"] = "中立者机制：中立者可与魏、蜀、吴、群、晋势力武将组合；单独明置时仍视为未确定势力，亮出另一张武将牌后确定势力；不可与野心家或另一名中立者组合。",

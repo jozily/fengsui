@@ -12,8 +12,10 @@ lieying:addEffect(fk.CardUsing, { can_trigger = function(self, _, target, player
       room:loseHp(player, 1)
       -- CardUsing 的 data 是 UseCardData；引擎检查不可响应目标时读取
       -- disresponsiveList，而不是 disresponsive 布尔字段。
-      data.disresponsiveList = data.disresponsiveList or {}
-      table.insertTableIfNeed(data.disresponsiveList, data.tos)
+      -- 烈荧「令此牌无法被响应」＝所有角色都不能用牌响应，不止这张牌的目标。
+      -- 原来只写 data.tos，目标以外的人仍能出无懈/杀等响应，与规则不符。
+      -- 用整表覆盖，对齐官方「无法响应」类技能（勘破/巧梦等）的写法。
+      data.disresponsiveList = table.simpleClone(player.room.players)
     end })
 return lieying
 

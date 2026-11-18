@@ -16,8 +16,14 @@ duanyuan:addEffect(fk.TurnStart, {
     room:setPlayerMark(player, "fengsui_heg__duanyuan_used", 1)
     for _, p in ipairs(room.alive_players) do
       if p == player or H.compareKingdomWith(p, player) or p.kingdom == "unknown" then
+        -- 选项1「明置一张武将牌」的前提是自己还有暗置的武将牌。武将牌已全部
+        -- 明置的角色不该看到这一项（旧代码无条件给两个选项，全明置也能选1，
+        -- 选了以后 reveal 分支什么也没做却照样加了伤害标记）。
+        local canReveal = p.general == "anjiang" or p.deputyGeneral == "anjiang"
+        local choices = { "fengsui_heg__duanyuan_recast" }
+        if canReveal then table.insert(choices, 1, "fengsui_heg__duanyuan_reveal") end
         local choice = room:askToChoice(p, {
-          choices = { "fengsui_heg__duanyuan_reveal", "fengsui_heg__duanyuan_recast" },
+          choices = choices,
           skill_name = self.name,
           prompt = "#fengsui_heg__duanyuan-choice",
         })

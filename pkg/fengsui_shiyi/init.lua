@@ -9,7 +9,7 @@ local zhouxuan = General:new(extension, "fengsui_heg__zhouxuan", "wei", 3)
 zhouxuan:addSkills { "fengsui_heg__wumei", "fengsui_heg__jiemeng" }
 
 local chenshou = General:new(extension, "fengsui_heg__chenshou", "shu", 3)
-chenshou:addCompanions("fengsui_heg__qiaozhou", "fengsui_heg__limi")
+chenshou:addCompanions("fengsui_heg__limi")  -- 取消陈寿与谯周的珠联璧合，仅保留与李密
 chenshou:addSkills { "fengsui_heg__dianmo", "fengsui_heg__fuzai" }
 
 local sunyuan = General:new(extension, "fengsui_heg__sunyuan", "wu", 4, 4, General.Female)
@@ -97,7 +97,7 @@ Fk:loadTranslationTable{
   ["fengsui_heg__xiahoushi"] = "夏侯涓",
   ["#fengsui_heg__xiahoushi"] = "柴结缘起",
   ["designer:fengsui_heg__xiahoushi"] = "公冶长风",
-  ["illustrator:fengsui_heg__xiahoushi"] = "公冶长风",
+  ["illustrator:fengsui_heg__xiahoushi"] = "官方",
   ["cv:fengsui_heg__xiahoushi"] = "暂无",
   ["fengsui_heg__qiaoshi"] = "樵拾",
   [":fengsui_heg__qiaoshi"] = "当有角色受到属性伤害后，你可以与其各摸一张牌，若为同势力角色，你可令其选择是否<a href='heg__hebi'>合璧</a>。",
@@ -109,7 +109,7 @@ Fk:loadTranslationTable{
   ["$fengsui_heg__xinmai2"] = "红袖不解相思意，凭燕传语慰君心。",
   ["~fengsui_heg__xiahoushi"] = "可怜城头白发妪，至死不见征夫还。",
   ["#fengsui_heg__xinxianying"] = "才智耀天下",
-  ["illustrator:fengsui_heg__xinxianying"] = "佚名",
+  ["illustrator:fengsui_heg__xinxianying"] = "官方",
   ["$fengsui_heg__qingshi1"] = "行路八千里，方可辨忠奸。",
   ["$fengsui_heg__qingshi2"] = "观其行，明其志，而后知心。",
   ["$fengsui_heg__jiejie1"] = "为谋大计，失小利亦无妨。",

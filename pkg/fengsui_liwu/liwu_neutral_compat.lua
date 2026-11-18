@@ -22,6 +22,26 @@ local function warlordsActive()
   return false
 end
 
+-- 群雄割据的子功能「势力跟随主将」：开启后，群雄割据里角色的势力固定取
+-- 主将势力，不再取主副将势力并集。仅在群雄割据开启时才有意义。
+local function warlordsKingdomFollowMain()
+  local ok, room = pcall(function() return Fk:currentRoom() end)
+  if ok and room and room.getSettings then
+    return settingOn(room, "fengsui_warlords_kingdom_follow_main")
+  end
+  return false
+end
+
+-- 功能开关「双势力只能做副将」：开启后，带副势力(subkingdom)的武将不能
+-- 占据主将位，只能作为副将出场。
+local function doubleGeneralOnlyDeputy()
+  local ok, room = pcall(function() return Fk:currentRoom() end)
+  if ok and room and room.getSettings then
+    return settingOn(room, "fengsui_double_general_only_deputy")
+  end
+  return false
+end
+
 local function generalKingdoms(general)
   local kingdoms = {}
   for _, kingdom in ipairs({ general.kingdom, general.subkingdom }) do
@@ -349,7 +369,11 @@ function Compat.install()
         local g = self.generals[general]
         local d = self.generals[deputy or ""]
         if not g or not d or not canPair(g, d) then return {} end
-        return table.filter(table.connect(generalKingdoms(g), generalKingdoms(d)), function(k)
+        -- 子功能「势力跟随主将」：只取主将势力，副将势力不再参与决定角色势力。
+        local pool = warlordsKingdomFollowMain()
+          and generalKingdoms(g)
+          or table.connect(generalKingdoms(g), generalKingdoms(d))
+        return table.filter(pool, function(k)
           return table.contains(baseKingdoms, k) and
             (not enabledKingdoms or #enabledKingdoms == 0 or table.contains(enabledKingdoms, k))
         end)
@@ -361,6 +385,12 @@ function Compat.install()
       return originalGetKingdomInHegemony(self, general, deputy, enabledKingdoms)
     end
     Fk.canMatchInHegemony = function(self, general, deputy, enabledKingdoms)
+      -- 「双势力只能做副将」：带副势力的武将不能放在主将位（第一个参数）。
+      -- 只在开启该开关时限制；主副将顺序由调用方决定，换过来即可正常配对。
+      if doubleGeneralOnlyDeputy() then
+        local main = self.generals[general]
+        if main and main.subkingdom and main.subkingdom ~= "" then return false end
+      end
       if warlordsActive() then
         return canPair(self.generals[general], self.generals[deputy])
       end

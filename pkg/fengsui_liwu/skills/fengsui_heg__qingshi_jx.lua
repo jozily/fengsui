@@ -36,7 +36,8 @@ s:addEffect(fk.AfterCardsMove, {
     room:setPlayerMark(player, RETURN_MARK, table.filter(rec, function(id)
       return not table.contains(ids, id)
     end))
-    room:obtainCard(player, ids, true, fk.ReasonPrey, player, s.name)
+    -- 清饰选项2「从弃牌堆获得此牌」是静默处理：open 传 false，不弹获得牌的提醒。
+    room:obtainCard(player, ids, false, fk.ReasonPrey, player, s.name)
   end,
 })
 -- 手牌与装备里至少有一张黑牌，否则问了「是否发动」也付不出代价。

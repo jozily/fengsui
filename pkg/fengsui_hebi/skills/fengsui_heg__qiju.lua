@@ -23,14 +23,16 @@ end)
 room:sortByAction(users, p)
 for _, user in ipairs(users) do
   if user:isAlive() then
-    local use = room:askToUseVirtualCard(user, {
-      name = "slash", skill_name = qiju.name,
-      prompt = "#fengsui_heg__qiju-slash", cancelable = true, skip = true,
+    -- 戚举是「使用一张【杀】」，必须是实体杀（含技能转化，如武圣把红牌
+    -- 当杀）：用 askToUseCard 走正常出牌，玩家手里没有可用的杀就拿不出来。
+    -- 旧实现 askToUseVirtualCard 凭空造一张虚拟杀，等于「视为使用」，与
+    -- 规则不符；下面 targetmod 已给出无距离/无次数/仅未确定势力的目标修正。
+    local use = room:askToUseCard(user, {
+      skill_name = qiju.name,
+      pattern = "slash",
+      prompt = "#fengsui_heg__qiju-slash", cancelable = true,
     })
     if use then
-      use.extra_data = use.extra_data or {}
-      use.extra_data.bypass_times = true
-      use.extra_data.bypass_distances = true
       room:useCard(use)
     end
     room:setPlayerMark(user, "fengsui_heg__qiju-turn", 1)

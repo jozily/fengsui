@@ -27,17 +27,10 @@ menyin:addEffect(fk.EventPhaseStart, {
     })
     local to = tos and tos[1]
     if not to then return end
-    local choice = room:askToChoice(to, {
-      choices = { "fengsui_heg__menyin_hebi", "fengsui_heg__menyin_hide" },
-      skill_name = self.name,
-      prompt = "#fengsui_heg__menyin-choice",
-    })
-    if choice == "fengsui_heg__menyin_hebi" then
-      -- 目标已经在「合璧 / 暗置武将牌」里表过态，这里不再追加一次确认。
-      H.askToHebiOrTransform(room, to, self.name, false)
-    else
-      to:hideGeneral(true)
-    end
+    -- 门荫只有「选择是否合璧」一个动作，规则里没有「暗置武将牌」这个选项。
+    -- 旧代码给了「合璧 / 暗置武将牌」二选一，属于凭空多出的错误选项；这里
+    -- 直接走合璧 helper，cancelable=true 让它内部问「是否合璧（确定/取消）」。
+    H.askToHebiOrTransform(room, to, self.name, true)
   end,
 })
 

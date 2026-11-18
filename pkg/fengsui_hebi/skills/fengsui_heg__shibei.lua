@@ -35,18 +35,30 @@ shibei:addEffect(fk.Damaged, {
 -- 不依赖给予者是否存活；multiple 拥有者各判定一次，用标记保证只执行一次。
 -- 走 on_trigger：收回是纯事务性动作，不该产生技能效果（否则会在界面上留下一条
 -- "发动矢北"的提示，甚至因为效果技没有可见译文而显示成空标题）。
+-- 收尾要稳健：谁身上有 activeMark（酣世的额外回合发起者）就在谁的回合
+-- 结束时收回。旧实现 can_trigger 要求 target==player 且 target 自己带 mark，
+-- 但效果挂在矢北上、player 是「当前被询问的持有者」；当额外回合发起者已经
+-- 死亡或其 activeMark 因故提前清零时，这个条件永远不成立，矢北就留在部分
+-- 角色身上不走了（用户报的 bug）。改成 global 扫描：任意角色回合结束时，
+-- 只要场上还有人带 activeMark，就由该回合结束者触发一次全场收回。
 shibei:addEffect(fk.TurnEnd, {
   global = true,
   priority = 5,
   can_trigger = function(self, _, target, player)
-    return target ~= nil and target == player and target:getMark(activeMark) > 0
+    if not target or target ~= player then return false end
+    local room = player.room
+    if not room then return false end
+    for _, p in ipairs(room.players) do
+      if p:getMark(activeMark) > 0 then return true end
+    end
+    return false
   end,
   on_trigger = function(self, _, target)
     local room = target.room
-    if target:getMark(activeMark) == 0 then return end
-    room:setPlayerMark(target, activeMark, 0)
-    -- room 上没有 all_players 字段，玩家表是 room.players
+    -- 清掉所有 activeMark，再用「所有玩家」统一移除矢北（含已死亡者），
+    -- 保证不留残留。
     for _, p in ipairs(room.players) do
+      if p:getMark(activeMark) > 0 then room:setPlayerMark(p, activeMark, 0) end
       room:handleAddLoseSkills(p, "-" .. shibei.name, nil, false)
     end
   end,

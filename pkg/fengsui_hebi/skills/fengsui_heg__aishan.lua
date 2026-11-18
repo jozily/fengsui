@@ -9,7 +9,10 @@ aishan:addEffect(fk.HpChanged, {
       target.hp <= player.hp and H.getGeneralsRevealedNum(player) == 2 and
       H.getKingdom(target) ~= "unknown" and
       not table.contains(player:getTableMark("@fengsui_heg__aishan_kingdom-round"), H.getKingdom(target)) and
-      not target:isKongcheng() and (target ~= player or target:getHandcardNum() >= 2)
+      -- 哀扇要「展示你与其各一张手牌」，发动者自己也必须至少有一张手牌，
+      -- 否则 on_use 里问不到自己的牌，会出现「没手牌也能发动」。
+      not player:isKongcheng() and not target:isKongcheng() and
+      (target ~= player or target:getHandcardNum() >= 2)
   end,
   on_cost = function(self, _, target, player)
     return player.room:askToSkillInvoke(player, {skill_name = self.name, prompt = "#fengsui_heg__aishan-invoke::" .. target.id})

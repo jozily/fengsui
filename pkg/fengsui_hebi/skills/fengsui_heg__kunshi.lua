@@ -4,7 +4,15 @@ local function isKunshiSiege(attacker, victim, support)
     return false
   end
   local attackerKingdom, victimKingdom, supportKingdom = attacker.kingdom, victim.kingdom, support.kingdom
-  return attackerKingdom ~= "unknown" and victimKingdom ~= "unknown" and
+  -- 困势规则：「你的围攻关系内，未确定势力角色视为围攻或被围攻角色」。
+  -- 攻击方固定是胡烈（势力已确定），被围攻方 victim 可以是未确定势力——
+  -- 此时按规则视作被围攻者，不再要求「与攻击者势力不同」的判定。
+  -- 旧代码硬性要求 victimKingdom ~= "unknown"，导致未确定势力角色构成的
+  -- 围攻完全不生效（用户报的 bug）。support 侧本来就允许 unknown。
+  if victimKingdom == "unknown" then
+    return (supportKingdom == attackerKingdom or supportKingdom == "unknown")
+  end
+  return attackerKingdom ~= "unknown" and
     attackerKingdom ~= victimKingdom and
     (supportKingdom == attackerKingdom or supportKingdom == "unknown")
 end
@@ -61,8 +69,13 @@ kunshi:addTest(function(room, me)
   lu.assertTrue(isKunshiSiege(attacker, victim, support))
   support.kingdom = "shu"
   lu.assertFalse(isKunshiSiege(attacker, victim, support))
+  -- 被围攻方为未确定势力：按困势规则视为被围攻者，仍构成围攻
   victim.kingdom = "unknown"
+  support.kingdom = "jin"
+  lu.assertTrue(isKunshiSiege(attacker, victim, support))
   support.kingdom = "unknown"
+  lu.assertTrue(isKunshiSiege(attacker, victim, support))
+  support.kingdom = "shu"   -- support 为第三方确定势力，不构成
   lu.assertFalse(isKunshiSiege(attacker, victim, support))
 end)
 
