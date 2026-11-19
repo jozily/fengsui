@@ -44,7 +44,7 @@ fengsui_heg__xujing:addSkill("fengsui_heg__yuanyi")
 fengsui_heg__xujing:addSkill("fengsui_heg__caixia")
 
 local fengsui_heg__limi = General:new(extension, "fengsui_heg__limi", "shu", 3)
-fengsui_heg__limi:addCompanions("fengsui_heg__qiaozhou", "fengsui_heg__chenshou")
+fengsui_heg__limi:addCompanions("fengsui_heg__qiaozhou")  -- 取消李密与陈寿的珠联璧合，仅保留与谯周
 fengsui_heg__limi:addSkill("fengsui_heg__ciying")
 fengsui_heg__limi:addSkill("fengsui_heg__chendu")
 

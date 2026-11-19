@@ -9,7 +9,7 @@ local zhouxuan = General:new(extension, "fengsui_heg__zhouxuan", "wei", 3)
 zhouxuan:addSkills { "fengsui_heg__wumei", "fengsui_heg__jiemeng" }
 
 local chenshou = General:new(extension, "fengsui_heg__chenshou", "shu", 3)
-chenshou:addCompanions("fengsui_heg__limi")  -- 取消陈寿与谯周的珠联璧合，仅保留与李密
+-- 陈寿：取消与李密的珠联璧合（引擎双向判定，两侧均不声明）
 chenshou:addSkills { "fengsui_heg__dianmo", "fengsui_heg__fuzai" }
 
 local sunyuan = General:new(extension, "fengsui_heg__sunyuan", "wu", 4, 4, General.Female)
