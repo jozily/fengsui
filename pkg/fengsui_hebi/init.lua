@@ -1943,7 +1943,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__zhaoe"] = "官方",
   ["cv:fengsui_heg__zhaoe"] = "暂无",
   ["fengsui_heg__yanshi"] = "魇誓",
-  [":fengsui_heg__yanshi"] = "锁定技，当你首次明置此武将牌后，你选择一名角色，你与其每轮对彼此首次造成的伤害+1。当你即将受到伤害时，你展示所有手牌，若其中有伤害牌，你弃置一种牌名的所有牌防止之。",
+  [":fengsui_heg__yanshi"] = "锁定技，当你首次明置此武将牌后，你选择一名其他角色，你与其每轮对彼此首次造成的伤害+1。当你即将受到伤害时，你展示所有手牌，若其中有伤害牌，你弃置一种牌名的所有牌防止之。",
   ["fengsui_heg__xinren"] = "衅刃",
   [":fengsui_heg__xinren"] = "锁定技，你的红色/黑色伤害类卡牌不计入手牌上限且无法使用/无距离限制；当你确定势力后，你展示所有手牌并对“魇誓”目标依次使用其中的伤害牌，然后你移除此武将牌。",
   ["#fengsui_heg__xinren-use"] = "衅刃：请使用 %arg",
@@ -1991,7 +1991,7 @@ Fk:loadTranslationTable{
   ["#fengsui_heg__xiangkui-give"] = "飨馈：请正面朝上交给 %dest 任意张与其展示牌类别不同的牌",
   ["#fengsui_heg__yangmingRemake-give"] = "扬名：选择一张手牌和一名与此前目标势力不同的角色",
   ["#fengsui_heg__shuge-give"] = "束阁：选择一张牌交给一名角色，令其与 %dest 拼点",
-  ["#fengsui_heg__yanshi-target"] = "魇誓：选择一名角色",
+  ["#fengsui_heg__yanshi-target"] = "魇誓：选择一名其他角色",
   ["#HegInitialNotice"] = "提示：模式规则已上线，请在创建房间页面中查看。",
   ["#KingdomFiltered"] = "本局移除 %arg，使用 %arg2 四个势力。",
 }

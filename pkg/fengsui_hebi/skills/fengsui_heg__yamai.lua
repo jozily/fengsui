@@ -83,24 +83,31 @@ yamai:addEffect(fk.TurnEnd, {
       extra_data = {bypass_times = true},
     })
     if use then
-      event:setCostData(self, {use = use})
+      -- 记住本次从弃牌堆展开的牌，on_use 用完牌后据此精确清除客户端残影
+      event:setCostData(self, {use = use, expand = expand})
       return true
     end
   end,
   on_use = function(self, event, target, player, data)
-    local use = event:getCostData(self).use
+    local cost = event:getCostData(self)
+    local use = cost.use
     if not use then return end
     use.extraUse = true
     player.room:useCard(use)
-    -- 这张牌是从弃牌堆展开进手牌区选的，用完已回到弃牌堆，但客户端的
-    -- DashboardModel.expandedCards 里还留着这一项：结尾时按 id 回收偶尔漏掉，
-    -- 残影就盖在手牌行上（只是显示，手牌数据本身是干净的）。
-    -- changeSelf 会清空 expandedCards 并重建手牌列表，但它只改属性、
-    -- 不触发 HandcardArea.syncCards()，所以还得再让客户端走一次 applyChange。
+
+    -- 弃牌堆展开的牌在请求里被客户端 DashboardModel.expandedCards 生成了
+    -- CardItem；用完后牌已回弃牌堆，但请求收尾按 id 回收偶尔漏项，残影盖在
+    -- 手牌行上。旧做法发 ChangeSelf 全量重建，时序上会被随后到达的 UI 更新
+    -- 再次污染。改为参照 ol 门阀士族的精确清理：直接对这些 id 发 _delete，
+    -- 走 applyChange → expandedCards.splice → HandcardArea.syncCards 回收。
+    local expand = cost.expand
     local sp = player.serverplayer
-    if sp and cbor then
-      sp:doNotify("ChangeSelf", cbor.encode(player.id))
-      sp:doNotify("UpdateRequestUI", cbor.encode({ _type = "Room" }))
+    if sp and cbor and type(expand) == "table" and #expand > 0 then
+      local del = {}
+      for _, id in ipairs(expand) do
+        table.insert(del, { type = "CardItem", id = id })
+      end
+      sp:doNotify("UpdateRequestUI", cbor.encode({ _type = "Room", _delete = del }))
     end
   end,
 })

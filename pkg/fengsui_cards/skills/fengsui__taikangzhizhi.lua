@@ -4,20 +4,6 @@ local taikangzhizhi_skill = fk.CreateSkill{
   name = "fengsui__taikangzhizhi_skill",
 }
 
-local function swapMainAndDeputy(room, player)
-  if not player.deputyGeneral or player.deputyGeneral == "" then return false end
-  local main = H.getActualGeneral(player, false)
-  local deputy = H.getActualGeneral(player, true)
-  local main_hidden = player.general == "anjiang"
-  local deputy_hidden = player.deputyGeneral == "anjiang"
-
-  room:changeHero(player, deputy, false, false, false, false, false)
-  room:changeHero(player, main, false, true, false, false, false)
-  if deputy_hidden then player:hideGeneral(false) end
-  if main_hidden then player:hideGeneral(true) end
-  return true
-end
-
 taikangzhizhi_skill:addEffect("cardskill", {
   prompt = "#fengsui__taikangzhizhi_skill",
   can_use = Util.CanUseFixedTarget,
@@ -30,12 +16,13 @@ taikangzhizhi_skill:addEffect("cardskill", {
 
     local draw = target.maxHp - target:getHandcardNum()
     if draw > 0 then target:drawCards(draw, taikangzhizhi_skill.name) end
-    if target.dead or H.getKingdom(target) ~= "jin" then return end
+    -- 仅「明置」的晋势力角色可额外暗置变更副将：
+    -- 明置晋势力 kingdom 为 jin；暗置为 unknown，野心家为 wild，均不触发。
+    if target.dead or target.kingdom ~= "jin" then return end
 
     local choice = room:askToChoice(target, {
       choices = {
         "fengsui__taikangzhizhi_opt1",
-        "fengsui__taikangzhizhi_opt2",
         "Cancel",
       },
       skill_name = taikangzhizhi_skill.name,
@@ -43,8 +30,6 @@ taikangzhizhi_skill:addEffect("cardskill", {
     })
     if choice == "fengsui__taikangzhizhi_opt1" then
       H.transformGeneral(room, target, false, true)
-    elseif choice == "fengsui__taikangzhizhi_opt2" then
-      swapMainAndDeputy(room, target)
     end
   end,
 })
@@ -70,6 +55,7 @@ taikangzhizhi_skill:addTest(function(room, me)
 
   if H.hasGeneral(me, true) then
     local old_main, old_deputy = H.getActualGeneral(me, false), H.getActualGeneral(me, true)
+    -- 暗置（kingdom 为 unknown）不触发暗置变更副将
     FkTest.runInRoom(function()
       room:setPlayerProperty(me, "kingdom", "unknown")
       room:setPlayerMark(me, "__heg_kingdom", "jin")
@@ -82,7 +68,8 @@ taikangzhizhi_skill:addTest(function(room, me)
     lu.assertEquals(H.getActualGeneral(me, false), old_main)
     lu.assertEquals(H.getActualGeneral(me, true), old_deputy)
 
-    FkTest.setNextReplies(me, {"fengsui__taikangzhizhi_opt2"})
+    -- 明置晋势力触发暗置变更副将：副将换成新的晋势力武将并被暗置
+    FkTest.setNextReplies(me, {"fengsui__taikangzhizhi_opt1"})
     FkTest.runInRoom(function()
       room:setPlayerProperty(me, "kingdom", "jin")
       room:useCard{
@@ -91,8 +78,8 @@ taikangzhizhi_skill:addTest(function(room, me)
         tos = {},
       }
     end)
-    lu.assertEquals(H.getActualGeneral(me, false), old_deputy)
-    lu.assertEquals(H.getActualGeneral(me, true), old_main)
+    lu.assertEquals(H.getActualGeneral(me, false), old_main)
+    lu.assertNotEquals(H.getActualGeneral(me, true), old_deputy)
   end
 end)
 

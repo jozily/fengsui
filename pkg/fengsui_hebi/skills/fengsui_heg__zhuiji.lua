@@ -79,16 +79,24 @@ local function reduce(self, player, data)
     player.room:setPlayerMark(player, ZNAME .. "-damage", left)
   end
 end
+-- 追迹的失效解除是自动结算：受到/造成伤害扣减计数无需玩家手动确认。
+-- on_cost 覆盖默认 askToSkillInvoke（否则非锁定触发技会弹“是否发动”）；
+-- priority=0 让 TriggerEvent 跳过 choose-trigger 询问直接结算。
+local function silentReduce(self, _, _, player, data) reduce(self, player, data) end
 zhuiji:addEffect(fk.Damage, {
+  priority = 0,
   can_trigger = function(self, _, target, player, data)
     return target == player and player:hasSkill(ZNAME) and player:getMark(ZNAME .. "-damage") > 0
   end,
-  on_use = function(self, _, _, player, data) reduce(self, player, data) end,
+  on_cost = function() return true end,
+  on_use = silentReduce,
 })
 zhuiji:addEffect(fk.Damaged, {
+  priority = 0,
   can_trigger = function(self, _, target, player, data)
     return target == player and player:hasSkill(ZNAME) and player:getMark(ZNAME .. "-damage") > 0
   end,
-  on_use = function(self, _, _, player, data) reduce(self, player, data) end,
+  on_cost = function() return true end,
+  on_use = silentReduce,
 })
 return zhuiji

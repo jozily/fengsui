@@ -64,12 +64,11 @@ extension:loadCardSkels{
 
 Fk:loadTranslationTable{
   ["fengsui__taikangzhizhi"] = "太康之治",
-  [":fengsui__taikangzhizhi"] = "锦囊牌<br /><b>时机</b>：出牌阶段<br /><b>目标</b>：所有与你同势力的角色<br /><b>效果</b>：目标角色将手牌摸至体力上限。晋势力角色可以额外选择一项：1.暗置变更副将（不占据次数）；2.主副将易位。",
+  [":fengsui__taikangzhizhi"] = "锦囊牌<br /><b>时机</b>：出牌阶段<br /><b>目标</b>：所有与你同势力的角色<br /><b>效果</b>：目标角色将手牌摸至体力上限。晋势力角色可以暗置变更副将。",
   ["fengsui__taikangzhizhi_skill"] = "太康之治",
   ["#fengsui__taikangzhizhi_skill"] = "太康之治：令你和所有同势力角色将手牌摸至体力上限",
-  ["#fengsui__taikangzhizhi-invoke"] = "太康之治：你可以额外选择一项",
+  ["#fengsui__taikangzhizhi-invoke"] = "太康之治：你可以暗置变更副将",
   ["fengsui__taikangzhizhi_opt1"] = "暗置变更副将",
-  ["fengsui__taikangzhizhi_opt2"] = "主副将易位",
 }
 
 return extension

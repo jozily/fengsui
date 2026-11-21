@@ -31,8 +31,11 @@ canyun:addEffect(fk.Death, {
     local room = player.room
     local kingdom = H.getKingdom(player)
     local affected = damageSources(room, player)
+    -- 野心家须用 isWildPlayer 覆盖四类身份（wild 势力武将/君主死亡变野/
+    -- 群雄割据转野/标记变野）；只看 getKingdom=="wild" 会漏判转野角色，
+    -- 导致残愠只移除了一部分人。
     for _, p in ipairs(room:getAlivePlayers()) do
-      if H.getKingdom(p) == "wild" then table.insertIfNeed(affected, p) end
+      if H.isWildPlayer(p) then table.insertIfNeed(affected, p) end
     end
     for _, p in ipairs(affected) do
       -- 移除副将（普通移除，非废除）
