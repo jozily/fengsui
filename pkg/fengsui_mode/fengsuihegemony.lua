@@ -236,10 +236,10 @@ function HegLogic:chooseGenerals()
     end
   end
 
-  -- 拾遗包五名武将（周宣[无梦]/陈寿/孙鸢/刘徽/王徽风）与「开启九变篇」绑定：
-  -- 开启九变篇时补入选将池，关闭时排除。这五将已设为可见（hidden=false），
-  -- 因此玩家可自行在禁将界面手动禁用；此处仅在补入时再尊重一次禁将列表，
-  -- 且放在所有势力/群雄/中立过滤之后，避免干扰"禁势力到四势力"等既有规则。
+  -- 拾遗包五名武将（周宣[无梦]/陈寿/孙鸢/刘徽/王徽风）本身是隐藏武将：
+  -- 武将一览可见，但默认不进入任何将池。与「开启九变篇」绑定——开启时直接
+  -- 把这五将插入选将池，关闭时不介入；玩家在武将一栏手动禁用者不插入。
+  -- 放在所有势力/群雄/中立过滤之后，避免干扰"禁势力到四势力"等既有规则。
   local nineGenVal = room:getSettings("fengsui_enable_nine_variations")
   local nineGenOn = nineGenVal == true or nineGenVal == 1 or
     nineGenVal == "1" or nineGenVal == "true"
