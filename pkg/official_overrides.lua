@@ -491,10 +491,37 @@ local function guardDoNotify()
   fk.qInfo("[fengsui-overrides] ServerPlayerBase:doNotify 已加类型安全兜底")
 end
 
+-- 九变篇【分道扬镳】(part_ways) 在燎原之战(fengsui_heg__mode)里使用后不成为野心家：
+-- 官方 onEffect 用 room:isGameMode("heg_mode") 判分支，燎原的 main_mode 正是 heg_mode，
+-- 于是走 H.wildChooseKingdom 只改了 role（选国），却没有把 kingdom 置 wild、也没打
+-- __heg_wild 标记；fengsui 全靠 __heg_wild 认定野心家（胜负/拉拢/副将规则都读它），
+-- 所以角色看起来选了国却不是野心家。这里保留官方摸牌/给牌/选国逻辑，仅在其后补齐
+-- fengsui 的野心家状态，与 _fengsui_neutral_rule.promoteWarlord 的写法一致。
+-- 注意：cardskill 经 addEffect 编译后是独立技能 #part_ways_skill_1_cardskill，
+-- spec.on_effect 装配为 onEffect 字段（skill_skeleton.lua:createCardSkill）。
+local function overridePartWays()
+  local sk = Fk.skills and Fk.skills["#part_ways_skill_1_cardskill"]
+  if not sk or type(sk.onEffect) ~= "function" or sk.__fengsui_partways_override then return end
+  local origOnEffect = sk.onEffect
+  sk.onEffect = function(self, room, effect)
+    local player = effect and effect.from
+    origOnEffect(self, room, effect)
+    if not player or player.dead then return end
+    if room:getSettings("gameMode") ~= "fengsui_heg__mode" then return end
+    if (tonumber(player:getMark("__heg_wild")) or 0) > 0 and player.kingdom == "wild" then return end
+    room:setPlayerMark(player, "__heg_wild", 1)
+    room:setPlayerProperty(player, "kingdom", "wild")
+    fk.qInfo("[fengsui-overrides] part_ways(分道扬镳) 已补齐野心家状态")
+  end
+  sk.__fengsui_partways_override = true
+  fk.qInfo("[fengsui-overrides] part_ways(分道扬镳) onEffect 已包装")
+end
+
 local function runAllOverrides()
   guardDoNotify()
   guardQiceInteraction()
   fixDufuDraw()
+  overridePartWays()
   overrideSijian()
   overrideKylinBowPrompt()
   overrideBianfurenGender()

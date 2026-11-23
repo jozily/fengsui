@@ -315,7 +315,7 @@ Fk:loadTranslationTable{
   [":fengsui_heg__siqi"] = "当你受到伤害后，你可以亮出牌堆底的X张牌并获得其中的基本牌和装备牌（X为同势力角色数）。",
   ["#fengsui_heg__siqi-invoke"] = "思泣：是否亮出牌堆底并获得其中的基本牌和装备牌？",
   ["fengsui_heg__qiaozhi"] = "巧织",
-  [":fengsui_heg__qiaozhi"] = "当你失去牌后，若为你本回合第一次失去牌且其中有红色牌，你可以展示之并将其置于牌堆底，然后与当前回合角色依次摸一张牌。",
+  [":fengsui_heg__qiaozhi"] = "当你的牌每回合首次因使用或弃置而进入弃牌堆后，若其中有红色牌，你可展示之并将之置于牌堆底，然后与当前回合角色依次摸一张牌。",
   ["#fengsui_heg__qiaozhi-invoke"] = "巧织：是否展示所有这些红牌并将其置于牌堆底，然后与当前回合角色依次摸一张牌？",
   ["$fengsui_heg__siqi1"] = "不觉红泪尽，别时惟啼声。",
   ["$fengsui_heg__siqi2"] = "红泪清歌，此去难归。",
