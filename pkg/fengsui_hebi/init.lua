@@ -744,7 +744,7 @@ Fk:loadTranslationTable{
   [":fengsui_heg__guru"] = "锁定技，当你仅明置此武将牌时，你摸牌阶段摸牌数+X；当你武将牌均明置且X小于场上势力数时，你与其他角色、其他角色与你的距离+X（X为同势力角色数且至多为2）。",
   ["@fengsui_heg__guru_distance"] = "孤茹距离",
   ["fengsui_heg__weihou"] = "维后",
-  [":fengsui_heg__weihou"] = "当同势力角色的判定牌即将生效时，若你的武将牌均明置，你可以暗置另一张武将牌并用装备区的一张牌替换之，然后你获得原判定牌。",
+  [":fengsui_heg__weihou"] = "当同势力角色的判定牌即将生效时，若你的武将牌均明置，你可以暗置另一张武将牌并用装备区的一张牌替换之。",
   ["#fengsui_heg__weihou-invoke"] = "维后：你可以暗置另一张武将牌，用一张装备牌替换 %dest 的判定并获得原判定牌",
   ["$fengsui_heg__guru1"] = "机杼声寒，惟抚此孤成继。",
   ["$fengsui_heg__guru2"] = "丹墀九阶，岂容宵小近御？",
