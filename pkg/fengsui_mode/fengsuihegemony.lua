@@ -319,6 +319,19 @@ function HegLogic:prepareDrawPile()
   GameLogic.prepareDrawPile(self)
 
   local room = self.room
+
+  -- 九变篇「奇珍牌弃牌堆」：开启时挂上全局监听技能并在左上角显示牌堆，
+  -- 关闭时不显示（技能内部也会再判一次开关）。
+  local nineOn = false
+  local nineVal = room:getSettings("fengsui_enable_nine_variations")
+  nineOn = nineVal == true or nineVal == 1 or nineVal == "1" or nineVal == "true"
+  if nineOn then
+    if Fk.skills["#fengsui_qizhen_pile"] then
+      room:addSkill(Fk.skills["#fengsui_qizhen_pile"])
+    end
+    room:setBanner("@$fengsui_qizhen_discard", {})
+  end
+
   local allianceCards = table.clone(H.allianceCards)
   local addAllianceMark = function(c)
     for i = #allianceCards, 1, -1 do
@@ -523,24 +536,63 @@ heg = fk.CreateGameMode{
   end,
 
   build_draw_pile = function(self)
-    local draw, void = GameMode.buildDrawPile(self)
-
-    -- 「九变篇」开关：九变牌（nine_variations 包的奇珍装备牌等）默认随模式
-    -- 进牌堆。开启本开关才把九变牌加入牌堆；不开启则从 draw 里剔除、移入 void，
-    -- 于是本局没有九变牌也没有奇珍弃牌的逻辑来源。这样用一个开关控制九变篇的启用。
-    local room = self.room
+    -- 「开启九变篇」开关与扩展包勾选绑定：
+    --   开 → 强制启用九变篇包、自动关闭势备篇包；
+    --   关 → 关闭九变篇包，势备篇不自动开回（玩家需手动勾选才生效）。
+    -- 这两个包都是纯卡牌包（无武将），改禁用包不会影响选将。
+    -- 必须在 GameMode.buildDrawPile 之前改 disabled_packs，因为 getAllCardIds
+    -- 就是按它过滤卡片的。self 是 GameMode 没有 room 字段，用 Fk:currentRoom()。
+    local room = Fk:currentRoom()
     local nineOn = false
     if room and room.getSettings then
       local value = room:getSettings("fengsui_enable_nine_variations")
       nineOn = value == true or value == 1 or value == "1" or value == "true"
     end
-    if not nineOn then
+    if room and room.disabled_packs then
+      if nineOn then
+        table.removeOne(room.disabled_packs, "nine_variations")
+        table.insertIfNeed(room.disabled_packs, "strategic_advantage")
+      else
+        table.insertIfNeed(room.disabled_packs, "nine_variations")
+        -- 势备篇保持玩家原本的勾选状态，不自动开回：需手动勾选才进牌堆。
+      end
+    end
+
+    local draw, void = GameMode.buildDrawPile(self)
+
+    -- 兜底：即使外部改了禁用包，也按开关再剔除一次对方包的特色牌，
+    -- 保证两篇互斥。基础牌（杀/闪/桃/酒/无懈/火杀/雷杀）不参与，始终齐全。
+
+    -- 通用基础牌白名单：这些牌在两包里只是额外的花色/点数实例，始终留在牌堆。
+    local BASIC_CARD_NAMES = {
+      slash = true, jink = true, peach = true, analeptic = true,
+      nullification = true, heg__nullification = true,
+      fire__slash = true, thunder__slash = true,
+    }
+    -- 按包名剔除其特色牌（跳过基础牌）
+    local removeSpecialties = function(packName)
       for i = #draw, 1, -1 do
         local card = Fk:getCardById(draw[i])
-        if card and card.package and card.package.name == "nine_variations" then
+        if card and card.package and card.package.name == packName
+          and not BASIC_CARD_NAMES[card.name] then
           table.insert(void, table.remove(draw, i))
         end
       end
+    end
+    if nineOn then
+      removeSpecialties("strategic_advantage")  -- 开九变篇：剔除势备篇特色牌
+      -- 九州鼎：照官方国战，开局从牌堆移入 void，随后由 zeheg_rule 的 GameStart
+      -- effect 置于弃牌堆（此处只处理开局牌堆；洗牌后的处理在 zeheg_rule）。
+      -- 只有开九变篇才处理：关九变篇时九州鼎已被上面的互斥剔除进 void，
+      -- 开局 effect 不会再把它放回弃牌堆，避免关九变篇仍出现九州鼎。
+      for i = #draw, 1, -1 do
+        local card = Fk:getCardById(draw[i])
+        if card and card.name == "nine_tripod_cauldrons" then
+          table.insert(void, table.remove(draw, i))
+        end
+      end
+    else
+      removeSpecialties("nine_variations")      -- 关九变篇：剔除九变篇特色牌
     end
 
     for i = #draw, 1, -1 do
@@ -826,7 +878,7 @@ Fk:loadTranslationTable{
   ["fengsui_double_general_only_deputy"] = "双势力武将只能做副将",
   ["help: fengsui_double_general_only_deputy"] = "开启后，带双势力（有副势力）的武将不能放在主将位，只能作为副将出场。",
   ["fengsui_enable_nine_variations"] = "开启九变篇",
-  ["help: fengsui_enable_nine_variations"] = "开启后本局将九变篇卡牌（奇珍装备牌等）加入牌堆；不开启则本局没有九变牌。",
+  ["help: fengsui_enable_nine_variations"] = "本开关与扩展包勾选绑定。开启后强制启用「国战·九变篇」牌堆（奇珍装备等）并自动关闭「国战·势备篇」；关闭后九变篇牌堆关闭，势备篇不会自动开启，需在扩展包中手动勾选才生效。两包的杀、闪、桃、酒、无懈等基础牌始终保留。",
   ["fengsui_enable_neutral_wild"] = "禁用所有野心家/中立者",
   ["help: fengsui_enable_neutral_wild"] = "开启后本局一键禁用全部野心家与中立者武将，一个都不留。下方两项数量设置已独立于本开关，可单独使用。群雄割据按自身规则处理，不受本开关影响。",
   ["fengsui_random_neutral"] = "随机中立者武将数量（独立）",

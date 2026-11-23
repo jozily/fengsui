@@ -147,6 +147,11 @@ s:addEffect(fk.AfterSkillEffect, {
         removeVisitor(player.room, player, other)
       end
     end
+    -- 访客已移除：立即回收它提供且无其他访客继续提供的技能。
+    -- 评鉴是在该访客技能"结算结束后"触发（AfterSkillEffect），此刻技能效果已结算完，
+    -- 立即摘除不会影响本次结算；延迟到 TurnEnd 的回收链不可靠，故此处直接同步回收
+    -- （expireVisitorSkills 幂等，之后 TurnEnd 再调也不会重复摘）。
+    FU.expireVisitorSkills(player.room, player)
   end,
 })
 

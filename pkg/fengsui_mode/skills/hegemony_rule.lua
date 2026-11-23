@@ -534,6 +534,31 @@ hegRule:addEffect(fk.GameStart, {
     end,
 })
 
+-- 九变篇开关是否开启（九州鼎等九变牌进牌堆的前提）
+local nineVariationsOn = function(room)
+  local value = room:getSettings("fengsui_enable_nine_variations")
+  return value == true or value == 1 or value == "1" or value == "true"
+end
+
+-- 九州鼎：开局将 void 中的九州鼎置于弃牌堆（照官方国战 heg_rule）。
+-- 仅九变篇开启时生效：关九变篇时九州鼎被牌堆互斥剔除到 void，不应出现在弃牌堆。
+hegRule:addEffect(fk.GameStart, {
+  mute = true,
+  priority = 0,
+  can_trigger = function(self, event, target, player, data)
+    return player.seat == 1 and nineVariationsOn(player.room)
+  end,
+  on_trigger = function(self, event, target, player, data)
+    local room = player.room
+    local cards = table.filter(room.void, function(id)
+      return Fk:getCardById(id).name == "nine_tripod_cauldrons"
+    end)
+    if #cards > 0 then
+      room:moveCardTo(cards, Card.DiscardPile, nil, fk.ReasonJustMove, hegRule.name, nil, true)
+    end
+  end,
+})
+
 --洗牌鏖战
 hegRule:addEffect(fk.AfterDrawPileShuffle, {
   mute = true,
@@ -544,6 +569,25 @@ hegRule:addEffect(fk.AfterDrawPileShuffle, {
   end,
   on_trigger = function(self, event, target, player, data)
     enterBattleRoyalMode(player.room)
+  end,
+})
+
+-- 九州鼎：洗牌后把牌堆中的九州鼎重新置于弃牌堆（照官方国战 heg_rule）。
+-- 仅九变篇开启时生效。
+hegRule:addEffect(fk.AfterDrawPileShuffle, {
+  mute = true,
+  priority = 0,
+  can_trigger = function(self, event, target, player, data)
+    return player.seat == 1 and nineVariationsOn(player.room)
+  end,
+  on_trigger = function(self, event, target, player, data)
+    local room = player.room
+    local cards = table.filter(room.draw_pile, function(id)
+      return Fk:getCardById(id).name == "nine_tripod_cauldrons"
+    end)
+    if #cards > 0 then
+      room:moveCardTo(cards, Card.DiscardPile, nil, fk.ReasonJustMove, hegRule.name, nil, true)
+    end
   end,
 })
 

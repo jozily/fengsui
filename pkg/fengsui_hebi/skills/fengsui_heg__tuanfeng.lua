@@ -33,8 +33,24 @@ end
 
 local function doTuanfeng(self, player)
   local room = player.room
-  -- 暗置另一张武将牌：周处所在武将牌之外的那张
-  local hideDeputy = player.general == "fengsui_heg__zhouchu"
+  -- 自选暗置主将或副将（原为自动暗置"周处所在之外的另一张"）。
+  -- 只列出当前仍明置的将；至少有一张可暗置。
+  local options = {}
+  if player.general ~= "anjiang" then
+    table.insert(options, "fengsui_heg__tuanfeng_main")
+  end
+  if player.deputyGeneral and player.deputyGeneral ~= "anjiang" then
+    table.insert(options, "fengsui_heg__tuanfeng_deputy")
+  end
+  if #options == 0 then return end
+
+  local pick = room:askToChoice(player, {
+    choices = options,
+    skill_name = tuanfeng.name,
+    prompt = "#fengsui_heg__tuanfeng-hide",
+  })
+  if not pick or pick == "" then return end
+  local hideDeputy = pick == "fengsui_heg__tuanfeng_deputy"
   player:hideGeneral(hideDeputy)
   room:sendLog{
     type = "#ChangeHiddenGeneral",

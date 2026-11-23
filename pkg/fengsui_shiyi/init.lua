@@ -22,6 +22,10 @@ liuhui:addSkills { "fengsui_heg__jieshu" }
 local wanghuifeng = General:new(extension, "fengsui_heg__wanghuifeng", "jin", 4, 4, General.Female)
 wanghuifeng:addSkills { "fengsui_heg__dilie" }
 
+-- 夙醒：梦系列的周宣（中立者）
+local dreamzhouxuan = General:new(extension, "fengsui_heg__dream__zhouxuan", "fengsui_neutral", 3)
+dreamzhouxuan:addSkills { "fengsui_heg__hanshi", "fengsui_heg__xingji" }
+
 local jiaxu = General:new(extension, "fengsui_heg__jiaxu", "fengsui_neutral", 3)
 jiaxu:addCompanions("hs__jiaxu")
 jiaxu:addSkill("fengsui_heg__qingshi_jx")
@@ -162,10 +166,11 @@ Fk:loadTranslationTable{
   ["#fengsui_toaru__heg__uiharukazari"] = "恒温死神",
 }
 
-assert(#extension.generals == 21, "fengsui_shiyi must register exactly 21 generals")
+assert(#extension.generals == 22, "fengsui_shiyi must register exactly 22 generals")
 
 -- 番外武将默认隐藏；五名常规中立者与学园都市角色进入正常选将池。
 local visible_neutral = {
+  fengsui_heg__dream__zhouxuan = true,
   fengsui_heg__jiaxu = true, fengsui_heg__lusu = true, fengsui_heg__xushu = true,
   fengsui_heg__zhaoe = true, fengsui_heg__xushao = true,
   fengsui_toaru__heg__frenda = true, fengsui_toaru__heg__shokuhou = true,

@@ -25,6 +25,12 @@ guozhao:addCompanions("hs__caopi")
 -- 不再挂载 fengsui_heg__zunwei_vs（响应时会出现两个「尊位」按钮）。
 guozhao:addSkills { "fengsui_heg__zunwei", "fengsui_heg__jiaoyu" }
 
+local fengsui_heg__zhongyu = General:new(extension, "fengsui_heg__zhongyu", "wei", 3)
+fengsui_heg__zhongyu:addSkills { "fengsui_heg__tijian", "fengsui_heg__huanghan" }
+
+local xuelingyun = General:new(extension, "fengsui_heg__xuelingyun", "wei", 3, 3, General.Female)
+xuelingyun:addSkills { "fengsui_heg__siqi", "fengsui_heg__qiaozhi" }
+
 local mamiao = General:new(extension, "fengsui_heg__mamiao", "shu", 4)
 mamiao:addCompanions("fengsui_heg__lixian")
 mamiao:addSkill("fengsui_heg__zhangguan")
@@ -105,6 +111,9 @@ liufuren:addSkills { "fengsui_heg__dulu", "fengsui_heg__shigong" }
 
 local douwu = General:new(extension, "fengsui_heg__douwudoumiao", "qun", 4, 4, General.Bigender)
 douwu:addSkills { "fengsui_heg__bahuan", "fengsui_heg__youhuan" }
+
+local zhanghuan = General:new(extension, "fengsui_heg__zhanghuan", "qun", 4)
+zhanghuan:addSkills { "fengsui_heg__yiju", "fengsui_heg__shuguo" }
 
 local hulie = General:new(extension, "fengsui_heg__hulie", "jin", 4)
 hulie:addSkills { "fengsui_heg__kunshi", "fengsui_heg__fudao" }
@@ -241,10 +250,6 @@ local yangjun = General:new(extension, "fengsui_heg__yangjun", "wild", 4)
 yangjun:addCompanions("fengsui_heg__yangzhi", "fengsui_heg__yangyan")
 yangjun:addSkills { "fengsui_heg__guishang", "fengsui_heg__aobi" }
 
--- 夙醒：梦系列的周宣
-local dreamzhouxuan = General:new(extension, "fengsui_heg__dream__zhouxuan", "wei", 3)
-dreamzhouxuan:addSkills { "fengsui_heg__hanshi", "fengsui_heg__xingji" }
-
 -- Remake 备份也会作为技能骨架加载；校验官方骨架至少完整即可。
 
 -- moved Hebi generals retain their cross-package relations here.
@@ -260,6 +265,64 @@ lemin:addCompanions("heg__simaying")
 biyu:addCompanions("heg__simaliang")
 
 assert(#extension.skill_skels >= 24, "fengsui_liwu must load the official skill skeletons")
+
+
+Fk:loadTranslationTable{
+  ["fengsui_heg__zhongyu"] = "钟毓",
+  ["#fengsui_heg__zhongyu"] = "煌兴时砭",
+  ["designer:fengsui_heg__zhongyu"] = "公冶长风",
+  ["illustrator:fengsui_heg__zhongyu"] = "alien",
+  ["cv:fengsui_heg__zhongyu"] = "暂无",
+  ["fengsui_heg__tijian"] = "提谏",
+  [":fengsui_heg__tijian"] = "与你势力相同的角色于其回合内使用的第X张牌指定目标后，你可令此牌任一目标弃置X张牌并摸X张牌（X为此牌牌名字数）。",
+  ["#fengsui_heg__tijian-invoke"] = "提谏：是否令此牌任一目标弃置X张牌并摸X张牌？",
+  ["#fengsui_heg__tijian-target"] = "提谏：选择此牌的一个目标",
+  ["fengsui_heg__huanghan"] = "惶汉",
+  [":fengsui_heg__huanghan"] = "当你受到伤害后，你可以摸X张牌并弃置此技能本轮发动次数张牌（X为造成伤害的牌的牌名字数且至少为1）。",
+  ["#fengsui_heg__huanghan-invoke"] = "惶汉：是否摸 %arg 张牌并弃置本轮发动次数张牌？",
+  ["@[fengsui_heg__huanghan]"] = "惶汉",
+  ["$fengsui_heg__tijian1"] = "盛暑行师，兵者所慎，实非至尊动轫之时。",
+  ["$fengsui_heg__tijian2"] = "水旱不时，帑藏空虚，凡此之类，可须丰年。",
+  ["$fengsui_heg__huanghan1"] = "臣一介凡夫，睹龙颜、摄龙威，敢不惶恐。",
+  ["$fengsui_heg__huanghan2"] = "帝王者，臣子之君父，父威如煌，安敢不惧。",
+  ["~fengsui_heg__zhongyu"] = "毓愿偿吾弟之罪，以身代死。",
+}
+
+Fk:loadTranslationTable{
+  ["fengsui_heg__zhanghuan"] = "张奂",
+  ["#fengsui_heg__zhanghuan"] = "正节之身",
+  ["designer:fengsui_heg__zhanghuan"] = "公冶长风",
+  ["illustrator:fengsui_heg__zhanghuan"] = "鬼画府",
+  ["cv:fengsui_heg__zhanghuan"] = "暂无",
+  ["fengsui_heg__yiju"] = "义拒",
+  [":fengsui_heg__yiju"] = "锁定技，你因“戍国”获得的牌只能指定与你势力不同的角色为目标或响应其使用的牌。当你失去“戍国”牌后，若此时为你的回合内，你摸一张牌；否则你弃置一张牌。",
+  ["fengsui_heg__shuguo"] = "戍国",
+  [":fengsui_heg__shuguo"] = "每回合结束时，若当前回合角色弃置过牌且花色均不同，你可以获得其中一张。",
+  ["#fengsui_heg__shuguo-choose"] = "戍国：你可以获得当前回合角色弃置的一张牌",
+  ["@@fengsui_heg__shuguo"] = "戍国",
+  ["$fengsui_heg__yiju1"] = "董卓之缣，如豺狼之皮，浸透腥膻、臭不可闻！",
+  ["$fengsui_heg__yiju2"] = "如此不义之物，安敢污我门庭！",
+  ["$fengsui_heg__shuguo1"] = "奂不才，愿效定远故事，持节万里、靖清朔漠！",
+  ["$fengsui_heg__shuguo2"] = "劲弩射天狼，既于燕然勒石，不须麟阁列像。",
+  ["~fengsui_heg__zhanghuan"] = "如此边关月，不照故园秋。",
+
+  ["fengsui_heg__xuelingyun"] = "薛灵芸",
+  ["#fengsui_heg__xuelingyun"] = "红绣织情",
+  ["designer:fengsui_heg__xuelingyun"] = "公冶长风",
+  ["illustrator:fengsui_heg__xuelingyun"] = "觉觉",
+  ["cv:fengsui_heg__xuelingyun"] = "暂无",
+  ["fengsui_heg__siqi"] = "思泣",
+  [":fengsui_heg__siqi"] = "当你受到伤害后，你可以亮出牌堆底的X张牌并获得其中的基本牌和装备牌（X为同势力角色数）。",
+  ["#fengsui_heg__siqi-invoke"] = "思泣：是否亮出牌堆底并获得其中的基本牌和装备牌？",
+  ["fengsui_heg__qiaozhi"] = "巧织",
+  [":fengsui_heg__qiaozhi"] = "当你失去牌后，若为你本回合第一次失去牌且其中有红色牌，你可以展示之并将其置于牌堆底，然后与当前回合角色依次摸一张牌。",
+  ["#fengsui_heg__qiaozhi-invoke"] = "巧织：是否展示所有这些红牌并将其置于牌堆底，然后与当前回合角色依次摸一张牌？",
+  ["$fengsui_heg__siqi1"] = "不觉红泪尽，别时惟啼声。",
+  ["$fengsui_heg__siqi2"] = "红泪清歌，此去难归。",
+  ["$fengsui_heg__qiaozhi1"] = "金丝绕指柔，丝缕织成愁。",
+  ["$fengsui_heg__qiaozhi2"] = "与谁同坐，明月，霓裳，我。",
+  ["~fengsui_heg__xuelingyun"] = "露初晞，夜来归，谁复对月夜织衣。",
+}
 
 
 Fk:loadTranslationTable{
@@ -384,7 +447,7 @@ require("packages.fengsui.pkg.fengsui_liwu.liwu_neutral_compat").install()
 
 
 
-assert(#extension.generals == 60, "fengsui_liwu must register exactly 60 generals")
+assert(#extension.generals == 62, "fengsui_liwu must register exactly 62 generals")
 require "packages.fengsui.pkg.fengsui_liwu.option_translations"
 
 return extension
