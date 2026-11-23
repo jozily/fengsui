@@ -248,6 +248,9 @@ function U.expireVisitorSkills(room, player)
       -- 技能留下的本回合／本阶段标记一并清掉，避免技能失效后残留。
       room:setPlayerMark(player, skillName .. "-turn", 0)
       room:setPlayerMark(player, skillName .. "-phase", 0)
+      -- 官方裸衣等技能用 @@<技能名> 作加成标记（无 -turn 后缀，回合结束不会自动清），
+      -- 必须显式清掉，否则评鉴移除访客技能后 mark 会一直挂到回合结束甚至更久。
+      room:setPlayerMark(player, "@@" .. skillName, 0)
     end
   end
   room:setPlayerMark(player, U.VISITOR_EXPIRING_MARK, 0)
