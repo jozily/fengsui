@@ -4,23 +4,43 @@ local qiaozhi = fk.CreateSkill {
 
 local FIRST = "fengsui_heg__qiaozhi_first-turn"
 
--- 本回合首次因使用或弃置而有牌进入弃牌堆，若其中有红色牌，
--- 可展示所有这些红牌并置于牌堆底，然后与当前回合角色依次摸一张牌。
--- 只认 moveReason 为「使用/弃置」且 toArea 为弃牌堆的移动。
+-- 取当前结算的使用牌的使用者：使用牌在结算后由 UseCard:clear 从处理区移入弃牌堆，
+-- 这一步 moveCards 未指定 from，故 move.from 为 nil，需回溯最近的 UseCard 事件。
+local function getUseFrom(room)
+  local ev = room.logic:getMostRecentEvent(GameEvent.UseCard)
+  if ev and ev.data then return ev.data.from end
+  ev = room.logic:getCurrentEvent():findParent(GameEvent.UseCard)
+  if ev and ev.data then return ev.data.from end
+  return nil
+end
+
+-- 本次移动中「你的牌因使用或弃置而进入弃牌堆」的红色牌 id。
+-- 弃置：move.from == player 且 ReasonDiscard（从手牌/装备直接进弃牌堆）。
+-- 使用：ReasonUse 且 move.from == nil 且牌来自 Processing（结算后进弃牌堆），
+--       此时用 getUseFrom 确认使用者是本人。
 local function getEnteredDiscardRedIds(player, data)
   local room = player.room
+  local useFrom = getUseFrom(room)
   local redIds = {}
   for _, move in ipairs(data) do
-    if move.from == player and move.toArea == Card.DiscardPile and
-       (move.moveReason == fk.ReasonUse or move.moveReason == fk.ReasonDiscard) then
-      for _, info in ipairs(move.moveInfo) do
-        local card = Fk:getCardById(info.cardId)
-        if card and card.color == Card.Red then
-          local dup = false
-          for _, id in ipairs(redIds) do
-            if id == info.cardId then dup = true break end
+    if move.toArea == Card.DiscardPile then
+      local hit = false
+      if move.moveReason == fk.ReasonDiscard and move.from == player then
+        hit = true
+      elseif move.moveReason == fk.ReasonUse and move.from == nil and useFrom == player then
+        for _, info in ipairs(move.moveInfo) do
+          if info.fromArea == Card.Processing then
+            hit = true
+            break
           end
-          if not dup then table.insert(redIds, info.cardId) end
+        end
+      end
+      if hit then
+        for _, info in ipairs(move.moveInfo) do
+          local card = Fk:getCardById(info.cardId)
+          if card and card.color == Card.Red then
+            table.insertIfNeed(redIds, info.cardId)
+          end
         end
       end
     end

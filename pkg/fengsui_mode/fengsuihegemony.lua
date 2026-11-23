@@ -236,6 +236,28 @@ function HegLogic:chooseGenerals()
     end
   end
 
+  -- 拾遗包五名武将（周宣[无梦]/陈寿/孙鸢/刘徽/王徽风）与「开启九变篇」绑定：
+  -- 开启九变篇时补入选将池，关闭时排除。这五将已设为可见（hidden=false），
+  -- 因此玩家可自行在禁将界面手动禁用；此处仅在补入时再尊重一次禁将列表，
+  -- 且放在所有势力/群雄/中立过滤之后，避免干扰"禁势力到四势力"等既有规则。
+  local nineGenVal = room:getSettings("fengsui_enable_nine_variations")
+  local nineGenOn = nineGenVal == true or nineGenVal == 1 or
+    nineGenVal == "1" or nineGenVal == "true"
+  local NINE_VARIATION_GENERALS = {
+    "fengsui_heg__zhouxuan", "fengsui_heg__chenshou", "fengsui_heg__sunyuan",
+    "fengsui_heg__liuhui", "fengsui_heg__wanghuifeng",
+  }
+  for _, name in ipairs(NINE_VARIATION_GENERALS) do
+    if nineGenOn then
+      local disabledByRoom = room.disabled_generals and
+        table.contains(room.disabled_generals, name)
+      if Fk.generals[name] and not disabledByRoom then
+        table.insertIfNeed(room.general_pile, name)
+      end
+    else
+      table.removeOne(room.general_pile, name)
+    end
+  end
 
   local players = room.players
   local generals = room:getNGenerals(#players * generalNum)

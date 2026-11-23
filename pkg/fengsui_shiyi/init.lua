@@ -169,6 +169,8 @@ Fk:loadTranslationTable{
 assert(#extension.generals == 22, "fengsui_shiyi must register exactly 22 generals")
 
 -- 番外武将默认隐藏；五名常规中立者与学园都市角色进入正常选将池。
+-- 拾遗五将（周宣[无梦]/陈寿/孙鸢/刘徽/王徽风）设为可见，以便玩家在禁将界面
+-- 手动禁用；它们是否真正进入将池由「开启九变篇」开关在 chooseGenerals 中控制。
 local visible_neutral = {
   fengsui_heg__dream__zhouxuan = true,
   fengsui_heg__jiaxu = true, fengsui_heg__lusu = true, fengsui_heg__xushu = true,
@@ -177,6 +179,10 @@ local visible_neutral = {
   fengsui_toaru__heg__misaka = true, fengsui_toaru__heg__shirai = true,
   fengsui_toaru__heg__saten = true,
   fengsui_toaru__heg__uiharukazari = true,
+  -- 九变篇联动五将：可见（可手动禁用），进池由模式开关决定
+  fengsui_heg__zhouxuan = true, fengsui_heg__chenshou = true,
+  fengsui_heg__sunyuan = true, fengsui_heg__liuhui = true,
+  fengsui_heg__wanghuifeng = true,
 }
 for _, general in ipairs(extension.generals) do
   general.hidden = not visible_neutral[general.name]
