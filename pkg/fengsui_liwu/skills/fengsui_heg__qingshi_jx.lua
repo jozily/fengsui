@@ -19,6 +19,12 @@ s:addEffect(fk.AfterCardsMove, {
       end
     end
   end,
+  -- 选项2的后续获得是静默结算，不能再弹「是否发动清饰」确定/取消框：
+  -- 自定义 cost 直接返回 true 覆盖引擎默认的 TriggerSkill:cost（默认会 askToSkillInvoke）。
+  -- 注意 mute 只关技能配音，并不阻止确认框。
+  on_cost = function(self, event, target, player, data)
+    return true
+  end,
   on_use = function(self, event, target, player, data)
     local room = player.room
     local rec = player:getTableMark(RETURN_MARK)
