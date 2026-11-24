@@ -241,7 +241,7 @@ Fk:loadTranslationTable{
   ["illustrator:fengsui_heg__zhouchu"] = "官方",
   ["cv:fengsui_heg__zhouchu"] = "暂无",
   ["fengsui_heg__tuanfeng"] = "抟风",
-  [":fengsui_heg__tuanfeng"] = "当你受到或造成伤害后，若你的武将牌均明置，你可以暗置你的一张武将牌（自选主将或副将）并随机获得本回合进入弃牌堆的不同花色的牌各一张。",
+  [":fengsui_heg__tuanfeng"] = "当你受到或造成伤害后，若你的武将牌均明置，你可以暗置你的一张武将牌并随机获得本回合进入弃牌堆的不同花色的牌各一张。",
   ["fengsui_heg__tuanfengRemake3"] = "抟风",
   [":fengsui_heg__tuanfengRemake3"] = "当你受到伤害后，若你的武将牌均明置，你可以暗置此武将牌并随机获得本回合进入弃牌堆的不同花色的牌各一张；当你造成伤害后，你可以令当前回合角色本回合手牌上限+2。",
   ["#fengsui_heg__tuanfeng-invoke"] = "抟风：是否暗置你的一张武将牌，并随机获得本回合进入弃牌堆的不同花色的牌各一张？",
