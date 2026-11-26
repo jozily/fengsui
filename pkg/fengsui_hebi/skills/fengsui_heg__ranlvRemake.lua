@@ -7,7 +7,8 @@ ranlv:addEffect(fk.Damaged, { can_trigger = function(self, _, target, player, da
       local place = Util.getSkillPlace(player, self.name)
       local wasChained = player.chained
       if place ~= nil then player:hideGeneral(place) end
-      player:setChainState(true); target:setChainState(true)
+      player:setChainState(true)
+      if target:isAlive() then target:setChainState(true) end
       if wasChained then
         local tos = table.filter(room.alive_players, function(p) return H.compareKingdomWith(p, player) end)
         if #tos > 0 then
