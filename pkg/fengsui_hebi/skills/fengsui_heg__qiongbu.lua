@@ -4,8 +4,18 @@ local U = require "packages.fengsui.pkg.fengsui_hebi.util"
 local qiongbu = fk.CreateSkill { name = "fengsui_heg__qiongbu", tags = { Skill.Compulsory } }
 
 local function canTrigger(self, event, target, player, data)
-  return target and target:isAlive() and target ~= player and
+  return target and target:isAlive() and
     player.room.current == player and player:hasShownSkill(qiongbu.name)
+end
+
+local function banReveal(p, skill_name)
+  if not p or not p:isAlive() then return end
+  for _, is_deputy in ipairs({ false, true }) do
+    local general = is_deputy and p.deputyGeneral or p.general
+    if general ~= "anjiang" and not p:prohibitReveal(is_deputy) then
+      U.prohibitReveal(p, is_deputy, skill_name, "turn")
+    end
+  end
 end
 
 for _, event in ipairs({ fk.GeneralRevealed, fk.GeneralHidden }) do
@@ -16,14 +26,14 @@ for _, event in ipairs({ fk.GeneralRevealed, fk.GeneralHidden }) do
     on_use = function(self, event, target, player, data)
       local room = player.room
       room:drawCards(player, 1, qiongbu.name)
-      if target:isAlive() then room:drawCards(target, 1, qiongbu.name) end
-      for _, is_deputy in ipairs({ false, true }) do
-        local general = is_deputy and target.deputyGeneral or target.general
-        if target:isAlive() and general ~= "anjiang" and not target:prohibitReveal(is_deputy) then
-          U.prohibitReveal(target, is_deputy, qiongbu.name, "turn")
-        end
+      if target == player then
+        if player:isAlive() then room:drawCards(player, 1, qiongbu.name) end
+      elseif target:isAlive() then
+        room:drawCards(target, 1, qiongbu.name)
       end
-      if not isHide or player.dead or not target:isAlive() then return end
+      banReveal(player, qiongbu.name)
+      if target ~= player then banReveal(target, qiongbu.name) end
+      if target == player or not isHide or player.dead or not target:isAlive() then return end
       if target:getHandcardNum() <= player:getHandcardNum() then return end
       room:damage { from = player, to = target, damage = 1, skillName = qiongbu.name }
       if player.dead or not target:isAlive() then return end
