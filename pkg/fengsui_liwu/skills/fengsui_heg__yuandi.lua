@@ -18,6 +18,12 @@ local function isWildOrigin(player)
     player:getMark("_wild_gained") > 0 or player:getMark("__heg_init_kingdom") == "wild"
 end
 
+-- 单亮中立者时 H.getKingdom 返回 "fengsui_neutral_<玩家id>" 伪势力，用于区分
+-- 不同中立者；对元嫡而言这仍是「未确定势力」，不可当成已亮势力记入标记。
+local function isNeutralPseudoKingdom(kingdom)
+  return type(kingdom) == "string" and kingdom:find("^fengsui_neutral_-?%d+$") ~= nil
+end
+
 local function updateXinyou(room, owner)
   room:setPlayerMark(owner, xinyou_visible, tostring(owner:getMark(xinyou_count)))
 end
@@ -29,7 +35,7 @@ local function getFirstKingdom(room)
   for _, p in ipairs(room.players) do
     if first == p.id or tostring(first) == tostring(p.id) then
       local kingdom = H.getKingdom(p)
-      if kingdom ~= "unknown" then
+      if kingdom ~= "unknown" and not isNeutralPseudoKingdom(kingdom) then
         room:setTag("fengsui_heg__yuandi_first_kingdom", kingdom)
         return kingdom
       end
@@ -41,7 +47,7 @@ end
 
 local function recordKingdom(room, target)
   local kingdom = H.getKingdom(target)
-  if kingdom == "unknown" or kingdom == "wild" then return end
+  if kingdom == "unknown" or kingdom == "wild" or isNeutralPseudoKingdom(kingdom) then return end
   local tag = "fengsui_heg__yuandi_seen_" .. kingdom
   if room:getTag(tag) then return end
   room:setTag(tag, true)
@@ -53,7 +59,7 @@ end
 
 local function recordFirstKingdom(room, target)
   local kingdom = H.getKingdom(target)
-  if kingdom == "unknown" or kingdom == "wild" then return end
+  if kingdom == "unknown" or kingdom == "wild" or isNeutralPseudoKingdom(kingdom) then return end
   local tag = "fengsui_heg__yuandi_seen_" .. kingdom
   if room:getTag(tag) then return end
   room:setTag(tag, true)
@@ -75,7 +81,7 @@ local function updateKingdomVisible(room, owner)
   for _, target in ipairs(room.players) do
     if target:getMark("@!!vanguard") > 0 then
       local kingdom = H.getKingdom(target)
-      if kingdom ~= "unknown" and kingdom ~= "wild" then
+      if kingdom ~= "unknown" and kingdom ~= "wild" and not isNeutralPseudoKingdom(kingdom) then
         table.insertIfNeed(kingdoms, Fk:translate(kingdom))
       end
     end
@@ -96,7 +102,7 @@ local function canHandleReveal(target, player, data)
   if not (target and has_reveal_data and player:hasSkill(yuandi.name, true)) then return false end
     if target:getMark(seen_player_mark) > 0 then return false end
     local kingdom = H.getKingdom(target)
-    if kingdom == "unknown" or kingdom == "wild" then return false end
+    if kingdom == "unknown" or kingdom == "wild" or isNeutralPseudoKingdom(kingdom) then return false end
     -- The native rule rewards the first revealed player before this fallback
     -- runs.  Record that player's kingdom so the same kingdom cannot receive
     -- a second vanguard from Yuandi.
@@ -237,7 +243,7 @@ local function grantOwnerFirstVanguard(self, _, target, player)
   room:setPlayerMark(player, seen_player_mark, 1)
   local kingdom = H.getKingdom(player)
   local first_kingdom = getFirstKingdom(room)
-  local unclaimed = kingdom ~= "unknown" and kingdom ~= "wild" and
+  local unclaimed = kingdom ~= "unknown" and kingdom ~= "wild" and not isNeutralPseudoKingdom(kingdom) and
     first_kingdom ~= kingdom and
     not room:getTag("fengsui_heg__yuandi_seen_" .. kingdom) and
     isFirstInKingdom(room, player, kingdom)
