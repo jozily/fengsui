@@ -1,4 +1,5 @@
 local overlayGenerals = {
+  "ol_heg__caozhi",
   "heg__jiananfeng",
   "heg__simajiong",
   "heg__simawei",
