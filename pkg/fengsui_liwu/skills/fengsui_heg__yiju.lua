@@ -12,7 +12,7 @@ local function isShuguoCard(card)
   return card and card:getMark(yiju.SHUGUO_MARK) > 0
 end
 
--- 1) 目标限制：戍国牌只能指定与你势力不同的角色（含自己）为目标
+-- 1) 目标限制：戍国牌只能指定与你势力不同的角色为目标（自己算同势力，不能指定）
 yiju:addEffect(fk.TargetSpecifying, {
   mute = true,
   is_delay_effect = true,
@@ -21,13 +21,20 @@ yiju:addEffect(fk.TargetSpecifying, {
     if data.cancelled then return false end
     if not data.card or not isShuguoCard(data.card) then return false end
     if not data.to then return false end
-    -- 自己必属同势力，显式取消，不依赖势力比较函数对自身的返回值
+    -- 不只看当前 data.to：自己若出现在目标列表任意位置，也要取消
+    -- （此前只判断 data.to == player + cancelCurrentTarget，会漏掉非首个目标）
+    local tos = data.use and data.use.tos or {}
+    for _, to in ipairs(tos) do
+      if to == player then return true end
+    end
     if data.to == player then return true end
     return H.compareKingdomWith(player, data.to) -- 同势力则取消
   end,
   on_cost = function(self) return true end,
   on_use = function(self, event, target, player, data)
-    data:cancelCurrentTarget()
+    -- cancelCurrentTarget 只移除当前目标；cancelTarget 把自己从
+    -- Undone/Done/use.tos 全部移除，确保自己不会留在目标里
+    data:cancelTarget(player)
   end,
 })
 
