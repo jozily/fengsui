@@ -30,10 +30,11 @@ qujian:addEffect(fk.Damaged, {
   global = true, is_delay_effect = true,
   can_trigger = function(self, _, target, player, data)
     local card = data and data.card
-    return data.from == player and card and table.contains(card.skillNames, qujian.name)
+    return target:isAlive() and data.from == player and card and
+      table.contains(card.skillNames, qujian.name)
   end,
   on_use = function(self, _, target)
-    target:setChainState(true)
+    if target:isAlive() then target:setChainState(true) end
   end,
 })
 
