@@ -26,10 +26,11 @@ juexun:addEffect(fk.AfterCardsMove, {
 
 -- 绝殉标记的下一次全场伤害，不限伤害来源或受伤角色。
 juexun:addEffect(fk.PreDamage, {
-  global = true,
+  global = true, mute = true,
   can_trigger = function(self, _, target, player, data)
     return player:hasSkill(self.name) and player:isAlive() and player:getMark("fengsui_heg__juexun_ready") > 0 and data and data.damage
   end,
+  on_cost = function(self) return true end,
   on_use = function(self, _, target, player, data)
     data.damageType = fk.FireDamage
     data.extra_data = data.extra_data or {}
