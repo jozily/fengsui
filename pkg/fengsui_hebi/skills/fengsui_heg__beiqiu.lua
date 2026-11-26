@@ -64,7 +64,10 @@ beiqiu:addEffect(fk.Death, {
   end,
   on_use = function(self, _, target, player)
     local room = player.room
-    room:setPlayerMark(player, "fengsui_heg__beiqiu_target", 0)
+    -- 0 表示「尚未产生所念之人」。首位所念之人死亡后若归零，
+    -- 下一个亮将者又会满足 == 0 而成为新的所念之人；但描述里「首位」
+    -- 是整局唯一的一位，故写入哨兵 -1，令其死后不再产生新的。
+    room:setPlayerMark(player, "fengsui_heg__beiqiu_target", target == player and 0 or -1)
     room:setPlayerMark(target, "@fengsui_heg__beiqiu_target", 0)
     if target == player then
       -- 标记挂在别人身上，潘安死后一并抹去。
