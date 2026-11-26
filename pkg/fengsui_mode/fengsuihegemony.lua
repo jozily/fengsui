@@ -204,10 +204,14 @@ function HegLogic:chooseGenerals()
         table.insert(room.general_pile, name)
       end
     end
-    local neutralCandidates = table.filter(room.general_pile, function(name)
-      local g = Fk.generals[name]
-      return g and isNeutralKingdom(g.kingdom) and available(name)
-    end)
+    -- 中立者候选按势力全量匹配：所有中立势力且未被房间禁用的武将都进入候选；
+    -- 本局最终保留几名仍由「随机中立者武将数量」设置项决定，数量逻辑不改动。
+    local neutralCandidates = {}
+    for name, g in pairs(Fk.generals) do
+      if g and isNeutralKingdom(g.kingdom) and available(name) then
+        table.insert(neutralCandidates, name)
+      end
+    end
     local wildCandidates = table.filter(room.general_pile, function(name)
       local g = Fk.generals[name]
       return g and g.kingdom == "wild" and available(name)

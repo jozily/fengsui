@@ -14,14 +14,14 @@ local function getUseFrom(room)
   return nil
 end
 
--- 本次移动中「你的牌因使用或弃置而进入弃牌堆」的红色牌 id。
+-- 本次移动中「你的牌因使用或弃置而进入弃牌堆」的牌 id（不区分颜色）。
 -- 弃置：move.from == player 且 ReasonDiscard（从手牌/装备直接进弃牌堆）。
 -- 使用：ReasonUse 且 move.from == nil 且牌来自 Processing（结算后进弃牌堆），
 --       此时用 getUseFrom 确认使用者是本人。
-local function getEnteredDiscardRedIds(player, data)
+local function getEnteredDiscardIds(player, data)
   local room = player.room
   local useFrom = getUseFrom(room)
-  local redIds = {}
+  local ids = {}
   for _, move in ipairs(data) do
     if move.toArea == Card.DiscardPile then
       local hit = false
@@ -37,12 +37,21 @@ local function getEnteredDiscardRedIds(player, data)
       end
       if hit then
         for _, info in ipairs(move.moveInfo) do
-          local card = Fk:getCardById(info.cardId)
-          if card and card.color == Card.Red then
-            table.insertIfNeed(redIds, info.cardId)
-          end
+          table.insertIfNeed(ids, info.cardId)
         end
       end
+    end
+  end
+  return ids
+end
+
+local function getEnteredDiscardRedIds(player, data)
+  local ids = getEnteredDiscardIds(player, data)
+  local redIds = {}
+  for _, id in ipairs(ids) do
+    local card = Fk:getCardById(id)
+    if card and card.color == Card.Red then
+      table.insertIfNeed(redIds, id)
     end
   end
   return redIds
@@ -53,16 +62,16 @@ qiaozhi:addEffect(fk.AfterCardsMove, {
   can_trigger = function(self, event, target, player, data)
     if not player:hasSkill(qiaozhi.name) or player.dead then return false end
     if player:getMark(FIRST) > 0 then return false end
-    return #getEnteredDiscardRedIds(player, data) > 0
+    -- 本回合首次「你的牌因使用/弃置进入弃牌堆」：无论颜色都触发判定，
+    -- 由 on_cost 消耗机会并按是否有红牌决定是否弹框。
+    return #getEnteredDiscardIds(player, data) > 0
   end,
   on_cost = function(self, event, target, player, data)
     local room = player.room
+    -- 机会用掉：即使本次无红牌、或玩家最终取消发动，之后本回合也不再触发
+    room:setPlayerMark(player, FIRST, 1)
     local redIds = getEnteredDiscardRedIds(player, data)
-    if #redIds == 0 then
-      -- 本回合首次因使用/弃置进弃牌堆却没有红牌，机会用掉
-      room:setPlayerMark(player, FIRST, 1)
-      return false
-    end
+    if #redIds == 0 then return false end
     return room:askToSkillInvoke(player, {
       skill_name = qiaozhi.name,
       prompt = "#fengsui_heg__qiaozhi-invoke",
@@ -70,7 +79,6 @@ qiaozhi:addEffect(fk.AfterCardsMove, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    room:setPlayerMark(player, FIRST, 1)
     local putIds = getEnteredDiscardRedIds(player, data)
     if #putIds > 0 then
       room:moveCards{

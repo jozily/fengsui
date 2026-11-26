@@ -5,59 +5,29 @@ local yiju = fk.CreateSkill {
   tags = { Skill.Compulsory },
 }
 
--- 戍国牌的标记：锁定技依赖它判断"因戍国获得的牌"
 yiju.SHUGUO_MARK = "@@fengsui_heg__shuguo"
 
 local function isShuguoCard(card)
   return card and card:getMark(yiju.SHUGUO_MARK) > 0
 end
 
--- 1) 目标限制：戍国牌只能指定与你势力不同的角色为目标（自己算同势力，不能指定）
-yiju:addEffect(fk.TargetSpecifying, {
+-- 锁定技：与你势力相同的角色（含你自己）成为戍国牌的目标后，取消之。
+-- 用 TargetConfirming：每个被指定的目标在确认时各触发一次，target 即当前目标本人。
+yiju:addEffect(fk.TargetConfirming, {
   mute = true,
-  is_delay_effect = true,
   can_trigger = function(self, event, target, player, data)
-    if target ~= player or not player:hasSkill(yiju.name) then return false end
-    if data.cancelled then return false end
+    if player.dead or not player:hasSkill(yiju.name) then return false end
+    if not target or target.dead then return false end
     if not data.card or not isShuguoCard(data.card) then return false end
-    if not data.to then return false end
-    -- 不只看当前 data.to：自己若出现在目标列表任意位置，也要取消
-    -- （此前只判断 data.to == player + cancelCurrentTarget，会漏掉非首个目标）
-    local tos = data.use and data.use.tos or {}
-    for _, to in ipairs(tos) do
-      if to == player then return true end
-    end
-    if data.to == player then return true end
-    return H.compareKingdomWith(player, data.to) -- 同势力则取消
+    return target == player or H.compareKingdomWith(player, target)
   end,
-  on_cost = function(self) return true end,
+  on_cost = function(self, event, target, player, data) return true end,
   on_use = function(self, event, target, player, data)
-    -- cancelCurrentTarget 只移除当前目标；cancelTarget 把自己从
-    -- Undone/Done/use.tos 全部移除，确保自己不会留在目标里
-    data:cancelTarget(player)
+    data:cancelTarget(target)
   end,
 })
 
--- 2) 响应限制：戍国牌只能响应与你势力不同的角色使用/打出的牌（自己算同势力）
--- PreCardRespond 的 target 是响应者(张奂)；on_use 返回 true 亦会终止响应
-yiju:addEffect(fk.PreCardRespond, {
-  mute = true,
-  can_trigger = function(self, event, target, player, data)
-    if target ~= player or not player:hasSkill(yiju.name) then return false end
-    if not data.card or not isShuguoCard(data.card) then return false end
-    local ev = data.responseToEvent
-    if not ev or not ev.from then return false end
-    -- 响应自己使用的牌也算同势力，显式禁止
-    if ev.from == player then return true end
-    return H.compareKingdomWith(player, ev.from) -- 同势力使用的牌 -> 禁止响应
-  end,
-  on_cost = function(self) return true end,
-  on_use = function(self, event, target, player, data)
-    data:setNullified()
-  end,
-})
-
--- 3) 失去戍国牌后：你的回合内摸一张，回合外弃置一张
+-- 失去戍国牌后：你的回合内摸一张，回合外弃置一张
 yiju:addEffect(fk.AfterCardsMove, {
   anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)
@@ -78,15 +48,10 @@ yiju:addEffect(fk.AfterCardsMove, {
   on_cost = function(self) return true end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    -- 清除这些牌上的戍国标记，避免重复触发
-    for _, move in ipairs(data) do
-      if move.from == player then
-        for _, info in ipairs(move.moveInfo) do
-          local card = Fk:getCardById(info.cardId)
-          if isShuguoCard(card) then room:setCardMark(card, yiju.SHUGUO_MARK, 0) end
-        end
-      end
-    end
+    -- 不在此清除戍国标记：使用牌时牌先进处理区、先触发本 AfterCardsMove，
+    -- 若此处清标记，随后 TargetConfirming 阶段就识别不到戍国牌，
+    -- 导致「同势力角色成为目标后取消之」失效。牌离手后 move.from 不再是本人，
+    -- 同一张牌不会因此重复触发本效果，故无需靠清标记去重。
     if room.current == player then
       player:drawCards(1, yiju.name)
     elseif not player:isNude() then

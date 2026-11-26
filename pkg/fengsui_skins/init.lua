@@ -95,6 +95,24 @@ local SKINS = {
       "fengsui_heg__jiawu_s1.jpg",
     },
   },
+  {
+    generals = { "fengsui_heg__zhanghuan" },
+    files = {
+      "fengsui_heg__zhanghuan_s1.jpg",
+    },
+  },
+  {
+    generals = { "fengsui_heg__xuelingyun" },
+    files = {
+      "fengsui_heg__xuelingyun_s1.jpg",
+    },
+  },
+  {
+    generals = { "fengsui_heg__zhongyu" },
+    files = {
+      "fengsui_heg__zhongyu_s1.jpg",
+    },
+  },
 }
 
 local content = {}
@@ -146,6 +164,10 @@ Fk:loadTranslationTable {
 
   ["fengsui_heg__hanshou_s1.jpg"] = "与香逢",
   ["fengsui_heg__jiawu_s1.jpg"] = "与香逢",
+
+  ["fengsui_heg__zhanghuan_s1.jpg"] = "战场荣耀",
+  ["fengsui_heg__xuelingyun_s1.jpg"] = "红烛垂泪",
+  ["fengsui_heg__zhongyu_s1.jpg"] = "纵笔弄潮",
 }
 
 return extension
