@@ -67,11 +67,13 @@ shuguo:addEffect(fk.TurnEnd, {
     local room = player.room
     local id = event:getCostData(self).cardid
     room:setPlayerMark(target, DISCARD_MARK, {})
-    -- 获得的牌直接带可见文本 mark（牌面显示"戍国"），供义拒识别
-    room:obtainCard(player, id, true, fk.ReasonPrey, player, shuguo.name, { "@@fengsui_heg__shuguo", 1 })
+    -- 可见 mark 加 -inhand 后缀：牌一旦离开手牌区，引擎自动清除。
+    -- 义拒不读当前牌面 mark，而读移动前的 beforeCard / subcardsFromInfo，
+    -- 因此离手后的目标取消与失去效果仍正常，牌离手后也不再长期带标记。
+    room:obtainCard(player, id, true, fk.ReasonPrey, player, shuguo.name, { "@@fengsui_heg__shuguo-inhand", 1 })
     -- 再显式打一次牌面 mark，确保客户端显示
     local shuguoCard = Fk:getCardById(id)
-    if shuguoCard then room:setCardMark(shuguoCard, "@@fengsui_heg__shuguo", 1) end
+    if shuguoCard then room:setCardMark(shuguoCard, "@@fengsui_heg__shuguo-inhand", 1) end
   end,
 })
 

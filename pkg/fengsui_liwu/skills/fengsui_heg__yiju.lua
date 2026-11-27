@@ -7,8 +7,15 @@ local yiju = fk.CreateSkill {
 
 yiju.SHUGUO_MARK = "@@fengsui_heg__shuguo"
 
-local function isShuguoCard(card)
-  return card and card:getMark(yiju.SHUGUO_MARK) > 0
+-- 牌离手后引擎会清掉带 -inhand 后缀的牌面 mark，
+-- 故判断时同时兼容「移动前」的牌信息，避免失去效果与目标取消失效。
+local function hasShuguoMark(card)
+  if not card or not card.mark then return false end
+  return card:hasMark(yiju.SHUGUO_MARK) ~= nil
+end
+
+local function isShuguoCard(card, beforeInfo)
+  return hasShuguoMark(card) or (beforeInfo and hasShuguoMark(beforeInfo.beforeCard))
 end
 
 -- 锁定技：与你势力相同的角色（含你自己）成为戍国牌的目标后，取消之。
@@ -18,7 +25,21 @@ yiju:addEffect(fk.TargetConfirming, {
   can_trigger = function(self, event, target, player, data)
     if player.dead or not player:hasSkill(yiju.name) then return false end
     if not target or target.dead then return false end
-    if not data.card or not isShuguoCard(data.card) then return false end
+    if not data or not data.card then return false end
+    -- 使用牌时牌已进处理区、牌面 mark 已被清除，
+    -- 此时须从 subcardsFromInfo 的移动前牌面识别戍国牌。
+    local isShuguo = false
+    local ids = Card:getIdList(data.card)
+    local infos = data.use and data.use.subcardsFromInfo
+    if infos then
+      for _, info in ipairs(infos) do
+        if table.contains(ids, info.cardId) and hasShuguoMark(info.beforeCard) then
+          isShuguo = true
+          break
+        end
+      end
+    end
+    if not isShuguo and not hasShuguoMark(data.card) then return false end
     return target == player or H.compareKingdomWith(player, target)
   end,
   on_cost = function(self, event, target, player, data) return true end,
@@ -35,8 +56,7 @@ yiju:addEffect(fk.AfterCardsMove, {
     for _, move in ipairs(data) do
       if move.from == player then
         for _, info in ipairs(move.moveInfo) do
-          local card = Fk:getCardById(info.cardId)
-          if isShuguoCard(card) and
+          if isShuguoCard(Fk:getCardById(info.cardId), info) and
              (info.fromArea == Card.PlayerHand or info.fromArea == Card.PlayerEquip) then
             return true
           end
@@ -48,10 +68,6 @@ yiju:addEffect(fk.AfterCardsMove, {
   on_cost = function(self) return true end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    -- 不在此清除戍国标记：使用牌时牌先进处理区、先触发本 AfterCardsMove，
-    -- 若此处清标记，随后 TargetConfirming 阶段就识别不到戍国牌，
-    -- 导致「同势力角色成为目标后取消之」失效。牌离手后 move.from 不再是本人，
-    -- 同一张牌不会因此重复触发本效果，故无需靠清标记去重。
     if room.current == player then
       player:drawCards(1, yiju.name)
     elseif not player:isNude() then

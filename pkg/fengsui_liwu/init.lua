@@ -300,6 +300,7 @@ Fk:loadTranslationTable{
   [":fengsui_heg__shuguo"] = "每回合结束时，若当前回合角色弃置过牌且花色均不同，你可以获得其中一张。",
   ["#fengsui_heg__shuguo-choose"] = "戍国：你可以获得当前回合角色弃置的一张牌",
   ["@@fengsui_heg__shuguo"] = "戍国",
+  ["@@fengsui_heg__shuguo-inhand"] = "戍国",
   ["$fengsui_heg__yiju1"] = "董卓之缣，如豺狼之皮，浸透腥膻、臭不可闻！",
   ["$fengsui_heg__yiju2"] = "如此不义之物，安敢污我门庭！",
   ["$fengsui_heg__shuguo1"] = "奂不才，愿效定远故事，持节万里、靖清朔漠！",
