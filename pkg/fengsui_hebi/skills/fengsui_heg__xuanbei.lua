@@ -35,12 +35,12 @@ xuanbei:addEffect("active", {
   end,
   on_use = function(self, room, effect)
     local player, to = effect.from, effect.tos[1]
-    local formed = isCompanion(to)
+    local formed = false
     local times = timesNum(player)
     for _ = 1, times do
       if to.dead then break end
       H.transformGeneral(room, to, false, false, 1, xuanbei.name)
-      formed = formed or isCompanion(to)
+      if isCompanion(to) then formed = true end
     end
     if formed then
       room:handleAddLoseSkills(player, "-" .. xuanbei.name)
