@@ -20,12 +20,12 @@ shigong:addEffect(fk.EnterDying, {
     if choice == "fengsui_heg__shigong_gain" then
       room:handleAddLoseSkills(current, "fengsui_heg__dulu")
       room:drawCards(current, current.maxHp, self.name)
-      room:recover { who = player, num = math.max(0, 1 - player.hp), recoverBy = player, skillName = self.name }
-    else
       local missing = player.maxHp - player.hp
       if missing > 0 then
         room:recover { who = player, num = missing, recoverBy = player, skillName = self.name }
       end
+    else
+      room:recover { who = player, num = math.max(0, 1 - player.hp), recoverBy = player, skillName = self.name }
     end
   end,
 })
