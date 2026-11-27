@@ -25,9 +25,10 @@ guitu:addEffect(fk.DamageInflicted, {
   on_use = function(self, event, target, player, data)
     H.removeGeneral(player, true)
     data:preventDamage()
+    local room = player.room
     local from = data.from
-    if from and from:isAlive() then
-      local room = player.room
+    -- 仅伤害来源为当前回合角色时，才限制其本回合手牌上限。
+    if from and from:isAlive() and room.current == from then
       room:setPlayerMark(from, limit_mark, 1)
       room:setPlayerMark(from, show_mark, "")
       -- 记录被限制者，隐藏标记不参与界面显示。
