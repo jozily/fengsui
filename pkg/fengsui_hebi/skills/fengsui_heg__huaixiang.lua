@@ -50,29 +50,17 @@ huaixiang:addEffect(fk.AfterCardsMove, {
     local room = player.room
     local ids = getEligibleCards(room, player, data)
     if #ids == 0 then return false end
-    local cards = room:askToCards(player, {
-      min_num = 1,
-      max_num = 1,
-      skill_name = self.name,
-      pattern = tostring(Exppattern { id = ids }),
-      prompt = "#fengsui_heg__huaixiang-card",
-      expand_pile = ids,
+    local success, dat = room:askToUseActiveSkill(player, {
+      skill_name = "#fengsui_heg__huaixiang_active",
+      prompt = "#fengsui_heg__huaixiang-active",
       cancelable = true,
+      extra_data = {
+        skillName = self.name,
+        cards = ids,
+      },
     })
-    if #cards == 0 then return false end
-    local tos = room:askToChoosePlayers(player, {
-      min_num = 1,
-      max_num = 1,
-      -- 「其他角色」：怀香不能指定自己
-      targets = table.filter(room.alive_players, function(p)
-        return p ~= player and p.kingdom ~= "unknown"
-      end),
-      skill_name = self.name,
-      prompt = "#fengsui_heg__huaixiang-target",
-      cancelable = true,
-    })
-    if #tos > 0 then
-      event:setCostData(self, { cards = cards, tos = tos })
+    if success and dat and dat.cards and #dat.cards > 0 and dat.targets and #dat.targets > 0 then
+      event:setCostData(self, { cards = dat.cards, tos = dat.targets })
       return true
     end
   end,
