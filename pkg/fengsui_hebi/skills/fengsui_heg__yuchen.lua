@@ -88,21 +88,37 @@ yuchen:addEffect(fk.CardUseFinished, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
+    local card = data.card
+    -- bonus_mark 只服务于本次牌的结算，结算完必须清除，
+    -- 否则这张实体牌以后每次造成伤害都会再次被 DamageCaused 加伤。
+    local function clearBonus()
+      room:setCardMark(card, bonus_mark, 0)
+    end
     local dealt = 0
     if data.damageDealt then
       for _, n in pairs(data.damageDealt) do dealt = dealt + (tonumber(n) or 0) end
     end
-    if dealt > 0 then return end
+    if dealt > 0 then
+      clearBonus()
+      return
+    end
     local origin = data.tos and data.tos[1]
-    if not origin or not origin:isAlive() or not player:isAlive() then return end
-    local cardName = data.card.name
-    if not cardName then return end
+    if not origin or not origin:isAlive() or not player:isAlive() then
+      clearBonus()
+      return
+    end
+    local cardName = card.name
+    if not cardName then
+      clearBonus()
+      return
+    end
     -- reuse_mark 同时兼作「伤害+1」标记与递归保护：反打的牌在 TargetSpecified
     -- 阶段会被跳过，DamageCaused 阶段据此 +1；调用返回后即清除。
     -- 反打属静默结算：不挂技能名，牌的使用日志里不出现「毓尘」。
     room:setPlayerMark(player, reuse_mark, 1)
     room:useVirtualCard(cardName, nil, origin, player, nil, true)
     room:setPlayerMark(player, reuse_mark, 0)
+    clearBonus()
   end,
 })
 
