@@ -20,7 +20,7 @@ local function chooseKingdomTargets(room, player)
     end)
     if #choices > 0 then
       local to = room:askToChoosePlayers(player, { targets = choices, min_num = 1, max_num = 1,
-        skill_name = guishang.name, prompt = "#fengsui_heg__guishang-target::" .. kingdom, cancelable = false })[1]
+        skill_name = guishang.name, prompt = "#fengsui_heg__guishang-target:::" .. kingdom, cancelable = false })[1]
       if to then table.insert(result, to) end
     end
   end
@@ -47,10 +47,10 @@ guishang:addEffect("active", {
           choices = { "befriend_attacking", "await_exhausted" },
           skill_name = guishang.name, prompt = "#fengsui_heg__guishang-card::" .. to.id,
         })
-        local from, tos
-        if succeeded[to] then from, tos = to, {player} else from, tos = player, {to} end
-        if from:isAlive() and tos[1]:isAlive() then
-          room:useVirtualCard(card, nil, from, tos, guishang.name, true)
+        local from, target_player
+        if succeeded[to] then from, target_player = to, player else from, target_player = player, to end
+        if from:isAlive() and target_player:isAlive() then
+          room:useVirtualCard(card, nil, from, { from, target_player }, guishang.name, true)
         end
       end
     end

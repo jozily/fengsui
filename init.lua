@@ -1337,11 +1337,114 @@ local function overridePartWays()
   fk.qInfo("[fengsui-overrides] part_ways(分道扬镳) onEffect 已包装")
 end
 
+-- 官方野心家贾南风的〖放恣〗(heg__fangzi) 变更副将时调用
+-- H.transformGeneral(room, player, false, true)，第4个参数 isHidden=true，
+-- 于是变更出来的副将被暗置。fengsui 的规则是明置变更副将，这里在 use
+-- 执行期间临时把 H.transformGeneral 的第4参改成 false，执行完立即还原，
+-- 不影响其他技能的暗置变更（如落石）。
+local function overrideFangziReveal()
+  local HegUtil = require "packages.hegemony.util"
+  if type(HegUtil.transformGeneral) ~= "function" then return end
+  for _, effect in ipairs(collectTriggerEffects("heg__fangzi")) do
+    if effect.event == fk.EventPhaseStart and effect.use and
+      not effect.__fengsui_fangzi_reveal then
+      local origUse = effect.use
+      effect.use = function(self, event, target, player, data)
+        local origTransform = HegUtil.transformGeneral
+        HegUtil.transformGeneral = function(room, p, isMain, isHidden, ...)
+          return origTransform(room, p, isMain, false, ...)
+        end
+        local ok, ret = pcall(origUse, self, event, target, player, data)
+        HegUtil.transformGeneral = origTransform
+        if not ok then error(ret) end
+        return ret
+      end
+      effect.__fengsui_fangzi_reveal = true
+      fk.qInfo("[fengsui-overrides] heg__fangzi(放恣) 变更副将改为明置")
+    end
+  end
+end
+
+-- 官方鏖战把〖赋礼〗(battle_royal_fuli) 作为六选一随机事件，其摸牌前的
+-- askToSkillInvoke 选项框已由官方实现。fengsui 的规则是把这个事件从
+-- all_events 随机池删除，效果并入「开启九变篇」开关：开启后每名角色摸牌
+-- 阶段前都能勾选跳过并拿奇珍牌，未开启则整段效果不存在。
+-- 这里做两件事：①事件抽取只要抽到赋礼就改抽其余五个事件之一；
+-- ②赋礼效果的 triggerable 不再看当前事件，改看九变篇开关。
+local function gateFuliEvent()
+  local sk = Fk.skills and Fk.skills["#new_battle_royal_event&"]
+  if not sk then return end
+  local FALLBACK_EVENTS = {
+    "battle_royal_bujinzetui", "battle_royal_luoshi",
+    "battle_royal_shengzheweiwang", "battle_royal_huoqi", "battle_royal_jili",
+  }
+  for _, effect in ipairs(collectTriggerEffects("#new_battle_royal_event&")) do
+    -- ① 事件抽取：赋礼已从事件池移除，抽到就同步换掉横幅、日志与已用记录
+    if effect.event == fk.RoundStart and type(effect.trigger) == "function" and
+      not effect.__fengsui_fuli_gate then
+      local origTrigger = effect.trigger
+      effect.trigger = function(self, event, target, player, data)
+        origTrigger(self, event, target, player, data)
+        local room = player.room
+        if room:getBanner("@[:]new_battle_royal_event") ~= "battle_royal_fuli" then return end
+        local used = room:getBanner("@[:]battle_royal_used_event") or {}
+        local pool = {}
+        for _, e in ipairs(FALLBACK_EVENTS) do
+          if not table.contains(used, e) then table.insert(pool, e) end
+        end
+        if #pool == 0 then
+          used = {}
+          pool = table.simpleClone(FALLBACK_EVENTS)
+        end
+        local newEvent = room:tableRandomPick(pool)
+        for i = #used, 1, -1 do
+          if used[i] == "battle_royal_fuli" then table.remove(used, i) end
+        end
+        if not table.contains(used, newEvent) then table.insert(used, newEvent) end
+        room:setBanner("@[:]new_battle_royal_event", newEvent)
+        room:setBanner("@[:]battle_royal_used_event", used)
+        room:sendLog{
+          type = "new_battle_royal_event-log", arg = newEvent,
+          arg2 = ":" .. newEvent, toast = true,
+        }
+        if newEvent == "battle_royal_luoshi" then
+          local HegUtil = require "packages.hegemony.util"
+          for _, p in ipairs(room:getAlivePlayers(true)) do
+            if not p.dead and p.kingdom ~= "unknown" then
+              HegUtil.transformGeneral(room, p, false, false, 1)
+            end
+          end
+        end
+        fk.qInfo("[fengsui-overrides] 赋礼已从事件池移除，改抽 " .. newEvent)
+      end
+      effect.__fengsui_fuli_gate = true
+    end
+
+    -- ② 赋礼效果：不再要求当前事件是赋礼，改由九变篇开关决定
+    if effect.event == fk.EventPhaseChanging and type(effect.triggerable) == "function" and
+      not effect.__fengsui_fuli_switch then
+      effect.triggerable = function(self, event, target, player, data)
+        if player ~= target or player.dead or data.phase ~= Player.Draw or data.skipped then
+          return false
+        end
+        local room = player.room
+        if not room.getSettings then return false end
+        local value = room:getSettings("fengsui_enable_nine_variations")
+        return value == true or value == 1 or value == "1" or value == "true"
+      end
+      effect.__fengsui_fuli_switch = true
+      fk.qInfo("[fengsui-overrides] 赋礼效果改为九变篇开关控制")
+    end
+  end
+end
+
 local function runAllOverrides()
   guardDoNotify()
   guardQiceInteraction()
   fixDufuDraw()
   overridePartWays()
+  overrideFangziReveal()
+  gateFuliEvent()
   overrideSijian()
   overrideKylinBowPrompt()
   overrideBianfurenGender()
