@@ -92,7 +92,8 @@ lutan:addSkills { "fengsui_heg__anliu", "fengsui_heg__kuanqu" }
 
 local gongsunxiu = General:new(extension, "fengsui_heg__gongsunxiu", "qun", 4)
 gongsunxiu:addCompanions("ld__gongsunyuan")
-gongsunxiu:addSkills { "fengsui_heg__kuizhen", "fengsui_heg__niejiang" }
+-- 蹑江暂不挂载：gongsunxiu:addSkills { "fengsui_heg__kuizhen", "fengsui_heg__niejiang" }
+gongsunxiu:addSkills { "fengsui_heg__kuizhen" }
 
 local yuantan = General:new(extension, "fengsui_heg__yuantan", "qun", 4)
 yuantan:addCompanions("hs__yuanshao")

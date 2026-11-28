@@ -9,18 +9,6 @@ local canyun = fk.CreateSkill {
   related_skills = { "fengsui_heg__kumeng" },
 }
 
--- 致命伤害来源：取本局最后一次对死者造成且生效的伤害来源。
-local function killingSource(room, dead)
-  local source
-  for _, e in ipairs(room.logic:getEventsOfScope(GameEvent.Damage, 9999, function() return true end, Player.HistoryGame)) do
-    local damage = e.data
-    if e.exec_ret == true and damage and damage.to == dead and damage.from and damage.from ~= dead then
-      source = damage.from
-    end
-  end
-  return source
-end
-
 local function becomeWild(room, player)
   if not player or player.dead then return false end
   -- 先明置主将（暗置时才明置），再变为野心家。
@@ -40,11 +28,12 @@ canyun:addEffect(fk.Death, {
   can_trigger = function(self, _, target, player)
     return target == player and player:hasSkill(canyun.name, false, true)
   end,
-  on_use = function(self, _, target, player)
+  on_use = function(self, event, target, player, data)
     local room = player.room
-    -- 先让杀死自己的角色明置主将并变为野心家
-    local killer = killingSource(room, player)
-    if killer then becomeWild(room, killer) end
+    -- 致命来源直接取死亡事件携带的 killer（即致命伤害的 from），
+    -- 不再遍历全局伤害日志猜"最后一次"，避免后续伤害事件改写来源。
+    local killer = data.killer
+    if killer and killer ~= player then becomeWild(room, killer) end
     -- 所有野心家按座次依次移除副将并获得“枯懑”
     for _, p in ipairs(room:getAlivePlayers()) do
       if p.dead then goto continue end
