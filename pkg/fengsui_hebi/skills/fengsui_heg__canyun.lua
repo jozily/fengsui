@@ -1,5 +1,5 @@
 -- 残愠（贾褒）
--- 锁定技，杀死你的角色明置主将并变为野心家。你死亡时，所有野心家角色
+-- 锁定技，杀死你的角色执行奖惩后，其明置主将并变为野心家。你死亡后，所有野心家角色
 -- 依次移除副将并获得〖枯懑〗。
 local H = require "packages.fengsui.hegemony_util"
 
@@ -23,7 +23,8 @@ local function becomeWild(room, player)
   return true
 end
 
-canyun:addEffect(fk.Death, {
+-- 奖惩在 fk.BuryVictim 结算（含除虫的 ignorePunishment），变野心家须放到其后的 fk.Deathed。
+canyun:addEffect(fk.Deathed, {
   global = true,
   can_trigger = function(self, _, target, player)
     return target == player and player:hasSkill(canyun.name, false, true)

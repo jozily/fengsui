@@ -1335,7 +1335,7 @@ Fk:loadTranslationTable{
   ["$fengsui_heg__gaofan3"] = "父亲执国柄，当知母氏无罪；若使慈亲老于永年，女何以对天下之人？",
   ["$fengsui_heg__gaofan4"] = "汝言虽切，吾终不能无愧；然今日之门庭，岂由一人尽能自决？",
   ["fengsui_heg__canyun"] = "残愠",
-  [":fengsui_heg__canyun"] = "锁定技，杀死你的角色明置主将并变为野心家。你死亡时，所有野心家角色依次移除副将并获得〖枯懑〗。",
+  [":fengsui_heg__canyun"] = "锁定技，杀死你的角色执行奖惩后，其明置主将并变为野心家。你死亡后，所有野心家角色依次移除副将并获得〖枯懑〗。",
   ["fengsui_heg__kumeng"] = "枯懑",
   [":fengsui_heg__kumeng"] = "锁定技，你变更副将后失去一点体力值。",
   ["fengsui_heg__canyun_abolishedversion"] = "残愠",

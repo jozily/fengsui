@@ -135,7 +135,6 @@ fengsui_heg__xiejiu:addSkill("fengsui_heg__guitu")
 
 local jiabao = General:new(extension, "fengsui_heg__jiabao", "jin", 3, 3, General.Female)
 jiabao:addSkills { "fengsui_heg__gaofan", "fengsui_heg__canyun" }
-jiabao:addCompanions("heg__simajiong")
 
 local wangqian = General:new(extension, "fengsui_heg__wangqian", "jin", 3, 3, General.Female)
 wangqian:addSkills { "fengsui_heg__yaxi", "fengsui_heg__xiarong" }
